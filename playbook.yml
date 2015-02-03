@@ -1,0 +1,41 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - name: create an ec2 node
+    ec2:
+      key_name: robyoung
+      group: public
+      instance_type: t2.micro
+      region: eu-west-1
+      image: ami-234ecc54
+      wait: true
+      exact_count: 1
+      count_tag:
+        Name: Demo
+      instance_tags:
+        Name: Demo
+    register: ec2
+
+  - name: Add all instance public IPs to host group
+    add_host: hostname={{ item.public_ip }} groupname=ec2hosts
+    with_items: ec2.instances
+
+  - name: Wait for SSH to be available
+    wait_for: host={{ item.public_ip }} port=22
+    with_items: ec2.instances
+
+  - name: Breathing room for apt
+    pause: seconds=15
+
+- hosts: ec2hosts
+  name: setup
+  user: ubuntu
+  gather_facts: True
+  sudo: True
+  roles:
+    - { role: geerlingguy.java }
+    - { role: geerlingguy.elasticsearch }
