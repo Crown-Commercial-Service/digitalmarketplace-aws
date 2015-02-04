@@ -1,0 +1,11 @@
+cluster:
+  name: elasticsearch-test
+
+cloud:
+  aws:
+    region: eu-west-1
+
+discovery:
+  type: ec2
+  ec2:
+    groups: elasticsearch-test-cluster

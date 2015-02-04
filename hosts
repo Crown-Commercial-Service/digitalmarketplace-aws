@@ -1,2 +1,2 @@
 [localhost]
-127.0.0.1 ansible_python_interpreter=/Users/robyoung/.virtualenvs/ansible/bin/python
+127.0.0.1 ansible_python_interpreter=$VIRTUAL_ENV/bin/python
