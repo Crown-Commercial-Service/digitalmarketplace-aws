@@ -4,7 +4,7 @@
   connection: local
   gather_facts: False
 
-  tasks:
+  pre_tasks:
   - name: create an ec2 node
     ec2:
       key_name: "{{ lookup('env', 'AWS_KEY_NAME') }}"
@@ -22,69 +22,19 @@
     register: ec2
 
   - name: Add all instance public IPs to host group
-    add_host: hostname={{ item.public_ip }} groupname=ec2hosts
+    add_host: hostname={{ item.public_ip }} groupname=elasticsearch
     with_items: ec2.tagged_instances
 
   - name: Wait for SSH to be available
     wait_for: host={{ item.public_ip }} port=22
     with_items: ec2.tagged_instances
 
-- hosts: ec2hosts
+- hosts: elasticsearch
   name: setup
   user: ubuntu
   gather_facts: True
   sudo: True
 
-  tasks:
-  - name: Add Elasticsearch apt key.
-    apt_key:
-      url: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
-      state: present
+  roles:
+    - elasticsearch
 
-  - name: Add Elasticsearch repository.
-    apt_repository:
-      repo: 'deb http://packages.elasticsearch.org/elasticsearch/1.3/debian stable main'
-      state: present
-
-  - name: Update apt cache if repository just added.
-    apt: update_cache=yes
-
-  - name: Ensure Java is installed
-    apt:
-      name: "{{ item }}"
-      state: installed
-    with_items:
-      - openjdk-7-jdk
-
-  - name: Install Elasticsearch.
-    apt: pkg=elasticsearch state=present
-
-  - stat: path=/usr/share/elasticsearch/plugins/head
-    register: es_head_plugin
-
-  - name: Install elasticsearch-head UI
-    shell: /usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head
-    when: es_head_plugin.stat.exists == False
-    notify: restart elasticsearch
-
-  - stat: path=/usr/share/elasticsearch/plugins/cloud-aws
-    register: es_aws_plugin
-
-  - name: Install cloud-aws plugin
-    when: es_head_plugin.stat.exists == False
-    shell: /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-cloud-aws/2.3.0
-    notify: restart elasticsearch
-
-  - name: Make elasticsearch config dir
-    file: path=/etc/elasticsearch/ state=directory
-
-  - name: Copy over Elasticsearch settings
-    copy: src=./files/elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml
-    notify: restart elasticsearch
-
-  - name: Start Elasticsearch.
-    service: name=elasticsearch state=started enabled=yes
-
-  handlers:
-  - name: restart elasticsearch
-    action: service name=elasticsearch state=restarted
