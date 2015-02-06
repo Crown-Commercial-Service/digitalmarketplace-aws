@@ -28,7 +28,7 @@
 
 - name: Install plugins
   shell: /usr/share/elasticsearch/bin/plugin --install {{ item.item.value.source }}
-  when: False == "{{ item.stat.exists }}"
+  when: item.stat.exists == False
   notify: restart elasticsearch
   with_items: es_installed_plugins.results
 
