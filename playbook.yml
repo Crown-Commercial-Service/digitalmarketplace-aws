@@ -31,7 +31,10 @@
     iam_role:
       name: elasticsearch-test-cluster-role
       region: eu-west-1
-
+      policies:
+        - name: ec2discovery
+          allow_actions:
+            - ec2:DescribeInstances
 
   - name: Create EC2 nodes
     ec2:
