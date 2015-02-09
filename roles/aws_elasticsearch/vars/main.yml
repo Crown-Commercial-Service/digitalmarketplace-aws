@@ -1,0 +1,9 @@
+---
+elasticsearch_ec2_group_name: elasticsearch-test-cluster
+elasticsearch_iam_role_name: elasticsearch-test-cluster-role
+elasticsearch_ec2_instance_tag: elasticsearch-cluster-test
+
+aws_region: eu-west-1
+elasticsearch_ec2_instance_count: 2
+elasticsearch_ec2_instance_type: t2.micro
+elasticsearch_ec2_instance_image: ami-234ecc54

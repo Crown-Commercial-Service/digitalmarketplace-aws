@@ -1,64 +1,12 @@
 ---
-
 - hosts: localhost
   connection: local
   gather_facts: False
 
-  pre_tasks:
-  - name: Create an AWS security group
-    ec2_group:
-      name: elasticsearch-test-cluster
-      description: Elasticsearch cluster
-      region: eu-west-1
-      rules:
-        - proto: all
-          group_name: elasticsearch-test-cluster
-        - proto: tcp
-          from_port: 9200
-          to_port: 9200
-          cidr_ip: 80.194.77.0/24
-        - proto: tcp
-          from_port: 22
-          to_port: 22
-          cidr_ip: 80.194.77.0/24
-      rules_egress:
-        - proto: all
-          from_port: 0
-          to_port: 65535
-          cidr_ip: 0.0.0.0/0
-
-  - name: Create IAM role
-    iam_role:
-      name: elasticsearch-test-cluster-role
-      region: eu-west-1
-      policies:
-        - name: ec2discovery
-          allow_actions:
-            - ec2:DescribeInstances
-
-  - name: Create EC2 nodes
-    ec2:
-      key_name: "{{ lookup('env', 'AWS_KEY_NAME') }}"
-      group: elasticsearch-test-cluster
-      instance_profile_name: elasticsearch-test-cluster-role
-      instance_type: t2.micro
-      region: eu-west-1
-      image: ami-234ecc54
-      wait: true
-      exact_count: 2
-      count_tag:
-        Name: Elasticsearch-cluster-test
-      instance_tags:
-        Name: Elasticsearch-cluster-test
-    register: ec2
-
-  - name: Add all instance public IPs to host group
-    add_host: hostname={{ item.public_ip }} groupname=elasticsearch
-    with_items: ec2.tagged_instances
-
-  - name: Wait for SSH to be available
-    wait_for: host={{ item.public_ip }} port=22
-    with_items: ec2.tagged_instances
+  roles:
+      - role: aws_elasticsearch
+        elasticsearch_aws_key_name: "{{ lookup('env', 'AWS_KEY_NAME') }}"
+        state: present
 
 - hosts: elasticsearch
   name: setup

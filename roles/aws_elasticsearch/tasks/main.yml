@@ -1,0 +1,57 @@
+---
+- name: Create an AWS security group
+  ec2_group:
+    name: "{{elasticsearch_ec2_group_name}}"
+    description: Elasticsearch cluster
+    region: "{{aws_region}}"
+    state: "{{state}}"
+    rules:
+      - proto: all
+        group_name: "{{elasticsearch_ec2_group_name}}"
+      - proto: tcp
+        from_port: 9200
+        to_port: 9200
+        cidr_ip: 80.194.77.0/24
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 80.194.77.0/24
+    rules_egress:
+      - proto: all
+        from_port: 0
+        to_port: 65535
+        cidr_ip: 0.0.0.0/0
+
+- name: Create IAM role
+  iam_role:
+    name: "{{elasticsearch_iam_role_name}}"
+    region: "{{aws_region}}"
+    state: "{{state}}"
+    policies:
+      - name: ec2discovery
+        allow_actions:
+          - ec2:DescribeInstances
+
+- name: Create EC2 nodes
+  ec2:
+    key_name: "{{elasticsearch_aws_key_name}}"
+    group: "{{elasticsearch_ec2_group_name}}"
+    instance_profile_name: "{{elasticsearch_iam_role_name}}"
+    instance_type: "{{elasticsearch_ec2_instance_type}}"
+    region: "{{aws_region}}"
+    image: "{{elasticsearch_ec2_instance_image}}"
+    wait: true
+    exact_count: "{{elasticsearch_ec2_instance_count if state=='present' else 0}}"
+    count_tag:
+        Name: "{{elasticsearch_ec2_instance_tag}}"
+    instance_tags:
+      Name: "{{elasticsearch_ec2_instance_tag}}"
+  register: elasticsearch_ec2_instances
+
+- name: Add all instance public IPs to host group
+  add_host: hostname={{ item.public_ip }} groupname=elasticsearch
+  with_items: elasticsearch_ec2_instances.tagged_instances
+
+- name: Wait for SSH to be available
+  wait_for: host={{ item.public_ip }} port=22
+  with_items: elasticsearch_ec2_instances.tagged_instances
