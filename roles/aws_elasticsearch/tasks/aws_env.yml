@@ -9,6 +9,10 @@
         allow_actions:
           - ec2:DescribeInstances
 
+- name: Wait for IAM instance profile to become available
+  pause: seconds=5
+  when: state == 'present'
+
 - name: AWS security group ({{state}})
   ec2_group:
     name: "{{elasticsearch_ec2_group_name}}"

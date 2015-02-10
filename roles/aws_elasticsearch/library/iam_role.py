@@ -53,6 +53,7 @@ EXAMPLES = '''
           - iam:Get*
 '''
 import sys
+import time
 import json
 import hashlib
 
@@ -179,6 +180,14 @@ def create_policies(role_name, policies):
     return full_policies
 
 
+def list_instance_profiles(conn):
+    result = conn.list_instance_profiles()['list_instance_profiles_response']
+    return [
+        profile['instance_profile_name'] for profile in
+        result['list_instance_profiles_result']['instance_profiles']
+    ]
+
+
 def main():
     argument_spec = {
         'name': {'required': True},
@@ -204,6 +213,9 @@ def main():
 
     if state == 'present':
         changed = role.create(full_policies)
+        # Wait for instance profile to show up in API response
+        while name not in list_instance_profiles(conn):
+            time.sleep(0.2)
     elif state == 'absent':
         changed = role.remove()
 
