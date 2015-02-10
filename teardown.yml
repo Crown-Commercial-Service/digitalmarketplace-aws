@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: aws_elasticsearch
+      elasticsearch_aws_key_name: "{{ lookup('env', 'AWS_KEY_NAME') }}"
+      state: absent
