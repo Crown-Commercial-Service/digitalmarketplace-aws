@@ -3,7 +3,11 @@
   connection: local
   gather_facts: False
 
+  vars_files:
+    - vars/common.yml
+    - vars/{{ environment }}.yml
+
   roles:
     - role: aws_elasticsearch
-      elasticsearch_aws_key_name: "{{ lookup('env', 'AWS_KEY_NAME') }}"
+      elasticsearch_aws_key_name: "{{ keyname }}"
       state: absent

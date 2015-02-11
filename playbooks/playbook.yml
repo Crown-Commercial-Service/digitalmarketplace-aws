@@ -3,16 +3,24 @@
   connection: local
   gather_facts: False
 
+  vars_files:
+    - vars/common.yml
+    - vars/{{ environment }}.yml
+
   roles:
-      - role: aws_elasticsearch
-        elasticsearch_aws_key_name: "{{ lookup('env', 'AWS_KEY_NAME') }}"
-        state: present
+    - role: aws_elasticsearch
+      elasticsearch_aws_key_name: "{{ keyname }}"
+      state: present
 
 - hosts: elasticsearch
   name: setup
   user: ubuntu
   gather_facts: True
   sudo: True
+
+  vars_files:
+    - vars/common.yml
+    - vars/{{ environment }}.yml
 
   roles:
     - elasticsearch
