@@ -3,5 +3,6 @@
 [ "$#" -eq 1 ] || { echo "AWS key name argument required"; exit 1; }
 
 export AWS_KEY_NAME=$1
+export ANSIBLE_CONFIG=playbooks/ansible.cfg
 
-ansible-playbook playbook.yml -i hosts --private-key=~/.ssh/$AWS_KEY_NAME
+ansible-playbook playbooks/playbook.yml -i playbooks/hosts --private-key=~/.ssh/$AWS_KEY_NAME
