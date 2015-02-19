@@ -6,6 +6,6 @@ AWS_KEY_NAME=$1
 AWS_ENV_NAME=$2
 export ANSIBLE_CONFIG=playbooks/ansible.cfg
 
-ansible-playbook playbooks/setup.yml -i playbooks/hosts --private-key=~/.ssh/$AWS_KEY_NAME -e "environment=$DEPLOY_ENV keyname=$AWS_KEY_NAME name=$AWS_ENV_NAME"
+ansible-playbook playbooks/setup.yml -i playbooks/hosts --private-key=~/.ssh/$AWS_KEY_NAME -e "environment_name=$DEPLOY_ENV keyname=$AWS_KEY_NAME name=$AWS_ENV_NAME"
 
-ansible-playbook playbooks/provision.yml -i playbooks/ec2.py --private-key=~/.ssh/$AWS_KEY_NAME -e "environment=$DEPLOY_ENV keyname=$AWS_KEY_NAME name=$AWS_ENV_NAME"
+ansible-playbook playbooks/provision.yml -i playbooks/ec2.py --private-key=~/.ssh/$AWS_KEY_NAME -e "environment_name=$DEPLOY_ENV keyname=$AWS_KEY_NAME name=$AWS_ENV_NAME"
