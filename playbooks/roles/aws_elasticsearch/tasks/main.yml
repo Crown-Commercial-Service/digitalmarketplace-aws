@@ -5,7 +5,7 @@
     state: "{{ state }}"
     region: "{{ aws_region }}"
     disable_rollback: false
-    template: ../cloudformation_templates/aws-elasticsearch.json
+    template: ../cloudformation_templates/aws_elasticsearch.json
     template_parameters:
       KeyName: "{{ keyname }}"
       GroupTag: "{{ elasticsearch_ec2_group_name }}"
