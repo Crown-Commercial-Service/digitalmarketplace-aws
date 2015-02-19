@@ -10,3 +10,6 @@
   roles:
     - role: aws_elasticsearch
       state: present
+
+    - role: aws_digitalmarketplace_api
+      state: present

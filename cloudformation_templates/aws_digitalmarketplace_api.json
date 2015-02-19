@@ -1,0 +1,34 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "API Elastic Beanstalk",
+
+  "Parameters": {
+    "ApplicationName": {
+      "Type": "String",
+      "Description": "Elastic Beanstalk Application name"
+    },
+    "EnvironmentName": {
+      "Type": "String",
+      "Description": "Elastic Beanstalk Environment name"
+    }
+  },
+
+  "Resources": {
+    "DigitalMarketplaceAPIApplication": {
+      "Type": "AWS::ElasticBeanstalk::Application",
+      "Properties": {
+        "ApplicationName": {"Ref": "ApplicationName"},
+        "Description": "Digital Marketplace API Application"
+      }
+    },
+    "DigitalMarketplaceAPIEnvironment": {
+      "Type": "AWS::ElasticBeanstalk::Environment",
+      "Properties": {
+        "ApplicationName": {"Ref": "DigitalMarketplaceAPIApplication" },
+        "EnvironmentName": {"Ref": "EnvironmentName"},
+        "Description": "Digital Marketplace API Environment",
+        "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7"
+      }
+    }
+  }
+}
