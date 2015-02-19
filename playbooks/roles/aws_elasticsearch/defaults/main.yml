@@ -1,7 +1,6 @@
 ---
-elasticsearch_ec2_group_name: elasticsearch-test-cluster
-elasticsearch_iam_role_name: elasticsearch-test-cluster-role
-elasticsearch_ec2_instance_tag: elasticsearch-cluster-test
+
+elasticsearch_name: elasticsearch-{{ name_suffix }}
 
 elasticsearch_ec2_instance_count: 2
 elasticsearch_ec2_instance_type: t2.micro

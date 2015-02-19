@@ -1,5 +1,5 @@
 ---
-- hosts: tag_Group_elasticsearch-test-cluster
+- hosts: tag_Group_{{ elasticsearch_name }}
   name: setup
   user: ubuntu
   gather_facts: True

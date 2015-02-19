@@ -1,5 +1,5 @@
 cluster:
-  name: elasticsearch-test
+  name: {{ elasticsearch_name }}
 
 cloud:
   aws:
@@ -8,4 +8,5 @@ cloud:
 discovery:
   type: ec2
   ec2:
-    groups: {{  ec2_security_group_names }}
+    tag:
+      Name: {{ elasticsearch_name }}
