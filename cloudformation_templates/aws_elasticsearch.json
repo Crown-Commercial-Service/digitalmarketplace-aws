@@ -95,11 +95,18 @@
     "ElasticsearchAutoScalingGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
-        "Tags" : [{
-           "Key" : "Group",
-           "Value" : {"Ref": "GroupTag" },
-           "PropagateAtLaunch": true
-        }],
+        "Tags" : [
+          {
+            "Key": "Group",
+            "Value": {"Ref": "GroupTag"},
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "Name",
+            "Value": {"Ref": "GroupTag"},
+            "PropagateAtLaunch": true
+          }
+        ],
         "AvailabilityZones" : {"Fn::GetAZs": ""},
         "LaunchConfigurationName" : {"Ref": "ElasticsearchInstancesLC"},
         "MinSize" : {"Ref": "InstanceCount"},
