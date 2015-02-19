@@ -1,0 +1,128 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Elasticsearch cluster",
+
+  "Parameters": {
+    "GroupTag": {
+      "Type": "String",
+      "Description": "Group Tag"
+    },
+    "KeyName": {
+      "Type": "String",
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
+    },
+    "InstanceImage" : {
+      "Description" : "EC2 instance image",
+      "Type" : "String"
+    },
+    "InstanceType" : {
+      "Description" : "EC2 instance type",
+      "Type" : "String"
+    },
+   "InstanceCount" : {
+      "Description" : "Number of instances to start",
+      "Type" : "String"
+    }
+  },
+
+  "Resources": {
+    "ElasticsearchSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Elasticsearch cluster",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "80.194.77.0/24"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9200",
+            "ToPort": "9200",
+            "CidrIp": "80.194.77.0/24"
+          }
+        ]
+      }
+    },
+    "ElasticsearchClusterDiscoveryIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+        "Properties": {
+          "GroupName": { "Ref": "ElasticsearchSecurityGroup" },
+          "IpProtocol": "-1",
+          "FromPort": "0",
+          "ToPort": "65535",
+          "SourceSecurityGroupName": { "Ref": "ElasticsearchSecurityGroup" }
+        }
+    },
+    "ElasticsearchIAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+              "Effect": "Allow",
+              "Principal": {
+                  "Service": [ "ec2.amazonaws.com" ]
+              },
+              "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/",
+        "Policies": [{
+          "PolicyName": "Elasticsearch-ec2-describe",
+          "PolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": "ec2:DescribeInstances",
+              "Resource": "*"
+            }]
+          }
+        }]
+      }
+    },
+    "ElasticsearchInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [{
+          "Ref": "ElasticsearchIAMRole"
+        }]
+      }
+    },
+    "ElasticsearchAutoScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "Tags" : [{
+           "Key" : "Group",
+           "Value" : {"Ref": "GroupTag" },
+           "PropagateAtLaunch": true
+        }],
+        "AvailabilityZones" : {"Fn::GetAZs": ""},
+        "LaunchConfigurationName" : {"Ref": "ElasticsearchInstancesLC"},
+        "MinSize" : {"Ref": "InstanceCount"},
+        "MaxSize" : {"Ref": "InstanceCount"},
+        "DesiredCapacity" : {"Ref": "InstanceCount"}
+      }
+    },
+    "ElasticsearchInstancesLC": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "SecurityGroups": [{ "Ref": "ElasticsearchSecurityGroup" }],
+        "ImageId": {"Ref": "InstanceImage"},
+        "KeyName": { "Ref": "KeyName" },
+        "IamInstanceProfile": {"Ref": "ElasticsearchInstanceProfile"},
+        "InstanceType": { "Ref": "InstanceType" }
+      }
+    }
+  },
+
+  "Outputs": {
+    "ElasticsearchInstances": {
+      "Description": "Elasticsearch instances",
+      "Value": {"Ref": "ElasticsearchAutoScalingGroup"}
+    }
+  }
+}

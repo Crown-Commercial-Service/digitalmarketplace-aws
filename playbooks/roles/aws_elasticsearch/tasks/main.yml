@@ -1,6 +1,15 @@
 ---
-- include: aws_env.yml
-  when: state == "present"
-- include: instances.yml
-- include: aws_env.yml
-  when: state == "absent"
+- name: Provision AWS CloudFormation stack ({{state}})
+  cloudformation:
+    stack_name: "elasticsearch-cluster-{{ environment_name }}-{{ name }}"
+    state: "{{ state }}"
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template: ../cloudformation_templates/aws-elasticsearch.json
+    template_parameters:
+      KeyName: "{{ keyname }}"
+      GroupTag: "{{ elasticsearch_ec2_group_name }}"
+      InstanceCount: "{{ elasticsearch_ec2_instance_count }}"
+      InstanceType: "{{ elasticsearch_ec2_instance_type }}"
+      InstanceImage: "{{ elasticsearch_ec2_instance_image }}"
+  register: elasticsearch_stack
