@@ -2,8 +2,8 @@
 elasticsearch_version: 1.3
 
 elasticsearch_plugins:
-  head:
-    source:  mobz/elasticsearch-head
+  kopf:
+    source: lmenezes/elasticsearch-kopf
   cloud-aws:
     source: elasticsearch/elasticsearch-cloud-aws/2.3.0
 
