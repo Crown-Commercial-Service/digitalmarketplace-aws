@@ -36,7 +36,7 @@
   file: path=/etc/elasticsearch/ state=directory
 
 - name: Copy over Elasticsearch settings
-  copy: src=elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
   notify: restart elasticsearch
 
 - name: Start Elasticsearch.

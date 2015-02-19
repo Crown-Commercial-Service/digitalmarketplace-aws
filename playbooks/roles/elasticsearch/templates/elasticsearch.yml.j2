@@ -3,9 +3,9 @@ cluster:
 
 cloud:
   aws:
-    region: eu-west-1
+    region: {{ aws_region }}
 
 discovery:
   type: ec2
   ec2:
-    groups: elasticsearch-test-cluster
+    groups: {{  ec2_security_group_names }}
