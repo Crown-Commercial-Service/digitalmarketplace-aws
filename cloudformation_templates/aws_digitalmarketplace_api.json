@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "API Elastic Beanstalk",
+  "Description": "Digital Marketplace API",
 
   "Parameters": {
     "ApplicationName": {
