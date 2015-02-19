@@ -1,0 +1,13 @@
+---
+- hosts: tag_Group_elasticsearch-test-cluster
+  name: setup
+  user: ubuntu
+  gather_facts: True
+  sudo: True
+
+  vars_files:
+    - vars/common.yml
+    - vars/{{ environment }}.yml
+
+  roles:
+    - role: elasticsearch

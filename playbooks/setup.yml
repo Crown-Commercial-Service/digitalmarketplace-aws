@@ -9,4 +9,4 @@
 
   roles:
     - role: aws_elasticsearch
-      state: absent
+      state: present
