@@ -1,1 +1,3 @@
 ---
+dmapi_db_instance_type: db.m1.small
+dmapi_db_allocated_storage: 5

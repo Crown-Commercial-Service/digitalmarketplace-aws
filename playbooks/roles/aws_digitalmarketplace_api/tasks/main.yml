@@ -21,4 +21,9 @@
     template_parameters:
       ApplicationName: "digitalmarketplace-api"
       EnvironmentName: "dmapi-{{ name_suffix_short }}"
+      DBName: "digitalmarketplace_{{ name_suffix | replace('-', '_') }}"
+      DBUser: "digitalmarketplace"
+      DBPassword: "{{ dmapi_db_password }}"
+      DBInstanceType: "{{ dmapi_db_instance_type }}"
+      DBAllocatedStorage: "{{ dmapi_db_allocated_storage }}"
   register: digitalmarketplace_api_env_stack

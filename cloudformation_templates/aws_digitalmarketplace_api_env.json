@@ -3,6 +3,28 @@
   "Description": "Digital Marketplace API Environment",
 
   "Parameters": {
+    "DBName": {
+      "Type": "String",
+      "Description": "Database name"
+    },
+    "DBUser": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Database admin account name"
+    },
+    "DBPassword": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Database admin account password"
+    },
+    "DBInstanceType": {
+      "Type": "String",
+      "Description": "Database instance type"
+    },
+    "DBAllocatedStorage": {
+      "Type": "String",
+      "Description": "Database allocated storage"
+    },
     "ApplicationName": {
       "Type": "String",
       "Description": "Elastic Beanstalk Application name"
@@ -14,13 +36,84 @@
   },
 
   "Resources": {
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "RDS allows ingress from EC2 instances in this group.",
+        "SecurityGroupIngress": []
+      }
+    },
+
+    "DBEC2SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Open database for access",
+        "SecurityGroupIngress": [{
+          "IpProtocol": "tcp",
+          "FromPort": "5432",
+          "ToPort": "5432",
+          "SourceSecurityGroupName": {"Ref" : "InstanceSecurityGroup"}
+        }]
+      }
+    },
+
+    "DigitalMarketplaceAPIDB": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "Engine": "postgres",
+        "DBName": {"Ref": "DBName"},
+        "MasterUsername": {"Ref": "DBUser"},
+        "DBInstanceClass": {"Ref": "DBInstanceType"},
+        "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
+        "MasterUserPassword": {"Ref": "DBPassword"},
+        "VPCSecurityGroups": [{"Fn::GetAtt": ["DBEC2SecurityGroup", "GroupId"]}]
+      }
+    },
+
+    "DigitalMarketplaceAPIConfigurationTemplate": {
+      "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
+      "Properties": {
+        "ApplicationName": {"Ref": "ApplicationName"},
+        "Description": "Default Configuration Version 1.0",
+        "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7",
+        "OptionSettings": [
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "SQLALCHEMY_DATABASE_URI",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "postgres://",
+                  {"Ref": "DBUser"},
+                  ":",
+                  {"Ref": "DBPassword"},
+                  "@",
+                  {"Fn::GetAtt": ["DigitalMarketplaceAPIDB", "Endpoint.Address"]},
+                  ":",
+                  {"Fn::GetAtt": ["DigitalMarketplaceAPIDB", "Endpoint.Port"]},
+                  "/",
+                  {"Ref": "DBName"}
+                ]
+              ]
+            }
+          },
+          {
+            "Namespace": "aws:autoscaling:launchconfiguration",
+            "OptionName": "SecurityGroups",
+            "Value": {"Ref": "InstanceSecurityGroup"}
+          }
+        ]
+      }
+    },
+
     "DigitalMarketplaceAPIEnvironment": {
       "Type": "AWS::ElasticBeanstalk::Environment",
       "Properties": {
-        "ApplicationName": {"Ref": "ApplicationName" },
+        "ApplicationName": {"Ref": "ApplicationName"},
         "EnvironmentName": {"Ref": "EnvironmentName"},
-        "Description": "Digital Marketplace API Environment",
-        "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7"
+        "TemplateName": {"Ref": "DigitalMarketplaceAPIConfigurationTemplate"},
+        "Description": "Digital Marketplace API Environment"
       }
     }
   }
