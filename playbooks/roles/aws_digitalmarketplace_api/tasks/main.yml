@@ -9,6 +9,7 @@
     template_parameters:
       ApplicationName: "digitalmarketplace-api"
   register: digitalmarketplace_api_app_stack
+  when: skip_base is not defined
 
 - name: Digital Marketplace API Elastic Beanstalk env ({{state}})
   cloudformation:
