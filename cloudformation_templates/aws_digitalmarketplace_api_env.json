@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Digital Marketplace API",
+  "Description": "Digital Marketplace API Environment",
 
   "Parameters": {
     "ApplicationName": {
@@ -14,17 +14,10 @@
   },
 
   "Resources": {
-    "DigitalMarketplaceAPIApplication": {
-      "Type": "AWS::ElasticBeanstalk::Application",
-      "Properties": {
-        "ApplicationName": {"Ref": "ApplicationName"},
-        "Description": "Digital Marketplace API Application"
-      }
-    },
     "DigitalMarketplaceAPIEnvironment": {
       "Type": "AWS::ElasticBeanstalk::Environment",
       "Properties": {
-        "ApplicationName": {"Ref": "DigitalMarketplaceAPIApplication" },
+        "ApplicationName": {"Ref": "ApplicationName" },
         "EnvironmentName": {"Ref": "EnvironmentName"},
         "Description": "Digital Marketplace API Environment",
         "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7"

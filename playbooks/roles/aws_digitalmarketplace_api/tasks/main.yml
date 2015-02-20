@@ -1,12 +1,23 @@
 ---
-- name: Provision DigitalMarketplace API AWS ElasticBeanstalk ({{state}})
+- name: Digital Marketplace API Elastic Beanstalk app ({{state}})
+  cloudformation:
+    stack_name: "digitalmarketplace-api-{{ environment_name }}"
+    state: "{{ state }}"
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template: ../cloudformation_templates/aws_digitalmarketplace_api_app.json
+    template_parameters:
+      ApplicationName: "digitalmarketplace-api"
+  register: digitalmarketplace_api_app_stack
+
+- name: Digital Marketplace API Elastic Beanstalk env ({{state}})
   cloudformation:
     stack_name: "digitalmarketplace-api-{{ name_suffix }}"
     state: "{{ state }}"
     region: "{{ aws_region }}"
     disable_rollback: false
-    template: ../cloudformation_templates/aws_digitalmarketplace_api.json
+    template: ../cloudformation_templates/aws_digitalmarketplace_api_env.json
     template_parameters:
       ApplicationName: "digitalmarketplace-api"
       EnvironmentName: "dmapi-{{ name_suffix_short }}"
-  register: digitalmarketplace_api_stack
+  register: digitalmarketplace_api_env_stack
