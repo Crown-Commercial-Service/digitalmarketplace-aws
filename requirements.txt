@@ -1,2 +1,4 @@
 ansible==1.8.2
 boto==2.36.0
+
+click==3.3
