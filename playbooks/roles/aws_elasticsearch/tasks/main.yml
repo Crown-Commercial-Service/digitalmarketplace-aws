@@ -13,3 +13,5 @@
       InstanceType: "{{ elasticsearch_ec2_instance_type }}"
       InstanceImage: "{{ elasticsearch_ec2_instance_image }}"
   register: elasticsearch_stack
+  tags:
+    - elasticsearch

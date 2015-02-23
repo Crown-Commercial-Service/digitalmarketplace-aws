@@ -10,6 +10,9 @@
       ApplicationName: "digitalmarketplace-api"
   register: digitalmarketplace_api_app_stack
   when: skip_base is not defined
+  tags:
+    - digitalmarketplace-api
+    - base
 
 - name: Digital Marketplace API Elastic Beanstalk env ({{state}})
   cloudformation:
@@ -27,3 +30,5 @@
       DBInstanceType: "{{ dmapi_db_instance_type }}"
       DBAllocatedStorage: "{{ dmapi_db_allocated_storage }}"
   register: digitalmarketplace_api_env_stack
+  tags:
+    - digitalmarketplace-api
