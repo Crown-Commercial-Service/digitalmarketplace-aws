@@ -29,6 +29,11 @@
       "Type": "String",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
     },
+    "APIAuthTokens": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Digital Marketplace API Auth Token"
+    },
     "ApplicationName": {
       "Type": "String",
       "Description": "Elastic Beanstalk Application name"
@@ -101,6 +106,11 @@
                 ]
               ]
             }
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "AUTH_TOKENS",
+            "Value": {"Ref": "APIAuthTokens"}
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",

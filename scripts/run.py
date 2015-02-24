@@ -48,30 +48,35 @@ def run_playbook(playbook, hosts, options, variables,
 
 
 @click.group(chain=True)
-@click.option('--key', help='AWS KeyPair name', required=True)
-@click.option('--stage', help='Deployment stage',
+@click.option('--stage', '-s', help='Deployment stage',
               type=click.Choice(STAGES), required=True)
-@click.option('--environment', help='Envrionment name', required=True)
+@click.option('--environment', '-e', help='Envrionment name', required=True)
+@click.option('--tag', '-t', multiple=True)
+@click.option('--key', help='AWS KeyPair name')
 @click.option('--db-password', help='RDS Database password')
-@click.option('--tags', '-t', multiple=True)
+@click.option('--auth-token', multiple=True,
+              help='Digital Marketplace API auth token')
 @click.pass_context
-def main(ctx, key, stage, environment, db_password, tags):
-    ctx.obj['variables'] = {
+def main(ctx, stage, environment, tag,
+         key, db_password, auth_token):
+
+    variables = {
         'key_name': key,
         'stage_name': stage,
         'environment_name': environment,
+        'digitalmarketplace_api_db_password': db_password,
+        'digitalmarketplace_api_auth_tokens': auth_token or None,
     }
 
-    if db_password:
-        ctx.obj['variables'].update({
-            'digitalmarketplace_api_db_password': db_password,
-        })
+    ctx.obj['variables'] = dict(
+        filter(lambda item: item[1] is not None, variables.iteritems())
+    )
 
     ctx.obj['options'] = [
         '--private-key=~/.ssh/{}'.format(key),
     ]
 
-    ctx.obj['tags'] = tags
+    ctx.obj['tags'] = tag
 
 
 @main.command()
