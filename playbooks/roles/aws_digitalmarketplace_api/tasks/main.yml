@@ -23,6 +23,7 @@
     template_parameters:
       ApplicationName: "{{ digitalmarketplace_api_app_name }}"
       EnvironmentName: "{{ digitalmarketplace_api_env_name }}"
+      KeyName: "{{ key_name }}"
       DBName: "{{ digitalmarketplace_api_db_name }}"
       DBUser: "{{ digitalmarketplace_api_db_user }}"
       DBPassword: "{{ digitalmarketplace_api_db_password }}"

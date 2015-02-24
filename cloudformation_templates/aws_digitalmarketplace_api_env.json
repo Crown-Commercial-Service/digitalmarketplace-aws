@@ -25,6 +25,10 @@
       "Type": "String",
       "Description": "Database allocated storage"
     },
+    "KeyName": {
+      "Type": "String",
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
+    },
     "ApplicationName": {
       "Type": "String",
       "Description": "Elastic Beanstalk Application name"
@@ -102,6 +106,11 @@
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "SecurityGroups",
             "Value": {"Ref": "InstanceSecurityGroup"}
+          },
+          {
+            "Namespace": "aws:autoscaling:launchconfiguration",
+            "OptionName": "EC2KeyName",
+            "Value": {"Ref": "KeyName"}
           }
         ]
       }
