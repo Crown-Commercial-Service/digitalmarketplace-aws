@@ -7,7 +7,7 @@
     disable_rollback: false
     template: ../cloudformation_templates/aws_elasticsearch.json
     template_parameters:
-      KeyName: "{{ keyname }}"
+      KeyName: "{{ key_name }}"
       GroupTag: "{{ elasticsearch_name }}"
       InstanceCount: "{{ elasticsearch_ec2_instance_count }}"
       InstanceType: "{{ elasticsearch_ec2_instance_type }}"

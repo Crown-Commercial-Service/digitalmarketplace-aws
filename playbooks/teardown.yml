@@ -5,7 +5,7 @@
 
   vars_files:
     - vars/common.yml
-    - vars/{{ environment_name }}.yml
+    - vars/{{ stage_name }}.yml
 
   roles:
     - role: aws_elasticsearch

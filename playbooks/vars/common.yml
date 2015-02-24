@@ -1,9 +1,9 @@
 ---
 aws_region: eu-west-1
 
-environment_name_short: "{{ environment_name[:3] }}"
+stage_name_short: "{{ stage_name[:3] }}"
 
-name_suffix: "{{ environment_name }}-{{ branch_name }}"
-name_suffix_short: "{{ environment_name_short }}-{{ branch_name }}"
+name_suffix: "{{ stage_name }}-{{ environment_name }}"
+name_suffix_short: "{{ stage_name_short }}-{{ environment_name }}"
 
 elasticsearch_name: elasticsearch-{{ name_suffix }}

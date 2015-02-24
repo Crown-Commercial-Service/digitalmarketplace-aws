@@ -57,9 +57,9 @@ def run_playbook(playbook, hosts, options, variables,
 @click.pass_context
 def main(ctx, key, stage, environment, db_password, tags):
     ctx.obj['variables'] = {
-        'keyname': key,
-        'environment_name': stage,
-        'branch_name': environment,
+        'key_name': key,
+        'stage_name': stage,
+        'environment_name': environment,
     }
 
     if db_password:

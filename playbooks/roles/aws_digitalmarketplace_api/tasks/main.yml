@@ -1,7 +1,7 @@
 ---
 - name: Digital Marketplace API Elastic Beanstalk app ({{state}})
   cloudformation:
-    stack_name: "digitalmarketplace-api-{{ environment_name }}"
+    stack_name: "digitalmarketplace-api-{{ stage_name }}"
     state: "{{ state }}"
     region: "{{ aws_region }}"
     disable_rollback: false
