@@ -52,14 +52,20 @@ def run_playbook(playbook, hosts, options, variables,
 @click.option('--stage', help='Deployment stage',
               type=click.Choice(STAGES), required=True)
 @click.option('--environment', help='Envrionment name', required=True)
+@click.option('--db-password', help='RDS Database password')
 @click.option('--tags', '-t', multiple=True)
 @click.pass_context
-def main(ctx, key, stage, environment, tags):
+def main(ctx, key, stage, environment, db_password, tags):
     ctx.obj['variables'] = {
         'keyname': key,
         'environment_name': stage,
         'branch_name': environment,
     }
+
+    if db_password:
+        ctx.obj['variables'].update({
+            'dmapi_db_password': db_password,
+        })
 
     ctx.obj['options'] = [
         '--private-key=~/.ssh/{}'.format(key),
