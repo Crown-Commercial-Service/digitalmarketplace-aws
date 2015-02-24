@@ -7,7 +7,7 @@
     disable_rollback: false
     template: ../cloudformation_templates/aws_digitalmarketplace_api_app.json
     template_parameters:
-      ApplicationName: "digitalmarketplace-api"
+      ApplicationName: "{{ digitalmarketplace_api_app_name }}"
   register: digitalmarketplace_api_app_stack
   tags:
     - digitalmarketplace-api
@@ -21,13 +21,13 @@
     disable_rollback: false
     template: ../cloudformation_templates/aws_digitalmarketplace_api_env.json
     template_parameters:
-      ApplicationName: "digitalmarketplace-api"
-      EnvironmentName: "dmapi-{{ name_suffix_short }}"
-      DBName: "digitalmarketplace_{{ name_suffix | replace('-', '_') }}"
-      DBUser: "digitalmarketplace"
-      DBPassword: "{{ dmapi_db_password }}"
-      DBInstanceType: "{{ dmapi_db_instance_type }}"
-      DBAllocatedStorage: "{{ dmapi_db_allocated_storage }}"
+      ApplicationName: "{{ digitalmarketplace_api_app_name }}"
+      EnvironmentName: "{{ digitalmarketplace_api_env_name }}"
+      DBName: "{{ digitalmarketplace_api_db_name }}"
+      DBUser: "{{ digitalmarketplace_api_db_user }}"
+      DBPassword: "{{ digitalmarketplace_api_db_password }}"
+      DBInstanceType: "{{ digitalmarketplace_api_db_instance_type }}"
+      DBAllocatedStorage: "{{ digitalmarketplace_api_db_allocated_storage }}"
   register: digitalmarketplace_api_env_stack
   tags:
     - digitalmarketplace-api

@@ -64,7 +64,7 @@ def main(ctx, key, stage, environment, db_password, tags):
 
     if db_password:
         ctx.obj['variables'].update({
-            'dmapi_db_password': db_password,
+            'digitalmarketplace_api_db_password': db_password,
         })
 
     ctx.obj['options'] = [
