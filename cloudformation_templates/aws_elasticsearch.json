@@ -11,6 +11,10 @@
       "Type": "String",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
     },
+    "SSHCidrIp": {
+      "Type": "String",
+      "Description": "CIDR or IP to use for SSH access security group rules"
+    },
     "InstanceImage" : {
       "Description" : "EC2 instance image",
       "Type" : "String"
@@ -29,21 +33,7 @@
     "ElasticsearchSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "Elasticsearch cluster",
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "22",
-            "ToPort": "22",
-            "CidrIp": "80.194.77.0/24"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "9200",
-            "ToPort": "9200",
-            "CidrIp": "80.194.77.0/24"
-          }
-        ]
+        "GroupDescription": "Elasticsearch cluster"
       }
     },
     "ElasticsearchClusterDiscoveryIngress": {
@@ -55,6 +45,16 @@
           "ToPort": "65535",
           "SourceSecurityGroupName": { "Ref": "ElasticsearchSecurityGroup" }
         }
+    },
+    "ElasticsearchSSHIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "ElasticsearchSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": {"Ref": "SSHCidrIp"}
+      }
     },
     "ElasticsearchIAMRole": {
       "Type": "AWS::IAM::Role",
@@ -127,9 +127,9 @@
   },
 
   "Outputs": {
-    "ElasticsearchInstances": {
-      "Description": "Elasticsearch instances",
-      "Value": {"Ref": "ElasticsearchAutoScalingGroup"}
+    "ElasticsearchSecurityGroup": {
+      "Description": "Elasticsearch security group",
+      "Value": {"Ref": "ElasticsearchSecurityGroup"}
     }
   }
 }
