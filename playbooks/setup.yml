@@ -11,6 +11,8 @@
   roles:
     - role: aws_elasticsearch
       state: present
+      dev_access_state: "{{ dev_access_state }}"
 
     - role: aws_digitalmarketplace_api
       state: present
+      dev_access_state: "{{ dev_access_state }}"
