@@ -7,6 +7,7 @@
 
   vars_files:
     - vars/common.yml
+    - ["../user.yml", "vars/common.yml"]
     - vars/{{ stage_name }}.yml
 
   roles:
