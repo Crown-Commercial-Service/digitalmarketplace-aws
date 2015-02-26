@@ -81,9 +81,16 @@ def main(ctx, stage, environment, tag,
 
 @main.command()
 @click.pass_context
-def setup(ctx):
+@click.option('--enable-dev/--disable-dev', default=False)
+def setup(ctx, enable_dev):
     """Create AWS environment and launch instances"""
-    run_playbook('setup', 'hosts', **ctx.obj)
+    kwargs = ctx.obj.copy()
+    kwargs['variables'] = ctx.obj['variables'].copy()
+    kwargs['variables'].update({
+        'dev_access_state': 'present' if enable_dev else 'absent',
+    })
+
+    run_playbook('setup', 'hosts', **kwargs)
 
 
 @main.command()

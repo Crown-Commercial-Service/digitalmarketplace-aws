@@ -10,5 +10,8 @@
   roles:
     - role: aws_elasticsearch
       state: absent
+      dev_access_state: absent
+
     - role: aws_digitalmarketplace_api
       state: absent
+      dev_access_state: absent

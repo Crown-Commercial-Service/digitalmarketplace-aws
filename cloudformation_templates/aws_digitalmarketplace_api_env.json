@@ -53,10 +53,10 @@
       }
     },
 
-    "DBEC2SecurityGroup": {
+    "RDSInstanceSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "Open database for access",
+        "GroupDescription": "Digital Marketplace API RDS Instance security group",
         "SecurityGroupIngress": [{
           "IpProtocol": "tcp",
           "FromPort": "5432",
@@ -75,7 +75,7 @@
         "DBInstanceClass": {"Ref": "DBInstanceType"},
         "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
         "MasterUserPassword": {"Ref": "DBPassword"},
-        "VPCSecurityGroups": [{"Fn::GetAtt": ["DBEC2SecurityGroup", "GroupId"]}]
+        "VPCSecurityGroups": [{"Fn::GetAtt": ["RDSInstanceSecurityGroup", "GroupId"]}]
       }
     },
 
@@ -134,6 +134,13 @@
         "TemplateName": {"Ref": "DigitalMarketplaceAPIConfigurationTemplate"},
         "Description": "Digital Marketplace API Environment"
       }
+    }
+  },
+
+  "Outputs": {
+    "RDSSecurityGroup": {
+      "Description": "RDS security group",
+      "Value": {"Ref": "RDSInstanceSecurityGroup"}
     }
   }
 }

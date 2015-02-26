@@ -33,3 +33,18 @@
   register: digitalmarketplace_api_env_stack
   tags:
     - digitalmarketplace-api
+
+- name: RDS dev access security group rules ({{dev_access_state}})
+  cloudformation:
+    stack_name: "digitalmarketplace-api-{{ name_suffix }}-dev-access"
+    state: "{{ dev_access_state }}"
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template: ../cloudformation_templates/aws_digitalmarketplace_api_rds_dev_access.json
+    template_parameters:
+      CidrIp: "{{ user_ip }}"
+      RDSSecurityGroup: "{{ digitalmarketplace_api_env_stack.stack_outputs.RDSSecurityGroup }}"
+  register: digitalmarketplace_api_rds_dev_access_stack
+  tags:
+    - digitalmarketplace-api
+    - dev-access
