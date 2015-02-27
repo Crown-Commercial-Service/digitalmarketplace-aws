@@ -9,6 +9,7 @@
     template_parameters:
       KeyName: "{{ key_name }}"
       SSHCidrIp: "{{ user_ip }}"
+      LoadBalancerName: "{{ elasticsearch_name }}"
       GroupTag: "{{ elasticsearch_name }}"
       InstanceCount: "{{ elasticsearch_ec2_instance_count }}"
       InstanceType: "{{ elasticsearch_ec2_instance_type }}"
@@ -28,7 +29,7 @@
       CidrIp: "{{ user_ip }}"
       FromPort: "{{ elasticsearch_port }}"
       ToPort: "{{ elasticsearch_port }}"
-      SecurityGroup: "{{ elasticsearch_stack.stack_outputs.InstanceSecurityGroup }}"
+      SecurityGroup: "{{ elasticsearch_stack.stack_outputs.LoadBalancerSecurityGroup }}"
   register: elasticsearch_dev_access_stack
   tags:
     - elasticsearch

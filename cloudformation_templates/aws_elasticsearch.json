@@ -7,6 +7,10 @@
       "Type": "String",
       "Description": "Group Tag"
     },
+    "LoadBalancerName": {
+      "Type": "String",
+      "Description": "ELB name prefix"
+    },
     "KeyName": {
       "Type": "String",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
@@ -14,6 +18,11 @@
     "SSHCidrIp": {
       "Type": "String",
       "Description": "CIDR or IP to use for SSH access security group rules"
+    },
+    "Port": {
+      "Type": "Number",
+      "Default": "9200",
+      "Description": "Elasticsearch port"
     },
     "InstanceImage" : {
       "Description" : "EC2 instance image",
@@ -36,6 +45,14 @@
         "GroupDescription": "Main instance security group"
       }
     },
+
+    "LoadBalancerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "ELB security group"
+      }
+    },
+
     "ClusterDiscoveryIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
         "Properties": {
@@ -46,6 +63,18 @@
           "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
         }
     },
+
+    "LoadBalancerIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "InstanceSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": {"Ref": "Port"},
+        "ToPort": {"Ref": "Port"},
+        "SourceSecurityGroupName": {"Ref": "LoadBalancerSecurityGroup"}
+      }
+    },
+
     "SSHIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
@@ -56,6 +85,7 @@
         "CidrIp": {"Ref": "SSHCidrIp"}
       }
     },
+
     "IAMRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -90,6 +120,33 @@
         "Roles": [{"Ref": "IAMRole"}]
       }
     },
+
+    "LoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "LoadBalancerName": {"Ref": "LoadBalancerName"},
+        "AvailabilityZones": {"Fn::GetAZs": ""},
+        "CrossZone": "true",
+        "Listeners": [{
+          "LoadBalancerPort": {"Ref": "Port"},
+          "InstancePort": {"Ref": "Port"},
+          "Protocol": "HTTP"
+        }],
+        "SecurityGroups": [
+          {"Fn::GetAtt": ["LoadBalancerSecurityGroup", "GroupId"]}
+        ],
+        "HealthCheck": {
+          "Target": {"Fn::Join": ["", [
+            "HTTP:", {"Ref": "Port"}, "/"
+          ]]},
+          "HealthyThreshold": "3",
+          "UnhealthyThreshold": "5",
+          "Interval": "30",
+          "Timeout": "5"
+        }
+      }
+    },
+
     "AutoScalingGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
@@ -107,11 +164,13 @@
         ],
         "AvailabilityZones" : {"Fn::GetAZs": ""},
         "LaunchConfigurationName" : {"Ref": "LaunchConfiguration"},
+        "LoadBalancerNames": [{"Ref": "LoadBalancer"}],
         "MinSize" : {"Ref": "InstanceCount"},
         "MaxSize" : {"Ref": "InstanceCount"},
         "DesiredCapacity" : {"Ref": "InstanceCount"}
       }
     },
+
     "LaunchConfiguration": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
@@ -126,8 +185,16 @@
 
   "Outputs": {
     "InstanceSecurityGroup": {
-      "Description": "Elasticsearch security group",
+      "Description": "Elasticsearch instances security group",
       "Value": {"Ref": "InstanceSecurityGroup"}
+    },
+    "LoadBalancerSecurityGroup": {
+      "Description": "ELB security group",
+      "Value": {"Ref": "LoadBalancerSecurityGroup"}
+    },
+    "URL": {
+      "Description": "Load balancer endpoint URL",
+      "Value": {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
     }
   }
 }
