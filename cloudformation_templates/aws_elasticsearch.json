@@ -30,33 +30,33 @@
   },
 
   "Resources": {
-    "ElasticsearchSecurityGroup": {
+    "InstanceSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "Elasticsearch cluster"
+        "GroupDescription": "Main instance security group"
       }
     },
-    "ElasticsearchClusterDiscoveryIngress": {
+    "ClusterDiscoveryIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
         "Properties": {
-          "GroupName": { "Ref": "ElasticsearchSecurityGroup" },
+          "GroupName": {"Ref": "InstanceSecurityGroup"},
           "IpProtocol": "-1",
           "FromPort": "0",
           "ToPort": "65535",
-          "SourceSecurityGroupName": { "Ref": "ElasticsearchSecurityGroup" }
+          "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
         }
     },
-    "ElasticsearchSSHIngress": {
+    "SSHIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupName": {"Ref": "ElasticsearchSecurityGroup"},
+        "GroupName": {"Ref": "InstanceSecurityGroup"},
         "IpProtocol": "tcp",
         "FromPort": "22",
         "ToPort": "22",
         "CidrIp": {"Ref": "SSHCidrIp"}
       }
     },
-    "ElasticsearchIAMRole": {
+    "IAMRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -71,7 +71,7 @@
         },
         "Path": "/",
         "Policies": [{
-          "PolicyName": "Elasticsearch-ec2-describe",
+          "PolicyName": "elasticsearch-ec2-describe",
           "PolicyDocument": {
             "Version" : "2012-10-17",
             "Statement": [{
@@ -83,16 +83,14 @@
         }]
       }
     },
-    "ElasticsearchInstanceProfile": {
+    "InstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
         "Path": "/",
-        "Roles": [{
-          "Ref": "ElasticsearchIAMRole"
-        }]
+        "Roles": [{"Ref": "IAMRole"}]
       }
     },
-    "ElasticsearchAutoScalingGroup" : {
+    "AutoScalingGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
         "Tags" : [
@@ -108,28 +106,28 @@
           }
         ],
         "AvailabilityZones" : {"Fn::GetAZs": ""},
-        "LaunchConfigurationName" : {"Ref": "ElasticsearchInstancesLC"},
+        "LaunchConfigurationName" : {"Ref": "LaunchConfiguration"},
         "MinSize" : {"Ref": "InstanceCount"},
         "MaxSize" : {"Ref": "InstanceCount"},
         "DesiredCapacity" : {"Ref": "InstanceCount"}
       }
     },
-    "ElasticsearchInstancesLC": {
+    "LaunchConfiguration": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
-        "SecurityGroups": [{ "Ref": "ElasticsearchSecurityGroup" }],
+        "SecurityGroups": [{"Ref": "InstanceSecurityGroup"}],
         "ImageId": {"Ref": "InstanceImage"},
-        "KeyName": { "Ref": "KeyName" },
-        "IamInstanceProfile": {"Ref": "ElasticsearchInstanceProfile"},
-        "InstanceType": { "Ref": "InstanceType" }
+        "KeyName": {"Ref": "KeyName"},
+        "IamInstanceProfile": {"Ref": "InstanceProfile"},
+        "InstanceType": {"Ref": "InstanceType"}
       }
     }
   },
 
   "Outputs": {
-    "ElasticsearchSecurityGroup": {
+    "InstanceSecurityGroup": {
       "Description": "Elasticsearch security group",
-      "Value": {"Ref": "ElasticsearchSecurityGroup"}
+      "Value": {"Ref": "InstanceSecurityGroup"}
     }
   }
 }

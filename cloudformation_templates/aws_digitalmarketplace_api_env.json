@@ -66,7 +66,7 @@
       }
     },
 
-    "DigitalMarketplaceAPIDB": {
+    "DB": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
         "Engine": "postgres",
@@ -79,7 +79,7 @@
       }
     },
 
-    "DigitalMarketplaceAPIIAMRole": {
+    "IAMRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -111,17 +111,17 @@
         }]
       }
     },
-    "DigitalMarketplaceAPIInstanceProfile": {
+    "InstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
         "Path": "/",
         "Roles": [{
-          "Ref": "DigitalMarketplaceAPIIAMRole"
+          "Ref": "IAMRole"
         }]
       }
     },
 
-    "DigitalMarketplaceAPIConfigurationTemplate": {
+    "ConfigurationTemplate": {
       "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
       "Properties": {
         "ApplicationName": {"Ref": "ApplicationName"},
@@ -140,9 +140,9 @@
                   ":",
                   {"Ref": "DBPassword"},
                   "@",
-                  {"Fn::GetAtt": ["DigitalMarketplaceAPIDB", "Endpoint.Address"]},
+                  {"Fn::GetAtt": ["DB", "Endpoint.Address"]},
                   ":",
-                  {"Fn::GetAtt": ["DigitalMarketplaceAPIDB", "Endpoint.Port"]},
+                  {"Fn::GetAtt": ["DB", "Endpoint.Port"]},
                   "/",
                   {"Ref": "DBName"}
                 ]
@@ -162,7 +162,7 @@
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "IamInstanceProfile",
-            "Value": {"Ref": "DigitalMarketplaceAPIInstanceProfile"}
+            "Value": {"Ref": "InstanceProfile"}
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
@@ -173,12 +173,12 @@
       }
     },
 
-    "DigitalMarketplaceAPIEnvironment": {
+    "Environment": {
       "Type": "AWS::ElasticBeanstalk::Environment",
       "Properties": {
         "ApplicationName": {"Ref": "ApplicationName"},
         "EnvironmentName": {"Ref": "EnvironmentName"},
-        "TemplateName": {"Ref": "DigitalMarketplaceAPIConfigurationTemplate"},
+        "TemplateName": {"Ref": "ConfigurationTemplate"},
         "Description": "Digital Marketplace API Environment"
       }
     }
