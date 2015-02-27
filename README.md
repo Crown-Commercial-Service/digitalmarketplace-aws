@@ -29,3 +29,16 @@ Create an [EC2 key pair](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-
 and save this file with the same name as the keypair in your `.ssh` directory.
 This will be used to provision EC2 instances after they've been created, for
 example the Elasticsearch instances.
+
+### Create user.yml file and set user-specific variables
+
+```
+cp user.yml.sample user.yml
+```
+
+Copy `user.yml.sample` to `user.yml` and replace `***` placeholders with
+actual variable values.
+
+`user.yml` is loaded by default and should set values for variables that
+don't have any defaults set in the playbook roles and environment files.
+It can also be used to overwrite default values for existing variables.
