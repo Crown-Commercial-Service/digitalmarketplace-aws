@@ -1,4 +1,6 @@
 ---
+digitalmarketplace_api_rds_port: 5432
+
 digitalmarketplace_api_app_name: "digitalmarketplace-api"
 digitalmarketplace_api_env_name: "dmapi-{{ name_suffix_short }}"
 

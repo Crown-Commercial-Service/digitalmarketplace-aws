@@ -40,10 +40,12 @@
     state: "{{ dev_access_state }}"
     region: "{{ aws_region }}"
     disable_rollback: false
-    template: ../cloudformation_templates/aws_digitalmarketplace_api_rds_dev_access.json
+    template: ../cloudformation_templates/aws_dev_access.json
     template_parameters:
       CidrIp: "{{ user_ip }}"
-      RDSSecurityGroup: "{{ digitalmarketplace_api_env_stack.stack_outputs.RDSSecurityGroup }}"
+      FromPort: "{{ digitalmarketplace_api_rds_port }}"
+      ToPort: "{{ digitalmarketplace_api_rds_port }}"
+      SecurityGroup: "{{ digitalmarketplace_api_env_stack.stack_outputs.RDSSecurityGroup }}"
   register: digitalmarketplace_api_rds_dev_access_stack
   tags:
     - digitalmarketplace-api

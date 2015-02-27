@@ -1,4 +1,5 @@
 ---
+elasticsearch_port: 9200
 
 elasticsearch_name: elasticsearch-{{ name_suffix }}
 
