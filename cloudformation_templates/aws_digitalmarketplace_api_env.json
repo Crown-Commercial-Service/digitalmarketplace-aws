@@ -79,6 +79,48 @@
       }
     },
 
+    "DigitalMarketplaceAPIIAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Principal": {
+              "Service": ["ec2.amazonaws.com"]
+            },
+            "Action": ["sts:AssumeRole"]
+          }]
+        },
+        "Path": "/",
+        "Policies": [{
+          "PolicyName": "digitalmarketplace-api-eb-policy",
+          "PolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": [
+                "s3:Get*",
+                "s3:List*",
+                "s3:PutObject",
+                "cloudwatch:PutMetricData"
+              ],
+              "Resource": "*"
+            }]
+          }
+        }]
+      }
+    },
+    "DigitalMarketplaceAPIInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [{
+          "Ref": "DigitalMarketplaceAPIIAMRole"
+        }]
+      }
+    },
+
     "DigitalMarketplaceAPIConfigurationTemplate": {
       "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
       "Properties": {
@@ -116,6 +158,11 @@
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "SecurityGroups",
             "Value": {"Ref": "InstanceSecurityGroup"}
+          },
+          {
+            "Namespace": "aws:autoscaling:launchconfiguration",
+            "OptionName": "IamInstanceProfile",
+            "Value": {"Ref": "DigitalMarketplaceAPIInstanceProfile"}
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
