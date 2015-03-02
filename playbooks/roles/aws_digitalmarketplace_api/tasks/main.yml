@@ -42,7 +42,7 @@
     disable_rollback: false
     template: ../cloudformation_templates/aws_dev_access.json
     template_parameters:
-      CidrIp: "{{ user_ip }}"
+      CidrIp: "{{ user_cidr_ip }}"
       FromPort: "{{ digitalmarketplace_api_rds_port }}"
       ToPort: "{{ digitalmarketplace_api_rds_port }}"
       SecurityGroup: "{{ digitalmarketplace_api_env_stack.stack_outputs.RDSSecurityGroup }}"

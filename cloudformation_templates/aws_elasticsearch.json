@@ -17,7 +17,7 @@
     },
     "SSHCidrIp": {
       "Type": "String",
-      "Description": "CIDR or IP to use for SSH access security group rules"
+      "Description": "CIDR IP to use for SSH access security group rules"
     },
     "Port": {
       "Type": "Number",
