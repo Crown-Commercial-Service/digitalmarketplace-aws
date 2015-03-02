@@ -48,46 +48,32 @@ def run_playbook(playbook, hosts, options, variables,
 
 
 @click.group(chain=True)
-@click.option('--stage', '-s', help='Deployment stage',
-              type=click.Choice(STAGES), required=True)
-@click.option('--environment', '-e', help='Envrionment name', required=True)
+@click.argument('stage', nargs=1, type=click.Choice(STAGES))
+@click.argument('environment', nargs=1)
 @click.option('--tag', '-t', multiple=True)
-@click.option('--key', help='AWS KeyPair name')
-@click.option('--db-password', help='RDS Database password')
-@click.option('--auth-token', multiple=True,
-              help='Digital Marketplace API auth token')
 @click.pass_context
-def main(ctx, stage, environment, tag,
-         key, db_password, auth_token):
+def main(ctx, stage, environment, tag):
 
     variables = {
-        'key_name': key,
         'stage_name': stage,
         'environment_name': environment,
-        'digitalmarketplace_api_db_password': db_password,
-        'digitalmarketplace_api_auth_tokens': auth_token or None,
     }
 
-    ctx.obj['variables'] = dict(
-        filter(lambda item: item[1] is not None, variables.iteritems())
-    )
-
-    ctx.obj['options'] = [
-        '--private-key=~/.ssh/{}'.format(key),
-    ]
-
+    ctx.obj['options'] = []
+    ctx.obj['variables'] = variables
     ctx.obj['tags'] = tag
 
 
 @main.command()
 @click.pass_context
-@click.option('--enable-dev/--disable-dev', default=False)
-def setup(ctx, enable_dev):
+@click.option('--dev-access', '-d', is_flag=True, default=False,
+              help="Open service ports for access from user_cidr_ip")
+def setup(ctx, dev_access):
     """Create AWS environment and launch instances"""
     kwargs = ctx.obj.copy()
     kwargs['variables'] = ctx.obj['variables'].copy()
     kwargs['variables'].update({
-        'dev_access_state': 'present' if enable_dev else 'absent',
+        'dev_access_state': 'present' if dev_access else 'absent',
     })
 
     run_playbook('setup', 'hosts', **kwargs)
@@ -102,9 +88,10 @@ def provision(ctx):
 
 @main.command()
 @click.pass_context
-@click.option('--with-base/--skip-base', default=False)
+@click.option('--with-base/--skip-base', default=False,
+              help="Remove shared base resources")
 def teardown(ctx, with_base):
-    """Destroy AWS environment and terminate running instances"""
+    """Destroy AWS environment and terminate running instances."""
 
     kwargs = ctx.obj.copy()
     if not with_base:
