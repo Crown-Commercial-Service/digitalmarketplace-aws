@@ -5,7 +5,7 @@
     state: "{{ state }}"
     region: "{{ aws_region }}"
     disable_rollback: false
-    template: ../cloudformation_templates/aws_digitalmarketplace_api_app.json
+    template: ../cloudformation_templates/aws_elasticbeanstalk_app.json
     template_parameters:
       ApplicationName: "{{ digitalmarketplace_api_app_name }}"
   register: digitalmarketplace_api_app_stack
@@ -19,7 +19,7 @@
     state: "{{ state }}"
     region: "{{ aws_region }}"
     disable_rollback: false
-    template: ../cloudformation_templates/aws_digitalmarketplace_api_env.json
+    template: ../cloudformation_templates/aws_digitalmarketplace_api.json
     template_parameters:
       ApplicationName: "{{ digitalmarketplace_api_app_name }}"
       EnvironmentName: "{{ digitalmarketplace_api_env_name }}"
