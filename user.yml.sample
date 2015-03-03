@@ -6,3 +6,5 @@ user_cidr_ip: ***
 digitalmarketplace_api_db_password: ***
 digitalmarketplace_api_auth_tokens:
   - ***
+digitalmarketplace_search_api_auth_tokens:
+  - ***

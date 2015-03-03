@@ -16,3 +16,5 @@
       state: present
       dev_access_state: "{{ dev_access_state }}"
 
+    - role: aws_digitalmarketplace_search_api
+      state: present
