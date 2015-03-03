@@ -26,7 +26,7 @@
     template: ../cloudformation_templates/aws_elasticsearch_dev_access.json
     template_parameters:
       CidrIp: "{{ user_ip }}"
-      ElasticsearchSecurityGroup: "{{ elasticsearch_stack.stack_outputs.ElasticsearchSecurityGroup }}"
+      ElasticsearchSecurityGroup: "{{ elasticsearch_stack.stack_outputs.InstanceSecurityGroup }}"
   register: elasticsearch_dev_access_stack
   tags:
     - elasticsearch

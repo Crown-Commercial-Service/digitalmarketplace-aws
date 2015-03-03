@@ -14,7 +14,7 @@
   },
 
   "Resources": {
-    "ElasticsearchDeveloperIngress": {
+    "DeveloperIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupName": {"Ref": "ElasticsearchSecurityGroup"},
