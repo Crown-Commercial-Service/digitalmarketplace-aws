@@ -85,17 +85,22 @@ def deploy_command(f):
     @click.option('--vars-file', '-f', multiple=True,
                   type=click.Path(exists=True),
                   help="Load YAML or JSON extra variable file")
+    @click.option('--dry-run', is_flag=True, default=False,
+                  help="List tasks that would run without executing any of them")
     @click.pass_context
     @wraps(f)
-    def wrapped(ctx, tag, extra, load_user_file, vars_file, *args, **kwargs):
+    def wrapped(ctx, tag, extra, load_user_file, vars_file,
+                dry_run, *args, **kwargs):
         if load_user_file:
             vars_file = ['user.yml'] + list(vars_file)
         file_options = sum([['-e', '@{}'.format(v)] for v in vars_file], [])
         extra_vars_options = sum([['-e', e] for e in extra], [])
-        ctx.obj = ctx.obj.add(
-            tags=tag,
-            options=file_options + extra_vars_options
-        )
+
+        options = file_options + extra_vars_options
+        if dry_run:
+            options.append('--list-tasks')
+
+        ctx.obj = ctx.obj.add(tags=tag, options=options)
         return f(ctx, *args, **kwargs)
 
     return wrapped
