@@ -80,12 +80,16 @@ def deploy_command(f):
                   help="Only run tasks with given tag")
     @click.option('--extra', '-e', multiple=True,
                   help="Set an extra variable (key=value or YAML/JSON string)")
+    @click.option('--load-user-file/--skip-user-file', default=True,
+                  help="Load user.yml file")
     @click.option('--vars-file', '-f', multiple=True,
                   type=click.Path(exists=True),
                   help="Load YAML or JSON extra variable file")
     @click.pass_context
     @wraps(f)
-    def wrapped(ctx, tag, extra, vars_file, *args, **kwargs):
+    def wrapped(ctx, tag, extra, load_user_file, vars_file, *args, **kwargs):
+        if load_user_file:
+            vars_file = ['user.yml'] + list(vars_file)
         file_options = sum([['-e', '@{}'.format(v)] for v in vars_file], [])
         extra_vars_options = sum([['-e', e] for e in extra], [])
         ctx.obj = ctx.obj.add(
