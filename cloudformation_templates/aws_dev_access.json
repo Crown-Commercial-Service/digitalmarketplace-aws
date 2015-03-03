@@ -1,0 +1,36 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Add ingress rule to security group",
+
+  "Parameters": {
+    "SecurityGroup": {
+      "Type": "String",
+      "Description": "Target security group name"
+    },
+    "CidrIp": {
+      "Type": "String",
+      "Description": "CIDR or IP to use for security group rules"
+    },
+    "FromPort": {
+      "Type": "Number",
+      "Description": "FromPort to use for security group rules"
+    },
+    "ToPort": {
+      "Type": "Number",
+      "Description": "ToPort to use for security group rules"
+    }
+  },
+
+  "Resources": {
+    "DeveloperIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "SecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": {"Ref": "FromPort"},
+        "ToPort": {"Ref": "ToPort"},
+        "CidrIp": {"Ref": "CidrIp"}
+      }
+    }
+  }
+}

@@ -23,10 +23,12 @@
     state: "{{ dev_access_state }}"
     region: "{{ aws_region }}"
     disable_rollback: false
-    template: ../cloudformation_templates/aws_elasticsearch_dev_access.json
+    template: ../cloudformation_templates/aws_dev_access.json
     template_parameters:
       CidrIp: "{{ user_ip }}"
-      ElasticsearchSecurityGroup: "{{ elasticsearch_stack.stack_outputs.InstanceSecurityGroup }}"
+      FromPort: "{{ elasticsearch_port }}"
+      ToPort: "{{ elasticsearch_port }}"
+      SecurityGroup: "{{ elasticsearch_stack.stack_outputs.InstanceSecurityGroup }}"
   register: elasticsearch_dev_access_stack
   tags:
     - elasticsearch
