@@ -9,7 +9,7 @@
     },
     "CidrIp": {
       "Type": "String",
-      "Description": "CIDR or IP to use for security group rules"
+      "Description": "CIDR IP to use for security group rules"
     },
     "FromPort": {
       "Type": "Number",

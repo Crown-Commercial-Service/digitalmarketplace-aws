@@ -8,7 +8,8 @@
     template: ../cloudformation_templates/aws_elasticsearch.json
     template_parameters:
       KeyName: "{{ key_name }}"
-      SSHCidrIp: "{{ user_ip }}"
+      SSHCidrIp: "{{ user_cidr_ip }}"
+      LoadBalancerName: "{{ elasticsearch_name }}"
       GroupTag: "{{ elasticsearch_name }}"
       InstanceCount: "{{ elasticsearch_ec2_instance_count }}"
       InstanceType: "{{ elasticsearch_ec2_instance_type }}"
@@ -25,10 +26,10 @@
     disable_rollback: false
     template: ../cloudformation_templates/aws_dev_access.json
     template_parameters:
-      CidrIp: "{{ user_ip }}"
+      CidrIp: "{{ user_cidr_ip }}"
       FromPort: "{{ elasticsearch_port }}"
       ToPort: "{{ elasticsearch_port }}"
-      SecurityGroup: "{{ elasticsearch_stack.stack_outputs.InstanceSecurityGroup }}"
+      SecurityGroup: "{{ elasticsearch_stack.stack_outputs.LoadBalancerSecurityGroup }}"
   register: elasticsearch_dev_access_stack
   tags:
     - elasticsearch

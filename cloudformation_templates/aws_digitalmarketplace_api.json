@@ -188,6 +188,19 @@
     "RDSSecurityGroup": {
       "Description": "RDS security group",
       "Value": {"Ref": "RDSInstanceSecurityGroup"}
+    },
+    "Environment": {
+      "Description": "Digital Marketplace API environment",
+      "Value": {"Ref": "Environment"}
+    },
+    "URL": {
+      "Description": "URL of the AWS Elastic Beanstalk Environment",
+      "Value": {
+        "Fn::Join": ["", [
+          "http://",
+          {"Fn::GetAtt": ["Environment", "EndpointURL"]}
+        ]]
+      }
     }
   }
 }
