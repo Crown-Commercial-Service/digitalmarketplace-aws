@@ -151,7 +151,7 @@
           },
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "AUTH_TOKENS",
+            "OptionName": "DM_API_AUTH_TOKENS",
             "Value": {"Ref": "APIAuthTokens"}
           },
           {
