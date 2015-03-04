@@ -16,6 +16,3 @@
       state: present
       dev_access_state: "{{ dev_access_state }}"
 
-  post_tasks:
-    - name: Elasticsearch URL
-      debug: msg={{elasticsearch_stack.stack_outputs.URL}}

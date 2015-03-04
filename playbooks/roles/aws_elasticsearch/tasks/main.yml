@@ -10,6 +10,7 @@
       KeyName: "{{ key_name }}"
       SSHCidrIp: "{{ user_cidr_ip }}"
       LoadBalancerName: "{{ elasticsearch_name }}"
+      LoadBalancerSubnets: "{{ subnets | join(',') }}"
       GroupTag: "{{ elasticsearch_name }}"
       InstanceCount: "{{ elasticsearch_ec2_instance_count }}"
       InstanceType: "{{ elasticsearch_ec2_instance_type }}"
@@ -29,7 +30,7 @@
       CidrIp: "{{ user_cidr_ip }}"
       FromPort: "{{ elasticsearch_port }}"
       ToPort: "{{ elasticsearch_port }}"
-      SecurityGroup: "{{ elasticsearch_stack.stack_outputs.LoadBalancerSecurityGroup }}"
+      SecurityGroup: "{{ elasticsearch_stack.stack_outputs.InstanceSecurityGroup }}"
   register: elasticsearch_dev_access_stack
   tags:
     - elasticsearch
