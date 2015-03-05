@@ -18,3 +18,6 @@
 
     - role: aws_digitalmarketplace_search_api
       state: present
+
+    - role: aws_digitalmarketplace_admin_frontend
+      state: present

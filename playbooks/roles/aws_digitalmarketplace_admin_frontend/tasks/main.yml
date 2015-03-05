@@ -1,0 +1,31 @@
+---
+- name: Digital Marketplace Admin Frontend Elastic Beanstalk app ({{state}})
+  cloudformation:
+    stack_name: "digitalmarketplace-admin-frontend-{{ stage_name }}"
+    state: "{{ state }}"
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template: ../cloudformation_templates/aws_elasticbeanstalk_app.json
+    template_parameters:
+      ApplicationName: "{{ digitalmarketplace_admin_frontend_app_name }}"
+  register: digitalmarketplace_admin_frontend_app_stack
+  tags:
+    - digitalmarketplace-admin-frontend
+    - base
+
+- name: Digital Marketplace Admin Frontend Elastic Beanstalk env ({{state}})
+  cloudformation:
+    stack_name: "digitalmarketplace-admin-frontend-{{ name_suffix }}"
+    state: "{{ state }}"
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template: ../cloudformation_templates/aws_digitalmarketplace_admin_frontend.json
+    template_parameters:
+      ApplicationName: "{{ digitalmarketplace_admin_frontend_app_name }}"
+      EnvironmentName: "{{ digitalmarketplace_admin_frontend_env_name }}"
+      KeyName: "{{ key_name }}"
+      APIAuthTokens: "{{ digitalmarketplace_api_auth_tokens[0] }}"
+      DigitalmarketplaceAPIURL: "{{ digitalmarketplace_api_env_stack.stack_outputs.URL }}"
+  register: digitalmarketplace_admin_frontend_env_stack
+  tags:
+    - digitalmarketplace-admin-frontend
