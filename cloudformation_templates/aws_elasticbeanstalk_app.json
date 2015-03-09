@@ -17,5 +17,12 @@
         "Description": "Elastic Beanstalk Application"
       }
     }
+  },
+
+  "Outputs": {
+    "Name": {
+      "Description": "Application name",
+      "Value": {"Ref": "ApplicationName"}
+    }
   }
 }
