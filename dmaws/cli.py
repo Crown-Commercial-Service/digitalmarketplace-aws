@@ -51,6 +51,7 @@ def cli_command(cmd):
         ctx.load_variables(files=vars_file, pairs=[v.split('=') for v in var])
         ctx.load_stacks(stacks_file)
         ctx.apps = [app_name.replace('-', '_') for app_name in app]
+        ctx.dry_run = dry_run
 
         return cmd(ctx, *args, **kwargs)
 

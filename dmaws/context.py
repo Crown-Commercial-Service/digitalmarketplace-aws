@@ -8,9 +8,8 @@ from .stacks import Stack
 
 
 class Context(object):
-    def __init__(self, home=os.getcwd(), verbose=False, dry_run=False):
+    def __init__(self, home=os.getcwd(), dry_run=False):
         self.home = home
-        self.verbose = verbose
         self.dry_run = dry_run
 
         self.apps = None
@@ -45,11 +44,6 @@ class Context(object):
         if args:
             msg %= args
         click.echo(msg, file=sys.stderr)
-
-    def vlog(self, msg, *args):
-        """Logs a message to stderr only if verbose is enabled."""
-        if self.verbose:
-            self.log(msg, *args)
 
 
 pass_context = click.make_pass_decorator(Context, ensure=True)

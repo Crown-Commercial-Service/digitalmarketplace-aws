@@ -56,8 +56,7 @@ class StackPlan(object):
 
     @classmethod
     def from_ctx(cls, ctx):
-        logger = ctx.vlog if ctx.verbose else ctx.log
-        return cls(stacks=ctx.stacks, variables=ctx.variables, apps=ctx.apps, logger=logger)
+        return cls(stacks=ctx.stacks, variables=ctx.variables, apps=ctx.apps, logger=ctx.log)
 
 
 def get_stacks(stacks, names, with_dependencies=False):
