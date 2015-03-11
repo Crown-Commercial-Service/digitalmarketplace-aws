@@ -88,7 +88,6 @@ admin_frontend:
   template: cloudformation_templates/aws_digitalmarketplace_admin_frontend.json
   dependencies:
     - api
-    - search_api
     - admin_frontend_app
   parameters:
     ApplicationName: "{{ stacks.admin_frontend_app.parameters.ApplicationName }}"
