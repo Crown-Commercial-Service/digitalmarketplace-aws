@@ -1,6 +1,6 @@
 ---
 api_app:
-  name: "digitalmarketplace-api-{{ stage }}"
+  name: "digitalmarketplace-api-app"
   template: cloudformation_templates/aws_elasticbeanstalk_app.json
   parameters:
     ApplicationName: "digitalmarketplace-api"
@@ -57,7 +57,7 @@ elasticsearch_dev_access:
     SecurityGroup: "{{ stacks.elasticsearch.outputs.InstanceSecurityGroup }}"
 
 search_api_app:
-  name: "digitalmarketplace-search-api-{{ stage }}"
+  name: "digitalmarketplace-search-api-app"
   template: cloudformation_templates/aws_elasticbeanstalk_app.json
   parameters:
     ApplicationName: "digitalmarketplace-search-api"
@@ -78,7 +78,7 @@ search_api:
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
 
 admin_frontend_app:
-  name: "digitalmarketplace-admin-frontend-{{ stage }}"
+  name: "digitalmarketplace-admin-frontend-app"
   template: cloudformation_templates/aws_elasticbeanstalk_app.json
   parameters:
     ApplicationName: "digitalmarketplace-admin-frontend"
