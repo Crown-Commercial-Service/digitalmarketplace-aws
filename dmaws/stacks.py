@@ -8,17 +8,23 @@ class Stack(object):
     def __init__(self, name, template, parameters, dependencies=None):
         self.name = name
         self.template = template
-        self.parameters = parameters
+        self.parameters = parameters or {}
         self.dependencies = dependencies or []
 
-    def build(self, variables):
-        return BuiltStack(self, variables)
+    def build(self, *args, **kwargs):
+        return BuiltStack(self, *args, **kwargs)
 
 
 class BuiltStack(Stack):
-    def __init__(self, stack, variables):
-        self.name = template(stack.name, variables)
-        self.parameters = template(stack.parameters, variables)
+    def __init__(self, stack, stage, environment, variables):
+        self.stage = stage
+        self.environment = environment
+
+        self.name = self._build_name(stack.name)
+
+        self._parameters = None
+        self._raw_parameters = stack.parameters
+        self._variables = variables
 
         self.template = stack.template
         self.dependencies = stack.dependencies
@@ -29,16 +35,34 @@ class BuiltStack(Stack):
         self.outputs = None
         self.resources = None
 
+    @property
+    def parameters(self):
+        if self._parameters is None:
+            parameters = template(
+                self._raw_parameters,
+                self._variables,
+                stage=self.stage,
+                environment=self.environment
+            )
+            self._parameters = parameters
+
+        return self._parameters
+
+    def _build_name(self, name):
+        return template(name, {}, stage=self.stage, environment=self.environment)
+
     def update_info(self, stack_info):
         for attr in ['status', 'outputs', 'resources']:
             setattr(self, attr, stack_info[attr])
 
 
 class StackPlan(object):
-    def __init__(self, stacks, variables, apps, logger=None):
+    def __init__(self, stacks, stage, environment, variables, apps, logger=None):
         self.log = logger
         self.cfn = Cloudformation(variables['aws_region'], logger=self.log)
 
+        self.stage = stage
+        self.environment = environment
         self.apps = sorted(flatten_stack_groups(stacks, apps))
         self.stacks = get_stacks(stacks, self.apps, with_dependencies=True)
         self.stack_context = variables
@@ -46,12 +70,20 @@ class StackPlan(object):
             raise ValueError("'stacks' is a reserved variable name")
         self.stack_context['stacks'] = {}
 
+    def stacks(self, with_dependencies=False):
+        return get_stacks(self._stacks, self.apps, with_dependencies)
+
+    def build_stack(self, stack):
+        return stack.build(self.stage, self.environment, self.stack_context)
+
     def create(self):
         self.log('Creating %s', ', '.join(self.apps))
-        self.log('Will run %s stacks', ', '.join(s[0] for s in self.stacks))
 
-        for name, stack in self.stacks:
-            built_stack = stack.build(self.stack_context)
+        stacks = self.stacks(with_dependencies=True)
+        self.log('Will run %s stacks', ', '.join(s[0] for s in stacks))
+
+        for name, stack in stacks:
+            built_stack = self.build_stack(stack)
             self.stack_context['stacks'][name] = built_stack
 
             stack_info = self.cfn.create_stack(built_stack)
@@ -59,7 +91,14 @@ class StackPlan(object):
 
     @classmethod
     def from_ctx(cls, ctx):
-        return cls(stacks=ctx.stacks, variables=ctx.variables, apps=ctx.apps, logger=ctx.log)
+        return cls(
+            stacks=ctx.stacks,
+            stage=ctx.stage,
+            environment=ctx.environment,
+            variables=ctx.variables,
+            apps=ctx.apps,
+            logger=ctx.log
+        )
 
 
 def get_stacks(stacks, names, with_dependencies=False):

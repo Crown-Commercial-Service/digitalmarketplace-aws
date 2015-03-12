@@ -53,7 +53,9 @@ def merge_dicts(a, b):
     return result
 
 
-def template(item, variables):
+def template(item, variables, **kwargs):
+    variables = merge_dicts(variables, kwargs)
+
     if isinstance(item, basestring):
         varname = template_string(item, variables)
         return varname

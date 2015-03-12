@@ -13,6 +13,8 @@ class Context(object):
         self.dry_run = dry_run
 
         self.apps = None
+        self.stage = None
+        self.environment = None
         self.variables = {}
         self.stacks = {}
         self.create_dependencies = False

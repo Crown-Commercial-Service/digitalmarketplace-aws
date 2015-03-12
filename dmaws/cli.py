@@ -18,10 +18,8 @@ STAGES = [
 @click.argument('environment', nargs=1)
 @pass_context
 def main(ctx, stage, environment):
-    ctx.load_variables(variables={
-        'stage': stage,
-        'environment': environment,
-    })
+    ctx.stage = stage
+    ctx.environment = environment
 
 
 def cli_command(cmd):
@@ -46,7 +44,7 @@ def cli_command(cmd):
         if load_default_files:
             vars_file = [
                 'vars/common.yml',
-                'vars/{}.yml'.format(ctx.variables['stage']),
+                'vars/{}.yml'.format(ctx.stage),
                 'vars/user.yml',
             ] + list(vars_file)
 

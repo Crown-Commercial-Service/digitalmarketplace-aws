@@ -16,7 +16,9 @@ def run_playbook(playbook, hosts, ctx, basedir='playbooks/'):
 
     args.extend([
         '-e',
-        json.dumps(ctx.variables)
+        json.dumps(ctx.variables),
+        '-e',
+        json.dumps({'stage': ctx.stage, 'environment': ctx.environment})
     ])
 
     ctx.log(subprocess.list2cmdline(args))
