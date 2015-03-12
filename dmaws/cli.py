@@ -7,6 +7,9 @@ from .context import pass_context
 
 STAGES = [
     'development',
+    'preview',
+    'staging',
+    'production',
 ]
 
 
