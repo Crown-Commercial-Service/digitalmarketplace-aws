@@ -13,7 +13,7 @@ STAGES = [
 ]
 
 
-@click.group(chain=True)
+@click.group()
 @click.argument('stage', nargs=1, type=click.Choice(STAGES))
 @click.argument('environment', nargs=1)
 @pass_context
@@ -26,8 +26,7 @@ def main(ctx, stage, environment):
 
 def cli_command(cmd):
     """Common options for deployment commands."""
-    @click.option('--app', '-a', multiple=True,
-                  help="Only run given app stacks")
+    @click.argument('app', nargs=-1)
     @click.option('--vars-file', '-f', multiple=True,
                   type=click.Path(exists=True),
                   help="Load YAML or JSON extra variable file")
