@@ -1,8 +1,17 @@
+import os
+import subprocess
 import collections
 
 import yaml
 import jinja2
 from jinja2.runtime import StrictUndefined
+
+
+def run_cmd(args, env=None):
+    cmd_env = os.environ.copy()
+    cmd_env.update(env)
+    cmd = subprocess.Popen(args, env=cmd_env)
+    cmd.communicate()
 
 
 def read_yaml_file(path):
