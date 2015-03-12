@@ -1,0 +1,33 @@
+---
+- name: Digital Marketplace Search API Elastic Beanstalk app ({{state}})
+  cloudformation:
+    stack_name: "digitalmarketplace-search-api-{{ stage_name }}"
+    state: "{{ state }}"
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template: ../cloudformation_templates/aws_elasticbeanstalk_app.json
+    template_parameters:
+      ApplicationName: "{{ digitalmarketplace_search_api_app_name }}"
+  register: digitalmarketplace_search_api_app_stack
+  tags:
+    - digitalmarketplace-search-api
+    - base
+
+- name: Digital Marketplace Search API Elastic Beanstalk env ({{state}})
+  cloudformation:
+    stack_name: "digitalmarketplace-search-api-{{ name_suffix }}"
+    state: "{{ state }}"
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template: ../cloudformation_templates/aws_digitalmarketplace_search_api.json
+    template_parameters:
+      ApplicationName: "{{ digitalmarketplace_search_api_app_name }}"
+      EnvironmentName: "{{ digitalmarketplace_search_api_env_name }}"
+      KeyName: "{{ key_name }}"
+      SearchAPIAuthTokens: "{{ digitalmarketplace_search_api_auth_tokens | join(':') }}"
+      ElasticsearchHost: "{{ elasticsearch_stack.stack_outputs.URL }}"
+      ElasticsearchPort: "{{ elasticsearch_port }}"
+      ElasticsearchSecurityGroup: "{{ elasticsearch_stack.stack_outputs.LoadBalancerSecurityGroup }}"
+  register: digitalmarketplace_search_api_env_stack
+  tags:
+    - digitalmarketplace-search-api

@@ -1,0 +1,3 @@
+---
+digitalmarketplace_admin_frontend_app_name: "digitalmarketplace-admin-frontend"
+digitalmarketplace_admin_frontend_env_name: "dmadmin-{{ name_suffix_short }}"

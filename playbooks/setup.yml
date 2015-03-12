@@ -16,6 +16,8 @@
       state: present
       dev_access_state: "{{ dev_access_state }}"
 
-  post_tasks:
-    - name: Elasticsearch URL
-      debug: msg={{elasticsearch_stack.stack_outputs.URL}}
+    - role: aws_digitalmarketplace_search_api
+      state: present
+
+    - role: aws_digitalmarketplace_admin_frontend
+      state: present

@@ -11,6 +11,10 @@
       "Type": "String",
       "Description": "ELB name prefix"
     },
+    "LoadBalancerSubnets": {
+      "Type": "CommaDelimitedList",
+      "Description": "List of subnets for internal ELB"
+    },
     "KeyName": {
       "Type": "String",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
@@ -55,13 +59,13 @@
 
     "ClusterDiscoveryIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
-        "Properties": {
-          "GroupName": {"Ref": "InstanceSecurityGroup"},
-          "IpProtocol": "-1",
-          "FromPort": "0",
-          "ToPort": "65535",
-          "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
-        }
+      "Properties": {
+        "GroupName": {"Ref": "InstanceSecurityGroup"},
+        "IpProtocol": "-1",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
+      }
     },
 
     "LoadBalancerIngress": {
@@ -125,7 +129,8 @@
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
         "LoadBalancerName": {"Ref": "LoadBalancerName"},
-        "AvailabilityZones": {"Fn::GetAZs": ""},
+        "Subnets": {"Ref": "LoadBalancerSubnets"},
+        "Scheme": "internal",
         "CrossZone": "true",
         "Listeners": [{
           "LoadBalancerPort": {"Ref": "Port"},
