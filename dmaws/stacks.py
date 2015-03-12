@@ -64,14 +64,21 @@ class StackPlan(object):
         self.stage = stage
         self.environment = environment
         self.apps = sorted(flatten_stack_groups(stacks, apps))
-        self.stacks = get_stacks(stacks, self.apps, with_dependencies=True)
-        self.stack_context = variables
+        self._stacks = stacks
+
+        self.stack_context = variables.copy()
         if 'stacks' in variables:
             raise ValueError("'stacks' is a reserved variable name")
         self.stack_context['stacks'] = {}
 
     def stacks(self, with_dependencies=False):
         return get_stacks(self._stacks, self.apps, with_dependencies)
+
+    def dependant_stacks(self):
+        return get_stacks(
+            self._stacks,
+            get_dependants(self._stacks, self.apps),
+        )
 
     def build_stack(self, stack):
         return stack.build(self.stage, self.environment, self.stack_context)
@@ -88,6 +95,21 @@ class StackPlan(object):
 
             stack_info = self.cfn.create_stack(built_stack)
             self.stack_context['stacks'][name].update_info(stack_info)
+
+    def delete(self):
+        self.log('Deleting %s', ', '.join(self.apps))
+
+        stacks = self.dependant_stacks()
+        self.log('Will check %s stacks', ', '.join(s[0] for s in stacks))
+
+        for name, stack in stacks:
+            built_stack = self.build_stack(stack)
+            status = self.cfn.describe_stack(built_stack)
+            if name in self.apps:
+                self.cfn.delete_stack(built_stack)
+            elif status and name not in self.apps:
+                self.log("Dependant stack %s exists, can't continue", built_stack.name)
+                return
 
     @classmethod
     def from_ctx(cls, ctx):
@@ -122,6 +144,10 @@ def get_dependencies(stacks, names):
     return toposort_flatten(_get_dependencies(stacks, names))
 
 
+def get_dependants(stacks, names):
+    return toposort_flatten(_get_dependants(stacks, names))
+
+
 def _get_dependencies(stacks, names):
     deps = {}
     for name in names:
@@ -131,3 +157,21 @@ def _get_dependencies(stacks, names):
             deps.update(_get_dependencies(stacks, [dep]))
 
     return deps
+
+
+def _get_dependants(stacks, names):
+    reversed_deps = _reversed_deps(stacks, names)
+
+    return dict((name, set(reversed_deps.get(name, []))) for name in names)
+
+
+def _reversed_deps(stacks, names):
+    reversed_deps = {}
+    for stack in filter(lambda s: isinstance(stacks[s], Stack), stacks):
+        for dep in stacks[stack].dependencies:
+            if dep in reversed_deps:
+                reversed_deps[dep].append(stack)
+            else:
+                reversed_deps[dep] = [stack]
+
+    return reversed_deps

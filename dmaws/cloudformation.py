@@ -51,7 +51,7 @@ class Cloudformation(object):
         info = self.describe_stack(stack)
         if not info:
             self.log('Stack [%s] does not exist', stack.name)
-            return self._response(info, failed=True)
+            return self._response(info)
 
         self.conn.delete_stack(stack.name)
         return self.wait_for(stack, 'DELETE')
@@ -60,8 +60,7 @@ class Cloudformation(object):
         try:
             stack = self.conn.describe_stacks(stack.name)[0]
         except boto.exception.BotoServerError:
-            self.log('Stack [%s] does not exist', stack.name)
-            return
+            return {}
 
         return {
             'status': stack.stack_status,
@@ -80,12 +79,14 @@ class Cloudformation(object):
 
     def wait_for(self, stack, operation):
         last = datetime.datetime.utcnow()
-        self.log('Waiting for %s to %s', stack.name, operation)
+        self.log('Waiting for [%s] to %s', stack.name, operation)
         while True:
             info = self.describe_stack(stack)
             if not info and operation == 'DELETE':
+                self.log('Stack [%s] is now deleted', stack.name)
                 return self._response(info)
             elif info.get('status') == '%s_COMPLETE' % operation:
+                self.log('Stack [%s] is now %s', stack.name, info['status'])
                 return self._response(info)
             elif info.get('status') in ['ROLLBACK_COMPLETE',
                                         '%s_ROLLBACK_COMPLETE' % operation,
