@@ -1,4 +1,13 @@
 ---
+all:
+  - api
+  - search_api
+  - admin_frontend
+
+dev_access:
+  - api_dev_access
+  - elasticsearch_dev_access
+
 api_app:
   name: "digitalmarketplace-api-app"
   template: cloudformation_templates/aws_elasticbeanstalk_app.json

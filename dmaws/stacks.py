@@ -39,14 +39,17 @@ class StackPlan(object):
         self.log = logger
         self.cfn = Cloudformation(variables['aws_region'], logger=self.log)
 
-        self.apps = apps
-        self.stacks = get_stacks(stacks, apps, with_dependencies=True)
+        self.apps = sorted(flatten_stack_groups(stacks, apps))
+        self.stacks = get_stacks(stacks, self.apps, with_dependencies=True)
         self.stack_context = variables
         if 'stacks' in variables:
             raise ValueError("'stacks' is a reserved variable name")
         self.stack_context['stacks'] = {}
 
     def create(self):
+        self.log('Creating %s', ', '.join(self.apps))
+        self.log('Will run %s stacks', ', '.join(s[0] for s in self.stacks))
+
         for name, stack in self.stacks:
             built_stack = stack.build(self.stack_context)
             self.stack_context['stacks'][name] = built_stack
@@ -64,6 +67,16 @@ def get_stacks(stacks, names, with_dependencies=False):
         names = get_dependencies(stacks, names)
 
     return [(name, stacks[name]) for name in names]
+
+
+def flatten_stack_groups(stacks, names):
+    names = set(names)
+    for name in names.copy():
+        if isinstance(stacks[name], list):
+            names.remove(name)
+            names = names.union(flatten_stack_groups(stacks, stacks[name]))
+
+    return names
 
 
 def get_dependencies(stacks, names):

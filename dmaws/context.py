@@ -37,7 +37,10 @@ class Context(object):
     def load_stacks(self, path):
         stacks = read_yaml_file(path)
         for key, val in stacks.iteritems():
-            self.stacks[key] = Stack(**val)
+            if isinstance(val, dict):
+                self.stacks[key] = Stack(**val)
+            else:
+                self.stacks[key] = val
 
     def log(self, msg, *args):
         """Logs a message to stderr."""
