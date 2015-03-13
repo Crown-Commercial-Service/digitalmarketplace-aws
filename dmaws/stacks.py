@@ -83,6 +83,19 @@ class StackPlan(object):
     def build_stack(self, stack):
         return stack.build(self.stage, self.environment, self.stack_context)
 
+    def info(self):
+        stacks = self.stacks(with_dependencies=True)
+        self.log('Gathering info about %s stacks', ', '.join(s[0] for s in stacks))
+
+        for name, stack in stacks:
+            built_stack = self.build_stack(stack)
+            self.stack_context['stacks'][name] = built_stack
+
+            stack_info = self.cfn.describe_stack(built_stack)
+            self.stack_context['stacks'][name].update_info(stack_info)
+
+        return self.stack_context['stacks']
+
     def create(self):
         self.log('Creating %s', ', '.join(self.apps))
 
