@@ -1,9 +1,8 @@
 from ..stacks import StackPlan
-from ..cli import main, cli_command
+from ..cli import cli_command
 
 
-@main.command('create')
-@cli_command
+@cli_command('create')
 def create_cmd(ctx):
     """Create AWS environment and launch instances"""
 

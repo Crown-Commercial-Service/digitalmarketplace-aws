@@ -2,7 +2,7 @@ import os
 import json
 import subprocess
 
-from ..cli import main, cli_command
+from ..cli import cli_command
 from ..utils import run_cmd
 
 
@@ -23,13 +23,12 @@ def run_playbook(playbook, hosts, ctx, basedir='playbooks/'):
 
     ctx.log(subprocess.list2cmdline(args))
 
-    run_cmd(args, {
+    run_cmd(args, env={
         'ANSIBLE_CONFIG': os.path.join(basedir, 'ansible.cfg')
     })
 
 
-@main.command('provision')
-@cli_command
+@cli_command('provision', max_apps=0)
 def provision_cmd(ctx):
     """Provision EC2 instances"""
     run_playbook('provision', 'ec2.py', ctx)

@@ -12,12 +12,19 @@ class Context(object):
         self.home = home
         self.dry_run = dry_run
 
-        self.apps = None
         self.stage = None
         self.environment = None
+        self.apps = []
         self.variables = {}
         self.stacks = {}
         self.create_dependencies = False
+
+    def add_apps(self, app):
+        if isinstance(app, basestring):
+            app = [app]
+        elif not app:
+            app = []
+        self.apps.extend([app_name.replace('-', '_') for app_name in app])
 
     def add_variables(self, variables):
         self.variables = merge_dicts(self.variables, variables)

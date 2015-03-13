@@ -1,9 +1,8 @@
 from ..stacks import StackPlan
-from ..cli import main, cli_command
+from ..cli import cli_command
 
 
-@main.command('delete')
-@cli_command
+@cli_command('delete')
 def delete_cmd(ctx):
     """Destroy AWS environment and terminate running instances."""
 
