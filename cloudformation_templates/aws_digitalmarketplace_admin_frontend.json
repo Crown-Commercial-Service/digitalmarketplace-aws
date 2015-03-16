@@ -86,7 +86,7 @@
         "OptionSettings": [
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_API_BEARER",
+            "OptionName": "DM_ADMIN_FRONTEND_API_AUTH_TOKEN",
             "Value": {"Ref": "APIAuthTokens"}
           },
           {
