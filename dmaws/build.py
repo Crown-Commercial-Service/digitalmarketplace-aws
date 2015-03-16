@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 import tempfile
+import zipfile
 
 from .utils import run_cmd
 
@@ -40,7 +41,16 @@ def get_current_ref(cwd):
     return run_git_cmd(['rev-parse', '--abbrev-ref', 'HEAD'], cwd).strip()
 
 
-def create_archive(cwd):
+def add_directory_to_archive(cwd, path, archive_path):
+    with zipfile.ZipFile(archive_path, 'a') as archive:
+        for root, dirs, files in os.walk(os.path.join(cwd, path)):
+            for f in dirs + files:
+                file_path = os.path.join(root, f)
+                archive.write(os.path.join(root, f),
+                              arcname=os.path.relpath(file_path, cwd))
+
+
+def create_git_archive(cwd):
     sha = get_current_sha(cwd)
     ref = get_current_ref(cwd)
     package_file, file_path = tempfile.mkstemp()
@@ -50,3 +60,23 @@ def create_archive(cwd):
     os.close(package_file)
 
     return ref, sha, file_path
+
+
+def run_project_build_script(cwd):
+    run_cmd(['./scripts/build.sh'], cwd=cwd)
+
+
+def add_build_artefacts_to_archive(cwd, archive):
+    add_directory_to_archive(cwd, 'app/static', archive)
+    add_directory_to_archive(cwd, 'bower_components', archive)
+
+
+def create_archive(cwd):
+    ref, sha, archive_path = create_git_archive(cwd)
+    try:
+        run_project_build_script(cwd)
+        add_build_artefacts_to_archive(cwd, archive_path)
+    except OSError:
+        pass
+
+    return ref, sha, archive_path
