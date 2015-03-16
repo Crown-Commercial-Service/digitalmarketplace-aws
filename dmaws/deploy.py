@@ -10,8 +10,8 @@ import boto.exception
 class Deploy(object):
     def __init__(self, eb_application, eb_environment, repo_path, region, logger=None):
         self.log = logger
-        self.beanstalk = BeanstalkClient(region)
-        self.s3 = S3Client(region)
+        self.beanstalk = BeanstalkClient(region, logger)
+        self.s3 = S3Client(region, logger)
 
         self.repo_path = repo_path
         self.eb_application = eb_application
@@ -31,7 +31,7 @@ class Deploy(object):
         _, s3_key = self.s3.upload_package(bucket, package_name, package_path)
 
         self.log('Creating a new %s version: %s', self.eb_application, version_label)
-        self.beanstalk.create_application_version(
+        created_version = self.beanstalk.create_application_version(
             self.eb_application,
             version_label,
             bucket,
@@ -42,7 +42,7 @@ class Deploy(object):
         self.log("Removing package file %s", package_path)
         os.remove(package_path)
 
-        return version_label
+        return version_label, bool(created_version)
 
     def deploy(self, version_label):
         self.log("Deploying version %s to %s", version_label, self.eb_environment)
@@ -50,11 +50,15 @@ class Deploy(object):
 
 
 class S3Client(object):
-    def __init__(self, region, **kwargs):
+    def __init__(self, region, logger=None):
         self.conn = boto.s3.connect_to_region(region)
+        self.log = logger
 
     def upload_package(self, bucket_name, package_name, package_file):
         bucket = self.conn.get_bucket(bucket_name)
+        if bucket.get_key(package_name):
+            self.log('Not replacing existing S3 key %s', package_name)
+            return bucket, package_name
         key = bucket.new_key(package_name)
         key.set_contents_from_filename(package_file)
 
@@ -62,8 +66,9 @@ class S3Client(object):
 
 
 class BeanstalkClient(object):
-    def __init__(self, region):
+    def __init__(self, region, logger=None):
         self.conn = boto.beanstalk.connect_to_region(region)
+        self.log = logger
 
     def get_storage_location(self):
         response = self.conn.create_storage_location()['CreateStorageLocationResponse']
@@ -86,5 +91,7 @@ class BeanstalkClient(object):
                 description=description
             )
         except boto.exception.BotoServerError as e:
-            if '{} already exists'.format(version_label) not in e.message:
-                raise
+            self.log(e.message)
+            return
+
+        return version_label

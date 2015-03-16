@@ -23,5 +23,5 @@ def deploy_cmd(ctx, repository_path):
         logger=ctx.log
     )
 
-    version = deploy.create_version(app, with_sha=True)
+    version, created = deploy.create_version(app, with_sha=True)
     deploy.deploy(version)
