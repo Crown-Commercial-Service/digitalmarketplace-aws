@@ -8,7 +8,12 @@ setup(
     licence='MIT',
 
     install_requires=[
+        'ansible',
+        'boto',
         'Click',
+        'Jinja2',
+        'PyYAML',
+        'toposort',
     ],
 
     entry_points={
