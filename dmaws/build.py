@@ -41,6 +41,16 @@ def get_current_ref(cwd):
     return run_git_cmd(['rev-parse', '--abbrev-ref', 'HEAD'], cwd).strip()
 
 
+def push_tag(cwd, tag_name, tag_message=None):
+    if tag_message is None:
+        tag_message = tag_name
+
+    run_git_cmd(['tag', '-a', tag_name, '-m', tag_message],
+                cwd).strip()
+    run_git_cmd(['push', 'origin', tag_name],
+                cwd).strip()
+
+
 def add_directory_to_archive(cwd, path, archive_path):
     with zipfile.ZipFile(archive_path, 'a') as archive:
         for root, dirs, files in os.walk(os.path.join(cwd, path)):

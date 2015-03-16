@@ -44,9 +44,11 @@ class Deploy(object):
 
         return version_label, bool(created_version)
 
-    def deploy(self, version_label):
-        self.log("Deploying version %s to %s", version_label, self.eb_environment)
+    def deploy(self, version_label, stage):
+        self.log("Deploying version %s to %s (%s)",
+                 version_label, self.eb_environment, stage)
         self.beanstalk.update_environment(self.eb_environment, version_label)
+        build.push_tag(self.repo_path, 'deployed-to-{}'.format(stage))
 
 
 class S3Client(object):

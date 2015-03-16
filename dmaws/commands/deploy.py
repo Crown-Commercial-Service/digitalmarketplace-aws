@@ -24,4 +24,4 @@ def deploy_cmd(ctx, repository_path):
     )
 
     version, created = deploy.create_version(app, with_sha=True)
-    deploy.deploy(version)
+    deploy.deploy(version, ctx.stage)
