@@ -1,14 +1,11 @@
 ---
-- hosts: tag_Group_{{ elasticsearch_name }}
+- hosts: tag_Group_elasticsearch-{{ stage }}-{{ environment }}
   name: setup
   user: ubuntu
   gather_facts: True
   sudo: True
 
-  vars_files:
-    - vars/common.yml
-    - vars/{{ stage_name }}.yml
-
   roles:
     - role: elasticsearch
       tags: elasticsearch
+      elasticsearch_name: elasticsearch-{{ stage }}-{{ environment }}
