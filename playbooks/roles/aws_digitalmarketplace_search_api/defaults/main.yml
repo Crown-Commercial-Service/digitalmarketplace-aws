@@ -1,3 +1,0 @@
----
-digitalmarketplace_search_api_app_name: "digitalmarketplace-search-api"
-digitalmarketplace_search_api_env_name: "dmsearchapi-{{ name_suffix_short }}"

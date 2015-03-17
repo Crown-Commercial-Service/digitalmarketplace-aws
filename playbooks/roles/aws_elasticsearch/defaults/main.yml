@@ -1,8 +1,0 @@
----
-elasticsearch_port: 9200
-
-elasticsearch_name: elasticsearch-{{ name_suffix }}
-
-elasticsearch_ec2_instance_count: 2
-elasticsearch_ec2_instance_type: t2.micro
-elasticsearch_ec2_instance_image: ami-234ecc54
