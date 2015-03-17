@@ -8,6 +8,12 @@ dev_access:
   - api_dev_access
   - elasticsearch_dev_access
 
+documents_s3:
+  name: "documents-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_documents_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-documents-{{ stage }}-{{ environment }}"
+
 api_app:
   name: "digitalmarketplace-api-app"
   template: cloudformation_templates/aws_elasticbeanstalk_app.json
@@ -96,6 +102,7 @@ admin_frontend:
   name: "digitalmarketplace-admin-frontend-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_digitalmarketplace_admin_frontend.json
   dependencies:
+    - documents_s3
     - api
     - admin_frontend_app
   parameters:
