@@ -12,3 +12,6 @@ api:
 search_api:
   auth_tokens:
     - ***
+
+admin_frontend:
+  admin_password_hash: ***

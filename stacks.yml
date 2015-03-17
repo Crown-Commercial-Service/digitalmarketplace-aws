@@ -111,3 +111,5 @@ admin_frontend:
     KeyName: "{{ key_name }}"
     APIAuthTokens: "{{ api.auth_tokens[0] }}"
     DigitalmarketplaceAPIURL: "{{ stacks.api.outputs.URL }}"
+    S3Bucket: "{{ stacks.documents_s3.outputs.Name }}"
+    AdminPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"

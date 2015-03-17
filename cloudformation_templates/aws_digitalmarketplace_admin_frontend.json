@@ -16,6 +16,15 @@
       "Type": "String",
       "Description": "Digital Markeplace API ELB URL"
     },
+    "S3Bucket": {
+      "Type": "String",
+      "Description": "Document S3 Bucket name"
+    },
+    "AdminPasswordHash": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Password hash to use for admin app authentication"
+    },
     "ApplicationName": {
       "Type": "String",
       "Description": "Elastic Beanstalk Application name"
@@ -58,7 +67,7 @@
               "Action": [
                 "s3:Get*",
                 "s3:List*",
-                "s3:PutObject",
+                "s3:Put*",
                 "cloudwatch:PutMetricData"
               ],
               "Resource": "*"
@@ -95,6 +104,16 @@
             "Value": {"Ref": "DigitalmarketplaceAPIURL"}
           },
           {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "DM_S3_DOCUMENT_BUCKET",
+            "Value": {"Ref": "S3Bucket"}
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "DM_ADMIN_FRONTEND_PASSWORD_HASH",
+            "Value": {"Ref": "AdminPasswordHash"}
+          },
+          {
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "SecurityGroups",
             "Value": {"Ref": "InstanceSecurityGroup"}
@@ -103,6 +122,11 @@
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "IamInstanceProfile",
             "Value": {"Ref": "InstanceProfile"}
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:container:python:staticfiles",
+            "OptionName": "/static/",
+            "Value": "app/static/"
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
