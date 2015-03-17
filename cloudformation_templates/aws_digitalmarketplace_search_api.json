@@ -106,7 +106,7 @@
         "OptionSettings": [
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_AUTH_TOKENS",
+            "OptionName": "DM_SEARCH_API_AUTH_TOKENS",
             "Value": {"Ref": "SearchAPIAuthTokens"}
           },
           {

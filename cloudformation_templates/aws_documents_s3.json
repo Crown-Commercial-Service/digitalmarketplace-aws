@@ -1,0 +1,33 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "S3 bucket for Digital Marketplace documents",
+  "Parameters": {
+    "BucketName": {
+      "Type": "String",
+      "Description": "S3 bucket name"
+    }
+  },
+
+  "Resources": {
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "Private",
+        "BucketName": {"Ref": "BucketName"}
+      }
+    }
+  },
+
+  "Outputs": {
+    "Name": {
+      "Description": "S3 bucket name",
+      "Value": {"Ref": "S3Bucket"}
+    },
+    "URL" : {
+      "Value" : {"Fn::Join": ["", [
+        "https://", {"Fn::GetAtt": ["S3Bucket", "DomainName"]}
+      ]]},
+      "Description" : "S3 bucket URL"
+    }
+  }
+}
