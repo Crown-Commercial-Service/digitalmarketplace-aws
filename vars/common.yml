@@ -2,11 +2,13 @@
 aws_region: eu-west-1
 
 api:
-  rds_port: 5432
-  db_user: "digitalmarketplace"
-  db_name: "digitalmarketplace_api"
-  db_instance_type: db.m1.small
-  db_allocated_storage: 5
+
+database:
+  port: 5432
+  user: "digitalmarketplace"
+  name: "digitalmarketplace_api"
+  instance_type: db.m1.small
+  allocated_storage: 5
 
 elasticsearch:
   port: 9200
