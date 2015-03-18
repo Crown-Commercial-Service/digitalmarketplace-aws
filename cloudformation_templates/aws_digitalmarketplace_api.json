@@ -3,12 +3,11 @@
   "Description": "Digital Marketplace API Environment",
 
   "Parameters": {
-    "DBName": {
+    "RDSSecurityGroup": {
       "Type": "String",
-      "Description": "Database name"
+      "Description": "Name of the RDS instances security group"
     },
     "DBUser": {
-      "NoEcho": "true",
       "Type": "String",
       "Description": "Database admin account name"
     },
@@ -17,13 +16,9 @@
       "Type": "String",
       "Description": "Database admin account password"
     },
-    "DBInstanceType": {
+    "DBPath": {
       "Type": "String",
-      "Description": "Database instance type"
-    },
-    "DBAllocatedStorage": {
-      "Type": "String",
-      "Description": "Database allocated storage"
+      "Description": "Full database URI"
     },
     "KeyName": {
       "Type": "String",
@@ -48,34 +43,19 @@
     "InstanceSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "RDS allows ingress from EC2 instances in this group.",
+        "GroupDescription": "EC2 instances security group.",
         "SecurityGroupIngress": []
       }
     },
 
-    "RDSInstanceSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
+    "RDSIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupDescription": "Digital Marketplace API RDS Instance security group",
-        "SecurityGroupIngress": [{
-          "IpProtocol": "tcp",
-          "FromPort": "5432",
-          "ToPort": "5432",
-          "SourceSecurityGroupName": {"Ref" : "InstanceSecurityGroup"}
-        }]
-      }
-    },
-
-    "DB": {
-      "Type": "AWS::RDS::DBInstance",
-      "Properties": {
-        "Engine": "postgres",
-        "DBName": {"Ref": "DBName"},
-        "MasterUsername": {"Ref": "DBUser"},
-        "DBInstanceClass": {"Ref": "DBInstanceType"},
-        "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
-        "MasterUserPassword": {"Ref": "DBPassword"},
-        "VPCSecurityGroups": [{"Fn::GetAtt": ["RDSInstanceSecurityGroup", "GroupId"]}]
+        "GroupName": {"Ref": "RDSSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": "5432",
+        "ToPort": "5432",
+        "SourceSecurityGroupName": {"Ref" : "InstanceSecurityGroup"}
       }
     },
 
@@ -111,6 +91,7 @@
         }]
       }
     },
+
     "InstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
@@ -140,11 +121,7 @@
                   ":",
                   {"Ref": "DBPassword"},
                   "@",
-                  {"Fn::GetAtt": ["DB", "Endpoint.Address"]},
-                  ":",
-                  {"Fn::GetAtt": ["DB", "Endpoint.Port"]},
-                  "/",
-                  {"Ref": "DBName"}
+                  {"Ref": "DBPath"}
                 ]
               ]
             }
@@ -185,10 +162,6 @@
   },
 
   "Outputs": {
-    "RDSSecurityGroup": {
-      "Description": "RDS security group",
-      "Value": {"Ref": "RDSInstanceSecurityGroup"}
-    },
     "Environment": {
       "Description": "Digital Marketplace API environment",
       "Value": {"Ref": "Environment"}
