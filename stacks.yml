@@ -1,8 +1,23 @@
 ---
 all:
+  - apps
+  - dev_access
+  - data_storage
+
+apps:
   - api
   - search_api
   - admin_frontend
+
+eb_apps:
+  - api_app
+  - search_api_app
+  - admin_frontend_app
+
+data_storage:
+  - database
+  - documents_s3
+  - elasticsearch
 
 dev_access:
   - database_dev_access
