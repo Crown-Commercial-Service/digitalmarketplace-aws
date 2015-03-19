@@ -5,9 +5,11 @@ ansible_ssh_private_key_file: "~/.ssh/{{ key_name }}"
 user_cidr_ip: ***
 
 api:
-  db_password: ***
   auth_tokens:
     - ***
+
+database:
+  password: ***
 
 search_api:
   auth_tokens:

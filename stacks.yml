@@ -1,12 +1,37 @@
 ---
 all:
+  - apps
+  - dev_access
+  - data_storage
+
+apps:
   - api
   - search_api
   - admin_frontend
 
+eb_apps:
+  - api_app
+  - search_api_app
+  - admin_frontend_app
+
+data_storage:
+  - database
+  - documents_s3
+  - elasticsearch
+
 dev_access:
-  - api_dev_access
+  - database_dev_access
   - elasticsearch_dev_access
+
+database:
+  name: "rds-database-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_rds_database.json
+  parameters:
+    DBName: "{{ database.name }}"
+    DBUser: "{{ database.user }}"
+    DBPassword: "{{ database.password }}"
+    DBInstanceType: "{{ database.instance_type }}"
+    DBAllocatedStorage: "{{ database.allocated_storage }}"
 
 documents_s3:
   name: "documents-s3-{{ stage }}-{{ environment }}"
@@ -25,27 +50,27 @@ api:
   template: cloudformation_templates/aws_digitalmarketplace_api.json
   dependencies:
     - api_app
+    - database
   parameters:
     ApplicationName: "{{ stacks.api_app.parameters.ApplicationName }}"
     EnvironmentName: "dmapi-{{ stage[:3] }}-{{ environment }}"
     KeyName: "{{ key_name }}"
     APIAuthTokens: "{{ api.auth_tokens | join(':') }}"
-    DBName: "{{ api.db_name }}"
-    DBUser: "{{ api.db_user }}"
-    DBPassword: "{{ api.db_password }}"
-    DBInstanceType: "{{ api.db_instance_type }}"
-    DBAllocatedStorage: "{{ api.db_allocated_storage }}"
+    DBUser: "{{ database.user }}"
+    DBPassword: "{{ database.password }}"
+    DBPath: "{{ stacks.database.outputs.URL }}"
+    RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
 
-api_dev_access:
+database_dev_access:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}-dev-access"
   template: cloudformation_templates/aws_dev_access.json
   dependencies:
-    - api
+    - database
   parameters:
     CidrIp: "{{ user_cidr_ip }}"
-    FromPort: "{{ api.rds_port }}"
-    ToPort: "{{ api.rds_port }}"
-    SecurityGroup: "{{ stacks.api.outputs.RDSSecurityGroup }}"
+    FromPort: "{{ database.port }}"
+    ToPort: "{{ database.port }}"
+    SecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
 
 elasticsearch:
   name: "elasticsearch-{{ stage }}-{{ environment }}"

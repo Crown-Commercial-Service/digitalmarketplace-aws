@@ -1,0 +1,71 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "RDS database",
+
+  "Parameters": {
+    "DBName": {
+      "Type": "String",
+      "Description": "Database name"
+    },
+    "DBUser": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Database admin account name"
+    },
+    "DBPassword": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description": "Database admin account password"
+    },
+    "DBInstanceType": {
+      "Type": "String",
+      "Description": "Database instance type"
+    },
+    "DBAllocatedStorage": {
+      "Type": "String",
+      "Description": "Database allocated storage"
+    }
+  },
+
+  "Resources": {
+    "SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "RDS Instance security group",
+        "SecurityGroupIngress": []
+      }
+    },
+
+    "DB": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "Engine": "postgres",
+        "DBName": {"Ref": "DBName"},
+        "MasterUsername": {"Ref": "DBUser"},
+        "DBInstanceClass": {"Ref": "DBInstanceType"},
+        "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
+        "MasterUserPassword": {"Ref": "DBPassword"},
+        "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}]
+      }
+    }
+  },
+
+  "Outputs": {
+    "SecurityGroup": {
+      "Description": "RDS security group",
+      "Value": {"Ref": "SecurityGroup"}
+    },
+    "URL": {
+      "Description": "Address of the RDS instance",
+      "Value": {
+        "Fn::Join": ["", [
+          {"Fn::GetAtt": ["DB", "Endpoint.Address"]},
+          ":",
+          {"Fn::GetAtt": ["DB", "Endpoint.Port"]},
+          "/",
+          {"Ref": "DBName"}
+        ]]
+      }
+    }
+  }
+}
