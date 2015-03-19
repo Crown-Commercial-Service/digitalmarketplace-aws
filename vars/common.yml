@@ -20,7 +20,7 @@ database:
   port: 5432
   user: "digitalmarketplace"
   name: "digitalmarketplace_api"
-  instance_type: db.m1.small
+  instance_type: db.t2.micro
   allocated_storage: 5
 
 elasticsearch:
