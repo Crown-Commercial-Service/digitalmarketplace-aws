@@ -113,12 +113,12 @@ search_api:
     - elasticsearch
   parameters:
     ApplicationName: "{{ stacks.search_api_app.parameters.ApplicationName }}"
-    EnvironmentName: "dmsearchapi-{{ stage[:3] }}-{{ environment }}"
+    EnvironmentName: "dmsearch-{{ stage[:3] }}-{{ environment }}"
     KeyName: "{{ key_name }}"
     InstanceType: "{{ search_api.instance_type }}"
     MinInstanceCount: "{{ search_api.min_instance_count }}"
     MaxInstanceCount: "{{ search_api.max_instance_count }}"
-    SearchAPIAuthTokens: "{{ search_api.auth_tokens[0] }}"
+    SearchAPIAuthTokens: "{{ search_api.auth_tokens | join(':') }}"
     ElasticsearchHost: "{{ stacks.elasticsearch.outputs.URL }}"
     ElasticsearchPort: "{{ elasticsearch.port }}"
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
