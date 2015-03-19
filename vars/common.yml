@@ -2,6 +2,19 @@
 aws_region: eu-west-1
 
 api:
+  instance_type: t2.micro
+  min_instance_count: 1
+  max_instance_count: 2
+
+search_api:
+  instance_type: t2.micro
+  min_instance_count: 1
+  max_instance_count: 2
+
+admin_frontend:
+  instance_type: t2.micro
+  min_instance_count: 1
+  max_instance_count: 2
 
 database:
   port: 5432
