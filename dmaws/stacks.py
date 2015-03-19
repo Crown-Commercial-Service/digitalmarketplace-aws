@@ -126,14 +126,15 @@ class StackPlan(object):
                 return
 
     @classmethod
-    def from_ctx(cls, ctx):
+    def from_ctx(cls, ctx, **kwargs):
         return cls(
-            stacks=ctx.stacks,
-            stage=ctx.stage,
-            environment=ctx.environment,
-            variables=ctx.variables,
-            apps=ctx.apps,
-            logger=ctx.log
+            stacks=kwargs.get('stacks', ctx.stacks),
+            stage=kwargs.get('stage', ctx.stage),
+            environment=kwargs.get('environment', ctx.environment),
+            variables=kwargs.get('variables', ctx.variables),
+            apps=kwargs.get('apps', ctx.apps),
+            logger=kwargs.get('logger', ctx.log),
+            profile_name=kwargs.get('profile_name'),
         )
 
 
