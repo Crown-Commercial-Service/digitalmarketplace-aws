@@ -9,6 +9,8 @@ from .utils import run_cmd
 SSH_REPO_PATTERN = re.compile('git@[^:]*:[^/]+/(.*)\.git')
 HTTPS_REPO_PATTERN = re.compile('https://[^/]+/[^/]+/(.*)/(?:.git)?')
 
+RELEASE_TAG_PATTERN = re.compile(r'^release-\d+$')
+
 
 def run_git_cmd(args, cwd, stdout=None):
     return run_cmd(
@@ -41,6 +43,12 @@ def get_current_ref(cwd):
     return run_git_cmd(['rev-parse', '--abbrev-ref', 'HEAD'], cwd).strip()
 
 
+def tag_exists(cwd, tag_name):
+    found_tag_name = run_git_cmd(['tag', '-l', tag_name],
+                                 cwd).strip()
+    return found_tag_name == tag_name
+
+
 def push_tag(cwd, tag_name, tag_message=None):
     if tag_message is None:
         tag_message = tag_name
@@ -50,6 +58,23 @@ def push_tag(cwd, tag_name, tag_message=None):
     run_git_cmd(['push', 'origin', tag_name],
                 cwd).strip()
 
+
+def get_other_tags(cwd, tag):
+    """Return other tags pointing to the same commit"""
+    git_cmd = ['tag', '--points-at', '{}^{{}}'.format(tag)]
+    result = run_git_cmd(git_cmd, cwd).strip().split('\n')
+    return [t for t in result if t is not None and t != tag]
+
+
+def get_release_tag(cwd, tag):
+    """Return release tag pointing to the same commit"""
+    tags = get_other_tags(cwd, tag)
+    tags = filter(RELEASE_TAG_PATTERN.match, tags)
+
+    if len(tags) == 1:
+        return tags[0]
+    elif len(tags) > 1:
+        raise StandardError("Something strange is going on, we have more than one release tag pointing to same commit")
 
 def add_directory_to_archive(cwd, path, archive_path):
     with zipfile.ZipFile(archive_path, 'a') as archive:
