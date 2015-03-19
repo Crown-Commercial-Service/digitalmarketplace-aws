@@ -21,27 +21,10 @@ def release_cmd(ctx, repository_path):
     ctx.add_apps(app)
     deploy = StackPlan.from_ctx(ctx).get_deploy(repository_path)
 
-    release_name = get_release_name(repository_path)
-    build.push_tag(repository_path, release_name)
-    version, created = deploy.create_version(release_name)
-    deploy.deploy(version, ctx.stage)
-
-
-def get_release_name(repository_path):
-    release_name = 'release-{}'.format(get_pull_request_number(
-        repository_path))
-
+    release_name = build.get_release_name_for_repo(repository_path)
     if build.tag_exists(repository_path, release_name):
         raise ValueError("Already have a tag for {}".format(release_name))
 
-    return release_name
-
-
-def get_pull_request_number(repository_path):
-    output = build.run_git_cmd(['log', '-1', '--pretty=oneline'],
-                               repository_path)
-    pattern = re.compile('[a-f0-9]+ Merge pull request #(\d+) from')
-    match = pattern.match(output)
-    if not match:
-        raise ValueError("Last commit was not a merge commit.")
-    return match.group(1)
+    build.push_tag(repository_path, release_name)
+    version, created = deploy.create_version(release_name)
+    deploy.deploy(version, ctx.stage)

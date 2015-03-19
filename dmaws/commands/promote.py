@@ -50,7 +50,8 @@ def promote_to_staging(ctx, repository_path, release_name, from_account):
 def promote_to_production(ctx, repository_path):
     deploy = get_deploy(ctx, repository_path)
 
-    release_tag = build.get_release_tag(repository_path, 'deployed-to-staging')
+    release_tag = build.get_release_name_for_tag(repository_path,
+                                                 'deployed-to-staging')
     if release_tag is None:
         raise StandardError("Could not find release tag for staging")
 

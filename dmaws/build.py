@@ -10,6 +10,7 @@ SSH_REPO_PATTERN = re.compile('git@[^:]*:[^/]+/(.*)\.git')
 HTTPS_REPO_PATTERN = re.compile('https://[^/]+/[^/]+/(.*)/(?:.git)?')
 
 RELEASE_TAG_PATTERN = re.compile(r'^release-\d+$')
+MERGE_COMMIT_PATTERN = re.compile(r'[a-f0-9]+ Merge pull request #(\d+) from')
 
 
 def run_git_cmd(args, cwd, stdout=None):
@@ -66,7 +67,7 @@ def get_other_tags(cwd, tag):
     return [t for t in result if t is not None and t != tag]
 
 
-def get_release_tag(cwd, tag):
+def get_release_name_for_tag(cwd, tag):
     """Return release tag pointing to the same commit"""
     tags = get_other_tags(cwd, tag)
     tags = filter(RELEASE_TAG_PATTERN.match, tags)
@@ -75,6 +76,17 @@ def get_release_tag(cwd, tag):
         return tags[0]
     elif len(tags) > 1:
         raise StandardError("Something strange is going on, we have more than one release tag pointing to same commit")
+
+
+def get_release_name_for_repo(cwd):
+    """Return release name generated from most recent PR merge commit"""
+    result = run_git_cmd(['log', '-1', '--pretty=oneline'], cwd)
+    match = MERGE_COMMIT_PATTERN.match(result)
+    if not match:
+        raise ValueError("Last commit was not a merge commit.")
+
+    return 'release-{}'.format(match.group(1))
+
 
 def add_directory_to_archive(cwd, path, archive_path):
     with zipfile.ZipFile(archive_path, 'a') as archive:
