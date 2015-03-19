@@ -8,10 +8,11 @@ import boto.exception
 
 
 class Deploy(object):
-    def __init__(self, eb_application, eb_environment, repo_path, region, logger=None):
+    def __init__(self, eb_application, eb_environment, repo_path, region, logger=None, profile_name=None):
         self.log = logger
-        self.beanstalk = BeanstalkClient(region, logger)
-        self.s3 = S3Client(region, logger)
+        self.profile_name = profile_name
+        self.beanstalk = BeanstalkClient(region, logger, profile_name)
+        self.s3 = S3Client(region, logger, profile_name)
 
         self.repo_path = repo_path
         self.eb_application = eb_application
@@ -52,8 +53,9 @@ class Deploy(object):
 
 
 class S3Client(object):
-    def __init__(self, region, logger=None):
-        self.conn = boto.s3.connect_to_region(region)
+    def __init__(self, region, logger=None, profile_name=None):
+        self.conn = boto.s3.connect_to_region(region,
+                                              profile_name=profile_name)
         self.log = logger
 
     def upload_package(self, bucket_name, package_name, package_file):
@@ -68,8 +70,9 @@ class S3Client(object):
 
 
 class BeanstalkClient(object):
-    def __init__(self, region, logger=None):
-        self.conn = boto.beanstalk.connect_to_region(region)
+    def __init__(self, region, logger=None, profile_name=None):
+        self.conn = boto.beanstalk.connect_to_region(region,
+                                                     profile_name=profile_name)
         self.log = logger
 
     def get_storage_location(self):

@@ -7,8 +7,10 @@ import boto.exception
 
 
 class Cloudformation(object):
-    def __init__(self, region, logger=None):
-        self.conn = boto.cloudformation.connect_to_region(region)
+    def __init__(self, region, logger=None, profile_name=None):
+        self.conn = boto.cloudformation.connect_to_region(
+            region,
+            profile_name=profile_name)
         self.log = logger
 
     def create_stack(self, stack):
