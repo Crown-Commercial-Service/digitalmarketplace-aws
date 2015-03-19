@@ -19,15 +19,7 @@ def release_cmd(ctx, repository_path):
 
     app = build.get_application_name(repository_path)
     ctx.add_apps(app)
-    stack_info = StackPlan.from_ctx(ctx).info()[ctx.apps[0]]
-
-    deploy = Deploy(
-        stack_info.parameters['ApplicationName'],
-        stack_info.parameters['EnvironmentName'],
-        repository_path,
-        region=ctx.variables['aws_region'],
-        logger=ctx.log
-    )
+    deploy = StackPlan.from_ctx(ctx).get_deploy(repository_path)
 
     release_name = get_release_name(repository_path)
     build.push_tag(repository_path, release_name)
