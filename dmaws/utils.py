@@ -16,7 +16,7 @@ def run_cmd(args, env=None, cwd=None, stdout=None):
 
 def read_yaml_file(path):
     with open(path) as f:
-        return yaml.load(f)
+        return yaml.load(f) or {}
 
 
 def load_file(path):
