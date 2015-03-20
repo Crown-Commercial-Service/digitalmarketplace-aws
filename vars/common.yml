@@ -2,12 +2,25 @@
 aws_region: eu-west-1
 
 api:
+  instance_type: t2.micro
+  min_instance_count: 1
+  max_instance_count: 2
+
+search_api:
+  instance_type: t2.micro
+  min_instance_count: 1
+  max_instance_count: 2
+
+admin_frontend:
+  instance_type: t2.micro
+  min_instance_count: 1
+  max_instance_count: 2
 
 database:
   port: 5432
   user: "digitalmarketplace"
   name: "digitalmarketplace_api"
-  instance_type: db.m1.small
+  instance_type: db.t2.micro
   allocated_storage: 5
 
 elasticsearch:

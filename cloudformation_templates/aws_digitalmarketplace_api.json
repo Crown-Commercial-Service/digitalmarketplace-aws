@@ -3,6 +3,22 @@
   "Description": "Digital Marketplace API Environment",
 
   "Parameters": {
+    "KeyName": {
+      "Type": "String",
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
+    },
+    "InstanceType": {
+      "Type": "String",
+      "Description": "EC2 instance type"
+    },
+    "MinInstanceCount": {
+      "Type": "Number",
+      "Description": "MinSize of the Auto Scaling group"
+    },
+    "MaxInstanceCount": {
+      "Type": "Number",
+      "Description": "MaxSize of the Auto Scaling group"
+    },
     "RDSSecurityGroup": {
       "Type": "String",
       "Description": "Name of the RDS instances security group"
@@ -19,10 +35,6 @@
     "DBPath": {
       "Type": "String",
       "Description": "Full database URI"
-    },
-    "KeyName": {
-      "Type": "String",
-      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
     },
     "APIAuthTokens": {
       "NoEcho": "true",
@@ -110,6 +122,26 @@
         "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7",
         "OptionSettings": [
           {
+            "Namespace": "aws:autoscaling:launchconfiguration",
+            "OptionName": "EC2KeyName",
+            "Value": {"Ref": "KeyName"}
+          },
+          {
+            "Namespace": "aws:autoscaling:launchconfiguration",
+            "OptionName": "InstanceType",
+            "Value": {"Ref": "InstanceType"}
+          },
+          {
+            "Namespace": "aws:autoscaling:asg",
+            "OptionName": "MinSize",
+            "Value": {"Ref": "MinInstanceCount"}
+          },
+          {
+            "Namespace": "aws:autoscaling:asg",
+            "OptionName": "MaxSize",
+            "Value": {"Ref": "MaxInstanceCount"}
+          },
+          {
             "Namespace": "aws:elasticbeanstalk:application:environment",
             "OptionName": "SQLALCHEMY_DATABASE_URI",
             "Value": {
@@ -140,11 +172,6 @@
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "IamInstanceProfile",
             "Value": {"Ref": "InstanceProfile"}
-          },
-          {
-            "Namespace": "aws:autoscaling:launchconfiguration",
-            "OptionName": "EC2KeyName",
-            "Value": {"Ref": "KeyName"}
           }
         ]
       }
