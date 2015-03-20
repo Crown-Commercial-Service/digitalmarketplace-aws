@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 from . import build
 
@@ -18,15 +19,19 @@ class Deploy(object):
         self.eb_application = eb_application
         self.eb_environment = eb_environment
 
-    def create_version(self, version_label, with_sha=False, description=''):
-        ref, sha, package_path = build.create_archive(self.repo_path)
-        self.log('Created a git archive at %s', package_path)
+    def create_version(self, version_label, with_sha=False, description='', from_file=None):
+        if from_file:
+            package_path = from_file
+        else:
+            ref, sha, package_path = build.create_archive(self.repo_path)
+            self.log('Created a git archive at %s', package_path)
 
         if with_sha:
             version_label = '{}-{}-{}'.format(version_label, ref, sha[:7])
-        package_name = '{}/{}.zip'.format(self.eb_application, version_label)
 
-        bucket = self.beanstalk.get_storage_location()
+        package_name = self.get_package_name(version_label)
+
+        bucket = self.get_storage_location()
 
         self.log('Uploading %s to %s/%s', package_path, bucket, package_name)
         _, s3_key = self.s3.upload_package(bucket, package_name, package_path)
@@ -51,6 +56,23 @@ class Deploy(object):
         self.beanstalk.update_environment(self.eb_environment, version_label)
         build.push_tag(self.repo_path, 'deployed-to-{}'.format(stage))
 
+    def version_exists(self, version_label):
+        return self.beanstalk.application_version_exists(
+            self.eb_application,
+            version_label)
+
+    def get_package_name(self, version_label):
+        return '{}/{}.zip'.format(self.eb_application, version_label)
+
+    def get_storage_location(self):
+        return self.beanstalk.get_storage_location()
+
+    def download_package(self, version_label):
+        return self.s3.download_package(
+            self.get_storage_location(),
+            self.get_package_name(version_label),
+        )
+
 
 class S3Client(object):
     def __init__(self, region, logger=None, profile_name=None):
@@ -67,6 +89,15 @@ class S3Client(object):
         key.set_contents_from_filename(package_file)
 
         return bucket, key.key
+
+    def download_package(self, bucket_name, package_name):
+        bucket = self.conn.get_bucket(bucket_name)
+        key = bucket.get_key(package_name)
+        if not key:
+            raise StandardError('S3 key does not exist {}'.format(package_name))
+        package_file, package_path = tempfile.mkstemp()
+        key.get_contents_to_filename(package_path)
+        return package_path
 
 
 class BeanstalkClient(object):
@@ -100,3 +131,11 @@ class BeanstalkClient(object):
             return
 
         return version_label
+
+    def application_version_exists(self, application_name, version_label):
+        response = self.conn.describe_application_versions(
+            application_name, version_label)
+
+        result = response['DescribeApplicationVersionsResponse']['DescribeApplicationVersionsResult']
+
+        return len(result['ApplicationVersions']) > 0

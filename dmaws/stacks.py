@@ -125,6 +125,21 @@ class StackPlan(object):
                 self.log("Dependant stack %s exists, can't continue", built_stack.name)
                 return
 
+    def get_deploy(self, repository_path):
+        if len(self.apps) != 1:
+            raise StandardError("Can only deploy a single app at a time")
+        stack_info = self.info()[self.apps[0]]
+
+        return Deploy(
+            stack_info.parameters['ApplicationName'],
+            stack_info.parameters['EnvironmentName'],
+            repository_path,
+            region=self.stack_context['aws_region'],
+            logger=self.log,
+            profile_name=self.profile_name,
+        )
+
+
     @classmethod
     def from_ctx(cls, ctx, **kwargs):
         return cls(
