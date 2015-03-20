@@ -60,6 +60,10 @@ def push_tag(cwd, tag_name, tag_message=None):
                 cwd).strip()
 
 
+def push_deployed_to_tag(cwd, stage):
+    push_tag(cwd, 'deployed-to-{}'.format(stage))
+
+
 def get_other_tags(cwd, tag):
     """Return other tags pointing to the same commit"""
     git_cmd = ['tag', '--points-at', '{}^{{}}'.format(tag)]

@@ -54,7 +54,6 @@ class Deploy(object):
         self.log("Deploying version %s to %s (%s)",
                  version_label, self.eb_environment, stage)
         self.beanstalk.update_environment(self.eb_environment, version_label)
-        build.push_tag(self.repo_path, 'deployed-to-{}'.format(stage))
 
     def version_exists(self, version_label):
         return self.beanstalk.application_version_exists(

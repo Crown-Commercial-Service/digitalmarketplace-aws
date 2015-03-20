@@ -23,6 +23,8 @@ def release_cmd(ctx, repository_path, release_name=None, from_account=None):
     else:
         raise ValueError("Invalid stage for release {}".format(ctx.stage))
 
+    build.push_deployed_to_tag(repository_path, ctx.stage)
+
 
 def get_deploy(ctx, repository_path):
     app = build.get_application_name(repository_path)
