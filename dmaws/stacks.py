@@ -2,6 +2,7 @@ from toposort import toposort_flatten
 
 from .cloudformation import Cloudformation
 from .utils import template, load_file
+from .deploy import Deploy
 
 
 class Stack(object):
@@ -138,7 +139,6 @@ class StackPlan(object):
             logger=self.log,
             profile_name=self.profile_name,
         )
-
 
     @classmethod
     def from_ctx(cls, ctx, **kwargs):

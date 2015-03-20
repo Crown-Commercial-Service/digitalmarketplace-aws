@@ -1,15 +1,14 @@
 import click
-import re
 
 from ..cli import cli_command
 from ..stacks import StackPlan
 from .. import build
-from ..deploy import Deploy
 
 
 @click.argument('repository_path', nargs=1, type=click.Path(exists=True))
 @click.option('--release-name')
 @click.option('--from-account')
+@cli_command('promote', max_apps=0)
 def promote_cmd(ctx, repository_path, release_name=None, from_account=None):
     if ctx.stage == 'staging':
         promote_to_staging(ctx, repository_path, release_name, from_account)

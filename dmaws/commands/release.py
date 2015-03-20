@@ -1,10 +1,8 @@
 import click
-import re
 
 from ..cli import cli_command
 from ..stacks import StackPlan
 from .. import build
-from ..deploy import Deploy
 
 
 @click.argument('repository_path', nargs=1, type=click.Path(exists=True))
