@@ -15,7 +15,7 @@ def promote_cmd(ctx, repository_path, release_name=None, from_account=None):
     elif ctx.stage == 'production':
         promote_to_production(ctx, repository_path)
     else:
-        raise StandardError("Promotion can only happen to staging or production")
+        raise ValueError("Promotion can only happen to staging or production")
 
 
 def get_deploy(ctx, repository_path):
@@ -27,9 +27,9 @@ def get_deploy(ctx, repository_path):
 
 def promote_to_staging(ctx, repository_path, release_name, from_account):
     if release_name is None:
-        raise StandardError("When promoting to staging a release name must be provided")
+        raise ValueError("When promoting to staging a release name must be provided")
     if from_account is None:
-        raise StandardError("When promoting to staging the development account must be provided")
+        raise ValueError("When promoting to staging the development account must be provided")
 
     deploy = get_deploy(ctx, repository_path)
 

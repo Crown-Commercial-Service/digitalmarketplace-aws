@@ -94,8 +94,9 @@ class S3Client(object):
         bucket = self.conn.get_bucket(bucket_name)
         key = bucket.get_key(package_name)
         if not key:
-            raise StandardError('S3 key does not exist {}'.format(package_name))
+            raise ValueError('S3 key does not exist {}'.format(package_name))
         package_file, package_path = tempfile.mkstemp()
+        os.close(package_file)
         key.get_contents_to_filename(package_path)
         return package_path
 

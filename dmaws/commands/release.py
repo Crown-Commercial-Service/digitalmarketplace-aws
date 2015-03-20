@@ -13,7 +13,7 @@ def release_cmd(ctx, repository_path):
     This is more detail about the thing
     """
     if ctx.stage != "preview":
-        raise StandardError("Creating new releases can only be done against preview")
+        raise ValueError("Creating new releases can only be done against preview")
 
     app = build.get_application_name(repository_path)
     ctx.add_apps(app)
