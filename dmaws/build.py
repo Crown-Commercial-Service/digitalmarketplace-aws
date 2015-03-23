@@ -32,8 +32,11 @@ def clone_or_update(repo_url):
     if not os.path.exists(repository_path):
         run_git_cmd(['clone', repo_url], REPOS_PATH)
     else:
-        run_git_cmd(['reset', '--hard', 'origin'], repository_path)
-        run_git_cmd(['pull'], repository_path)
+        run_git_cmd(['reset', '--hard', 'HEAD'], repository_path)
+        run_git_cmd(['checkout', 'master'], repository_path)
+        run_git_cmd(['clean', '-fdx'], repository_path)
+        run_git_cmd(['fetch'], repository_path)
+        run_git_cmd(['reset', '--hard', 'origin/master'], repository_path)
 
     return repository_path
 
