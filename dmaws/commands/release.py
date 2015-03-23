@@ -16,7 +16,7 @@ def release_cmd(ctx, app_name, release_name=None, from_account=None):
     If releasing to staging copy the artefact over from the development account.
     If releasing to production just promote the current staging releasee to production.
     """
-    repository_path = build.clone_or_update(app_name)
+    repository_path = build.clone_or_update(ctx.stacks[app_name].repo_url)
     if ctx.stage == "preview":
         release_to_preview(ctx, repository_path)
     elif ctx.stage == "staging":

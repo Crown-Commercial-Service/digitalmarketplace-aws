@@ -6,8 +6,10 @@ from .deploy import Deploy
 
 
 class Stack(object):
-    def __init__(self, name, template, parameters, dependencies=None):
+    def __init__(self, name, template, parameters,
+                 dependencies=None, repo_url=None):
         self.name = name
+        self.repo_url = repo_url
         self.template = template
         self.parameters = parameters or {}
         self.dependencies = dependencies or []

@@ -23,14 +23,14 @@ def run_git_cmd(args, cwd, stdout=None):
     )
 
 
-def clone_or_update(app_name):
-    app_git_url = get_application_git_url(app_name)
+def clone_or_update(repo_url):
+    app_name = get_application_name_from_url(repo_url)
     repository_path = os.path.join(REPOS_PATH,
                                    'digitalmarketplace-{}'.format(app_name))
     if not os.path.exists(REPOS_PATH):
         os.mkdir(REPOS_PATH)
     if not os.path.exists(repository_path):
-        run_git_cmd(['clone', app_git_url], REPOS_PATH)
+        run_git_cmd(['clone', repo_url], REPOS_PATH)
     else:
         run_git_cmd(['reset', '--hard', 'origin'], repository_path)
         run_git_cmd(['pull'], repository_path)
@@ -38,12 +38,7 @@ def clone_or_update(app_name):
     return repository_path
 
 
-def get_application_git_url(app_name):
-    return 'git@github.com:alphagov/digitalmarketplace-{}.git'.format(app_name)
-
-
-def get_application_name(cwd):
-    repo_url = get_repo_url(cwd)
+def get_application_name_from_url(repo_url):
     match = SSH_REPO_PATTERN.match(repo_url)
     if not match:
         match = HTTPS_REPO_PATTERN.match(repo_url)
@@ -51,6 +46,10 @@ def get_application_name(cwd):
     if 'digitalmarketplace-' not in name:
         raise ValueError('Application name format not recognized')
     return name.replace('digitalmarketplace-', '')
+
+
+def get_application_name(cwd):
+    return get_application_name_from_url(get_repo_url(cwd))
 
 
 def get_repo_url(cwd):
