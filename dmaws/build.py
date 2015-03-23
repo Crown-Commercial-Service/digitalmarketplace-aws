@@ -100,7 +100,7 @@ def get_release_name_for_tag(cwd, tag):
     if len(tags) == 1:
         return tags[0]
     elif len(tags) > 1:
-        raise StandardError(
+        raise ValueError(
             "More than one release tag pointing to the same commit.")
 
 
