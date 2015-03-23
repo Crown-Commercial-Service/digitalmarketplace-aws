@@ -12,6 +12,8 @@ HTTPS_REPO_PATTERN = re.compile('https://[^/]+/[^/]+/(.*)/(?:.git)?')
 RELEASE_TAG_PATTERN = re.compile(r'^release-\d+$')
 MERGE_COMMIT_PATTERN = re.compile(r'[a-f0-9]+ Merge pull request #(\d+) from')
 
+REPOS_PATH = '.repos'
+
 
 def run_git_cmd(args, cwd, stdout=None):
     return run_cmd(
@@ -19,6 +21,25 @@ def run_git_cmd(args, cwd, stdout=None):
         cwd=cwd,
         stdout=stdout or subprocess.PIPE
     )
+
+
+def clone_or_update(app_name):
+    app_git_url = get_application_git_url(app_name)
+    repository_path = os.path.join(REPOS_PATH,
+                                   'digitalmarketplace-{}'.format(app_name))
+    if not os.path.exists(REPOS_PATH):
+        os.mkdir(REPOS_PATH)
+    if not os.path.exists(repository_path):
+        run_git_cmd(['clone', app_git_url], REPOS_PATH)
+    else:
+        run_git_cmd(['reset', '--hard', 'origin'], repository_path)
+        run_git_cmd(['pull'], repository_path)
+
+    return repository_path
+
+
+def get_application_git_url(app_name):
+    return 'git@github.com:alphagov/digitalmarketplace-{}.git'.format(app_name)
 
 
 def get_application_name(cwd):
@@ -79,7 +100,8 @@ def get_release_name_for_tag(cwd, tag):
     if len(tags) == 1:
         return tags[0]
     elif len(tags) > 1:
-        raise StandardError("Something strange is going on, we have more than one release tag pointing to same commit")
+        raise StandardError(
+            "More than one release tag pointing to the same commit.")
 
 
 def get_release_name_for_repo(cwd):

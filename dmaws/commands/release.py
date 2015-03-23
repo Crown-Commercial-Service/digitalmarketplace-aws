@@ -5,17 +5,18 @@ from ..stacks import StackPlan
 from .. import build
 
 
-@click.argument('repository_path', nargs=1, type=click.Path(exists=True))
+@click.argument('app_name', nargs=1)
 @click.option('--release-name')
 @click.option('--from-account')
 @cli_command('release', max_apps=0)
-def release_cmd(ctx, repository_path, release_name=None, from_account=None):
+def release_cmd(ctx, app_name, release_name=None, from_account=None):
     """Release an application to preview, staging or production.
 
     If releasing to preview create a new release tag and push the artefact up.
     If releasing to staging copy the artefact over from the development account.
     If releasing to production just promote the current staging releasee to production.
     """
+    repository_path = build.clone_or_update(app_name)
     if ctx.stage == "preview":
         release_to_preview(ctx, repository_path)
     elif ctx.stage == "staging":

@@ -1,3 +1,4 @@
+.repos
 *.egg-info
 *.pyc
 user.yml
