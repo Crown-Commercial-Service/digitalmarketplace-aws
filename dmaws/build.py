@@ -122,6 +122,11 @@ def add_build_artefacts_to_archive(cwd, archive):
     add_directory_to_archive(cwd, 'bower_components', archive)
 
 
+def set_version_label_on_archive(archive_path, version_label):
+    with zipfile.ZipFile(archive_path, 'a') as archive:
+        archive.writestr('version_label', "{}\n".format(version_label))
+
+
 def create_archive(cwd):
     ref, sha, archive_path = create_git_archive(cwd)
     try:
