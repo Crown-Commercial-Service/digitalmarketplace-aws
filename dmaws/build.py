@@ -9,6 +9,9 @@ from .utils import run_cmd
 SSH_REPO_PATTERN = re.compile('git@[^:]*:[^/]+/(.*)\.git')
 HTTPS_REPO_PATTERN = re.compile('https://[^/]+/[^/]+/(.*)/(?:.git)?')
 
+RELEASE_TAG_PATTERN = re.compile(r'^release-\d+$')
+MERGE_COMMIT_PATTERN = re.compile(r'[a-f0-9]+ Merge pull request #(\d+) from')
+
 
 def run_git_cmd(args, cwd, stdout=None):
     return run_cmd(
@@ -39,6 +42,54 @@ def get_current_sha(cwd):
 
 def get_current_ref(cwd):
     return run_git_cmd(['rev-parse', '--abbrev-ref', 'HEAD'], cwd).strip()
+
+
+def tag_exists(cwd, tag_name):
+    found_tag_name = run_git_cmd(['tag', '-l', tag_name],
+                                 cwd).strip()
+    return found_tag_name == tag_name
+
+
+def push_tag(cwd, tag_name, tag_message=None):
+    if tag_message is None:
+        tag_message = tag_name
+
+    run_git_cmd(['tag', '-a', tag_name, '-m', tag_message],
+                cwd).strip()
+    run_git_cmd(['push', 'origin', tag_name],
+                cwd).strip()
+
+
+def push_deployed_to_tag(cwd, stage):
+    push_tag(cwd, 'deployed-to-{}'.format(stage))
+
+
+def get_other_tags(cwd, tag):
+    """Return other tags pointing to the same commit"""
+    git_cmd = ['tag', '--points-at', '{}^{{}}'.format(tag)]
+    result = run_git_cmd(git_cmd, cwd).strip().split('\n')
+    return [t for t in result if t is not None and t != tag]
+
+
+def get_release_name_for_tag(cwd, tag):
+    """Return release tag pointing to the same commit"""
+    tags = get_other_tags(cwd, tag)
+    tags = filter(RELEASE_TAG_PATTERN.match, tags)
+
+    if len(tags) == 1:
+        return tags[0]
+    elif len(tags) > 1:
+        raise StandardError("Something strange is going on, we have more than one release tag pointing to same commit")
+
+
+def get_release_name_for_repo(cwd):
+    """Return release name generated from most recent PR merge commit"""
+    result = run_git_cmd(['log', '-1', '--pretty=oneline'], cwd)
+    match = MERGE_COMMIT_PATTERN.match(result)
+    if not match:
+        raise ValueError("Last commit was not a merge commit.")
+
+    return 'release-{}'.format(match.group(1))
 
 
 def add_directory_to_archive(cwd, path, archive_path):

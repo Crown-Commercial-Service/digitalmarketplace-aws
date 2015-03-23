@@ -13,15 +13,7 @@ def deploy_cmd(ctx, repository_path):
 
     app = get_application_name(repository_path)
     ctx.add_apps(app)
-    stack_info = StackPlan.from_ctx(ctx).info()[ctx.apps[0]]
-
-    deploy = Deploy(
-        stack_info.parameters['ApplicationName'],
-        stack_info.parameters['EnvironmentName'],
-        repository_path,
-        region=ctx.variables['aws_region'],
-        logger=ctx.log
-    )
+    deploy = StackPlan.from_ctx(ctx).get_deploy(repository_path)
 
     version, created = deploy.create_version(app, with_sha=True)
-    deploy.deploy(version)
+    deploy.deploy(version, ctx.stage)

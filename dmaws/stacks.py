@@ -2,6 +2,7 @@ from toposort import toposort_flatten
 
 from .cloudformation import Cloudformation
 from .utils import template, load_file
+from .deploy import Deploy
 
 
 class Stack(object):
@@ -57,9 +58,10 @@ class BuiltStack(Stack):
 
 
 class StackPlan(object):
-    def __init__(self, stacks, stage, environment, variables, apps, logger=None):
+    def __init__(self, stacks, stage, environment, variables, apps, logger=None, profile_name=None):
         self.log = logger
-        self.cfn = Cloudformation(variables['aws_region'], logger=self.log)
+        self.profile_name = profile_name
+        self.cfn = Cloudformation(variables['aws_region'], logger=self.log, profile_name=profile_name)
 
         self.stage = stage
         self.environment = environment
@@ -124,15 +126,30 @@ class StackPlan(object):
                 self.log("Dependant stack %s exists, can't continue", built_stack.name)
                 return
 
+    def get_deploy(self, repository_path):
+        if len(self.apps) != 1:
+            raise StandardError("Can only deploy a single app at a time")
+        stack_info = self.info()[self.apps[0]]
+
+        return Deploy(
+            stack_info.parameters['ApplicationName'],
+            stack_info.parameters['EnvironmentName'],
+            repository_path,
+            region=self.stack_context['aws_region'],
+            logger=self.log,
+            profile_name=self.profile_name,
+        )
+
     @classmethod
-    def from_ctx(cls, ctx):
+    def from_ctx(cls, ctx, **kwargs):
         return cls(
-            stacks=ctx.stacks,
-            stage=ctx.stage,
-            environment=ctx.environment,
-            variables=ctx.variables,
-            apps=ctx.apps,
-            logger=ctx.log
+            stacks=kwargs.get('stacks', ctx.stacks),
+            stage=kwargs.get('stage', ctx.stage),
+            environment=kwargs.get('environment', ctx.environment),
+            variables=kwargs.get('variables', ctx.variables),
+            apps=kwargs.get('apps', ctx.apps),
+            logger=kwargs.get('logger', ctx.log),
+            profile_name=kwargs.get('profile_name'),
         )
 
 
