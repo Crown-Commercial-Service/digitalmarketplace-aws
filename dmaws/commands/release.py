@@ -10,9 +10,11 @@ from .. import build
 @click.option('--from-account')
 @cli_command('release', max_apps=0)
 def release_cmd(ctx, repository_path, release_name=None, from_account=None):
-    """Create a new application release and deploy.
+    """Release an application to preview, staging or production.
 
-    This is more detail about the thing
+    If releasing to preview create a new release tag and push the artefact up.
+    If releasing to staging copy the artefact over from the development account.
+    If releasing to production just promote the current staging releasee to production.
     """
     if ctx.stage == "preview":
         release_to_preview(ctx, repository_path)
