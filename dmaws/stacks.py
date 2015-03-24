@@ -1,7 +1,7 @@
 from toposort import toposort_flatten
 
 from .cloudformation import Cloudformation
-from .utils import template, load_file
+from .utils import template, load_file, LazyTemplateMapping
 from .deploy import Deploy
 
 
@@ -25,9 +25,11 @@ class BuiltStack(Stack):
 
         self.name = self._build_name(stack.name)
 
-        self._parameters = None
-        self._raw_parameters = stack.parameters
-        self._variables = variables
+        self.parameters = LazyTemplateMapping(
+            stack.parameters,
+            variables,
+            stage=self.stage,
+            environment=self.environment)
 
         self.template = stack.template
         self.dependencies = stack.dependencies
@@ -37,19 +39,6 @@ class BuiltStack(Stack):
         self.status = None
         self.outputs = None
         self.resources = None
-
-    @property
-    def parameters(self):
-        if self._parameters is None:
-            parameters = template(
-                self._raw_parameters,
-                self._variables,
-                stage=self.stage,
-                environment=self.environment
-            )
-            self._parameters = parameters
-
-        return self._parameters
 
     def _build_name(self, name):
         return template(name, {}, stage=self.stage, environment=self.environment)
@@ -87,7 +76,7 @@ class StackPlan(object):
     def build_stack(self, stack):
         return stack.build(self.stage, self.environment, self.stack_context)
 
-    def info(self):
+    def info(self, with_aws=True):
         stacks = self.stacks(with_dependencies=True)
         self.log('Gathering info about %s stacks', ', '.join(s[0] for s in stacks))
 
@@ -95,8 +84,9 @@ class StackPlan(object):
             built_stack = self.build_stack(stack)
             self.stack_context['stacks'][name] = built_stack
 
-            stack_info = self.cfn.describe_stack(built_stack)
-            self.stack_context['stacks'][name].update_info(stack_info)
+            if with_aws:
+                stack_info = self.cfn.describe_stack(built_stack)
+                self.stack_context['stacks'][name].update_info(stack_info)
 
         return self.stack_context['stacks']
 
@@ -131,7 +121,7 @@ class StackPlan(object):
     def get_deploy(self, repository_path):
         if len(self.apps) != 1:
             raise StandardError("Can only deploy a single app at a time")
-        stack_info = self.info()[self.apps[0]]
+        stack_info = self.info(with_aws=False)[self.apps[0]]
 
         return Deploy(
             stack_info.parameters['ApplicationName'],

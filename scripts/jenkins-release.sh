@@ -8,7 +8,7 @@ if [ "$STAGE" = "Select one" -o "$STAGE" = "" ]; then
   exit 1
 fi
 
-if [ "$APPLICATION_NAME" = "Select one" -o "$STAGE" = ""]; then
+if [ "$APPLICATION_NAME" = "Select one" -o "$STAGE" = "" ]; then
   >&2 echo "You must select an application name."
   exit 1
 fi
