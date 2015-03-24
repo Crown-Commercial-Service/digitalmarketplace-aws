@@ -73,6 +73,19 @@ def template(item, variables, **kwargs):
         return item
 
 
+class LazyTemplateMapping(object):
+    def __init__(self, mapping, variables, **kwargs):
+        self._mapping = mapping
+        self._cache = {}
+        self._variables = merge_dicts(variables, kwargs)
+
+    def __getitem__(self, key):
+        if key not in self._cache:
+            self._cache[key] = template(self._mapping[key], self._variables)
+
+        return self._cache[key]
+
+
 def template_string(string, variables):
     jinja_env = jinja2.Environment(
         trim_blocks=True,

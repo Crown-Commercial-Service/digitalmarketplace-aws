@@ -44,11 +44,13 @@ def cli_command(cmd_name, max_apps=-1):
         def wrapped(ctx, vars_file, var, stacks_file, load_default_files,
                     dry_run, app=None, *args, **kwargs):
             if load_default_files:
-                vars_file = [
+                default_vars_files = [
                     'vars/common.yml',
                     'vars/{}.yml'.format(ctx.stage),
-                    'vars/user.yml',
-                ] + list(vars_file)
+                ]
+                if os.path.exists('vars/user.yml'):
+                    default_vars_files.append('vars/user.yml')
+                vars_file = default_vars_files + list(vars_file)
 
             ctx.load_variables(files=vars_file, pairs=[v.split('=') for v in var])
             ctx.load_stacks(stacks_file)
