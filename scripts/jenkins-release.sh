@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 [ -d venv ] || virtualenv venv
+
+. ./venv/bin/activate
 pip install -e .
 
 if [ "$STAGE" = "Select one" -o "$STAGE" = "" ]; then
