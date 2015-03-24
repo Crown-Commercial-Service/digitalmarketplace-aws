@@ -47,6 +47,7 @@ api_app:
 
 api:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}"
+  repo_url: "git@github.com:alphagov/digitalmarketplace-api.git"
   template: cloudformation_templates/aws_digitalmarketplace_api.json
   dependencies:
     - api_app
@@ -107,6 +108,7 @@ search_api_app:
 
 search_api:
   name: "digitalmarketplace-search-api-{{ stage }}-{{ environment }}"
+  repo_url: "git@github.com:alphagov/digitalmarketplace-search-api.git"
   template: cloudformation_templates/aws_digitalmarketplace_search_api.json
   dependencies:
     - search_api_app
@@ -131,6 +133,7 @@ admin_frontend_app:
 
 admin_frontend:
   name: "digitalmarketplace-admin-frontend-{{ stage }}-{{ environment }}"
+  repo_url: "git@github.com:alphagov/digitalmarketplace-admin-frontend.git"
   template: cloudformation_templates/aws_digitalmarketplace_admin_frontend.json
   dependencies:
     - documents_s3
