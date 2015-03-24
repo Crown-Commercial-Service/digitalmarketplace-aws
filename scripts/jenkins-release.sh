@@ -14,7 +14,7 @@ if [ "$APPLICATION_NAME" = "Select one" -o "$STAGE" = ""]; then
 fi
 
 if [ "$STAGE" = "staging" ]; then
-  OPTIONS="--from-account=development --release-name=$RELEASE_NAME"
+  OPTIONS="--from-profile=preview --release-name=$RELEASE_NAME"
 fi
 
 AWS_PROFILE="$STAGE" dmaws $STAGE $STAGE release $APPLICATION_NAME $OPTIONS

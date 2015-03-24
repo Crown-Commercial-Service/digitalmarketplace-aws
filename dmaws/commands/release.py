@@ -7,20 +7,20 @@ from .. import build
 
 @click.argument('app_name', nargs=1)
 @click.option('--release-name')
-@click.option('--from-account')
+@click.option('--from-profile')
 @cli_command('release', max_apps=0)
-def release_cmd(ctx, app_name, release_name=None, from_account=None):
+def release_cmd(ctx, app_name, release_name=None, from_profile=None):
     """Release an application to preview, staging or production.
 
     If releasing to preview create a new release tag and push the artefact up.
-    If releasing to staging copy the artefact over from the development account.
+    If releasing to staging copy the artefact over from the development profile.
     If releasing to production just promote the current staging releasee to production.
     """
     repository_path = build.clone_or_update(ctx.stacks[app_name].repo_url)
     if ctx.stage == "preview":
         release_to_preview(ctx, repository_path)
     elif ctx.stage == "staging":
-        release_to_staging(ctx, repository_path, release_name, from_account)
+        release_to_staging(ctx, repository_path, release_name, from_profile)
     elif ctx.stage == "production":
         release_to_production(ctx, repository_path)
     else:
@@ -48,11 +48,11 @@ def release_to_preview(ctx, repository_path):
     deploy.deploy(version, ctx.stage)
 
 
-def release_to_staging(ctx, repository_path, release_name, from_account):
+def release_to_staging(ctx, repository_path, release_name, from_profile):
     if release_name is None:
         raise ValueError("Release name required for staging release")
-    if from_account is None:
-        raise ValueError("Source account required for staging release")
+    if from_profile is None:
+        raise ValueError("Source profile required for staging release")
 
     deploy = get_deploy(ctx, repository_path)
 
@@ -60,7 +60,7 @@ def release_to_staging(ctx, repository_path, release_name, from_account):
         source_plan = StackPlan.from_ctx(ctx,
                                          stage='preview',
                                          environment='master',
-                                         profile_name=from_account)
+                                         profile_name=from_profile)
         source_deploy = source_plan.get_deploy(repository_path)
         package_path = source_deploy.download_package(release_name)
 
