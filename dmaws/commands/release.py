@@ -1,3 +1,5 @@
+import sys
+
 import click
 
 from ..cli import cli_command
@@ -18,14 +20,16 @@ def release_cmd(ctx, app_name, release_name=None, from_profile=None):
     """
     repository_path = build.clone_or_update(ctx.stacks[app_name].repo_url)
     if ctx.stage == "preview":
-        release_to_preview(ctx, repository_path)
+        success = release_to_preview(ctx, repository_path)
     elif ctx.stage == "staging":
-        release_to_staging(ctx, repository_path, release_name, from_profile)
+        success = release_to_staging(ctx, repository_path, release_name, from_profile)
     elif ctx.stage == "production":
-        release_to_production(ctx, repository_path)
+        success = release_to_production(ctx, repository_path)
     else:
         raise ValueError("Invalid stage for release {}".format(ctx.stage))
 
+    if not success:
+        sys.exit(1)
     build.push_deployed_to_tag(repository_path, ctx.stage)
 
 
@@ -45,7 +49,8 @@ def release_to_preview(ctx, repository_path):
 
     build.push_tag(repository_path, release_name)
     version, created = deploy.create_version(release_name)
-    deploy.deploy(version, ctx.stage)
+
+    return deploy.deploy(version, ctx.stage)
 
 
 def release_to_staging(ctx, repository_path, release_name, from_profile):
@@ -66,7 +71,7 @@ def release_to_staging(ctx, repository_path, release_name, from_profile):
 
         deploy.create_version(release_name, from_file=package_path)
 
-    deploy.deploy(release_name, ctx.stage)
+    return deploy.deploy(release_name, ctx.stage)
 
 
 def release_to_production(ctx, repository_path):
@@ -77,4 +82,4 @@ def release_to_production(ctx, repository_path):
     if release_tag is None:
         raise StandardError("Could not find release tag for staging")
 
-    deploy.deploy(release_tag, ctx.stage)
+    return deploy.deploy(release_tag, ctx.stage)
