@@ -18,15 +18,16 @@ def release_cmd(ctx, app_name, release_name=None, from_profile=None):
     """
     repository_path = build.clone_or_update(ctx.stacks[app_name].repo_url)
     if ctx.stage == "preview":
-        release_to_preview(ctx, repository_path)
+        release_name = release_to_preview(ctx, repository_path)
     elif ctx.stage == "staging":
         release_to_staging(ctx, repository_path, release_name, from_profile)
     elif ctx.stage == "production":
-        release_to_production(ctx, repository_path)
+        release_name = release_to_production(ctx, repository_path)
     else:
         raise ValueError("Invalid stage for release {}".format(ctx.stage))
 
-    build.push_deployed_to_tag(repository_path, ctx.stage)
+    previous_release = build.push_deployed_to_tag(repository_path, ctx.stage)
+    build.notify_slack(ctx.stage, app_name, release_name, previous_release)
 
 
 def get_deploy(ctx, repository_path):
@@ -46,6 +47,8 @@ def release_to_preview(ctx, repository_path):
     build.push_tag(repository_path, release_name)
     version, created = deploy.create_version(release_name)
     deploy.deploy(version, ctx.stage)
+
+    return version
 
 
 def release_to_staging(ctx, repository_path, release_name, from_profile):
@@ -78,3 +81,5 @@ def release_to_production(ctx, repository_path):
         raise StandardError("Could not find release tag for staging")
 
     deploy.deploy(release_tag, ctx.stage)
+
+    return release_tag
