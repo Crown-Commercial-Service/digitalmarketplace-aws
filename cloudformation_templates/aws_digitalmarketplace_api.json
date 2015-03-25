@@ -108,7 +108,7 @@
       "Properties": {
         "ApplicationName": {"Ref": "ApplicationName"},
         "Description": "Default Configuration Version 1.0",
-        "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7",
+        "SolutionStackName": "64bit Amazon Linux 2014.09 v1.2.0 running Python 2.7",
         "OptionSettings": [
 {% for variable in environment_variables %}
           {
