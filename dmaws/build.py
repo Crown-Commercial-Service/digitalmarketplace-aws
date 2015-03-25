@@ -4,6 +4,8 @@ import subprocess
 import tempfile
 import zipfile
 
+import requests
+
 from .utils import run_cmd
 
 SSH_REPO_PATTERN = re.compile('git@[^:]*:[^/]+/(.*)\.git')
@@ -84,7 +86,11 @@ def push_tag(cwd, tag_name, tag_message=None):
 
 
 def push_deployed_to_tag(cwd, stage):
+    deployed_to_tag = 'deployed-to-{}'.format(stage)
+    previous_release = get_release_name_for_tag(cwd, deployed_to_tag)
     push_tag(cwd, 'deployed-to-{}'.format(stage))
+
+    return previous_release
 
 
 def get_other_tags(cwd, tag):
@@ -160,3 +166,17 @@ def create_archive(cwd):
         pass
 
     return ref, sha, archive_path
+
+
+def notify_slack(stage, app_name, version_label,
+                 previous_version_label):
+    slack_url = os.environ.get("SLACK_URL")
+    message_tpl = "Released {} of {} to {} (previously {})"
+    message = message_tpl.format(
+        version_label, app_name, stage, previous_version_label)
+    if slack_url:
+        requests.post(slack_url, data={
+            "username": "deploy",
+            "icon_emoji": ":shipit:",
+            "text": message,
+        })
