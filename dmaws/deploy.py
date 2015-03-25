@@ -1,11 +1,12 @@
 import os
 import tempfile
-
-from . import build
+import time
 
 import boto.beanstalk
 import boto.s3
 import boto.exception
+
+from . import build
 
 
 class Deploy(object):
@@ -102,6 +103,10 @@ class S3Client(object):
         return package_path
 
 
+class BeanstalkStatusError(StandardError):
+    pass
+
+
 class BeanstalkClient(object):
     def __init__(self, region, logger=None, profile_name=None):
         self.conn = boto.beanstalk.connect_to_region(region,
@@ -117,6 +122,21 @@ class BeanstalkClient(object):
             environment_name=environment_name,
             version_label=version_label
         )
+        self.wait_for_ready_status(environment_name)
+
+    def wait_for_ready_status(self, environment_name):
+        while True:
+            time.sleep(5)
+            info = self.describe_environment(environment_name)
+            if info['Status'] == 'Ready':
+                return
+            elif info['Status'] != 'Updating':
+                raise BeanstalkStatusError(
+                    "Unexpected Beanstalk status {}".format(info['Status']))
+
+    def describe_environment(self, environment_name):
+        response = self.conn.describe_environments(environment_names=environment_name)
+        return response['DescribeEnvironmentsResponse']['DescribeEnvironmentsResult']['Environments'][0]
 
     def create_application_version(self, application_name, version_label,
                                    s3_bucket, s3_key, description):
