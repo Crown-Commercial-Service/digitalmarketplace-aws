@@ -79,6 +79,14 @@ class LazyTemplateMapping(object):
         self._cache = {}
         self._variables = merge_dicts(variables, kwargs)
 
+    def keys(self):
+        return self._mapping.keys()
+
+    def items(self):
+        for key in self.keys():
+            self.__getitem__(key)
+        return self._cache.items()
+
     def __getitem__(self, key):
         if key not in self._cache:
             self._cache[key] = template(self._mapping[key], self._variables)

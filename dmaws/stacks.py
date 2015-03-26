@@ -1,3 +1,5 @@
+import re
+
 from toposort import toposort_flatten
 
 from .cloudformation import Cloudformation
@@ -34,14 +36,39 @@ class BuiltStack(Stack):
         self.template = stack.template
         self.dependencies = stack.dependencies
 
-        self.template_body = load_file(stack.template)
+        self._template_body = None
 
         self.status = None
         self.outputs = None
         self.resources = None
 
+    @property
+    def template_body(self):
+        if self._template_body is None:
+            self._template_body = self._load_template()
+
+        return self._template_body
+
     def _build_name(self, name):
-        return template(name, {}, stage=self.stage, environment=self.environment)
+        return template(name, {},
+                        stage=self.stage, environment=self.environment)
+
+    def _load_template(self):
+        template_body = load_file(self.template)
+
+        environment_variables = [
+            p for p in self.parameters.keys() if p.startswith('EnvVar')
+        ]
+
+        def param_to_env(name):
+            s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+            s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
+            return s2.upper().replace('ENV_VAR_', '')
+
+        return template(template_body, {
+            "environment_variables": environment_variables,
+            "param_to_env": param_to_env,
+        })
 
     def update_info(self, stack_info):
         for attr in ['status', 'outputs', 'resources']:
