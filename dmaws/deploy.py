@@ -29,7 +29,8 @@ class Deploy(object):
         if with_sha:
             version_label = '{}-{}-{}'.format(version_label, ref, sha[:7])
 
-        build.set_version_label_on_archive(package_path, version_label)
+        if not from_file:
+            build.add_version_label_to_archive(package_path, version_label)
 
         package_name = self.get_package_name(version_label)
 
