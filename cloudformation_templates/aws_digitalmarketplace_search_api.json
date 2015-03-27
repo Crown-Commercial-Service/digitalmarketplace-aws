@@ -3,6 +3,13 @@
   "Description": "Digital Marketplace Search API Environment",
 
   "Parameters": {
+{% for variable in environment_variables %}
+    "{{ variable }}": {
+        "Type": "String",
+        "Description": "Elastic Beanstalk environment variable",
+        "NoEcho": "true"
+    },
+{% endfor %}
     "KeyName": {
       "Type": "String",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
@@ -19,19 +26,10 @@
       "Type": "Number",
       "Description": "MaxSize of the Auto Scaling group"
     },
-    "SearchAPIAuthTokens": {
-      "NoEcho": "true",
-      "Type": "String",
-      "Description": "Digital Marketplace Search API Auth Token"
-    },
     "ElasticsearchPort": {
       "Type": "Number",
       "Default": "9200",
       "Description": "Elasticsearch port"
-    },
-    "ElasticsearchHost": {
-      "Type": "String",
-      "Description": "Elasticsearch cluster ELB URL"
     },
     "ElasticsearchSecurityGroup": {
       "Type": "String",
@@ -116,6 +114,13 @@
         "Description": "Default Configuration Version 1.0",
         "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7",
         "OptionSettings": [
+{% for variable in environment_variables %}
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "{{ param_to_env(variable) }}",
+            "Value": {"Ref": "{{ variable }}"}
+          },
+{% endfor %}
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "EC2KeyName",
@@ -135,21 +140,6 @@
             "Namespace": "aws:autoscaling:asg",
             "OptionName": "MaxSize",
             "Value": {"Ref": "MaxInstanceCount"}
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_SEARCH_API_AUTH_TOKENS",
-            "Value": {"Ref": "SearchAPIAuthTokens"}
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_ELASTICSEARCH_URL",
-            "Value": {"Fn::Join": ["", [
-              "http://",
-              {"Ref": "ElasticsearchHost"},
-              ":",
-              {"Ref": "ElasticsearchPort"}
-            ]]}
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",

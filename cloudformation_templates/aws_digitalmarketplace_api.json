@@ -3,6 +3,13 @@
   "Description": "Digital Marketplace API Environment",
 
   "Parameters": {
+{% for variable in environment_variables %}
+    "{{ variable }}": {
+        "Type": "String",
+        "Description": "Elastic Beanstalk environment variable",
+        "NoEcho": "true"
+    },
+{% endfor %}
     "KeyName": {
       "Type": "String",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
@@ -22,24 +29,6 @@
     "RDSSecurityGroup": {
       "Type": "String",
       "Description": "Name of the RDS instances security group"
-    },
-    "DBUser": {
-      "Type": "String",
-      "Description": "Database admin account name"
-    },
-    "DBPassword": {
-      "NoEcho": "true",
-      "Type": "String",
-      "Description": "Database admin account password"
-    },
-    "DBPath": {
-      "Type": "String",
-      "Description": "Full database URI"
-    },
-    "APIAuthTokens": {
-      "NoEcho": "true",
-      "Type": "String",
-      "Description": "Digital Marketplace API Auth Token"
     },
     "ApplicationName": {
       "Type": "String",
@@ -121,6 +110,13 @@
         "Description": "Default Configuration Version 1.0",
         "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7",
         "OptionSettings": [
+{% for variable in environment_variables %}
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "{{ param_to_env(variable) }}",
+            "Value": {"Ref": "{{ variable }}"}
+          },
+{% endfor %}
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "EC2KeyName",
@@ -140,28 +136,6 @@
             "Namespace": "aws:autoscaling:asg",
             "OptionName": "MaxSize",
             "Value": {"Ref": "MaxInstanceCount"}
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "SQLALCHEMY_DATABASE_URI",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  "postgres://",
-                  {"Ref": "DBUser"},
-                  ":",
-                  {"Ref": "DBPassword"},
-                  "@",
-                  {"Ref": "DBPath"}
-                ]
-              ]
-            }
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_API_AUTH_TOKENS",
-            "Value": {"Ref": "APIAuthTokens"}
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",

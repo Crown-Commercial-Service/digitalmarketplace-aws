@@ -55,14 +55,16 @@ api:
   parameters:
     ApplicationName: "{{ stacks.api_app.parameters.ApplicationName }}"
     EnvironmentName: "dmapi-{{ stage[:3] }}-{{ environment }}"
+
+    # EnvVar* variables are written to Elastic Beanstalk environment
+    # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarSqlalchemyDatabaseUri: "postgres://{{ database.user }}:{{ database.password}}@{{ stacks.database.outputs.URL }}"
+    EnvVarDmApiAuthTokens: "{{ api.auth_tokens | join(':') }}"
+
     KeyName: "{{ key_name }}"
     InstanceType: "{{ api.instance_type }}"
     MinInstanceCount: "{{ api.min_instance_count }}"
     MaxInstanceCount: "{{ api.max_instance_count }}"
-    APIAuthTokens: "{{ api.auth_tokens | join(':') }}"
-    DBUser: "{{ database.user }}"
-    DBPassword: "{{ database.password }}"
-    DBPath: "{{ stacks.database.outputs.URL }}"
     RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
 
 database_dev_access:
@@ -116,12 +118,16 @@ search_api:
   parameters:
     ApplicationName: "{{ stacks.search_api_app.parameters.ApplicationName }}"
     EnvironmentName: "dmsearch-{{ stage[:3] }}-{{ environment }}"
+
+    # EnvVar* variables are written to Elastic Beanstalk environment
+    # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmElasticsearchUrl: "http://{{ stacks.elasticsearch.outputs.URL }}:{{ elasticsearch.port }}"
+    EnvVarDmSearchApiAuthTokens: "{{ search_api.auth_tokens | join(':') }}"
+
     KeyName: "{{ key_name }}"
     InstanceType: "{{ search_api.instance_type }}"
     MinInstanceCount: "{{ search_api.min_instance_count }}"
     MaxInstanceCount: "{{ search_api.max_instance_count }}"
-    SearchAPIAuthTokens: "{{ search_api.auth_tokens | join(':') }}"
-    ElasticsearchHost: "{{ stacks.elasticsearch.outputs.URL }}"
     ElasticsearchPort: "{{ elasticsearch.port }}"
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
 
@@ -142,11 +148,15 @@ admin_frontend:
   parameters:
     ApplicationName: "{{ stacks.admin_frontend_app.parameters.ApplicationName }}"
     EnvironmentName: "dmadmin-{{ stage[:3] }}-{{ environment }}"
+
+    # EnvVar* variables are written to Elastic Beanstalk environment
+    # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
+    EnvVarDmS3DocumentBucket: "{{ stacks.documents_s3.outputs.Name }}"
+    EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
+    EnvVarDmAdminFrontendPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"
+
     KeyName: "{{ key_name }}"
     InstanceType: "{{ admin_frontend.instance_type }}"
     MinInstanceCount: "{{ admin_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ admin_frontend.max_instance_count }}"
-    APIAuthTokens: "{{ api.auth_tokens[0] }}"
-    DigitalmarketplaceAPIURL: "{{ stacks.api.outputs.URL }}"
-    S3Bucket: "{{ stacks.documents_s3.outputs.Name }}"
-    AdminPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"

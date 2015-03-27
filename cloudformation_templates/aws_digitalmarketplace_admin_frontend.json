@@ -3,6 +3,13 @@
   "Description": "Digital Marketplace Admin Frontend Environment",
 
   "Parameters": {
+{% for variable in environment_variables %}
+    "{{ variable }}": {
+        "Type": "String",
+        "Description": "Elastic Beanstalk environment variable",
+        "NoEcho": "true"
+    },
+{% endfor %}
     "KeyName": {
       "Type": "String",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
@@ -18,24 +25,6 @@
     "MaxInstanceCount": {
       "Type": "Number",
       "Description": "MaxSize of the Auto Scaling group"
-    },
-    "APIAuthTokens": {
-      "NoEcho": "true",
-      "Type": "String",
-      "Description": "Digital Marketplace API Auth Token"
-    },
-    "DigitalmarketplaceAPIURL": {
-      "Type": "String",
-      "Description": "Digital Markeplace API ELB URL"
-    },
-    "S3Bucket": {
-      "Type": "String",
-      "Description": "Document S3 Bucket name"
-    },
-    "AdminPasswordHash": {
-      "NoEcho": "true",
-      "Type": "String",
-      "Description": "Password hash to use for admin app authentication"
     },
     "ApplicationName": {
       "Type": "String",
@@ -105,6 +94,13 @@
         "Description": "Default Configuration Version 1.0",
         "SolutionStackName": "64bit Amazon Linux 2014.09 v1.1.0 running Python 2.7",
         "OptionSettings": [
+{% for variable in environment_variables %}
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "{{ param_to_env(variable) }}",
+            "Value": {"Ref": "{{ variable }}"}
+          },
+{% endfor %}
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "EC2KeyName",
@@ -124,26 +120,6 @@
             "Namespace": "aws:autoscaling:asg",
             "OptionName": "MaxSize",
             "Value": {"Ref": "MaxInstanceCount"}
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_ADMIN_FRONTEND_API_AUTH_TOKEN",
-            "Value": {"Ref": "APIAuthTokens"}
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_API_URL",
-            "Value": {"Ref": "DigitalmarketplaceAPIURL"}
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_S3_DOCUMENT_BUCKET",
-            "Value": {"Ref": "S3Bucket"}
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "DM_ADMIN_FRONTEND_PASSWORD_HASH",
-            "Value": {"Ref": "AdminPasswordHash"}
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
