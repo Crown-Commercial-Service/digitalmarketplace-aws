@@ -178,7 +178,7 @@ class BeanstalkClient(object):
                 self.log('Environment status is now %s', info['Status'])
                 last_status = info['Status']
             if info['Status'] == 'Ready':
-                return success
+                return success and info['CNAME']
             elif info['Status'] != 'Updating':
                 raise BeanstalkStatusError(
                     "Unexpected Beanstalk status {}".format(info['Status']))
