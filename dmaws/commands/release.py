@@ -14,15 +14,22 @@ from .. import build
 def release_cmd(ctx, app_name, release_name=None, from_profile=None):
     """Release an application to preview, staging or production.
 
-    If releasing to preview create a new release tag and push the artefact up.
-    If releasing to staging copy the artefact over from the development profile.
-    If releasing to production just promote the current staging releasee to production.
+    If releasing to preview:
+        create a new release tag and push the artefact up.
+
+    If releasing to staging:
+        copy the artefact over from the development profile.
+
+    If releasing to production:
+        just promote the current staging releasee to production.
+
     """
     repository_path = build.clone_or_update(ctx.stacks[app_name].repo_url)
     if ctx.stage == "preview":
         success = release_to_preview(ctx, repository_path)
     elif ctx.stage == "staging":
-        success = release_to_staging(ctx, repository_path, release_name, from_profile)
+        success = release_to_staging(ctx, repository_path,
+                                     release_name, from_profile)
     elif ctx.stage == "production":
         success = release_to_production(ctx, repository_path)
     else:
