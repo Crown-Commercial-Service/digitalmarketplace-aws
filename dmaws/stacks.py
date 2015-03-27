@@ -93,8 +93,9 @@ class StackPlan(object):
             raise ValueError("'stacks' is a reserved variable name")
         self.stack_context['stacks'] = {}
 
-    def stacks(self, with_dependencies=False):
-        return get_stacks(self._stacks, self.apps, with_dependencies)
+    def stacks(self, apps=None, with_dependencies=False):
+        apps = sorted(flatten_stack_groups(self._stacks, apps or self.apps))
+        return get_stacks(self._stacks, apps or self.apps, with_dependencies)
 
     def dependant_stacks(self):
         return get_stacks(
@@ -114,8 +115,8 @@ class StackPlan(object):
                 vars_dict = getattr(vars_dict, key)
         return vars_dict
 
-    def info(self, with_aws=True):
-        stacks = self.stacks(with_dependencies=True)
+    def info(self, apps=None, with_aws=True):
+        stacks = self.stacks(apps, with_dependencies=True)
         self.log('Gathering info about %s stacks',
                  ', '.join(s[0] for s in stacks))
 
