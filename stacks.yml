@@ -14,9 +14,13 @@ eb_apps:
   - search_api_app
   - admin_frontend_app
 
+cloudfront:
+  - api_cloudfront
+
 data_storage:
   - database
   - documents_s3
+  - logs_s3
   - elasticsearch
 
 dev_access:
@@ -38,6 +42,12 @@ documents_s3:
   template: cloudformation_templates/aws_s3.json
   parameters:
     BucketName: "digitalmarketplace-documents-{{ stage }}-{{ environment }}"
+
+logs_s3:
+  name: "logs-s3-{{ stage }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-logs-{{ stage }}"
 
 api_app:
   name: "digitalmarketplace-api-app"
@@ -66,6 +76,19 @@ api:
     MinInstanceCount: "{{ api.min_instance_count }}"
     MaxInstanceCount: "{{ api.max_instance_count }}"
     RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
+
+api_cloudfront:
+  name: "digitalmarketplace-api-cloudfront-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_cloudfront_app.json
+  dependencies:
+    - api
+    - logs_s3
+  parameters:
+    OriginDomain: "{{ stacks.api.outputs.Domain }}"
+    Subdomain: "{% if stage != 'production ' %}{{ stage }}-{% endif %}api"
+    ParentDomain: "{{ root_domain }}"
+    LogsBucket: "{{ stacks.logs_s3.outputs.DomainName }}"
+    IamCertificateId: "{{ iam_certificate_id }}"
 
 database_dev_access:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}-dev-access"
