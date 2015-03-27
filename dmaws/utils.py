@@ -83,9 +83,7 @@ class LazyTemplateMapping(object):
         return self._mapping.keys()
 
     def items(self):
-        for key in self.keys():
-            self.__getitem__(key)
-        return self._cache.items()
+        return [(key, self[key]) for key in self.keys()]
 
     def __getitem__(self, key):
         if key not in self._cache:
