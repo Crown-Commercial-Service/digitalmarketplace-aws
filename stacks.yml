@@ -35,7 +35,7 @@ database:
 
 documents_s3:
   name: "documents-s3-{{ stage }}-{{ environment }}"
-  template: cloudformation_templates/aws_documents_s3.json
+  template: cloudformation_templates/aws_s3.json
   parameters:
     BucketName: "digitalmarketplace-documents-{{ stage }}-{{ environment }}"
 
