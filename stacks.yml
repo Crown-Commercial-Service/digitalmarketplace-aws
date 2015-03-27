@@ -154,6 +154,7 @@ admin_frontend:
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmS3DocumentBucket: "{{ stacks.documents_s3.outputs.Name }}"
     EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
+    EnvVarDmAdminFrontendCookieSecret: "{{ admin_frontend.cookie_secret }}"
     EnvVarDmAdminFrontendPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"
 
     KeyName: "{{ key_name }}"
