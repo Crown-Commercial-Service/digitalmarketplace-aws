@@ -105,6 +105,15 @@ class StackPlan(object):
     def build_stack(self, stack):
         return stack.build(self.stage, self.environment, self.stack_context)
 
+    def get_value(self, path):
+        vars_dict = self.stack_context
+        for key in path.split('.'):
+            try:
+                vars_dict = vars_dict[key]
+            except TypeError:
+                vars_dict = getattr(vars_dict, key)
+        return vars_dict
+
     def info(self, with_aws=True):
         stacks = self.stacks(with_dependencies=True)
         self.log('Gathering info about %s stacks',
