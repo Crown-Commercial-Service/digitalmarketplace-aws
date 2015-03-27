@@ -11,7 +11,8 @@ from . import build
 
 
 class Deploy(object):
-    def __init__(self, eb_application, eb_environment, repo_path, region, logger=None, profile_name=None):
+    def __init__(self, eb_application, eb_environment, repo_path, region,
+                 logger=None, profile_name=None):
         self.log = logger
         self.profile_name = profile_name
         self.beanstalk = BeanstalkClient(region, logger, profile_name)
@@ -21,7 +22,8 @@ class Deploy(object):
         self.eb_application = eb_application
         self.eb_environment = eb_environment
 
-    def create_version(self, version_label, with_sha=False, description='', from_file=None):
+    def create_version(self, version_label, with_sha=False, description='',
+                       from_file=None):
         if from_file:
             package_path = from_file
         else:
@@ -41,7 +43,8 @@ class Deploy(object):
         self.log('Uploading %s to %s/%s', package_path, bucket, package_name)
         _, s3_key = self.s3.upload_package(bucket, package_name, package_path)
 
-        self.log('Creating a new %s version: %s', self.eb_application, version_label)
+        self.log('Creating a new %s version: %s',
+                 self.eb_application, version_label)
         created_version = self.beanstalk.create_application_version(
             self.eb_application,
             version_label,
@@ -58,7 +61,9 @@ class Deploy(object):
     def deploy(self, version_label, stage):
         self.log("Deploying version %s to %s (%s)",
                  version_label, self.eb_environment, stage)
-        return self.beanstalk.update_environment(self.eb_environment, version_label)
+        return self.beanstalk.update_environment(
+            self.eb_environment, version_label
+        )
 
     def version_exists(self, version_label):
         return self.beanstalk.application_version_exists(
@@ -111,21 +116,23 @@ class BeanstalkStatusError(StandardError):
 
 class BeanstalkClient(object):
     def __init__(self, region, logger=None, profile_name=None):
-        self.conn = boto.beanstalk.connect_to_region(region,
-                                                     profile_name=profile_name)
+        self.conn = boto.beanstalk.connect_to_region(
+            region, profile_name=profile_name
+        )
         self.log = logger
 
     def get_storage_location(self):
-        response = self.conn.create_storage_location()['CreateStorageLocationResponse']
+        response = self.conn.create_storage_location()
+        response = response['CreateStorageLocationResponse']
         return response['CreateStorageLocationResult']['S3Bucket']
 
     def update_environment(self, environment_name, version_label):
         result = self.conn.update_environment(
             environment_name=environment_name,
             version_label=version_label
-        )
+        )['UpdateEnvironmentResponse']['ResponseMetadata']
 
-        request_id = result['UpdateEnvironmentResponse']['ResponseMetadata']['RequestId']
+        request_id = result['RequestId']
         return self.wait_for_ready(environment_name, request_id)
 
     def wait_for_ready(self, environment_name, request_id):
@@ -137,13 +144,15 @@ class BeanstalkClient(object):
                 request_id=request_id,
                 environment_name=environment_name,
                 start_time=last_event_time,
-            )
-            events = events['DescribeEventsResponse']['DescribeEventsResult']['Events']
+            )['DescribeEventsResponse']['DescribeEventsResult']
+            events = events['Events']
             if len(events):
                 # Not all subsequent messages are associated with the request
                 # but they may be relevant.
                 request_id = None
-                last_event_time = datetime.fromtimestamp(events[0]['EventDate'])
+                last_event_time = datetime.fromtimestamp(
+                    events[0]['EventDate']
+                )
                 # describe_events returns all events with a start_time greater
                 # or equal so we have to add a small buffer
                 last_event_time += timedelta(milliseconds=1)
@@ -153,8 +162,11 @@ class BeanstalkClient(object):
                 success = False
 
             for event in reversed(events):
-                timestamp = datetime.fromtimestamp(event['EventDate']).isoformat()
-                self.log('%s %s %s', timestamp, event['Severity'], event['Message'])
+                timestamp = datetime.fromtimestamp(
+                    event['EventDate']
+                ).isoformat()
+                self.log('%s %s %s',
+                         timestamp, event['Severity'], event['Message'])
 
             info = self.describe_environment(environment_name)
             if info['Status'] == 'Ready':
@@ -166,8 +178,10 @@ class BeanstalkClient(object):
             time.sleep(1)
 
     def describe_environment(self, environment_name):
-        response = self.conn.describe_environments(environment_names=environment_name)
-        return response['DescribeEnvironmentsResponse']['DescribeEnvironmentsResult']['Environments'][0]
+        response = self.conn.describe_environments(
+            environment_names=environment_name
+        )['DescribeEnvironmentsResponse']['DescribeEnvironmentsResult']
+        return response['Environments'][0]
 
     def create_application_version(self, application_name, version_label,
                                    s3_bucket, s3_key, description):
@@ -187,8 +201,9 @@ class BeanstalkClient(object):
 
     def application_version_exists(self, application_name, version_label):
         response = self.conn.describe_application_versions(
-            application_name, version_label)
+            application_name, version_label
+        )['DescribeApplicationVersionsResponse']
 
-        result = response['DescribeApplicationVersionsResponse']['DescribeApplicationVersionsResult']
+        result = response['DescribeApplicationVersionsResult']
 
         return len(result['ApplicationVersions']) > 0

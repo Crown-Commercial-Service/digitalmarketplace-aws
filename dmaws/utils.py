@@ -10,7 +10,8 @@ from jinja2.runtime import StrictUndefined
 def run_cmd(args, env=None, cwd=None, stdout=None):
     cmd_env = os.environ.copy()
     cmd_env.update(env or {})
-    cmd = subprocess.Popen(args, env=cmd_env, cwd=cwd, stdout=stdout, stderr=subprocess.STDOUT)
+    cmd = subprocess.Popen(args, env=cmd_env, cwd=cwd,
+                           stdout=stdout, stderr=subprocess.STDOUT)
     return cmd.communicate()[0]
 
 

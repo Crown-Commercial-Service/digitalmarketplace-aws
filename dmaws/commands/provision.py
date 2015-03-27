@@ -31,4 +31,4 @@ def run_playbook(playbook, hosts, ctx, basedir='playbooks/'):
 @cli_command('provision', max_apps=0)
 def provision_cmd(ctx):
     """Provision EC2 instances"""
-    run_playbook('provision', 'ec2.py', ctx)
+    run_playbook('provision', 'ec2', ctx)

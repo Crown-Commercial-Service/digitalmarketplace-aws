@@ -3,13 +3,14 @@ import click
 from ..cli import cli_command
 from ..stacks import StackPlan
 from ..build import get_application_name
-from ..deploy import Deploy
 
 
 @click.argument('repository_path', nargs=1, type=click.Path(exists=True))
 @cli_command('deploy', max_apps=0)
 def deploy_cmd(ctx, repository_path):
-    """Deploy a new application version to the Elastic Beanstalk environment."""
+    """Deploy a new application version to the Elastic Beanstalk environment.
+
+    """
 
     app = get_application_name(repository_path)
     ctx.add_apps(app)

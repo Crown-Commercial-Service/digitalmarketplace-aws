@@ -76,10 +76,12 @@ class BuiltStack(Stack):
 
 
 class StackPlan(object):
-    def __init__(self, stacks, stage, environment, variables, apps, logger=None, profile_name=None):
+    def __init__(self, stacks, stage, environment, variables, apps,
+                 logger=None, profile_name=None):
         self.log = logger
         self.profile_name = profile_name
-        self.cfn = Cloudformation(variables['aws_region'], logger=self.log, profile_name=profile_name)
+        self.cfn = Cloudformation(variables['aws_region'], logger=self.log,
+                                  profile_name=profile_name)
 
         self.stage = stage
         self.environment = environment
@@ -105,7 +107,8 @@ class StackPlan(object):
 
     def info(self, with_aws=True):
         stacks = self.stacks(with_dependencies=True)
-        self.log('Gathering info about %s stacks', ', '.join(s[0] for s in stacks))
+        self.log('Gathering info about %s stacks',
+                 ', '.join(s[0] for s in stacks))
 
         for name, stack in stacks:
             built_stack = self.build_stack(stack)
@@ -142,7 +145,8 @@ class StackPlan(object):
             if name in self.apps:
                 self.cfn.delete_stack(built_stack)
             elif status and name not in self.apps:
-                self.log("Dependant stack %s exists, can't continue", built_stack.name)
+                self.log("Dependant stack %s exists, can't continue",
+                         built_stack.name)
                 return
 
     def get_deploy(self, repository_path):
