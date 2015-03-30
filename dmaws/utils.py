@@ -1,6 +1,7 @@
 import os
-import subprocess
 import collections
+import subprocess
+from subprocess import CalledProcessError
 
 import yaml
 import jinja2
@@ -12,7 +13,15 @@ def run_cmd(args, env=None, cwd=None, stdout=None):
     cmd_env.update(env or {})
     cmd = subprocess.Popen(args, env=cmd_env, cwd=cwd,
                            stdout=stdout, stderr=subprocess.STDOUT)
-    return cmd.communicate()[0]
+    streamdata = cmd.communicate()[0]
+    if cmd.returncode:
+        raise CalledProcessError(
+            cmd.returncode,
+            args,
+            output=streamdata
+        )
+
+    return streamdata
 
 
 def read_yaml_file(path):
