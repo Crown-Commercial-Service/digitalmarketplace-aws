@@ -1,9 +1,11 @@
 from functools import wraps
 import os
+import sys
 
 import click
 
 from .context import pass_context
+from .utils import CalledProcessError
 
 
 STAGES = [
@@ -62,7 +64,11 @@ def cli_command(cmd_name, max_apps=-1):
             ctx.add_apps(app)
             ctx.dry_run = dry_run
 
-            return cmd(ctx, *args, **kwargs)
+            try:
+                return cmd(ctx, *args, **kwargs)
+            except CalledProcessError as e:
+                ctx.log("%s:\n\n%s", str(e), e.output)
+                sys.exit(1)
 
         if max_apps:
             wrapped = click.argument('app', nargs=max_apps)(wrapped)
