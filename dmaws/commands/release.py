@@ -7,11 +7,10 @@ from ..stacks import StackPlan
 from .. import build
 
 
-@click.argument('app_name', nargs=1)
 @click.option('--release-name')
 @click.option('--from-profile')
-@cli_command('release', max_apps=0)
-def release_cmd(ctx, app_name, release_name=None, from_profile=None):
+@cli_command('release', max_apps=1)
+def release_cmd(ctx, release_name=None, from_profile=None):
     """Release an application to preview, staging or production.
 
     If releasing to preview:
@@ -24,7 +23,7 @@ def release_cmd(ctx, app_name, release_name=None, from_profile=None):
         just promote the current staging releasee to production.
 
     """
-    repository_path = build.clone_or_update(ctx.stacks[app_name].repo_url)
+    repository_path = build.clone_or_update(ctx.stacks[ctx.apps[0]].repo_url)
     if ctx.stage == "preview":
         success = release_to_preview(ctx, repository_path)
     elif ctx.stage == "staging":
