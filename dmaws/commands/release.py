@@ -53,8 +53,8 @@ def release_to_preview(ctx, repository_path):
     if build.tag_exists(repository_path, release_name):
         raise ValueError("Already have a tag for {}".format(release_name))
 
-    build.push_tag(repository_path, release_name)
     version, created = deploy.create_version(release_name)
+    build.push_tag(repository_path, release_name)
 
     return deploy.deploy(version, ctx.stage)
 
