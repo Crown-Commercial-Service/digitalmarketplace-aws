@@ -167,6 +167,10 @@
       "Description": "Digital Marketplace API environment",
       "Value": {"Ref": "Environment"}
     },
+    "Domain": {
+      "Description": "The domain name of the AWS Elastic Beanstalk Environment",
+      "Value": {"Fn::GetAtt": ["Environment", "EndpointURL"]}
+    },
     "URL": {
       "Description": "URL of the AWS Elastic Beanstalk Environment",
       "Value": {

@@ -1,0 +1,72 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Digital Marketplace Application CloudFront Distribution",
+
+  "Parameters": {
+    "OriginDomain": {
+      "Type": "String",
+      "Description": "The origin domain for the upstream application."
+    },
+    "Subdomain": {
+      "Type": "String",
+      "Description": "The short name for the application, used for the logging prefix."
+    },
+    "ParentDomain": {
+      "Type": "String",
+      "Description": "The short name for the application, used for the logging prefix."
+    },
+    "LogsBucket": {
+      "Type": "String",
+      "Description": "S3 bucket name for the logs"
+    },
+    "IamCertificateId": {
+      "Type": "String",
+      "Description": "The IAM certificate ID for the SSL certificate."
+    }
+  },
+
+  "Resources": {
+    "CloudFrontDistribution": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": {
+          "Origins": [
+            {
+              "DomainName": {"Ref": "OriginDomain"},
+              "Id": "OriginId",
+              "CustomOriginConfig": {
+                "HTTPPort": "80",
+                "OriginProtocolPolicy": "http-only"
+              }
+            }
+          ],
+          "Enabled": true,
+          "Logging": {
+            "IncludeCookies": false,
+            "Bucket": {"Ref": "LogsBucket"},
+            "Prefix": {"Fn::Join": ["", ["cloudfront/", {"Ref": "Subdomain"}, "/"]]}
+          },
+
+          "Aliases": [{"Fn::Join": [".", [
+            {"Ref": "Subdomain"}, {"Ref": "ParentDomain"}]]}],
+
+          "DefaultCacheBehavior": {
+            "TargetOriginId": "OriginId",
+            "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
+            "ViewerProtocolPolicy": "https-only",
+            "SmoothStreaming": false,
+            "ForwardedValues": {
+              "Headers": ["Authorization", "Host"],
+              "QueryString": true
+            }
+          },
+          "ViewerCertificate": {
+            "IamCertificateId": {"Ref": "IamCertificateId"},
+            "SslSupportMethod": "sni-only"
+          },
+          "PriceClass": "PriceClass_100"
+        }
+      }
+    }
+  }
+}
