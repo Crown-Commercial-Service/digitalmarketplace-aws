@@ -73,18 +73,23 @@ def tag_exists(cwd, tag_name):
     return found_tag_name == tag_name
 
 
-def push_tag(cwd, tag_name, tag_message=None):
+def push_tag(cwd, tag_name, tag_message=None, force=False, ref=None):
     if tag_message is None:
         tag_message = tag_name
 
-    run_git_cmd(['tag', '-a', tag_name, '-m', tag_message],
-                cwd).strip()
-    run_git_cmd(['push', 'origin', tag_name],
-                cwd).strip()
+    create_tag = ['tag', '-a', tag_name, '-m', tag_message]
+    push_tag = ['push', 'origin', tag_name]
+    if ref is not None:
+        create_tag.append(ref)
+    if force:
+        create_tag.append('-f')
+        push_tag.append('-f')
+    run_git_cmd(create_tag, cwd).strip()
+    run_git_cmd(push_tag, cwd).strip()
 
 
-def push_deployed_to_tag(cwd, stage):
-    push_tag(cwd, 'deployed-to-{}'.format(stage))
+def push_deployed_to_tag(cwd, stage, ref):
+    push_tag(cwd, 'deployed-to-{}'.format(stage), force=True, ref=ref)
 
 
 def get_other_tags(cwd, tag):
