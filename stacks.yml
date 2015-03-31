@@ -23,6 +23,12 @@ dev_access:
   - database_dev_access
   - elasticsearch_dev_access
 
+route53zone:
+  name: "route53-zone"
+  template: cloudformation_templates/aws_route53_hosted_zone.json
+  parameters:
+    RootDomain: "{{ root_domain }}"
+
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_rds_database.json
@@ -52,6 +58,7 @@ api:
   dependencies:
     - api_app
     - database
+    - route53zone
   parameters:
     ApplicationName: "{{ stacks.api_app.parameters.ApplicationName }}"
     EnvironmentName: "dmapi-{{ stage[:3] }}-{{ environment }}"
@@ -66,6 +73,9 @@ api:
     MinInstanceCount: "{{ api.min_instance_count }}"
     MaxInstanceCount: "{{ api.max_instance_count }}"
     RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
+
+    Domain: "{{ stage }}-{{ environment }}-api.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
 database_dev_access:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}-dev-access"
@@ -115,6 +125,7 @@ search_api:
   dependencies:
     - search_api_app
     - elasticsearch
+    - route53zone
   parameters:
     ApplicationName: "{{ stacks.search_api_app.parameters.ApplicationName }}"
     EnvironmentName: "dmsearch-{{ stage[:3] }}-{{ environment }}"
@@ -131,6 +142,9 @@ search_api:
     ElasticsearchPort: "{{ elasticsearch.port }}"
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
 
+    Domain: "{{ stage }}-{{ environment }}-search-api.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
 admin_frontend_app:
   name: "digitalmarketplace-admin-frontend-app"
   template: cloudformation_templates/aws_elasticbeanstalk_app.json
@@ -145,6 +159,7 @@ admin_frontend:
     - documents_s3
     - api
     - admin_frontend_app
+    - route53zone
   parameters:
     ApplicationName: "{{ stacks.admin_frontend_app.parameters.ApplicationName }}"
     EnvironmentName: "dmadmin-{{ stage[:3] }}-{{ environment }}"
@@ -161,3 +176,6 @@ admin_frontend:
     InstanceType: "{{ admin_frontend.instance_type }}"
     MinInstanceCount: "{{ admin_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ admin_frontend.max_instance_count }}"
+
+    Subdomain: "{{ stage }}-{{ environment }}-admin.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
