@@ -56,7 +56,7 @@ def release_to_preview(ctx, repository_path):
     version, created = deploy.create_version(release_name)
     build.push_tag(repository_path, release_name)
 
-    return deploy.deploy(version, ctx.stage)
+    return deploy.deploy(version)
 
 
 def release_to_staging(ctx, repository_path, release_name, from_profile):
@@ -77,7 +77,7 @@ def release_to_staging(ctx, repository_path, release_name, from_profile):
 
         deploy.create_version(release_name, from_file=package_path)
 
-    return deploy.deploy(release_name, ctx.stage)
+    return deploy.deploy(release_name)
 
 
 def release_to_production(ctx, repository_path):
@@ -88,4 +88,4 @@ def release_to_production(ctx, repository_path):
     if release_tag is None:
         raise StandardError("Could not find release tag for staging")
 
-    return deploy.deploy(release_tag, ctx.stage)
+    return deploy.deploy(release_tag)

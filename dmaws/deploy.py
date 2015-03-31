@@ -11,8 +11,8 @@ from . import build
 
 
 class Deploy(object):
-    def __init__(self, eb_application, eb_environment, repo_path, region,
-                 logger=None, profile_name=None):
+    def __init__(self, eb_application, eb_environment, repo_path=None,
+                 region=None, logger=None, profile_name=None):
         self.log = logger
         self.profile_name = profile_name
         self.beanstalk = BeanstalkClient(region, logger, profile_name)
@@ -21,6 +21,10 @@ class Deploy(object):
         self.repo_path = repo_path
         self.eb_application = eb_application
         self.eb_environment = eb_environment
+
+    def get_current_version(self):
+        env = self.beanstalk.describe_environment(self.eb_environment)
+        return env['VersionLabel']
 
     def create_version(self, version_label, with_sha=False, description='',
                        from_file=None):
@@ -58,9 +62,9 @@ class Deploy(object):
 
         return version_label, bool(created_version)
 
-    def deploy(self, version_label, stage):
-        self.log("Deploying version %s to %s (%s)",
-                 version_label, self.eb_environment, stage)
+    def deploy(self, version_label):
+        self.log("Deploying version %s to %s",
+                 version_label, self.eb_environment)
         return self.beanstalk.update_environment(
             self.eb_environment, version_label
         )
@@ -137,6 +141,7 @@ class BeanstalkClient(object):
 
     def wait_for_ready(self, environment_name, request_id):
         last_event_time = None
+        last_status = None
         success = True
 
         while True:
@@ -169,6 +174,9 @@ class BeanstalkClient(object):
                          timestamp, event['Severity'], event['Message'])
 
             info = self.describe_environment(environment_name)
+            if info['Status'] != last_status:
+                self.log('Environment status is now %s', info['Status'])
+                last_status = info['Status']
             if info['Status'] == 'Ready':
                 return success
             elif info['Status'] != 'Updating':

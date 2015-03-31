@@ -17,4 +17,4 @@ def deploy_cmd(ctx, repository_path):
     deploy = StackPlan.from_ctx(ctx).get_deploy(repository_path)
 
     version, created = deploy.create_version(app, with_sha=True)
-    deploy.deploy(version, ctx.stage)
+    deploy.deploy(version)
