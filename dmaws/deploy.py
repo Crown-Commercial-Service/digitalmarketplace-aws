@@ -141,6 +141,7 @@ class BeanstalkClient(object):
 
     def wait_for_ready(self, environment_name, request_id):
         last_event_time = None
+        last_status = None
         success = True
 
         while True:
@@ -173,6 +174,9 @@ class BeanstalkClient(object):
                          timestamp, event['Severity'], event['Message'])
 
             info = self.describe_environment(environment_name)
+            if info['Status'] != last_status:
+                self.log('Environment status is now %s', info['Status'])
+                last_status = info['Status']
             if info['Status'] == 'Ready':
                 return success
             elif info['Status'] != 'Updating':
