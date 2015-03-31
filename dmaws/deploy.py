@@ -22,6 +22,10 @@ class Deploy(object):
         self.eb_application = eb_application
         self.eb_environment = eb_environment
 
+    def get_current_version(self):
+        env = self.beanstalk.describe_environment(self.eb_environment)
+        return env['VersionLabel']
+
     def create_version(self, version_label, with_sha=False, description='',
                        from_file=None):
         if from_file:
