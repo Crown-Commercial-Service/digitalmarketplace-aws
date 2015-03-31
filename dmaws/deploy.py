@@ -175,7 +175,7 @@ class BeanstalkClient(object):
                 raise BeanstalkStatusError(
                     "Unexpected Beanstalk status {}".format(info['Status']))
 
-            time.sleep(1)
+            time.sleep(5)
 
     def describe_environment(self, environment_name):
         response = self.conn.describe_environments(
