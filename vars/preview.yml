@@ -1,4 +1,5 @@
 ---
+root_domain: "development.digitalmarketplace.service.gov.uk"
 subnets:
   - subnet-bf8c5ce6
   - subnet-916bfcf4

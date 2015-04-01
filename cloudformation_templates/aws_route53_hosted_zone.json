@@ -1,0 +1,27 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "A public hosted zone for the given root domain.",
+
+  "Parameters": {
+    "RootDomain": {
+      "Type": "String",
+      "Description": "Root domain"
+    }
+  },
+
+  "Resources": {
+    "HostedZone": {
+      "Type": "AWS::Route53::HostedZone",
+      "Properties": {
+        "Name": {"Fn::Join": ["", [{"Ref": "RootDomain"}, "."]]}
+      }
+    }
+  },
+
+  "Outputs": {
+    "HostedZoneName": {
+      "Description": "Hosted zone name",
+      "Value": {"Fn::Join": ["", [{"Ref": "RootDomain"}, "."]]}
+    }
+  }
+}

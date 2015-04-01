@@ -37,6 +37,14 @@
     "EnvironmentName": {
       "Type": "String",
       "Description": "Elastic Beanstalk Environment name"
+    },
+    "Domain": {
+      "Type": "String",
+      "Description": "Domain to serve the Beanstalk environment from"
+    },
+    "HostedZoneName": {
+      "Type": "String",
+      "Description": "Route53 hosted zone name to serve the Beanstalk environment from"
     }
   },
 
@@ -118,6 +126,11 @@
           },
 {% endfor %}
           {
+            "Namespace": "aws:elb:loadbalancer",
+            "OptionName": "CrossZone",
+            "Value": true
+          },
+          {
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "EC2KeyName",
             "Value": {"Ref": "KeyName"}
@@ -159,6 +172,22 @@
         "TemplateName": {"Ref": "ConfigurationTemplate"},
         "Description": "Digital Marketplace API Environment"
       }
+    },
+
+    "Route53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+            {"Ref": "Domain"}, "."
+          ]]
+        },
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["Environment", "EndpointURL"]}
+        ],
+        "TTL": "300"
+      }
     }
   },
 
@@ -172,7 +201,7 @@
       "Value": {
         "Fn::Join": ["", [
           "http://",
-          {"Fn::GetAtt": ["Environment", "EndpointURL"]}
+          {"Ref": "Domain"}
         ]]
       }
     }
