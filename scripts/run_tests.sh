@@ -20,8 +20,8 @@ function display_result {
   fi
 }
 
-pep8 .
-display_result $? 1 "Code style check"
-
 py.test -v
 display_result $? 2 "Unit tests"
+
+pep8 .
+display_result $? 1 "Code style check"
