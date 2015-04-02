@@ -7,7 +7,7 @@ import zipfile
 from . import utils
 
 SSH_REPO_PATTERN = re.compile('git@[^:]*:[^/]+/(.*)\.git')
-HTTPS_REPO_PATTERN = re.compile('https://[^/]+/[^/]+/(.*)/(?:.git)?')
+HTTPS_REPO_PATTERN = re.compile('https://[^/]+/[^/]+/([^.]*)(?:.git)?')
 
 RELEASE_TAG_PATTERN = re.compile(r'^release-\d+$')
 MERGE_COMMIT_PATTERN = re.compile(r'[a-f0-9]+ Merge pull request #(\d+) from')
