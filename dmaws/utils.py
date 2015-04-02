@@ -106,6 +106,7 @@ def template_string(string, variables):
     jinja_env = jinja2.Environment(
         trim_blocks=True,
         undefined=StrictUndefined,
+        loader=jinja2.FileSystemLoader('cloudformation_templates/')
     )
 
     try:

@@ -177,5 +177,5 @@ admin_frontend:
     MinInstanceCount: "{{ admin_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ admin_frontend.max_instance_count }}"
 
-    Subdomain: "{{ stage }}-{{ environment }}-admin.{{ root_domain }}"
+    Domain: "{{ stage }}-{{ environment }}-admin-frontend.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"

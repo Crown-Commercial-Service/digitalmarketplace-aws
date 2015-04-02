@@ -1,213 +1,26 @@
-{
-  "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Digital Marketplace Search API Environment",
+{% extends "app_base.j2" %}
 
-  "Parameters": {
-{% for variable in environment_variables %}
-    "{{ variable }}": {
-        "Type": "String",
-        "Description": "Elastic Beanstalk environment variable",
-        "NoEcho": "true"
-    },
-{% endfor %}
-    "KeyName": {
-      "Type": "String",
-      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
-    },
-    "InstanceType": {
-      "Type": "String",
-      "Description": "EC2 instance type"
-    },
-    "MinInstanceCount": {
-      "Type": "Number",
-      "Description": "MinSize of the Auto Scaling group"
-    },
-    "MaxInstanceCount": {
-      "Type": "Number",
-      "Description": "MaxSize of the Auto Scaling group"
-    },
-    "ElasticsearchPort": {
-      "Type": "Number",
-      "Default": "9200",
-      "Description": "Elasticsearch port"
-    },
-    "ElasticsearchSecurityGroup": {
-      "Type": "String",
-      "Description": "Elasticsearch ELB security group"
-    },
-    "ApplicationName": {
-      "Type": "String",
-      "Description": "Elastic Beanstalk Application name"
-    },
-    "EnvironmentName": {
-      "Type": "String",
-      "Description": "Elastic Beanstalk Environment name"
-    },
-    "Domain": {
-      "Type": "String",
-      "Description": "Domain to serve the Beanstalk environment from"
-    },
-    "HostedZoneName": {
-      "Type": "String",
-      "Description": "Route53 hosted zone name to serve the Beanstalk environment from"
-    }
-  },
+{% block parameters %}
+"ElasticsearchPort": {
+  "Type": "Number",
+  "Default": "9200",
+  "Description": "Elasticsearch port"
+},
+"ElasticsearchSecurityGroup": {
+  "Type": "String",
+  "Description": "Elasticsearch ELB security group"
+}
+{% endblock %}
 
-  "Resources": {
-    "InstanceSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupDescription": "EC2 instances security group.",
-        "SecurityGroupIngress": []
-      }
-    },
-
-    "ElasticsearchIngress": {
-      "Type": "AWS::EC2::SecurityGroupIngress",
-      "Properties": {
-        "GroupName": {"Ref": "ElasticsearchSecurityGroup"},
-        "IpProtocol": "tcp",
-        "FromPort": {"Ref": "ElasticsearchPort"},
-        "ToPort": {"Ref": "ElasticsearchPort"},
-        "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
-      }
-    },
-
-    "IAMRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version" : "2012-10-17",
-          "Statement": [{
-            "Effect": "Allow",
-            "Principal": {
-              "Service": ["ec2.amazonaws.com"]
-            },
-            "Action": ["sts:AssumeRole"]
-          }]
-        },
-        "Path": "/",
-        "Policies": [{
-          "PolicyName": "digitalmarketplace-search-api-eb-policy",
-          "PolicyDocument": {
-            "Version" : "2012-10-17",
-            "Statement": [{
-              "Effect": "Allow",
-              "Action": [
-                "s3:Get*",
-                "s3:List*",
-                "s3:PutObject",
-                "cloudwatch:PutMetricData"
-              ],
-              "Resource": "*"
-            }]
-          }
-        }]
-      }
-    },
-    "InstanceProfile": {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties": {
-        "Path": "/",
-        "Roles": [{
-          "Ref": "IAMRole"
-        }]
-      }
-    },
-
-    "ConfigurationTemplate": {
-      "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
-      "Properties": {
-        "ApplicationName": {"Ref": "ApplicationName"},
-        "Description": "Default Configuration Version 1.0",
-        "SolutionStackName": "64bit Amazon Linux 2014.09 v1.2.0 running Python 2.7",
-        "OptionSettings": [
-{% for variable in environment_variables %}
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "{{ param_to_env(variable) }}",
-            "Value": {"Ref": "{{ variable }}"}
-          },
-{% endfor %}
-          {
-            "Namespace": "aws:elb:loadbalancer",
-            "OptionName": "CrossZone",
-            "Value": true
-          },
-          {
-            "Namespace": "aws:autoscaling:launchconfiguration",
-            "OptionName": "EC2KeyName",
-            "Value": {"Ref": "KeyName"}
-          },
-          {
-            "Namespace": "aws:autoscaling:launchconfiguration",
-            "OptionName": "InstanceType",
-            "Value": {"Ref": "InstanceType"}
-          },
-          {
-            "Namespace": "aws:autoscaling:asg",
-            "OptionName": "MinSize",
-            "Value": {"Ref": "MinInstanceCount"}
-          },
-          {
-            "Namespace": "aws:autoscaling:asg",
-            "OptionName": "MaxSize",
-            "Value": {"Ref": "MaxInstanceCount"}
-          },
-          {
-            "Namespace": "aws:autoscaling:launchconfiguration",
-            "OptionName": "SecurityGroups",
-            "Value": {"Ref": "InstanceSecurityGroup"}
-          },
-          {
-            "Namespace": "aws:autoscaling:launchconfiguration",
-            "OptionName": "IamInstanceProfile",
-            "Value": {"Ref": "InstanceProfile"}
-          }
-        ]
-      }
-    },
-
-    "Environment": {
-      "Type": "AWS::ElasticBeanstalk::Environment",
-      "Properties": {
-        "ApplicationName": {"Ref": "ApplicationName"},
-        "EnvironmentName": {"Ref": "EnvironmentName"},
-        "TemplateName": {"Ref": "ConfigurationTemplate"},
-        "Description": "Digital Marketplace Search API Environment"
-      }
-    },
-
-    "Route53RecordSet": {
-      "Type": "AWS::Route53::RecordSet",
-      "Properties": {
-        "HostedZoneName": {"Ref": "HostedZoneName"},
-        "Name": {"Fn::Join": ["",[
-            {"Ref": "Domain"}, "."
-          ]]
-        },
-        "Type": "CNAME",
-        "ResourceRecords": [
-          {"Fn::GetAtt": ["Environment", "EndpointURL"]}
-        ],
-        "TTL": "300"
-      }
-    }
-  },
-
-  "Outputs": {
-    "Environment": {
-      "Description": "Digital Marketplace Search API environment",
-      "Value": {"Ref": "Environment"}
-    },
-    "URL": {
-      "Description": "URL of the AWS Elastic Beanstalk Environment",
-      "Value": {
-        "Fn::Join": ["", [
-          "http://",
-          {"Ref": "Domain"}
-        ]]
-      }
-    }
+{% block resources %}
+"ElasticsearchIngress": {
+  "Type": "AWS::EC2::SecurityGroupIngress",
+  "Properties": {
+    "GroupName": {"Ref": "ElasticsearchSecurityGroup"},
+    "IpProtocol": "tcp",
+    "FromPort": {"Ref": "ElasticsearchPort"},
+    "ToPort": {"Ref": "ElasticsearchPort"},
+    "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
   }
 }
+{% endblock %}
