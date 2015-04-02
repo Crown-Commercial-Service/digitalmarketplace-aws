@@ -16,7 +16,7 @@
       "Description": "List of subnets for internal ELB"
     },
     "KeyName": {
-      "Type": "String",
+      "Type": "AWS::EC2::KeyPair::KeyName",
       "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
     },
     "SSHCidrIp": {

@@ -93,8 +93,9 @@ class StackPlan(object):
             raise ValueError("'stacks' is a reserved variable name")
         self.stack_context['stacks'] = {}
 
-    def stacks(self, with_dependencies=False):
-        return get_stacks(self._stacks, self.apps, with_dependencies)
+    def stacks(self, apps=None, with_dependencies=False):
+        apps = sorted(flatten_stack_groups(self._stacks, apps or self.apps))
+        return get_stacks(self._stacks, apps or self.apps, with_dependencies)
 
     def dependant_stacks(self):
         return get_stacks(
@@ -105,8 +106,17 @@ class StackPlan(object):
     def build_stack(self, stack):
         return stack.build(self.stage, self.environment, self.stack_context)
 
-    def info(self, with_aws=True):
-        stacks = self.stacks(with_dependencies=True)
+    def get_value(self, path):
+        vars_dict = self.stack_context
+        for key in path.split('.'):
+            try:
+                vars_dict = vars_dict[key]
+            except TypeError:
+                vars_dict = getattr(vars_dict, key)
+        return vars_dict
+
+    def info(self, apps=None, with_aws=True):
+        stacks = self.stacks(apps, with_dependencies=True)
         self.log('Gathering info about %s stacks',
                  ', '.join(s[0] for s in stacks))
 
@@ -120,7 +130,7 @@ class StackPlan(object):
 
         return self.stack_context['stacks']
 
-    def create(self):
+    def create(self, create_dependencies=True):
         self.log('Creating %s', ', '.join(self.apps))
 
         stacks = self.stacks(with_dependencies=True)
@@ -130,8 +140,18 @@ class StackPlan(object):
             built_stack = self.build_stack(stack)
             self.stack_context['stacks'][name] = built_stack
 
-            stack_info = self.cfn.create_stack(built_stack)
+            if create_dependencies or name in self.apps:
+                stack_info = self.cfn.create_stack(built_stack)
+            else:
+                stack_info = self.cfn.describe_stack(built_stack)
+                if not stack_info:
+                    self.log("Dependency %s doesn't exists, can't continue",
+                             built_stack.name)
+                    return False
+
             self.stack_context['stacks'][name].update_info(stack_info)
+
+        return True
 
     def delete(self):
         self.log('Deleting %s', ', '.join(self.apps))
@@ -147,7 +167,9 @@ class StackPlan(object):
             elif status and name not in self.apps:
                 self.log("Dependant stack %s exists, can't continue",
                          built_stack.name)
-                return
+                return False
+
+        return True
 
     def get_deploy(self, repository_path=None):
         if len(self.apps) != 1:

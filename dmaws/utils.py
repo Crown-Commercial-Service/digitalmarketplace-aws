@@ -8,13 +8,18 @@ import jinja2
 from jinja2.runtime import StrictUndefined
 
 
-def run_cmd(args, env=None, cwd=None, stdout=None):
+def run_cmd(args, env=None, cwd=None, stdout=None,
+            logger=None, ignore_errors=False):
     cmd_env = os.environ.copy()
     cmd_env.update(env or {})
+    if logger:
+        logger("Running %s", args[0])
     cmd = subprocess.Popen(args, env=cmd_env, cwd=cwd,
                            stdout=stdout, stderr=subprocess.STDOUT)
     streamdata = cmd.communicate()[0]
-    if cmd.returncode:
+    if logger:
+        logger("%s completed with return code %s", args[0], cmd.returncode)
+    if cmd.returncode and not ignore_errors:
         raise CalledProcessError(
             cmd.returncode,
             args,
