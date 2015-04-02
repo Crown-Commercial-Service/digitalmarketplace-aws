@@ -16,6 +16,7 @@ eb_apps:
 
 cloudfront:
   - api_cloudfront
+  - www_cloudfront
 
 data_storage:
   - database
@@ -201,3 +202,15 @@ admin_frontend:
 
     Domain: "{{ stage }}-{{ environment }}-admin-frontend.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
+www_cloudfront:
+  name: "digitalmarketplace-www-cloudfront-{{ stage }}"
+  template: cloudformation_templates/aws_cloudfront_www.json
+  dependencies:
+    - admin_frontend
+    - logs_s3
+  parameters:
+    Origin: "{{ stacks.api.parameters.Domain }}"
+    Domain: "{% if stage != 'production' %}{{ stage }}-{% endif %}www.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
