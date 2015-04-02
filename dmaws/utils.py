@@ -8,6 +8,9 @@ import jinja2
 from jinja2.runtime import StrictUndefined
 
 
+DEFAULT_TEMPLATES_PATH = 'cloudformation_templates/'
+
+
 def run_cmd(args, env=None, cwd=None, stdout=None,
             logger=None, ignore_errors=False):
     cmd_env = os.environ.copy()
@@ -107,11 +110,13 @@ class LazyTemplateMapping(object):
         return self._cache[key]
 
 
-def template_string(string, variables):
+def template_string(string, variables, templates_path=None):
     jinja_env = jinja2.Environment(
         trim_blocks=True,
         undefined=StrictUndefined,
-        loader=jinja2.FileSystemLoader('cloudformation_templates/')
+        loader=jinja2.FileSystemLoader(
+            templates_path or DEFAULT_TEMPLATES_PATH
+        )
     )
 
     try:
