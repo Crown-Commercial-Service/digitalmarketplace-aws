@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 import zipfile
 
-from .utils import run_cmd
+from . import utils
 
 SSH_REPO_PATTERN = re.compile('git@[^:]*:[^/]+/(.*)\.git')
 HTTPS_REPO_PATTERN = re.compile('https://[^/]+/[^/]+/(.*)/(?:.git)?')
@@ -16,7 +16,7 @@ REPOS_PATH = '.repos'
 
 
 def run_git_cmd(args, cwd, stdout=None):
-    return run_cmd(
+    return utils.run_cmd(
         ['git'] + args,
         cwd=cwd,
         stdout=stdout or subprocess.PIPE
@@ -143,7 +143,7 @@ def create_git_archive(cwd):
 
 
 def run_project_build_script(cwd):
-    run_cmd(['./scripts/build.sh'], cwd=cwd)
+    utils.run_cmd(['./scripts/build.sh'], cwd=cwd)
 
 
 def add_build_artefacts_to_archive(cwd, archive):
