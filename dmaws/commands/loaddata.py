@@ -50,7 +50,7 @@ def loaddata_cmd(ctx, api_repo_path, tasks):
         ctx.log('Inserting data into the database')
         run_cmd([
             'psql', '-d', db_path, '-f', dump_file
-        ], ignore_errors=True)
+        ], logger=ctx.log, ignore_errors=True)
 
     if 'search' in tasks:
         ctx.log('Creating Elasticsearch index')
@@ -63,7 +63,7 @@ def loaddata_cmd(ctx, api_repo_path, tasks):
             es_endpoint,
             plan.get_value('stacks.api.outputs.URL') + '/services',
             plan.get_value('api.auth_tokens')[0]
-        ], cwd=api_repo_path, ignore_errors=True)
+        ], cwd=api_repo_path, logger=ctx.log, ignore_errors=True)
 
     os.remove(dump_file)
     plan.delete()
