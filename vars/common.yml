@@ -16,6 +16,11 @@ admin_frontend:
   min_instance_count: 1
   max_instance_count: 2
 
+buyer_frontend:
+  instance_type: t2.micro
+  min_instance_count: 1
+  max_instance_count: 2
+
 database:
   port: 5432
   user: "digitalmarketplace"
