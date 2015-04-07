@@ -14,9 +14,14 @@ eb_apps:
   - search_api_app
   - admin_frontend_app
 
+cloudfront:
+  - api_cloudfront
+  - www_cloudfront
+
 data_storage:
   - database
   - documents_s3
+  - logs_s3
   - elasticsearch
 
 dev_access:
@@ -41,9 +46,15 @@ database:
 
 documents_s3:
   name: "documents-s3-{{ stage }}-{{ environment }}"
-  template: cloudformation_templates/aws_documents_s3.json
+  template: cloudformation_templates/aws_s3.json
   parameters:
     BucketName: "digitalmarketplace-documents-{{ stage }}-{{ environment }}"
+
+logs_s3:
+  name: "logs-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-logs-{{ stage }}-{{ environment }}"
 
 api_app:
   name: "digitalmarketplace-api-app"
@@ -76,6 +87,18 @@ api:
 
     Domain: "{{ stage }}-{{ environment }}-api.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
+api_cloudfront:
+  name: "digitalmarketplace-api-cloudfront-{{ stage }}"
+  template: cloudformation_templates/aws_cloudfront_app.json
+  dependencies:
+    - api
+    - logs_s3
+  parameters:
+    Origin: "{{ stacks.api.parameters.Domain }}"
+    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}api.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
 
 database_dev_access:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}-dev-access"
@@ -179,3 +202,15 @@ admin_frontend:
 
     Domain: "{{ stage }}-{{ environment }}-admin-frontend.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
+www_cloudfront:
+  name: "digitalmarketplace-www-cloudfront-{{ stage }}"
+  template: cloudformation_templates/aws_cloudfront_www.json
+  dependencies:
+    - admin_frontend
+    - logs_s3
+  parameters:
+    Origin: "{{ stacks.api.parameters.Domain }}"
+    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}www.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"

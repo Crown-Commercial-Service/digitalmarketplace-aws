@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "S3 bucket for Digital Marketplace documents",
+  "Description": "S3 bucket",
   "Parameters": {
     "BucketName": {
       "Type": "String",
@@ -22,6 +22,10 @@
     "Name": {
       "Description": "S3 bucket name",
       "Value": {"Ref": "S3Bucket"}
+    },
+    "Domain": {
+      "Description": "S3 bucket domain name",
+      "Value": {"Fn::GetAtt": ["S3Bucket", "DomainName"]}
     },
     "URL" : {
       "Value" : {"Fn::Join": ["", [
