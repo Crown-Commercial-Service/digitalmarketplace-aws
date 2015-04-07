@@ -96,7 +96,7 @@ api_cloudfront:
     - logs_s3
   parameters:
     Origin: "{{ stacks.api.parameters.Domain }}"
-    Domain: "{% if stage != 'production' %}{{ stage }}-{% endif %}api.{{ root_domain }}"
+    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}api.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
 
@@ -211,6 +211,6 @@ www_cloudfront:
     - logs_s3
   parameters:
     Origin: "{{ stacks.api.parameters.Domain }}"
-    Domain: "{% if stage != 'production' %}{{ stage }}-{% endif %}www.{{ root_domain }}"
+    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}www.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
