@@ -153,6 +153,21 @@
             "Namespace": "aws:elb:loadbalancer",
             "OptionName": "CrossZone",
             "Value": true
+          },
+          {
+            "Namespace": "aws:autoscaling:updatepolicy:rollingupdate",
+            "OptionName": "RollingUpdateEnabled",
+            "Value": true
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:command",
+            "OptionName": "BatchSize",
+            "Value": "1"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:command",
+            "OptionName": "BatchSizeType",
+            "Value": "Fixed"
           }
         ]
       }
