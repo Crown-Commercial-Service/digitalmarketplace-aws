@@ -203,6 +203,73 @@ admin_frontend:
     Domain: "{{ stage }}-{{ environment }}-admin-frontend.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
+buyer_frontend_app:
+  name: "digitalmarketplace-buyer-frontend-app"
+  template: cloudformation_templates/aws_elasticbeanstalk_app.json
+  parameters:
+    ApplicationName: "digitalmarketplace-buyer-frontend"
+
+buyer_frontend:
+  name: "digitalmarketplace-buyer-frontend-{{ stage }}-{{ environment }}"
+  repo_url: "git@github.com:alphagov/digitalmarketplace-buyer-frontend.git"
+  template: cloudformation_templates/aws_digitalmarketplace_buyer_frontend.json
+  dependencies:
+    - documents_s3
+    - api
+    - search_api
+    - buyer_frontend_app
+    - route53zone
+  parameters:
+    ApplicationName: "{{ stacks.buyer_frontend_app.parameters.ApplicationName }}"
+    EnvironmentName: "dmbuyer-{{ stage[:3] }}-{{ environment }}"
+
+    # EnvVar* variables are written to Elastic Beanstalk environment
+    # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
+    EnvVarDmBuyerFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
+    EnvVarDmSearchApiUrl: "{{ stacks.search_api.outputs.URL }}"
+    EnvVarDmBuyerFrontendSearchApiAuthToken: "{{ search_api.auth_tokens[0] }}"
+
+    KeyName: "{{ key_name }}"
+    InstanceType: "{{ buyer_frontend.instance_type }}"
+    MinInstanceCount: "{{ buyer_frontend.min_instance_count }}"
+    MaxInstanceCount: "{{ buyer_frontend.max_instance_count }}"
+
+    Domain: "{{ stage }}-{{ environment }}-buyer-frontend.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
+supplier_frontend_app:
+  name: "digitalmarketplace-supplier-frontend-app"
+  template: cloudformation_templates/aws_elasticbeanstalk_app.json
+  parameters:
+    ApplicationName: "digitalmarketplace-supplier-frontend"
+
+supplier_frontend:
+  name: "digitalmarketplace-supplier-frontend-{{ stage }}-{{ environment }}"
+  repo_url: "git@github.com:alphagov/digitalmarketplace-supplier-frontend.git"
+  template: cloudformation_templates/aws_digitalmarketplace_supplier_frontend.json
+  dependencies:
+    - documents_s3
+    - api
+    - supplier_frontend_app
+    - route53zone
+  parameters:
+    ApplicationName: "{{ stacks.supplier_frontend_app.parameters.ApplicationName }}"
+    EnvironmentName: "dmsuppl-{{ stage[:3] }}-{{ environment }}"
+
+    # EnvVar* variables are written to Elastic Beanstalk environment
+    # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
+    EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
+
+    KeyName: "{{ key_name }}"
+    InstanceType: "{{ supplier_frontend.instance_type }}"
+    MinInstanceCount: "{{ supplier_frontend.min_instance_count }}"
+    MaxInstanceCount: "{{ supplier_frontend.max_instance_count }}"
+
+    Domain: "{{ stage }}-{{ environment }}-supplier-frontend.{{ root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
 www_cloudfront:
   name: "digitalmarketplace-www-cloudfront-{{ stage }}"
   template: cloudformation_templates/aws_cloudfront_www.json
