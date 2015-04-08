@@ -9,7 +9,7 @@ setup(
     version='0.1',
     packages=find_packages(),
     description='Digital Marketplace AWS deployment scripts',
-    licence='MIT',
+    license='MIT',
 
     install_requires=install_requires,
 
