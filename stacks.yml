@@ -8,11 +8,15 @@ apps:
   - api
   - search_api
   - admin_frontend
+  - buyer_frontend
+  - supplier_frontend
 
 eb_apps:
   - api_app
   - search_api_app
   - admin_frontend_app
+  - buyer_frontend_app
+  - supplier_frontend_app
 
 cloudfront:
   - api_cloudfront
