@@ -50,6 +50,11 @@ def release_to_preview(ctx, repository_path):
     deploy = get_deploy(ctx, repository_path)
 
     release_name = build.get_release_name_for_repo(repository_path)
+
+    if deploy.version_exists(release_name):
+        ctx.log('Redeploying existing version %s', release_name)
+        return deploy.deploy(release_name), release_name
+
     if build.tag_exists(repository_path, release_name):
         raise ValueError("Already have a tag for {}".format(release_name))
 
