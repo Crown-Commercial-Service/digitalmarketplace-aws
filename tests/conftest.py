@@ -1,7 +1,68 @@
 import pytest
 import mock
 
+from .helpers import set_boto_response
+
+from boto.s3.bucket import Bucket as S3Bucket
+from boto.s3.connection import S3Connection
+from boto.beanstalk.layer1 import Layer1 as BeanstalkConnection
 from dmaws.utils import run_cmd as run_cmd_orig
+
+
+@pytest.fixture(autouse=True)
+def beanstalk_conn(request):
+    beanstalk_mock = mock.Mock(spec=BeanstalkConnection)
+    beanstalk_patch = mock.patch('boto.beanstalk.connect_to_region',
+                                 return_value=beanstalk_mock)
+
+    beanstalk_patch.start()
+    request.addfinalizer(beanstalk_patch.stop)
+
+    set_boto_response(beanstalk_mock, 'create_storage_location', {
+        'S3Bucket': 'test-bucket'
+    })
+
+    set_boto_response(beanstalk_mock, 'update_environment', metadata={
+        'RequestId': 'test-request-1'
+    })
+
+    set_boto_response(beanstalk_mock, 'describe_events', {
+        'Events': [
+            {'EventDate': 1427976389, 'Severity': 'UPDATE', 'Message': 'msg'}
+        ]
+    })
+
+    set_boto_response(beanstalk_mock, 'describe_environments', {
+        'Environments': [
+            {
+                'Status': 'Ready',
+                'CNAME': 'test.domain.local'
+            }
+        ]
+    })
+
+    set_boto_response(beanstalk_mock, 'describe_application_versions', {
+        'ApplicationVersions': ['test-version']
+    })
+
+    return beanstalk_mock
+
+
+@pytest.fixture(autouse=True)
+def s3_conn(request, s3_bucket):
+    s3_mock = mock.Mock(S3Connection)
+    s3_patch = mock.patch('boto.s3.connect_to_region', return_value=s3_mock)
+    s3_patch.start()
+    request.addfinalizer(s3_patch.stop)
+
+    s3_mock.get_bucket.return_value = s3_bucket
+
+    return s3_mock
+
+
+@pytest.fixture()
+def s3_bucket():
+    return mock.Mock(spec=S3Bucket)
 
 
 @pytest.fixture()
@@ -73,6 +134,6 @@ def mkstemp(request):
     request.addfinalizer(temp_patch.stop)
 
     temp = temp_patch.start()
-    temp.return_value = -1, '/dev/null'
+    temp.return_value = -1, '/tmp/tempfile'
 
     return temp
