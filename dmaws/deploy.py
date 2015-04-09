@@ -91,7 +91,7 @@ class S3Client(object):
     def __init__(self, region, logger=None, profile_name=None):
         self.conn = boto.s3.connect_to_region(region,
                                               profile_name=profile_name)
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
 
     def upload_package(self, bucket_name, package_name, package_file):
         bucket = self.conn.get_bucket(bucket_name)
@@ -123,7 +123,7 @@ class BeanstalkClient(object):
         self.conn = boto.beanstalk.connect_to_region(
             region, profile_name=profile_name
         )
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
 
     def get_storage_location(self):
         response = self.conn.create_storage_location()
