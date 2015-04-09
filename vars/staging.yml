@@ -1,2 +1,6 @@
 ---
 root_domain: "digitalmarketplace.service.gov.uk"
+subnets:
+  - subnet-9a9713ed
+  - subnet-63b1683a
+  - subnet-ad0894c8
