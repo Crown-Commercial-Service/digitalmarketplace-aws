@@ -139,7 +139,7 @@ class BeanstalkClient(object):
         request_id = result['RequestId']
         return self.wait_for_ready(environment_name, request_id)
 
-    def wait_for_ready(self, environment_name, request_id):
+    def wait_for_ready(self, environment_name, request_id, delay=5):
         last_event_time = None
         last_status = None
         success = True
@@ -183,7 +183,7 @@ class BeanstalkClient(object):
                 raise BeanstalkStatusError(
                     "Unexpected Beanstalk status {}".format(info['Status']))
 
-            time.sleep(5)
+            time.sleep(delay)
 
     def describe_environment(self, environment_name):
         response = self.conn.describe_environments(
