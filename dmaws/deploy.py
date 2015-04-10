@@ -13,7 +13,7 @@ from . import build
 class Deploy(object):
     def __init__(self, eb_application, eb_environment, repo_path=None,
                  region=None, logger=None, profile_name=None):
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
         self.profile_name = profile_name
         self.beanstalk = BeanstalkClient(region, logger, profile_name)
         self.s3 = S3Client(region, logger, profile_name)
