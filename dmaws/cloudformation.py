@@ -11,7 +11,7 @@ class Cloudformation(object):
         self.conn = boto.cloudformation.connect_to_region(
             region,
             profile_name=profile_name)
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
 
     def create_stack(self, stack):
         try:
