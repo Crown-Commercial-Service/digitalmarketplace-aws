@@ -1,11 +1,15 @@
+import datetime
+
 import pytest
 import mock
 
-from .helpers import set_boto_response
+from .helpers import set_boto_response, set_cloudformation_stack
+from .helpers import CFOutput, CFEvent, CFResource
 
 from boto.s3.bucket import Bucket as S3Bucket
 from boto.s3.connection import S3Connection
 from boto.beanstalk.layer1 import Layer1 as BeanstalkConnection
+from boto.cloudformation.connection import CloudFormationConnection
 
 from dmaws.utils import run_cmd as run_cmd_orig
 from dmaws.build import get_repo_url, get_current_sha, get_current_ref
@@ -28,6 +32,20 @@ def git_info(request):
     for patch in patches:
         patch.start()
         request.addfinalizer(patch.stop)
+
+
+@pytest.fixture(autouse=True)
+def cloudformation_conn(request):
+    cloudformation_mock = mock.Mock(spec=CloudFormationConnection)
+    cloudformation_patch = mock.patch('boto.cloudformation.connect_to_region',
+                                      return_value=cloudformation_mock)
+
+    cloudformation_patch.start()
+    request.addfinalizer(cloudformation_patch.stop)
+
+    set_cloudformation_stack(cloudformation_mock, 'aws', 'CREATE_COMPLETE')
+
+    return cloudformation_mock
 
 
 @pytest.fixture(autouse=True)
