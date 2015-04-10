@@ -31,6 +31,11 @@ class Cloudformation(object):
         return self.wait_for(stack, 'CREATE')
 
     def update_stack(self, stack):
+        info = self.describe_stack(stack)
+        if not info:
+            self.log('Stack [%s] does not exist', stack.name)
+            return self._response(info, failed=True)
+
         try:
             self.conn.update_stack(
                 stack.name,
