@@ -6,7 +6,28 @@ from .helpers import set_boto_response
 from boto.s3.bucket import Bucket as S3Bucket
 from boto.s3.connection import S3Connection
 from boto.beanstalk.layer1 import Layer1 as BeanstalkConnection
+
 from dmaws.utils import run_cmd as run_cmd_orig
+from dmaws.build import get_repo_url, get_current_sha, get_current_ref
+
+
+@pytest.fixture()
+def git_info(request):
+    patches = [
+        mock.patch(
+            'dmaws.build.get_repo_url', wraps=get_repo_url,
+            return_value='git@github.com:alphagov/digitalmarketplace-aws.git'),
+        mock.patch(
+            'dmaws.build.get_current_sha', wraps=get_current_sha,
+            return_value='dd93edd2cf6ade0620bb0d1e87796bb264634878'),
+        mock.patch(
+            'dmaws.build.get_current_ref', wraps=get_current_ref,
+            return_value='master'),
+    ]
+
+    for patch in patches:
+        patch.start()
+        request.addfinalizer(patch.stop)
 
 
 @pytest.fixture(autouse=True)
