@@ -15,7 +15,6 @@ class TestS3Client(object):
 
     def test_s3_upload_package(self, s3_conn, s3_bucket):
         s3_client = S3Client(AWS_REGION)
-        s3_bucket.get_key.return_value = False
         s3_client.upload_package('test-bucket', 'test-package', '')
 
         s3_conn.get_bucket.assert_called_with('test-bucket')
@@ -23,6 +22,7 @@ class TestS3Client(object):
         s3_bucket.new_key.assert_called_with('test-package')
 
     def test_s3_upload_existing_package(self, s3_conn, s3_bucket):
+        s3_bucket.get_key.return_value = True
         s3_client = S3Client(AWS_REGION)
         s3_client.upload_package('test-bucket', 'test-package', '')
 
@@ -31,6 +31,7 @@ class TestS3Client(object):
         assert not s3_bucket.new_key.called
 
     def test_s3_download_package(self, s3_conn, s3_bucket):
+        s3_bucket.get_key.return_value = mock.Mock()
         s3_client = S3Client(AWS_REGION)
         package = s3_client.download_package('test-bucket', 'test-package')
 
@@ -41,7 +42,6 @@ class TestS3Client(object):
 
     def test_s3_download_missing_package(self, s3_conn, s3_bucket):
         s3_client = S3Client(AWS_REGION)
-        s3_bucket.get_key.return_value = False
 
         with pytest.raises(ValueError):
             s3_client.download_package('test-bucket', 'test-package')

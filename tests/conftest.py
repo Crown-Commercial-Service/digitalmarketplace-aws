@@ -83,7 +83,10 @@ def s3_conn(request, s3_bucket):
 
 @pytest.fixture()
 def s3_bucket():
-    return mock.Mock(spec=S3Bucket)
+    bucket = mock.Mock(spec=S3Bucket)
+    bucket.get_key.return_value = False
+
+    return bucket
 
 
 @pytest.fixture()
