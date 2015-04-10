@@ -3,10 +3,85 @@ import mock
 
 from .helpers import set_boto_response, set_boto_responses
 
+from dmaws.deploy import Deploy
 from dmaws.deploy import S3Client
 from dmaws.deploy import BeanstalkClient, BeanstalkStatusError
 
 AWS_REGION = 'eu-west-1'
+
+
+class TestDeploy(object):
+    def test_deploy_init(self, s3_conn, beanstalk_conn):
+        deploy = Deploy('app', 'env')
+        assert deploy.s3.conn == s3_conn
+        assert deploy.beanstalk.conn == beanstalk_conn
+
+    def test_deploy(self):
+        assert Deploy('app', 'env').deploy('release-1') == 'test.domain.local'
+
+    def test_create_version_with_repo_archive(self, s3_bucket):
+        deploy = Deploy('app', 'env', repo_path='test-path')
+
+        assert deploy.create_version('release-1') == ('release-1', True)
+
+        s3_bucket.new_key.assert_called_with('app/release-1.zip')
+        key = s3_bucket.new_key.return_value
+        key.set_contents_from_filename.assert_called_with('/tmp/tempfile')
+
+    def test_create_version_from_file(self, s3_bucket):
+        deploy = Deploy('app', 'env')
+        assert deploy.create_version('release-1', from_file='file.zip') == (
+            'release-1', True
+        )
+
+        s3_bucket.new_key.assert_called_with('app/release-1.zip')
+        key = s3_bucket.new_key.return_value
+        key.set_contents_from_filename.assert_called_with('file.zip')
+
+    def test_create_version_no_file_or_repo(self):
+        deploy = Deploy('app', 'env')
+
+        with pytest.raises(ValueError):
+            deploy.create_version('release-1')
+
+    def test_create_version_existing(self, s3_bucket):
+        s3_bucket.get_key.return_value = True
+        deploy = Deploy('app', 'env', repo_path='test-path')
+
+        assert deploy.create_version('release-1') == ('release-1', True)
+        assert not s3_bucket.new_key.called
+
+    def test_create_version_with_sha(self, git_info):
+        deploy = Deploy('app', 'env', repo_path='test-path')
+        assert deploy.create_version('release', with_sha=True) == (
+            'release-master-dd93edd', True
+        )
+
+    def test_get_current_version(self):
+        assert Deploy('app', 'env').get_current_version() == 'release-0'
+
+    def test_version_exists(self):
+        assert Deploy('app', 'env').version_exists('release-0')
+
+    def test_version_doesnt_exist(self, beanstalk_conn):
+        set_boto_response(beanstalk_conn, 'describe_application_versions', {
+            'ApplicationVersions': []
+        })
+        assert not Deploy('app', 'env').version_exists('release-0')
+
+    def test_get_package_name(self):
+        assert Deploy('app', 'env').get_package_name(
+            'release-1'
+        ) == 'app/release-1.zip'
+
+    def test_storage_location(self):
+        assert Deploy('app', 'env').get_storage_location() == 'test-bucket'
+
+    def test_download_package(self, s3_bucket):
+        s3_bucket.get_key.return_value = mock.Mock()
+        assert Deploy('app', 'env').download_package(
+            'release-0'
+        ) == '/tmp/tempfile'
 
 
 class TestS3Client(object):
@@ -170,7 +245,8 @@ class TestBeanstalkClient(object):
         beanstalk = BeanstalkClient(AWS_REGION)
         assert beanstalk.describe_environment('test') == {
             'Status': 'Ready',
-            'CNAME': 'test.domain.local'
+            'CNAME': 'test.domain.local',
+            'VersionLabel': 'release-0',
         }
 
     def test_create_application_version(self):

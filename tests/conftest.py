@@ -57,6 +57,7 @@ def beanstalk_conn(request):
         'Environments': [
             {
                 'Status': 'Ready',
+                'VersionLabel': 'release-0',
                 'CNAME': 'test.domain.local'
             }
         ]
@@ -142,6 +143,14 @@ def os_close(request):
     request.addfinalizer(os_close_patch.stop)
 
     return os_close_patch.start()
+
+
+@pytest.fixture(autouse=True)
+def os_remove(request):
+    os_remove_patch = mock.patch('os.remove')
+    request.addfinalizer(os_remove_patch.stop)
+
+    return os_remove_patch.start()
 
 
 @pytest.fixture(autouse=True)
