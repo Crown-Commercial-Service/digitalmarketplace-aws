@@ -84,7 +84,7 @@ class Cloudformation(object):
             ),
         }
 
-    def wait_for(self, stack, operation):
+    def wait_for(self, stack, operation, delay=5):
         last = datetime.datetime.utcnow()
         self.log('Waiting for [%s] to %s', stack.name, operation)
         while True:
@@ -106,7 +106,7 @@ class Cloudformation(object):
                 for ts, event in reversed(new_events):
                     self.log('%s %s', ts, event)
                     last = ts
-                time.sleep(5)
+                time.sleep(delay)
 
     def _response(self, stack_info, failed=False):
         stack_info.update({
