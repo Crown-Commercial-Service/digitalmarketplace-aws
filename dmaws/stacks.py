@@ -8,7 +8,7 @@ from .deploy import Deploy
 
 
 class Stack(object):
-    def __init__(self, name, template, parameters,
+    def __init__(self, name, template, parameters=None,
                  dependencies=None, repo_url=None):
         self.name = name
         self.repo_url = repo_url
