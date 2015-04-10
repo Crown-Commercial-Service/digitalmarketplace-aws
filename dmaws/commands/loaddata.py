@@ -15,9 +15,9 @@ LOADDATA_BUCKET = 'digitalmarketplace-dev-loaddata'
 
 
 @cli_command('loaddata', max_apps=0)
-@click.argument('api_repo_path')
+@click.argument('search_api_repo_path')
 @click.argument('tasks', nargs=-1)
-def loaddata_cmd(ctx, api_repo_path, tasks):
+def loaddata_cmd(ctx, search_api_repo_path, tasks):
     """Load test data for development or preview environment."""
 
     if not tasks:
@@ -59,11 +59,11 @@ def loaddata_cmd(ctx, api_repo_path, tasks):
 
         ctx.log('Inserting data into Elasticsearch')
         run_cmd([
-            './scripts/process-g6-into-elastic-search.py',
+            './scripts/index-g6-in-elasticsearch.py',
             es_endpoint,
             plan.get_value('stacks.api.outputs.URL') + '/services',
             plan.get_value('api.auth_tokens')[0]
-        ], cwd=api_repo_path, logger=ctx.log, ignore_errors=True)
+        ], cwd=search_api_repo_path, logger=ctx.log, ignore_errors=True)
 
     os.remove(dump_file)
     plan.delete()
