@@ -30,9 +30,11 @@ class Deploy(object):
                        from_file=None):
         if from_file:
             package_path = from_file
-        else:
+        elif self.repo_path:
             ref, sha, package_path = build.create_archive(self.repo_path)
             self.log('Created a git archive at %s', package_path)
+        else:
+            raise ValueError('Either repo_path or from_file must be set')
 
         if with_sha:
             version_label = '{}-{}-{}'.format(version_label, ref, sha[:7])
