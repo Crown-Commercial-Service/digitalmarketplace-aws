@@ -126,7 +126,10 @@ class StackPlan(object):
 
             if with_aws:
                 stack_info = self.cfn.describe_stack(built_stack)
-                self.stack_context['stacks'][name].update_info(stack_info)
+                if stack_info:
+                    self.stack_context['stacks'][name].update_info(stack_info)
+                else:
+                    self.log('Stack [%s] does not exist', name)
 
         return self.stack_context['stacks']
 
