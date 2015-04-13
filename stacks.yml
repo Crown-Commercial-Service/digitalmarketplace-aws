@@ -121,6 +121,7 @@ elasticsearch:
   parameters:
     KeyName: "{{ key_name }}"
     SSHCidrIp: "{{ user_cidr_ip }}"
+    Port: "{{ elasticsearch.port }}"
     LoadBalancerName: "elasticsearch-{{ stage }}-{{ environment }}"
     LoadBalancerSubnets: "{{ subnets | join(',') }}"
     GroupTag: "elasticsearch-{{ stage }}-{{ environment }}"
