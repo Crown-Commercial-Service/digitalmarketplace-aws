@@ -43,7 +43,7 @@ def set_cloudformation_stack(cloudformation_mock, stack_name, status,
     CFStack.describe_resources = lambda self: self.resources_
     CFStack.stack_status = property(stack_status)
 
-    cloudformation_mock._stacks['aws'] = CFStack(
+    cloudformation_mock._stacks[stack_name] = CFStack(
         status,
         outputs or [],
         events or [],
