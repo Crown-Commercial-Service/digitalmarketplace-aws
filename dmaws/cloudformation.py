@@ -11,7 +11,7 @@ class Cloudformation(object):
         self.conn = boto.cloudformation.connect_to_region(
             region,
             profile_name=profile_name)
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
 
     def create_stack(self, stack):
         try:
@@ -31,6 +31,11 @@ class Cloudformation(object):
         return self.wait_for(stack, 'CREATE')
 
     def update_stack(self, stack):
+        info = self.describe_stack(stack)
+        if not info:
+            self.log('Stack [%s] does not exist', stack.name)
+            return self._response(info, failed=True)
+
         try:
             self.conn.update_stack(
                 stack.name,
@@ -79,7 +84,7 @@ class Cloudformation(object):
             ),
         }
 
-    def wait_for(self, stack, operation):
+    def wait_for(self, stack, operation, delay=5):
         last = datetime.datetime.utcnow()
         self.log('Waiting for [%s] to %s', stack.name, operation)
         while True:
@@ -101,7 +106,7 @@ class Cloudformation(object):
                 for ts, event in reversed(new_events):
                     self.log('%s %s', ts, event)
                     last = ts
-                time.sleep(5)
+                time.sleep(delay)
 
     def _response(self, stack_info, failed=False):
         stack_info.update({

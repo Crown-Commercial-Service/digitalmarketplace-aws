@@ -200,6 +200,12 @@ class TestLazyTemplateMapping(object):
                                       {"var": "var"}, var="kwarg")
         assert mapping["a"] == "kwarg"
 
+    def test_missing_key_error(self):
+        mapping = LazyTemplateMapping({"key": "{{ var }}"}, {})
+
+        with pytest.raises(KeyError):
+            mapping['missing']
+
     def test_keys(self):
         mapping = LazyTemplateMapping({"a": "{{ var }}", "b": "{{ var }}"}, {})
         assert mapping.keys() == ["a", "b"]

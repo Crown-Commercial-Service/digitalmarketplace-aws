@@ -134,4 +134,10 @@ class TestArchiveCreation(object):
         add_directory_to_archive('does-not', 'exist', '/dev/null')
 
     def test_create_archive(self):
-        create_archive('does-not-exist')
+        assert create_archive('does-not-exist')[2] == '/tmp/tempfile'
+
+    def test_create_archive_patched(self, git_info):
+        assert create_archive('does-not-exist') == (
+            'master', 'dd93edd2cf6ade0620bb0d1e87796bb264634878',
+            '/tmp/tempfile'
+        )

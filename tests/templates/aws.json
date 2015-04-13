@@ -1,0 +1,4 @@
+{}
+{% for variable in environment_variables %}
+{{ variable }},{{ param_to_env(variable) }}
+{% endfor %}

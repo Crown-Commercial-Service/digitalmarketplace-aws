@@ -13,7 +13,7 @@ from . import build
 class Deploy(object):
     def __init__(self, eb_application, eb_environment, repo_path=None,
                  region=None, logger=None, profile_name=None):
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
         self.profile_name = profile_name
         self.beanstalk = BeanstalkClient(region, logger, profile_name)
         self.s3 = S3Client(region, logger, profile_name)
@@ -30,9 +30,11 @@ class Deploy(object):
                        from_file=None):
         if from_file:
             package_path = from_file
-        else:
+        elif self.repo_path:
             ref, sha, package_path = build.create_archive(self.repo_path)
             self.log('Created a git archive at %s', package_path)
+        else:
+            raise ValueError('Either repo_path or from_file must be set')
 
         if with_sha:
             version_label = '{}-{}-{}'.format(version_label, ref, sha[:7])
@@ -91,7 +93,7 @@ class S3Client(object):
     def __init__(self, region, logger=None, profile_name=None):
         self.conn = boto.s3.connect_to_region(region,
                                               profile_name=profile_name)
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
 
     def upload_package(self, bucket_name, package_name, package_file):
         bucket = self.conn.get_bucket(bucket_name)
@@ -123,7 +125,7 @@ class BeanstalkClient(object):
         self.conn = boto.beanstalk.connect_to_region(
             region, profile_name=profile_name
         )
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
 
     def get_storage_location(self):
         response = self.conn.create_storage_location()
@@ -139,7 +141,7 @@ class BeanstalkClient(object):
         request_id = result['RequestId']
         return self.wait_for_ready(environment_name, request_id)
 
-    def wait_for_ready(self, environment_name, request_id):
+    def wait_for_ready(self, environment_name, request_id, delay=5):
         last_event_time = None
         last_status = None
         success = True
@@ -183,7 +185,7 @@ class BeanstalkClient(object):
                 raise BeanstalkStatusError(
                     "Unexpected Beanstalk status {}".format(info['Status']))
 
-            time.sleep(5)
+            time.sleep(delay)
 
     def describe_environment(self, environment_name):
         response = self.conn.describe_environments(
