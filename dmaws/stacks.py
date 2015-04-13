@@ -78,7 +78,7 @@ class BuiltStack(Stack):
 class StackPlan(object):
     def __init__(self, stacks, stage, environment, variables, apps,
                  logger=None, profile_name=None):
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
         self.profile_name = profile_name
         self.cfn = Cloudformation(variables['aws_region'], logger=self.log,
                                   profile_name=profile_name)
