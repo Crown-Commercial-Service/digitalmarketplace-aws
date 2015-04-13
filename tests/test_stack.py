@@ -1,7 +1,14 @@
+import mock
 import pytest
+
+from .helpers import set_cloudformation_stack
 
 from dmaws.stacks import Stack
 from dmaws.stacks import BuiltStack
+from dmaws.stacks import StackPlan
+
+
+AWS_REGION = 'fake-region'
 
 
 class TestStack(object):
@@ -108,3 +115,327 @@ class TestBuiltStack(object):
         ).build('stage', 'env', {})
 
         assert stack.template_body == "{}\nEnvVarDmName,DM_NAME\n"
+
+
+class TestStackPlan(object):
+    def test_init(self):
+        plan = StackPlan({
+            'aws': Stack('aws', 'aws.json')
+        }, 'stage', 'env', {'aws_region': AWS_REGION}, ['aws'])
+
+        assert plan.stack_context == {'aws_region': AWS_REGION, 'stacks': {}}
+
+    def test_stacks_variable_is_reserved(self):
+        with pytest.raises(ValueError):
+            StackPlan({
+                'aws': Stack('aws', 'aws.json')
+            }, 'stage', 'env', {'aws_region': AWS_REGION, 'stacks': []}, [])
+
+    def test_apps_list_is_flattened(self):
+        plan = StackPlan(
+            {
+                'all': ['aws', 'api', 'api_list'],
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['all', 'aws']
+        )
+
+        assert plan.apps == ['api', 'aws']
+
+    def test_stacks_list(self):
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['api_list', 'aws']
+        )
+
+        assert plan.stacks() == [('api', mock.ANY), ('aws', mock.ANY)]
+
+    def test_stacks_list_from_apps(self):
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['api', 'aws']
+        )
+
+        assert plan.stacks(['api_list']) == [('api', mock.ANY)]
+
+    def test_stacks_dependencies_list(self):
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['api_list', 'aws']
+        )
+
+        assert plan.stacks(with_dependencies=True) == [
+            ('aws', mock.ANY), ('db', mock.ANY), ('api', mock.ANY)
+        ]
+
+    def test_dependant_stacks_list(self):
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['db', 'aws']
+        )
+
+        assert plan.dependant_stacks() == [
+            ('api', mock.ANY), ('aws', mock.ANY), ('db', mock.ANY)
+        ]
+
+    def test_build_stack(self):
+        plan = StackPlan({
+            'aws': Stack('aws', 'aws.json')
+        }, 'stage', 'env', {'aws_region': AWS_REGION}, ['aws'])
+
+        assert plan.build_stack(plan.stacks()[0][1]).name == 'aws'
+
+    def test_get_value(self):
+        plan = StackPlan({
+            'aws': Stack('aws', 'aws.json')
+        }, 'stage', 'env', {'aws_region': AWS_REGION}, ['aws'])
+
+        assert plan.get_value('aws_region') == AWS_REGION
+
+    def test_get_nested_value(self):
+        plan = StackPlan({'aws': Stack('aws', 'aws.json')},
+                         'stage', 'env',
+                         {'aws_region': AWS_REGION, 'aws': {'stacks': 2}},
+                         ['aws'])
+
+        assert plan.get_value('aws.stacks') == 2
+
+    def test_stack_info(self, cloudformation_conn):
+        plan = StackPlan(
+            {
+                'aws': Stack('aws', 'aws.json'),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['aws']
+        )
+
+        assert plan.info()['aws'].status == 'CREATE_COMPLETE'
+
+    def test_stack_info_with_dependencies(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'CREATE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'UPDATE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            []
+        )
+
+        info = plan.info(['api'])
+
+        assert info['api'].status == 'CREATE_COMPLETE'
+        assert info['db'].status == 'UPDATE_COMPLETE'
+
+    def test_stack_info_from_apps(self):
+        plan = StackPlan(
+            {
+                'aws': Stack('aws', 'aws.json'),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            []
+        )
+
+        assert plan.info(['aws'])['aws'].status == 'CREATE_COMPLETE'
+
+    def test_stack_info_missing(self):
+        plan = StackPlan(
+            {
+                'aws': Stack('aws', 'aws.json'),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            []
+        )
+
+        assert not plan.info(['db'])['db'].status
+
+    def test_stack_info_without_aws(self):
+        plan = StackPlan(
+            {
+                'aws': Stack('aws', 'aws.json'),
+                'db': Stack('db', 'db.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            []
+        )
+
+        info = plan.info(['aws'], with_aws=False)
+
+        assert info['aws'].name == 'aws'
+        assert not info['aws'].status
+
+    def test_stack_create(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'CREATE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'UPDATE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['db']
+        )
+
+        assert plan.create()
+
+        cloudformation_conn.create_stack.assert_has_calls([
+            mock.call(u'db', template_body=mock.ANY,
+                      parameters=[], capabilities=mock.ANY),
+        ])
+
+    def test_stack_create_dependencies(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'UPDATE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'UPDATE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'tests/templates/aws.json',
+                             dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['api']
+        )
+
+        assert plan.create()
+        cloudformation_conn.create_stack.assert_has_calls([
+            mock.call(u'db', template_body=mock.ANY,
+                      parameters=[], capabilities=mock.ANY),
+            mock.call(u'api', template_body=mock.ANY,
+                      parameters=[], capabilities=mock.ANY),
+        ])
+
+    def test_stack_create_without_dependencies(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'UPDATE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'CREATE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'tests/templates/aws.json',
+                             dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['api']
+        )
+
+        assert plan.create(create_dependencies=False)
+        cloudformation_conn.create_stack.assert_has_calls([
+            mock.call(u'api', template_body=mock.ANY,
+                      parameters=[], capabilities=mock.ANY),
+        ])
+
+    def test_stack_create_with_missing_dependencies(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'UPDATE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'tests/templates/aws.json',
+                             dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['api']
+        )
+
+        assert not plan.create(create_dependencies=False)
+        assert not cloudformation_conn.called
+
+    def test_stack_delete(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'DELETE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'DELETE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['db']
+        )
+
+        assert not plan.delete()
+        assert not cloudformation_conn.delete_stack.called
+
+    def test_stack_delete_with_dependant_stack(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'CREATE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'UPDATE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['db']
+        )
+
+        assert not plan.delete()
+        assert not cloudformation_conn.delete_stack.called
+
+    def test_get_deploy(self):
+        plan = StackPlan({
+            'aws': Stack('aws', 'aws.json',
+                         parameters={
+                             'ApplicationName': 'app',
+                             'EnvironmentName': 'app-env',
+                         })
+        }, 'stage', 'env', {'aws_region': AWS_REGION}, ['aws'])
+
+        assert plan.get_deploy().eb_application == 'app'
+
+    def test_get_deploy_multiple_apps(self):
+        plan = StackPlan({
+            'aws': Stack('aws', 'aws.json'),
+            'api': Stack('api', 'api.json'),
+        }, 'stage', 'env', {'aws_region': AWS_REGION}, ['aws', 'api'])
+
+        with pytest.raises(StandardError):
+            plan.get_deploy()
