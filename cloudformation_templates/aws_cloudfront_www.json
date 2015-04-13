@@ -7,6 +7,14 @@
       "Type": "String",
       "Description": "The origin domain for the admin frontend app."
     },
+    "BuyerOrigin": {
+      "Type": "String",
+      "Description": "The origin domain for the buyer frontend app."
+    },
+    "SupplierOrigin": {
+      "Type": "String",
+      "Description": "The origin domain for the supplier frontend app."
+    },
     "Domain": {
       "Type": "String",
       "Description": "The domain that CloudFront should serve off."
@@ -34,6 +42,22 @@
                 "HTTPPort": "80",
                 "OriginProtocolPolicy": "http-only"
               }
+            },
+            {
+              "DomainName": {"Ref": "BuyerOrigin"},
+              "Id": "BuyerOriginId",
+              "CustomOriginConfig": {
+                "HTTPPort": "80",
+                "OriginProtocolPolicy": "http-only"
+              }
+            },
+            {
+              "DomainName": {"Ref": "SupplierOrigin"},
+              "Id": "SupplierOriginId",
+              "CustomOriginConfig": {
+                "HTTPPort": "80",
+                "OriginProtocolPolicy": "http-only"
+              }
             }
           ],
           "Enabled": true,
@@ -52,7 +76,7 @@
           "Aliases": [ {"Ref": "Domain"} ],
 
           "DefaultCacheBehaviour": {
-            "TargetOriginId": "AdminOriginId",
+            "TargetOriginId": "BuyerOriginId",
             "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
             "ViewerProtocolPolicy": "allow-all",
             "SmoothStreaming": false,
@@ -60,7 +84,32 @@
               "Headers": ["Authorization", "Host"],
               "QueryString": true
             }
-          }
+          },
+
+          "CacheBehaviours": [
+            {
+              "TargetOriginId": "SupplierOriginId",
+              "PathPattern": "/supplier",
+              "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
+              "ViewerProtocolPolicy": "allow-all",
+              "SmoothStreaming": false,
+              "ForwardedValues": {
+                "Headers": ["Authorization", "Host"],
+                "QueryString": true
+              }
+            },
+            {
+              "TargetOriginId": "AdminOriginId",
+              "PathPattern": "/admin",
+              "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
+              "ViewerProtocolPolicy": "allow-all",
+              "SmoothStreaming": false,
+              "ForwardedValues": {
+                "Headers": ["Authorization", "Host"],
+                "QueryString": true
+              }
+            }
+          ]
         }
       }
     },
