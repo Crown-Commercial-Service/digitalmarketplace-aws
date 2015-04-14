@@ -89,7 +89,7 @@ api:
     MaxInstanceCount: "{{ api.max_instance_count }}"
     RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
 
-    Domain: "{{ stage }}-{{ environment }}-api.{{ root_domain }}"
+    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-api.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
 api_cloudfront:
@@ -169,7 +169,7 @@ search_api:
     ElasticsearchPort: "{{ elasticsearch.port }}"
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
 
-    Domain: "{{ stage }}-{{ environment }}-search-api.{{ root_domain }}"
+    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-search-api.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
 admin_frontend_app:
@@ -204,7 +204,7 @@ admin_frontend:
     MinInstanceCount: "{{ admin_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ admin_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}-{{ environment }}-admin-frontend.{{ root_domain }}"
+    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-admin-frontend.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
 buyer_frontend_app:
@@ -239,7 +239,7 @@ buyer_frontend:
     MinInstanceCount: "{{ buyer_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ buyer_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}-{{ environment }}-buyer-frontend.{{ root_domain }}"
+    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-buyer-frontend.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
 supplier_frontend_app:
@@ -271,7 +271,7 @@ supplier_frontend:
     MinInstanceCount: "{{ supplier_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ supplier_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}-{{ environment }}-supplier-frontend.{{ root_domain }}"
+    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-supplier-frontend.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
 www_cloudfront:
