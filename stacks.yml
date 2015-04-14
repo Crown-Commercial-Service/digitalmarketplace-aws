@@ -279,9 +279,13 @@ www_cloudfront:
   template: cloudformation_templates/aws_cloudfront_www.json
   dependencies:
     - admin_frontend
+    - buyer_frontend
+    - supplier_frontend
     - logs_s3
   parameters:
-    Origin: "{{ stacks.api.parameters.Domain }}"
+    AdminOrigin: "{{ stacks.admin_frontend.parameters.Domain }}"
+    BuyerOrigin: "{{ stacks.buyer_frontend.parameters.Domain }}"
+    SupplierOrigin: "{{ stacks.supplier_frontend.parameters.Domain }}"
     Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}www.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
