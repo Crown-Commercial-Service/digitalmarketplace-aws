@@ -84,6 +84,19 @@
                 "cloudwatch:PutMetricData"
               ],
               "Resource": "*"
+            }, {
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:GetLogEvents",
+                "logs:PutLogEvents",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams"
+              ],
+              "Resource": [
+                "arn:aws:logs:eu-west-1:*:*"
+              ]
             }]
           }
         }]
@@ -148,6 +161,11 @@
             "Namespace": "aws:elasticbeanstalk:container:python:staticfiles",
             "OptionName": "/static/",
             "Value": "app/static/"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:hostmanager",
+            "OptionName": "LogPublicationControl",
+            "Value": "true"
           },
           {
             "Namespace": "aws:elb:loadbalancer",
