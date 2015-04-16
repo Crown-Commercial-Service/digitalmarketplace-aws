@@ -75,7 +75,7 @@
 
           "Aliases": [ {"Ref": "Domain"} ],
 
-          "DefaultCacheBehaviour": {
+          "DefaultCacheBehavior": {
             "TargetOriginId": "BuyerOriginId",
             "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
             "ViewerProtocolPolicy": "allow-all",
@@ -86,7 +86,7 @@
             }
           },
 
-          "CacheBehaviours": [
+          "CacheBehaviors": [
             {
               "TargetOriginId": "SupplierOriginId",
               "PathPattern": "/supplier",
