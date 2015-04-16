@@ -41,6 +41,10 @@
     "MaxInstanceCount": {
       "Type": "Number",
       "Description": "MaxSize of the Auto Scaling group"
+    },
+    "LogGroupName": {
+      "Type": "String",
+      "Description": "Name of CloudWatch log group"
     }{%- if self.parameters() %},
     {% endif %}
 
@@ -84,6 +88,18 @@
                 "cloudwatch:PutMetricData"
               ],
               "Resource": "*"
+            }, {
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:GetLogEvents",
+                "logs:PutLogEvents",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams"
+              ],
+              "Resource": [
+                "arn:aws:logs:eu-west-1:*:*"
+              ]
             }]
           }
         }]
@@ -150,6 +166,11 @@
             "Value": "app/static/"
           },
           {
+            "Namespace": "aws:elasticbeanstalk:hostmanager",
+            "OptionName": "LogPublicationControl",
+            "Value": "true"
+          },
+          {
             "Namespace": "aws:elb:loadbalancer",
             "OptionName": "CrossZone",
             "Value": true
@@ -168,6 +189,11 @@
             "Namespace": "aws:elasticbeanstalk:command",
             "OptionName": "BatchSizeType",
             "Value": "Fixed"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:customoption",
+            "OptionName": "LogGroupName",
+            "Value": {"Ref": "LogGroupName"}
           }
         ]
       }

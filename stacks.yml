@@ -60,6 +60,13 @@ logs_s3:
   parameters:
     BucketName: "digitalmarketplace-logs-{{ stage }}-{{ environment }}"
 
+monitoring:
+  name: "monitoring-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_monitoring.json
+  parameters:
+    LogGroupName: "{{ stage }}-{{ environment }}"
+    RetentionInDays: 3653
+
 api_app:
   name: "digitalmarketplace-api-app"
   template: cloudformation_templates/aws_elasticbeanstalk_app.json
@@ -74,6 +81,7 @@ api:
     - api_app
     - database
     - route53zone
+    - monitoring
   parameters:
     ApplicationName: "{{ stacks.api_app.parameters.ApplicationName }}"
     EnvironmentName: "dmapi-{{ stage[:3] }}-{{ environment }}"
@@ -91,6 +99,10 @@ api:
 
     Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-api.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
+    LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+
+
 
 api_cloudfront:
   name: "digitalmarketplace-api-cloudfront-{{ stage }}"
