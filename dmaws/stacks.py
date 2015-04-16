@@ -78,7 +78,7 @@ class BuiltStack(Stack):
 class StackPlan(object):
     def __init__(self, stacks, stage, environment, variables, apps,
                  logger=None, profile_name=None):
-        self.log = logger
+        self.log = logger or (lambda *args, **kwargs: None)
         self.profile_name = profile_name
         self.cfn = Cloudformation(variables['aws_region'], logger=self.log,
                                   profile_name=profile_name)
@@ -126,7 +126,10 @@ class StackPlan(object):
 
             if with_aws:
                 stack_info = self.cfn.describe_stack(built_stack)
-                self.stack_context['stacks'][name].update_info(stack_info)
+                if stack_info:
+                    self.stack_context['stacks'][name].update_info(stack_info)
+                else:
+                    self.log('Stack [%s] does not exist', name)
 
         return self.stack_context['stacks']
 
