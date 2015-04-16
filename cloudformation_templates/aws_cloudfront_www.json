@@ -89,7 +89,7 @@
           "CacheBehaviors": [
             {
               "TargetOriginId": "SupplierOriginId",
-              "PathPattern": "/supplier",
+              "PathPattern": "/supplier*",
               "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
               "ViewerProtocolPolicy": "allow-all",
               "SmoothStreaming": false,
@@ -100,7 +100,7 @@
             },
             {
               "TargetOriginId": "AdminOriginId",
-              "PathPattern": "/admin",
+              "PathPattern": "/admin*",
               "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
               "ViewerProtocolPolicy": "allow-all",
               "SmoothStreaming": false,
