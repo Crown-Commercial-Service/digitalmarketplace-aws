@@ -1,1 +1,3 @@
 {% extends "app_base.j2" %}
+
+{% block static_url %}/supplier/static/{% endblock %}
