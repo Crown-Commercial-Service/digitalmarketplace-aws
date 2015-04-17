@@ -162,7 +162,7 @@
 {% endfor %}
           {
             "Namespace": "aws:elasticbeanstalk:container:python:staticfiles",
-            "OptionName": "/static/",
+            "OptionName": "{% block static_url %}/static/{% endblock %}",
             "Value": "app/static/"
           },
           {
