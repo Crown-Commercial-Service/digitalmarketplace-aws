@@ -156,7 +156,7 @@ class StackPlan(object):
 
         return True
 
-    def delete(self):
+    def delete(self, ignore_deps=False):
         self.log('Deleting %s', ', '.join(self.apps))
 
         stacks = self.dependant_stacks()
@@ -167,7 +167,7 @@ class StackPlan(object):
             status = self.cfn.describe_stack(built_stack)
             if name in self.apps:
                 self.cfn.delete_stack(built_stack)
-            elif status and name not in self.apps:
+            elif status and name not in self.apps and not ignore_deps:
                 self.log("Dependant stack %s exists, can't continue",
                          built_stack.name)
                 return False
