@@ -98,6 +98,7 @@ api:
     RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
 
     Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-api.{{ root_domain }}"
+    SSLCertificateId: "{{ ssl_certificate_id }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
@@ -184,6 +185,7 @@ search_api:
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
 
     Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-search-api.{{ root_domain }}"
+    SSLCertificateId: "{{ ssl_certificate_id }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
@@ -222,6 +224,7 @@ admin_frontend:
     MaxInstanceCount: "{{ admin_frontend.max_instance_count }}"
 
     Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-admin-frontend.{{ root_domain }}"
+    SSLCertificateId: "{{ ssl_certificate_id }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
@@ -260,6 +263,7 @@ buyer_frontend:
     MaxInstanceCount: "{{ buyer_frontend.max_instance_count }}"
 
     Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-buyer-frontend.{{ root_domain }}"
+    SSLCertificateId: "{{ ssl_certificate_id }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
@@ -295,6 +299,7 @@ supplier_frontend:
     MaxInstanceCount: "{{ supplier_frontend.max_instance_count }}"
 
     Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-supplier-frontend.{{ root_domain }}"
+    SSLCertificateId: "{{ ssl_certificate_id }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"

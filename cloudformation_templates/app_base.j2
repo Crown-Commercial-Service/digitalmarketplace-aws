@@ -45,6 +45,10 @@
     "LogGroupName": {
       "Type": "String",
       "Description": "Name of CloudWatch log group"
+    },
+    "SSLCertificateId": {
+      "Type": "String",
+      "Description": "Amazon Resource Name (ARN) for the SSL certificate"
     }{%- if self.parameters() %},
     {% endif %}
 
@@ -176,6 +180,21 @@
             "Value": true
           },
           {
+            "Namespace": "aws:elb:loadbalancer",
+            "OptionName": "SSLCertificateId",
+            "Value": {"Ref": "SSLCertificateId"}
+          },
+          {
+            "Namespace": "aws:elb:loadbalancer",
+            "OptionName": "LoadBalancerHTTPSPort",
+            "Value": "443"
+          },
+          {
+            "Namespace": "aws:elb:loadbalancer",
+            "OptionName": "LoadBalancerHTTPPort",
+            "Value": "OFF"
+          },
+          {
             "Namespace": "aws:autoscaling:updatepolicy:rollingupdate",
             "OptionName": "RollingUpdateEnabled",
             "Value": true
@@ -238,7 +257,7 @@
       "Description": "URL of the AWS Elastic Beanstalk Environment",
       "Value": {
         "Fn::Join": ["", [
-          "http://",
+          "https://",
           {"Ref": "Domain"}
         ]]
       }

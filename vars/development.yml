@@ -1,5 +1,6 @@
 ---
 root_domain: "development.digitalmarketplace.service.gov.uk"
+ssl_certificate_id: "arn:aws:iam::381494870249:server-certificate/cloudfront/star-development-digitalmarketplace/star-development-digitalmarketplace"
 subnets:
   - subnet-bf8c5ce6
   - subnet-916bfcf4
