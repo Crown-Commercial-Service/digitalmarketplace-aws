@@ -5,10 +5,10 @@ from ..cli import cli_command
 
 
 @cli_command('delete')
-@click.option('--ignore-deps', is_flag=True,
+@click.option('--ignore-dependencies', is_flag=True,
               help='Do not complain if dependent stacks exist')
-def delete_cmd(ctx, ignore_deps):
+def delete_cmd(ctx, ignore_dependencies):
     """Destroy AWS environment and terminate running instances."""
 
     plan = StackPlan.from_ctx(ctx)
-    plan.delete(ignore_deps)
+    plan.delete(ignore_dependencies)

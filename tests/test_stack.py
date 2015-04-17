@@ -396,11 +396,14 @@ class TestStackPlan(object):
                 'db': Stack('db', 'tests/templates/aws.json'),
             }, 'stage', 'env',
             {'aws_region': AWS_REGION},
-            ['db']
+            ['api']
         )
 
-        assert not plan.delete()
-        assert not cloudformation_conn.delete_stack.called
+        assert plan.delete()
+
+        cloudformation_conn.delete_stack.assert_has_calls([
+            mock.call(u'api')
+        ])
 
     def test_stack_delete_with_dependant_stack(self, cloudformation_conn):
         set_cloudformation_stack(cloudformation_conn, 'api', 'CREATE_COMPLETE')
@@ -419,6 +422,26 @@ class TestStackPlan(object):
 
         assert not plan.delete()
         assert not cloudformation_conn.delete_stack.called
+
+    def test_stack_delete_ignore_dependencies(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'CREATE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'DELETE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['db']
+        )
+
+        assert plan.delete(True)
+
+        cloudformation_conn.delete_stack.assert_has_calls([
+            mock.call(u'db')])
 
     def test_get_deploy(self):
         plan = StackPlan({
