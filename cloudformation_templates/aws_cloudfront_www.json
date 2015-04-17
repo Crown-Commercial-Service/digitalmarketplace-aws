@@ -94,6 +94,7 @@
               "ViewerProtocolPolicy": "allow-all",
               "SmoothStreaming": false,
               "ForwardedValues": {
+                "Cookies": {"Forward": "all"},
                 "Headers": ["Authorization", "Host"],
                 "QueryString": true
               }
@@ -105,6 +106,7 @@
               "ViewerProtocolPolicy": "allow-all",
               "SmoothStreaming": false,
               "ForwardedValues": {
+                "Cookies": {"Forward": "all"},
                 "Headers": ["Authorization", "Host"],
                 "QueryString": true
               }
