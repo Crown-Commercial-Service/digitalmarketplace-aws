@@ -58,7 +58,7 @@
           "DefaultCacheBehavior": {
             "TargetOriginId": "OriginId",
             "AllowedMethods": ["POST", "PATCH", "GET", "DELETE", "OPTIONS", "PUT", "HEAD" ],
-            "ViewerProtocolPolicy": "allow-all",
+            "ViewerProtocolPolicy": "redirect-to-https",
             "SmoothStreaming": false,
             "ForwardedValues": {
               "Headers": ["Authorization", "Host"],
