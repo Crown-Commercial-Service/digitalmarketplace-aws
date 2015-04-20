@@ -26,6 +26,10 @@
     "LogsBucket": {
       "Type": "String",
       "Description": "S3 bucket name for the logs"
+    },
+    "IamCertificateId": {
+      "Type": "String",
+      "Description": "IAM SSL certificate ID"
     }
   },
 
@@ -40,7 +44,7 @@
               "Id": "AdminOriginId",
               "CustomOriginConfig": {
                 "HTTPPort": "80",
-                "OriginProtocolPolicy": "http-only"
+                "OriginProtocolPolicy": "match-viewer"
               }
             },
             {
@@ -85,7 +89,6 @@
               "QueryString": true
             }
           },
-
           "CacheBehaviors": [
             {
               "TargetOriginId": "SupplierOriginId",
@@ -111,7 +114,13 @@
                 "QueryString": true
               }
             }
-          ]
+          ],
+          "PriceClass": "PriceClass_100",
+          "ViewerCertificate": {
+            "IamCertificateId": {"Ref": "IamCertificateId"},
+            "SslSupportMethod": "sni-only",
+            "MinimumProtocolVersion": "TLSv1"
+          }
         }
       }
     },
