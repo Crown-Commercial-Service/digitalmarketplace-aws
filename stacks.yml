@@ -115,6 +115,7 @@ api_cloudfront:
   parameters:
     Origin: "{{ stacks.api.parameters.Domain }}"
     Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}api.{{ root_domain }}"
+    IamCertificateId: "{{ iam_certificate_id }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
 
@@ -322,5 +323,6 @@ www_cloudfront:
     BuyerOrigin: "{{ stacks.buyer_frontend.parameters.Domain }}"
     SupplierOrigin: "{{ stacks.supplier_frontend.parameters.Domain }}"
     Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}www.{{ root_domain }}"
+    IamCertificateId: "{{ iam_certificate_id }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
