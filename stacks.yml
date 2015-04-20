@@ -88,6 +88,7 @@ api:
 
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmEnvironment: "{{ stage }}"
     EnvVarSqlalchemyDatabaseUri: "postgres://{{ database.user }}:{{ database.password}}@{{ stacks.database.outputs.URL }}"
     EnvVarDmApiAuthTokens: "{{ api.auth_tokens | join(':') }}"
 
@@ -174,6 +175,7 @@ search_api:
 
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmElasticsearchUrl: "http://{{ stacks.elasticsearch.outputs.URL }}:{{ elasticsearch.port }}"
     EnvVarDmSearchApiAuthTokens: "{{ search_api.auth_tokens | join(':') }}"
 
@@ -212,6 +214,7 @@ admin_frontend:
 
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmS3DocumentBucket: "{{ stacks.documents_s3.outputs.Name }}"
     EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
@@ -252,6 +255,7 @@ buyer_frontend:
 
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmBuyerFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmSearchApiUrl: "{{ stacks.search_api.outputs.URL }}"
@@ -290,6 +294,7 @@ supplier_frontend:
 
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
+    EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
 
