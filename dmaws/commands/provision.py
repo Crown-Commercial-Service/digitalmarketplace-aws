@@ -6,7 +6,7 @@ from ..cli import cli_command
 from ..utils import run_cmd
 
 
-def run_playbook(playbook, hosts, ctx, basedir='playbooks/'):
+def run_playbook(playbook, hosts, ctx, tags=None, basedir='playbooks/'):
     args = [
         'ansible-playbook',
         os.path.join(basedir, playbook + '.yml'),
@@ -21,6 +21,9 @@ def run_playbook(playbook, hosts, ctx, basedir='playbooks/'):
         json.dumps({'stage': ctx.stage, 'environment': ctx.environment})
     ])
 
+    for tag in tags or []:
+        args.extend(['-t', tag])
+
     ctx.log(subprocess.list2cmdline(args))
 
     run_cmd(args, env={
@@ -28,7 +31,7 @@ def run_playbook(playbook, hosts, ctx, basedir='playbooks/'):
     })
 
 
-@cli_command('provision', max_apps=0)
+@cli_command('provision')
 def provision_cmd(ctx):
     """Provision EC2 instances"""
-    run_playbook('provision', 'ec2', ctx)
+    run_playbook('provision', 'ec2', ctx, ctx.apps)
