@@ -1,0 +1,216 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "EC2 reverse proxy",
+
+  "Parameters": {
+    "GroupTag": {
+      "Type": "String",
+      "Description": "Group Tag"
+    },
+    "Domain": {
+      "Type": "String",
+      "Description": "Domain to serve the Beanstalk environment from"
+    },
+    "HostedZoneName": {
+      "Type": "String",
+      "Description": "Route53 hosted zone name to serve the Beanstalk environment from"
+    },
+    "SSLCertificateId": {
+      "Type": "String",
+      "Description": "Amazon Resource Name (ARN) for the SSL certificate"
+    },
+    "LoadBalancerName": {
+      "Type": "String",
+      "Description": "ELB name prefix"
+    },
+    "KeyName": {
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
+    },
+    "SSHCidrIp": {
+      "Type": "String",
+      "Description": "CIDR IP to use for SSH access security group rules"
+    },
+    "InstanceImage" : {
+      "Description" : "EC2 instance image",
+      "Type" : "String"
+    },
+    "InstanceType" : {
+      "Description" : "EC2 instance type",
+      "Type" : "String"
+    },
+   "InstanceCount" : {
+      "Description" : "Number of instances to start",
+      "Type" : "String"
+    }
+  },
+
+  "Resources": {
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Main instance security group"
+      }
+    },
+
+    "LoadBalancerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "ELB security group"
+      }
+    },
+
+    "LoadBalancerIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "LoadBalancerSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+
+    "InstanceELBIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "InstanceSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": 80,
+        "ToPort": 80,
+        "SourceSecurityGroupName": {"Ref": "LoadBalancerSecurityGroup"}
+      }
+    },
+
+    "SSHIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "InstanceSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": {"Ref": "SSHCidrIp"}
+      }
+    },
+
+    "IAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+              "Effect": "Allow",
+              "Principal": {
+                  "Service": [ "ec2.amazonaws.com" ]
+              },
+              "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/",
+        "Policies": []
+      }
+    },
+    "InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [{"Ref": "IAMRole"}]
+      }
+    },
+
+    "LoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "LoadBalancerName": {"Ref": "LoadBalancerName"},
+        "AvailabilityZones": {"Fn::GetAZs": ""},
+        "CrossZone": "true",
+        "Listeners": [{
+          "LoadBalancerPort": "443",
+          "InstancePort": "80",
+          "SSLCertificateId": {"Ref": "SSLCertificateId"},
+          "Protocol": "HTTPS"
+        }],
+        "SecurityGroups": [
+          {"Fn::GetAtt": ["LoadBalancerSecurityGroup", "GroupId"]}
+        ],
+        "HealthCheck": {
+          "Target": "HTTP:80/",
+          "HealthyThreshold": "3",
+          "UnhealthyThreshold": "5",
+          "Interval": "30",
+          "Timeout": "5"
+        }
+      }
+    },
+
+    "Route53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "Domain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+        ],
+        "TTL": "300"
+      }
+    },
+
+    "AutoScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "Tags" : [
+          {
+            "Key": "Group",
+            "Value": {"Ref": "GroupTag"},
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "Name",
+            "Value": {"Ref": "GroupTag"},
+            "PropagateAtLaunch": true
+          }
+        ],
+        "AvailabilityZones" : {"Fn::GetAZs": ""},
+        "LaunchConfigurationName" : {"Ref": "LaunchConfiguration"},
+        "LoadBalancerNames": [{"Ref": "LoadBalancer"}],
+        "MinSize" : {"Ref": "InstanceCount"},
+        "MaxSize" : {"Ref": "InstanceCount"},
+        "DesiredCapacity" : {"Ref": "InstanceCount"}
+      }
+    },
+
+    "LaunchConfiguration": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "SecurityGroups": [{"Ref": "InstanceSecurityGroup"}],
+        "ImageId": {"Ref": "InstanceImage"},
+        "KeyName": {"Ref": "KeyName"},
+        "IamInstanceProfile": {"Ref": "InstanceProfile"},
+        "InstanceType": {"Ref": "InstanceType"}
+      }
+    }
+  },
+
+  "Outputs": {
+    "InstanceSecurityGroup": {
+      "Description": "EC2 instances security group",
+      "Value": {"Ref": "InstanceSecurityGroup"}
+    },
+    "LoadBalancerSecurityGroup": {
+      "Description": "ELB security group",
+      "Value": {"Ref": "LoadBalancerSecurityGroup"}
+    },
+    "URL": {
+      "Description": "URL of the ELB",
+      "Value": {
+        "Fn::Join": ["", [
+          "https://",
+          {"Ref": "Domain"}
+        ]]
+      }
+    }
+  }
+}

@@ -310,6 +310,25 @@ supplier_frontend:
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
+nginx:
+  name: "nginx-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_nginx.json
+  dependencies:
+    - route53zone
+  parameters:
+    KeyName: "{{ key_name }}"
+    SSHCidrIp: "{{ user_cidr_ip }}"
+
+    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}.{{ root_domain }}"
+    SSLCertificateId: "{{ ssl_certificate_id }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
+    LoadBalancerName: "nginx-{{ stage }}-{{ environment }}"
+    GroupTag: "nginx-{{ stage }}-{{ environment }}"
+    InstanceCount: "{{ nginx.instance_count }}"
+    InstanceType: "{{ nginx.instance_type }}"
+    InstanceImage: "{{ nginx.instance_image }}"
+
 www_cloudfront:
   name: "digitalmarketplace-www-cloudfront-{{ stage }}"
   template: cloudformation_templates/aws_cloudfront_www.json
