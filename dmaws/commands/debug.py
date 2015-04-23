@@ -6,11 +6,12 @@ from ..stacks import StackPlan
 
 @cli_command('debug-value', max_apps=0)
 @click.argument('values', nargs=-1)
-def debug_value_cmd(ctx, values):
+@click.option('--with-aws', is_flag=True)
+def debug_value_cmd(ctx, values, with_aws):
     """Get values of the given dotted variables."""
 
     plan = StackPlan.from_ctx(ctx, apps=['all'], logger=None)
-    plan.info(with_aws=False)
+    plan.info(with_aws=with_aws)
 
     for value in values:
         ctx.log("%s: %s", value, plan.get_value(value))
