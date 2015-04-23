@@ -183,7 +183,15 @@
         "ImageId": {"Ref": "InstanceImage"},
         "KeyName": {"Ref": "KeyName"},
         "IamInstanceProfile": {"Ref": "InstanceProfile"},
-        "InstanceType": {"Ref": "InstanceType"}
+        "InstanceType": {"Ref": "InstanceType"},
+        "UserData": {"Fn::Base64": {"Fn::Join": ["", [
+            "#!/bin/bash","\n",
+            "cd /home/ubuntu/provisioning && ",
+            "ansible-playbook -c local -i localhost, elasticsearch_playbook.yml ",
+            "-t instance-config ",
+            "-e aws_region=", {"Ref": "AWS::Region"}, " ",
+            "-e elasticsearch_name=", {"Ref": "GroupTag"}
+        ]]}}
       }
     }
   },
