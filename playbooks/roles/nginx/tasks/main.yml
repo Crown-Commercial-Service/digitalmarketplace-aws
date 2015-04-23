@@ -1,26 +1,30 @@
 ---
 - name: Install Nginx
   apt: name=nginx update_cache=yes state=installed
-  tags: packages
-
-- name: Create the Nginx configuration file
-  template: src={{ item }}.j2
-            dest=/etc/nginx/sites-available/{{ item }}
-            backup=yes
-  notify: reload nginx
-  with_items: nginx_configs
+  tags: image-setup
 
 - name: Ensure that the default site is disabled
   command: rm /etc/nginx/sites-enabled/default
            removes=/etc/nginx/sites-enabled/default
   notify: reload nginx
+  tags: image-setup
 
-- name: Ensure that the application site is enabled
+- name: Create the Nginx configuration files
+  template: src={{ item }}.j2
+            dest=/etc/nginx/sites-available/{{ item }}
+            backup=yes
+  notify: reload nginx
+  with_items: nginx_configs
+  tags: instance-config
+
+- name: Ensure that the configuration files are enabled
   command: ln -s /etc/nginx/sites-available/{{ item }}
            /etc/nginx/sites-enabled/{{ item }}
            creates=/etc/nginx/sites-enabled/{{ item }}
   notify: reload nginx
   with_items: nginx_configs
+  tags: instance-config
 
 - name: Ensure Nginx service is started
   service: name=nginx state=started enabled=yes
+  tags: instance-config
