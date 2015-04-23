@@ -3,41 +3,54 @@
   apt_key:
     url: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
     state: present
+  tags: image-setup
 
 - name: Add Elasticsearch repository.
   apt_repository:
     repo: 'deb http://packages.elasticsearch.org/elasticsearch/{{ elasticsearch_version }}/debian stable main'
     state: present
+  tags: image-setup
 
 - name: Update apt cache if repository just added.
   apt: update_cache=yes
+  tags: image-setup
 
 - name: Ensure Elasticsearch dependencies are installed
   apt:
     name: "{{ item }}"
     state: installed
   with_items: elasticsearch_deps
+  tags: image-setup
 
 - name: Install Elasticsearch.
   apt: pkg=elasticsearch state=present
+  tags: image-setup
 
 - name: Check for installed plugins
   stat: path=/usr/share/elasticsearch/plugins/{{ item.key }}
   with_dict: elasticsearch_plugins
   register: es_installed_plugins
+  tags: image-setup
 
 - name: Install plugins
   shell: /usr/share/elasticsearch/bin/plugin --install {{ item.item.value.source }}
   when: item.stat.exists == False
   notify: restart elasticsearch
   with_items: es_installed_plugins.results
+  tags: image-setup
 
 - name: Make elasticsearch config dir
   file: path=/etc/elasticsearch/ state=directory
+  tags: image-setup
+
+- name: Remove default elasticsearch.yml config
+  file: path=/etc/elasticsearch/elasticsearch.yml state=absent
+  tags: image-setup
 
 - name: Copy over Elasticsearch settings
   template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
-  notify: restart elasticsearch
+  tags: instance-config
 
 - name: Start Elasticsearch.
   service: name=elasticsearch state=started enabled=yes
+  tags: instance-config

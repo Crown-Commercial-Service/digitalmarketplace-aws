@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  name: setup
+  user: ubuntu
+  gather_facts: True
+  sudo: True
+
+  roles:
+    - role: elasticsearch
+      tags: elasticsearch
