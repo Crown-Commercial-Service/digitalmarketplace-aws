@@ -314,10 +314,19 @@ nginx:
   name: "nginx-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_nginx.json
   dependencies:
+    - api
+    - admin_frontend
+    - supplier_frontend
+    - buyer_frontend
     - route53zone
   parameters:
     KeyName: "{{ key_name }}"
     SSHCidrIp: "{{ user_cidr_ip }}"
+
+    ApiURL: "{{stacks.api.outputs.URL}}"
+    AdminFrontendURL: "{{stacks.admin_frontend.outputs.URL}}"
+    BuyerFrontendURL: "{{stacks.buyer_frontend.outputs.URL}}"
+    SupplierFrontendURL: "{{stacks.supplier_frontend.outputs.URL}}"
 
     Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}.{{ root_domain }}"
     SSLCertificateId: "{{ ssl_certificate_id }}"
