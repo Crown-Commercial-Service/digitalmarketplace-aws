@@ -37,9 +37,9 @@ elasticsearch:
   port: 9200
   instance_type: t2.micro
   instance_count: 3
-  instance_image: ami-21214c56
+  instance_image: ami-2999f65e
 
 nginx:
   instance_type: t2.micro
   instance_count: 2
-  instance_image: ami-63492414
+  instance_image: ami-79422f0e
