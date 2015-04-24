@@ -205,9 +205,20 @@
       "Description": "ELB security group",
       "Value": {"Ref": "LoadBalancerSecurityGroup"}
     },
-    "URL": {
-      "Description": "Load balancer endpoint URL",
+    "Domain": {
+      "Description": "Load balancer endpoint CNAME",
       "Value": {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+    },
+    "URL": {
+      "Description": "URL of the ELB",
+      "Value": {
+        "Fn::Join": ["", [
+          "http://",
+          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]},
+          ":",
+          {"Ref": "Port"}
+        ]]
+      }
     }
   }
 }

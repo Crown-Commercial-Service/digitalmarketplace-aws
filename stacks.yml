@@ -175,7 +175,7 @@ search_api:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
-    EnvVarDmElasticsearchUrl: "http://{{ stacks.elasticsearch.outputs.URL }}:{{ elasticsearch.port }}"
+    EnvVarDmElasticsearchUrl: "{{ stacks.elasticsearch.outputs.URL }}"
     EnvVarDmSearchApiAuthTokens: "{{ search_api.auth_tokens | join(':') }}"
 
     KeyName: "{{ key_name }}"
