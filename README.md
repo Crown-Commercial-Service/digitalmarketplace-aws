@@ -42,3 +42,23 @@ actual variable values.
 `user.yml` is loaded by default and should set values for variables that
 don't have any defaults set in the playbook roles and environment files.
 It can also be used to overwrite default values for existing variables.
+
+
+## Creating AMIs with packer
+
+`elasticsearch` and `nginx` stacks require custom AMIs with preinstalled packages.
+In order to create new versions of these AMIs you'll need to use the provided
+[packer](https://www.packer.io) templates. Running
+
+    packer build packer_templates/{nginx|elasticsearch}.json
+
+will create a new AMI image using the AWS credentials from the default credentials file
+or the environment variables.
+
+You can get the ID of the created AMI from the packer command output or the AWS console
+and add them to the relevant vars/ file. Rerunning the stack creation will then apply the
+new AMI to the AutoScaling groups, so that new EC2 instances will use the new AMI.
+
+Packer and cloudformation won't automatically remove old AMI versions, so this has to be
+done manually. AMIs can be deleted from the EC2 console by deregestering the AMI and
+deleting the related EBS snapshot.
