@@ -1,0 +1,31 @@
+{
+  "variables": {
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "eu-west-1",
+    "source_ami": "ami-234ecc54",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "nginx-{{isotime | clean_ami_name}}"
+  }],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 20",
+        "sudo apt-get update",
+        "sudo apt-get install -y ansible"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "playbooks/nginx_playbook.yml",
+      "role_paths": ["playbooks/roles/nginx/"],
+      "extra_arguments": [
+        "-t image-setup"
+      ],
+      "staging_directory": "/home/ubuntu/provisioning/"
+    }
+  ]
+}

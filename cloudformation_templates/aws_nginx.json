@@ -1,19 +1,50 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Elasticsearch cluster",
+  "Description": "EC2 reverse proxy",
 
   "Parameters": {
     "GroupTag": {
       "Type": "String",
       "Description": "Group Tag"
     },
+
+    "Domain": {
+      "Type": "String",
+      "Description": "Domain to serve the Beanstalk environment from"
+    },
+    "AdminFrontendURL": {
+      "Type": "String",
+      "Description": "URL for the app."
+    },
+    "BuyerFrontendURL": {
+      "Type": "String",
+      "Description": "URL for the app."
+    },
+    "SupplierFrontendURL": {
+      "Type": "String",
+      "Description": "URL for the app."
+    },
+
+    "AssetsDomain": {
+      "Type": "String",
+      "Description": "Domain to serve assets from"
+    },
+    "DocumentsS3URL": {
+      "Type": "String",
+      "Description": "Documents S3 bucket URL"
+    },
+
+    "HostedZoneName": {
+      "Type": "String",
+      "Description": "Route53 hosted zone name to serve the Beanstalk environment from"
+    },
+    "SSLCertificateId": {
+      "Type": "String",
+      "Description": "Amazon Resource Name (ARN) for the SSL certificate"
+    },
     "LoadBalancerName": {
       "Type": "String",
       "Description": "ELB name prefix"
-    },
-    "LoadBalancerSubnets": {
-      "Type": "CommaDelimitedList",
-      "Description": "List of subnets for internal ELB"
     },
     "KeyName": {
       "Type": "AWS::EC2::KeyPair::KeyName",
@@ -22,11 +53,6 @@
     "SSHCidrIp": {
       "Type": "String",
       "Description": "CIDR IP to use for SSH access security group rules"
-    },
-    "Port": {
-      "Type": "Number",
-      "Default": "9200",
-      "Description": "Elasticsearch port"
     },
     "InstanceImage" : {
       "Description" : "EC2 instance image",
@@ -57,24 +83,24 @@
       }
     },
 
-    "ClusterDiscoveryIngress": {
+    "LoadBalancerIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupName": {"Ref": "InstanceSecurityGroup"},
-        "IpProtocol": "-1",
-        "FromPort": "0",
-        "ToPort": "65535",
-        "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
+        "GroupName": {"Ref": "LoadBalancerSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "CidrIp": "0.0.0.0/0"
       }
     },
 
-    "LoadBalancerIngress": {
+    "InstanceELBIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupName": {"Ref": "InstanceSecurityGroup"},
         "IpProtocol": "tcp",
-        "FromPort": {"Ref": "Port"},
-        "ToPort": {"Ref": "Port"},
+        "FromPort": 80,
+        "ToPort": 80,
         "SourceSecurityGroupName": {"Ref": "LoadBalancerSecurityGroup"}
       }
     },
@@ -104,17 +130,7 @@
           } ]
         },
         "Path": "/",
-        "Policies": [{
-          "PolicyName": "elasticsearch-ec2-describe",
-          "PolicyDocument": {
-            "Version" : "2012-10-17",
-            "Statement": [{
-              "Effect": "Allow",
-              "Action": "ec2:DescribeInstances",
-              "Resource": "*"
-            }]
-          }
-        }]
+        "Policies": []
       }
     },
     "InstanceProfile": {
@@ -129,26 +145,54 @@
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
         "LoadBalancerName": {"Ref": "LoadBalancerName"},
-        "Subnets": {"Ref": "LoadBalancerSubnets"},
-        "Scheme": "internal",
+        "AvailabilityZones": {"Fn::GetAZs": ""},
         "CrossZone": "true",
         "Listeners": [{
-          "LoadBalancerPort": {"Ref": "Port"},
-          "InstancePort": {"Ref": "Port"},
-          "Protocol": "HTTP"
+          "LoadBalancerPort": "443",
+          "InstancePort": "80",
+          "SSLCertificateId": {"Ref": "SSLCertificateId"},
+          "Protocol": "HTTPS"
         }],
         "SecurityGroups": [
           {"Fn::GetAtt": ["LoadBalancerSecurityGroup", "GroupId"]}
         ],
         "HealthCheck": {
-          "Target": {"Fn::Join": ["", [
-            "HTTP:", {"Ref": "Port"}, "/"
-          ]]},
+          "Target": "HTTP:80/",
           "HealthyThreshold": "3",
           "UnhealthyThreshold": "5",
           "Interval": "30",
           "Timeout": "5"
         }
+      }
+    },
+
+    "Route53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "Domain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+        ],
+        "TTL": "300"
+      }
+    },
+
+    "AssetsRoute53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "AssetsDomain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+        ],
+        "TTL": "300"
       }
     },
 
@@ -187,10 +231,14 @@
         "UserData": {"Fn::Base64": {"Fn::Join": ["", [
             "#!/bin/bash","\n",
             "cd /home/ubuntu/provisioning && ",
-            "ansible-playbook -c local -i localhost, elasticsearch_playbook.yml ",
+            "ansible-playbook -c local -i localhost, nginx_playbook.yml ",
             "-t instance-config ",
-            "-e aws_region=", {"Ref": "AWS::Region"}, " ",
-            "-e elasticsearch_name=", {"Ref": "GroupTag"}
+            "-e assets_domain=", {"Ref": "AssetsDomain"}, " ",
+            "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
+            "-e www_domain=", {"Ref": "Domain"}, " ",
+            "-e buyer_frontend_url=", {"Ref": "BuyerFrontendURL"}, " ",
+            "-e admin_frontend_url=", {"Ref": "AdminFrontendURL"}, " ",
+            "-e supplier_frontend_url=", {"Ref": "SupplierFrontendURL"}
         ]]}}
       }
     }
@@ -198,25 +246,36 @@
 
   "Outputs": {
     "InstanceSecurityGroup": {
-      "Description": "Elasticsearch instances security group",
+      "Description": "EC2 instances security group",
       "Value": {"Ref": "InstanceSecurityGroup"}
     },
     "LoadBalancerSecurityGroup": {
       "Description": "ELB security group",
       "Value": {"Ref": "LoadBalancerSecurityGroup"}
     },
-    "Domain": {
-      "Description": "Load balancer endpoint CNAME",
-      "Value": {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+    "AssetsDomain": {
+      "Description": "CNAME of the assets server",
+      "Value": {"Ref" :"AssetsDomain"}
     },
-    "URL": {
-      "Description": "URL of the ELB",
+    "AssetsURL": {
+      "Description": "URL of the assets server",
       "Value": {
         "Fn::Join": ["", [
-          "http://",
-          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]},
-          ":",
-          {"Ref": "Port"}
+          "https://",
+          {"Ref" :"AssetsDomain"}
+        ]]
+      }
+    },
+    "Domain": {
+      "Description": "CNAME of the www server",
+      "Value": {"Ref" :"Domain"}
+    },
+    "URL": {
+      "Description": "URL of the www server",
+      "Value": {
+        "Fn::Join": ["", [
+          "https://",
+          {"Ref" :"Domain"}
         ]]
       }
     }

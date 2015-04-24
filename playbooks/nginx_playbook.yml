@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  name: setup
+  user: ubuntu
+  sudo: True
+
+  roles:
+    - role: nginx
+      tags: nginx
