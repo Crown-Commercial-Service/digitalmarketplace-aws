@@ -19,7 +19,7 @@
   roles:
     - role: nginx
       tags: nginx
-      nginx_domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}.{{ root_domain }}"
+      www_domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}.{{ root_domain }}"
       buyer_frontend_url: "https://{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-buyer-frontend.{{ root_domain }}"
       admin_frontend_url: "https://{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-admin-frontend.{{ root_domain }}"
       supplier_frontend_url: "https://{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-supplier-frontend.{{ root_domain }}"

@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    server_name {{ assets_domain }};
+    error_page 400 401 402 403 404 = /404;
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_intercept_errors on;
+
+        proxy_pass {{ documents_s3_url }};
+    }
+
+    location /404 {
+        proxy_pass http://localhost;
+    }
+}

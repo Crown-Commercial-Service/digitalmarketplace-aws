@@ -104,8 +104,6 @@ api:
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
-
-
 api_cloudfront:
   name: "digitalmarketplace-api-cloudfront-{{ stage }}"
   template: cloudformation_templates/aws_cloudfront_app.json
@@ -314,23 +312,24 @@ nginx:
   name: "nginx-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_nginx.json
   dependencies:
-    - api
     - admin_frontend
     - supplier_frontend
     - buyer_frontend
+    - documents_s3
     - route53zone
   parameters:
     KeyName: "{{ key_name }}"
     SSHCidrIp: "{{ user_cidr_ip }}"
 
-    ApiURL: "{{stacks.api.outputs.URL}}"
+    DocumentsS3URL: "{{stacks.documents_s3.outputs.URL}}"
     AdminFrontendURL: "{{stacks.admin_frontend.outputs.URL}}"
     BuyerFrontendURL: "{{stacks.buyer_frontend.outputs.URL}}"
     SupplierFrontendURL: "{{stacks.supplier_frontend.outputs.URL}}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
+    Domain: "{% if stage != 'production' %}{{ stage }}{% else %}www{% endif %}{% if stage != environment %}-{{ environment }}{% endif %}.{{ root_domain }}"
+    AssetsDomain: "{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{ root_domain }}"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    SSLCertificateId: "{{ ssl_certificate_id }}"
 
     LoadBalancerName: "nginx-{{ stage }}-{{ environment }}"
     GroupTag: "nginx-{{ stage }}-{{ environment }}"

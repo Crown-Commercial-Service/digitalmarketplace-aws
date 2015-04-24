@@ -7,13 +7,10 @@
       "Type": "String",
       "Description": "Group Tag"
     },
+
     "Domain": {
       "Type": "String",
       "Description": "Domain to serve the Beanstalk environment from"
-    },
-    "ApiURL": {
-      "Type": "String",
-      "Description": "URL for the API app."
     },
     "AdminFrontendURL": {
       "Type": "String",
@@ -27,6 +24,16 @@
       "Type": "String",
       "Description": "URL for the app."
     },
+
+    "AssetsDomain": {
+      "Type": "String",
+      "Description": "Domain to serve assets from"
+    },
+    "DocumentsS3URL": {
+      "Type": "String",
+      "Description": "Documents S3 bucket URL"
+    },
+
     "HostedZoneName": {
       "Type": "String",
       "Description": "Route53 hosted zone name to serve the Beanstalk environment from"
@@ -174,6 +181,21 @@
       }
     },
 
+    "AssetsRoute53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "AssetsDomain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+        ],
+        "TTL": "300"
+      }
+    },
+
     "AutoScalingGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
@@ -211,8 +233,9 @@
             "cd /home/ubuntu/provisioning && ",
             "ansible-playbook -c local -i localhost, nginx_playbook.yml ",
             "-t instance-config ",
-            "-e nginx_domain=", {"Ref": "Domain"}, " ",
-            "-e api_url=", {"Ref": "ApiURL"}, " ",
+            "-e assets_domain=", {"Ref": "AssetsDomain"}, " ",
+            "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
+            "-e www_domain=", {"Ref": "Domain"}, " ",
             "-e buyer_frontend_url=", {"Ref": "BuyerFrontendURL"}, " ",
             "-e admin_frontend_url=", {"Ref": "AdminFrontendURL"}, " ",
             "-e supplier_frontend_url=", {"Ref": "SupplierFrontendURL"}
@@ -230,12 +253,29 @@
       "Description": "ELB security group",
       "Value": {"Ref": "LoadBalancerSecurityGroup"}
     },
-    "URL": {
-      "Description": "URL of the ELB",
+    "AssetsDomain": {
+      "Description": "CNAME of the assets server",
+      "Value": {"Ref" :"AssetsDomain"}
+    },
+    "AssetsURL": {
+      "Description": "URL of the assets server",
       "Value": {
         "Fn::Join": ["", [
           "https://",
-          {"Ref": "Domain"}
+          {"Ref" :"AssetsDomain"}
+        ]]
+      }
+    },
+    "Domain": {
+      "Description": "CNAME of the www server",
+      "Value": {"Ref" :"Domain"}
+    },
+    "URL": {
+      "Description": "URL of the www server",
+      "Value": {
+        "Fn::Join": ["", [
+          "https://",
+          {"Ref" :"Domain"}
         ]]
       }
     }
