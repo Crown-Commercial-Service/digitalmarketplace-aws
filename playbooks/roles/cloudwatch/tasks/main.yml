@@ -11,16 +11,16 @@
     content: ""
   tags: image-setup
 
-- name: Install the cwlogs agent
+- name: Install the awslogs agent
   shell: /usr/bin/python /tmp/awslogs-agent-setup.py -n -r {{ aws_region }} -c /tmp/general.conf
   tags: image-setup
 
-- name: Make sure the AWS Logs config is present
+- name: Make sure the awslogs config is present
   template:
-    src: awslogs.conf.j2
+    src: "{{ config_name }}_awslogs.conf.j2"
     dest: /var/awslogs/etc/awslogs.conf
   tags: instance-config
 
-- name: Ensure Nginx service is started
+- name: Ensure awslogs service is started
   service: name=awslogs state=restarted enabled=yes
   tags: instance-config
