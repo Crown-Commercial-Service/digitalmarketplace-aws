@@ -18,6 +18,9 @@ eb_apps:
   - buyer_frontend_app
   - supplier_frontend_app
 
+www:
+  - nginx
+
 cloudfront:
   - api_cloudfront
   - www_cloudfront
