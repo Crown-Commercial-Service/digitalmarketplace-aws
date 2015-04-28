@@ -62,3 +62,14 @@ new AMI to the AutoScaling groups, so that new EC2 instances will use the new AM
 Packer and cloudformation won't automatically remove old AMI versions, so this has to be
 done manually. AMIs can be deleted from the EC2 console by deregestering the AMI and
 deleting the related EBS snapshot.
+
+## SSHing into instances
+
+You can SSH onto instaces using the private key set up previously (SSH key pair).
+
+```
+ssh -i path/to/private.pem ec2-user@public-dns
+```
+
+SSH into ElasticBeanstalk instances with the user `ec2-user`.
+SSH into all other EC2 instances with the user `ubuntu`.
