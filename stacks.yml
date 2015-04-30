@@ -330,10 +330,12 @@ nginx:
     - buyer_frontend
     - documents_s3
     - route53zone
+    - monitoring
   parameters:
     KeyName: "{{ key_name }}"
     SSHCidrIp: "{{ user_cidr_ip }}"
 
+    LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     DocumentsS3URL: "{{stacks.documents_s3.outputs.URL}}"
     AdminFrontendURL: "{{stacks.admin_frontend.outputs.URL}}"
     BuyerFrontendURL: "{{stacks.buyer_frontend.outputs.URL}}"
