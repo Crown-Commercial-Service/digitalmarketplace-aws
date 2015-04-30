@@ -137,7 +137,8 @@ class StackPlan(object):
         self.log('Creating %s', ', '.join(self.apps))
 
         stacks = self.stacks(with_dependencies=True)
-        self.log('Will run %s stacks', ', '.join(s[0] for s in stacks))
+        self.log('Will run %s stacks', ', '.join(s[0] for s in stacks),
+                 color='yellow')
 
         for name, stack in stacks:
             built_stack = self.build_stack(stack)

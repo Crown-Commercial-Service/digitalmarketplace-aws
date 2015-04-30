@@ -1,5 +1,4 @@
 import os
-import sys
 
 import click
 
@@ -51,11 +50,13 @@ class Context(object):
             else:
                 self.stacks[key] = val
 
-    def log(self, msg, *args):
+    def log(self, msg, *args, **kwargs):
         """Logs a message to stderr."""
         if args:
             msg %= args
-        click.echo(msg, file=sys.stderr)
+        if 'color' in kwargs:
+            msg = click.style(msg, fg=kwargs['color'])
+        click.echo(msg, err=True)
 
 
 pass_context = click.make_pass_decorator(Context, ensure=True)
