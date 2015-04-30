@@ -137,9 +137,12 @@ database_dev_access:
 elasticsearch:
   name: "elasticsearch-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_elasticsearch.json
+  dependencies:
+    - monitoring
   parameters:
     KeyName: "{{ key_name }}"
     SSHCidrIp: "{{ user_cidr_ip }}"
+    LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     Port: "{{ elasticsearch.port }}"
     LoadBalancerName: "elasticsearch-{{ stage }}-{{ environment }}"
     LoadBalancerSubnets: "{{ subnets | join(',') }}"
