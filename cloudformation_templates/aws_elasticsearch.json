@@ -7,6 +7,10 @@
       "Type": "String",
       "Description": "Group Tag"
     },
+    "LogGroupName": {
+      "Type": "String",
+      "Description": "Name of CloudWatch log group"
+    },
     "LoadBalancerName": {
       "Type": "String",
       "Description": "ELB name prefix"
@@ -114,6 +118,25 @@
               "Resource": "*"
             }]
           }
+        }, {
+          "PolicyName": "elasticsearch-cloudwatch-policy",
+          "PolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:GetLogEvents",
+                "logs:PutLogEvents",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams"
+              ],
+              "Resource": [
+                "arn:aws:logs:eu-west-1:*:*"
+              ]
+            }]
+          }
         }]
       }
     },
@@ -190,6 +213,7 @@
             "ansible-playbook -c local -i localhost, elasticsearch_playbook.yml ",
             "-t instance-config ",
             "-e aws_region=", {"Ref": "AWS::Region"}, " ",
+            "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
             "-e elasticsearch_name=", {"Ref": "GroupTag"}
         ]]}}
       }
