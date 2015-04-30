@@ -1,6 +1,6 @@
 boto==2.36.0
 
-click==3.3
+click==4.0
 Jinja2==2.7.3
 PyYAML==3.11
 toposort==1.1
