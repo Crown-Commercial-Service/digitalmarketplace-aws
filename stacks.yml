@@ -82,6 +82,7 @@ api:
   template: cloudformation_templates/aws_digitalmarketplace_api.json
   dependencies:
     - api_app
+    - search_api
     - database
     - route53zone
     - monitoring
@@ -94,6 +95,8 @@ api:
     EnvVarDmEnvironment: "{{ stage }}"
     EnvVarSqlalchemyDatabaseUri: "postgres://{{ database.user }}:{{ database.password}}@{{ stacks.database.outputs.URL }}"
     EnvVarDmApiAuthTokens: "{{ api.auth_tokens | join(':') }}"
+    EnvVarDmSearchApiUrl: "{{ stacks.search_api.outputs.URL }}"
+    EnvVarDmSearchApiAuthToken: "{{ search_api.auth_tokens[0] }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ api.instance_type }}"
@@ -222,6 +225,8 @@ admin_frontend:
     EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmAdminFrontendCookieSecret: "{{ admin_frontend.cookie_secret }}"
     EnvVarDmAdminFrontendPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"
+    EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
+    EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ admin_frontend.instance_type }}"
@@ -260,8 +265,11 @@ buyer_frontend:
     EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmBuyerFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
-    EnvVarDmSearchApiUrl: "{{ stacks.search_api.outputs.URL }}"
     EnvVarDmBuyerFrontendSearchApiAuthToken: "{{ search_api.auth_tokens[0] }}"
+    EnvVarDmSearchApiUrl: "{{ stacks.search_api.outputs.URL }}"
+    EnvVarDmSearchApiAuthToken: "{{ search_api.auth_tokens[0] }}"
+    EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
+    EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ buyer_frontend.instance_type }}"
@@ -299,6 +307,8 @@ supplier_frontend:
     EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
+    EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
+    EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ supplier_frontend.instance_type }}"
