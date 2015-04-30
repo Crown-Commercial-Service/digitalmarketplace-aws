@@ -177,7 +177,7 @@ class StackPlan(object):
 
     def get_deploy(self, repository_path=None):
         if len(self.apps) != 1:
-            raise StandardError("Can only deploy a single app at a time")
+            raise ValueError("Can only deploy a single app at a time")
         stack_info = self.info(with_aws=False)[self.apps[0]]
 
         return Deploy(

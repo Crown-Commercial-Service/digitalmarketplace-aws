@@ -116,7 +116,7 @@ class S3Client(object):
         return package_path
 
 
-class BeanstalkStatusError(StandardError):
+class BeanstalkStatusError(ValueError):
     pass
 
 

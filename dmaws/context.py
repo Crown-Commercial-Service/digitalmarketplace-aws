@@ -1,6 +1,7 @@
 import os
 
 import click
+import six
 
 from .utils import merge_dicts, dict_from_path, read_yaml_file
 from .stacks import Stack
@@ -19,7 +20,7 @@ class Context(object):
         self.create_dependencies = False
 
     def add_apps(self, app):
-        if isinstance(app, basestring):
+        if isinstance(app, six.string_types):
             app = [app]
         elif not app:
             app = []
@@ -44,7 +45,7 @@ class Context(object):
 
     def load_stacks(self, path):
         stacks = read_yaml_file(path)
-        for key, val in stacks.iteritems():
+        for key, val in stacks.items():
             if isinstance(val, dict):
                 self.stacks[key] = Stack(**val)
             else:

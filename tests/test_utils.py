@@ -208,9 +208,9 @@ class TestLazyTemplateMapping(object):
 
     def test_keys(self):
         mapping = LazyTemplateMapping({"a": "{{ var }}", "b": "{{ var }}"}, {})
-        assert mapping.keys() == ["a", "b"]
+        assert set(mapping.keys()) == set(["a", "b"])
 
     def test_items(self):
         mapping = LazyTemplateMapping({"a": "{{ var }}a", "b": "{{ var }}b"},
                                       {"var": "a"})
-        assert mapping.items() == [("a", "aa"), ("b", "ab")]
+        assert set(mapping.items()) == set([("a", "aa"), ("b", "ab")])

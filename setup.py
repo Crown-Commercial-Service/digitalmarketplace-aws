@@ -1,8 +1,12 @@
 from setuptools import setup, find_packages
+
+import pip.download
 from pip.req import parse_requirements
 
 
-install_requires = [str(r.req) for r in parse_requirements('requirements.txt')]
+install_requires = [
+    str(r.req) for r in parse_requirements('requirements.txt',
+                                           session=pip.download.PipSession())]
 
 setup(
     name='digitalmarketplace-aws',

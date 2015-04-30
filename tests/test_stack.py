@@ -460,5 +460,5 @@ class TestStackPlan(object):
             'api': Stack('api', 'api.json'),
         }, 'stage', 'env', {'aws_region': AWS_REGION}, ['aws', 'api'])
 
-        with pytest.raises(StandardError):
+        with pytest.raises(ValueError):
             plan.get_deploy()
