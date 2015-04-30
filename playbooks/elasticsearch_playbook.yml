@@ -8,3 +8,6 @@
   roles:
     - role: elasticsearch
       tags: elasticsearch
+    - role: cloudwatch
+      tags: cloudwatch
+      config_name: elasticsearch
