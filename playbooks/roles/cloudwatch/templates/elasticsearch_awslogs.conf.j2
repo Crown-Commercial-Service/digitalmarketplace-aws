@@ -1,0 +1,8 @@
+[general]
+state_file = /var/awslogs/state/agent-state
+
+[elasticsearch-log]
+file = /var/log/elasticsearch/{{ elasticsearch_name }}.log
+log_group_name = {{ cloudwatch_log_group }}
+log_stream_name = {{ elasticsearch_name }}
+datetime_format = %Y-%m-%d %H:%M:%S
