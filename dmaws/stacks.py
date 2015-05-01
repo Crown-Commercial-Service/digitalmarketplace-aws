@@ -135,6 +135,7 @@ class StackPlan(object):
 
     def create(self, create_dependencies=True):
         self.log('\nCreating %s', ', '.join(self.apps))
+        failure = False
 
         stacks = self.stacks(with_dependencies=True)
         self.log('Will run %s stacks\n', ', '.join(s[0] for s in stacks))
@@ -152,12 +153,14 @@ class StackPlan(object):
                              built_stack.name, color='red')
                     return False
 
+            failure = failure or stack_info.get('failed', False)
             self.stack_context['stacks'][name].update_info(stack_info)
 
-        return True
+        return not failure
 
     def delete(self, ignore_dependencies=False):
         self.log('\nDeleting %s', ', '.join(self.apps))
+        failure = False
 
         stacks = self.dependant_stacks()
         self.log('Will check %s stacks\n', ', '.join(s[0] for s in stacks))
@@ -166,13 +169,14 @@ class StackPlan(object):
             built_stack = self.build_stack(stack)
             status = self.cfn.describe_stack(built_stack)
             if name in self.apps:
-                self.cfn.delete_stack(built_stack)
+                stack_info = self.cfn.delete_stack(built_stack)
+                failure = failure or stack_info.get('failed', False)
             elif status and name not in self.apps and not ignore_dependencies:
                 self.log("Dependant stack %s exists, can't continue",
                          built_stack.name, color='red')
                 return False
 
-        return True
+        return not failure
 
     def get_deploy(self, repository_path=None):
         if len(self.apps) != 1:
