@@ -146,7 +146,7 @@ elasticsearch:
     SSHCidrIp: "{{ user_cidr_ip }}"
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     Port: "{{ elasticsearch.port }}"
-    LoadBalancerName: "elasticsearch-{{ stage }}-{{ environment }}"
+    LoadBalancerName: "elasticsearch-{{ stage[:3] }}-{{ environment }}"
     LoadBalancerSubnets: "{{ subnets | join(',') }}"
     GroupTag: "elasticsearch-{{ stage }}-{{ environment }}"
     InstanceCount: "{{ elasticsearch.instance_count }}"
