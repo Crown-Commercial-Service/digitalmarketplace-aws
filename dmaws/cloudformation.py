@@ -66,8 +66,15 @@ class Cloudformation(object):
     def describe_stack(self, stack):
         try:
             stack = self.conn.describe_stacks(stack.name)[0]
-        except boto.exception.BotoServerError:
-            return {}
+        except boto.exception.BotoServerError as e:
+            if 'does not exist' in e.message:
+                return {}
+            elif 'Rate exceeded' in e.message:
+                time.sleep(5)
+                return self.describe_stack(stack)
+            else:
+                self.log(e.message)
+                raise e
 
         return {
             'status': stack.stack_status,
