@@ -1,5 +1,6 @@
 ---
 all:
+  - www
   - apps
   - dev_access
   - data_storage
@@ -30,6 +31,7 @@ data_storage:
   - documents_s3
   - logs_s3
   - elasticsearch
+  - monitoring
 
 dev_access:
   - database_dev_access
