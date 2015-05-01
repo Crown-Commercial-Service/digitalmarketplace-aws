@@ -1,0 +1,2 @@
+---
+aws_log_agent_url: https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py

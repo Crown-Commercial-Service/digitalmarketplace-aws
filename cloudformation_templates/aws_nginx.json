@@ -34,6 +34,10 @@
       "Description": "Documents S3 bucket URL"
     },
 
+    "LogGroupName": {
+      "Type": "String",
+      "Description": "Name of CloudWatch log group"
+    },
     "HostedZoneName": {
       "Type": "String",
       "Description": "Route53 hosted zone name to serve the Beanstalk environment from"
@@ -130,7 +134,26 @@
           } ]
         },
         "Path": "/",
-        "Policies": []
+        "Policies": [{
+          "PolicyName": "nginx-cloudwatch-policy",
+          "PolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:GetLogEvents",
+                "logs:PutLogEvents",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams"
+              ],
+              "Resource": [
+                "arn:aws:logs:eu-west-1:*:*"
+              ]
+            }]
+          }
+        }]
       }
     },
     "InstanceProfile": {
@@ -233,6 +256,8 @@
             "cd /home/ubuntu/provisioning && ",
             "ansible-playbook -c local -i localhost, nginx_playbook.yml ",
             "-t instance-config ",
+            "-e aws_region=", {"Ref": "AWS::Region"}, " ",
+            "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
             "-e assets_domain=", {"Ref": "AssetsDomain"}, " ",
             "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
             "-e www_domain=", {"Ref": "Domain"}, " ",

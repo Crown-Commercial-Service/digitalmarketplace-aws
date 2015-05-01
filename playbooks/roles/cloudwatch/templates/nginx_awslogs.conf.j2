@@ -1,0 +1,8 @@
+[general]
+state_file = /var/awslogs/state/agent-state
+
+[nginx-access-log]
+file = /var/log/nginx/access.log
+log_group_name = {{ cloudwatch_log_group }}
+log_stream_name = nginx-access-logs
+datetime_format = %d/%b/%Y:%H:%M:%S %z

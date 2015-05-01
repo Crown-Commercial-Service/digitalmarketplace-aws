@@ -1,9 +1,10 @@
 {
   "variables": {
+      "aws_region": "eu-west-1"
   },
   "builders": [{
     "type": "amazon-ebs",
-    "region": "eu-west-1",
+    "region": "{{ user `aws_region` }}",
     "source_ami": "ami-234ecc54",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
@@ -21,9 +22,13 @@
     {
       "type": "ansible-local",
       "playbook_file": "playbooks/nginx_playbook.yml",
-      "role_paths": ["playbooks/roles/nginx/"],
+      "role_paths": [
+        "playbooks/roles/nginx/",
+        "playbooks/roles/cloudwatch/"
+      ],
       "extra_arguments": [
-        "-t image-setup"
+        "-t image-setup",
+        "-e aws_region={{ user `aws_region` }}"
       ],
       "staging_directory": "/home/ubuntu/provisioning/"
     }

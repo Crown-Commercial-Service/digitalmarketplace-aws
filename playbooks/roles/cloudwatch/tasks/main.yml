@@ -1,0 +1,26 @@
+---
+- name: Download awslogs installer
+  get_url:
+    url: "{{ aws_log_agent_url }}"
+    dest: /tmp/awslogs-agent-setup.py
+  tags: image-setup
+
+- name: Create empty initial awslogs config
+  copy:
+    dest: /tmp/general.conf
+    content: ""
+  tags: image-setup
+
+- name: Install the awslogs agent
+  shell: /usr/bin/python /tmp/awslogs-agent-setup.py -n -r {{ aws_region }} -c /tmp/general.conf
+  tags: image-setup
+
+- name: Make sure the awslogs config is present
+  template:
+    src: "{{ config_name }}_awslogs.conf.j2"
+    dest: /var/awslogs/etc/awslogs.conf
+  tags: instance-config
+
+- name: Ensure awslogs service is started
+  service: name=awslogs state=restarted enabled=yes
+  tags: instance-config

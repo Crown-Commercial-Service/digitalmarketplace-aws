@@ -7,3 +7,6 @@
   roles:
     - role: nginx
       tags: nginx
+    - role: cloudwatch
+      tags: cloudwatch
+      config_name: nginx
