@@ -1,3 +1,4 @@
+import sys
 import click
 
 from ..stacks import StackPlan
@@ -11,4 +12,6 @@ def create_cmd(ctx, ignore_dependencies):
     """Create AWS environment and launch instances"""
 
     plan = StackPlan.from_ctx(ctx)
-    plan.create(create_dependencies=not ignore_dependencies)
+    status = plan.create(create_dependencies=not ignore_dependencies)
+    if not status:
+        sys.exit(1)
