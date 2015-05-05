@@ -320,6 +320,28 @@ class TestStackPlan(object):
                       parameters=[], capabilities=mock.ANY),
         ])
 
+    def test_stack_create_failed(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'CREATE_COMPLETE')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'UPDATE_FAILED')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['db']
+        )
+
+        assert not plan.create()
+
+        cloudformation_conn.create_stack.assert_has_calls([
+            mock.call(u'db', template_body=mock.ANY,
+                      parameters=[], capabilities=mock.ANY),
+        ])
+
     def test_stack_create_dependencies(self, cloudformation_conn):
         set_cloudformation_stack(cloudformation_conn, 'api', 'UPDATE_COMPLETE')
         set_cloudformation_stack(cloudformation_conn, 'db', 'UPDATE_COMPLETE')
@@ -405,6 +427,27 @@ class TestStackPlan(object):
             mock.call(u'api')
         ])
 
+    def test_stack_delete_failed(self, cloudformation_conn):
+        set_cloudformation_stack(cloudformation_conn, 'api', 'DELETE_FAILED')
+        set_cloudformation_stack(cloudformation_conn, 'db', 'DELETE_COMPLETE')
+
+        plan = StackPlan(
+            {
+                'api_list': ['api'],
+                'aws': Stack('aws', 'aws.json'),
+                'api': Stack('api', 'api.json', dependencies=['db']),
+                'db': Stack('db', 'tests/templates/aws.json'),
+            }, 'stage', 'env',
+            {'aws_region': AWS_REGION},
+            ['api']
+        )
+
+        assert not plan.delete()
+
+        cloudformation_conn.delete_stack.assert_has_calls([
+            mock.call(u'api')
+        ])
+
     def test_stack_delete_with_dependant_stack(self, cloudformation_conn):
         set_cloudformation_stack(cloudformation_conn, 'api', 'CREATE_COMPLETE')
         set_cloudformation_stack(cloudformation_conn, 'db', 'UPDATE_COMPLETE')
@@ -460,5 +503,5 @@ class TestStackPlan(object):
             'api': Stack('api', 'api.json'),
         }, 'stage', 'env', {'aws_region': AWS_REGION}, ['aws', 'api'])
 
-        with pytest.raises(StandardError):
+        with pytest.raises(ValueError):
             plan.get_deploy()

@@ -1,7 +1,7 @@
 import os
-import sys
 
 import click
+import six
 
 from .utils import merge_dicts, dict_from_path, read_yaml_file
 from .stacks import Stack
@@ -20,7 +20,7 @@ class Context(object):
         self.create_dependencies = False
 
     def add_apps(self, app):
-        if isinstance(app, basestring):
+        if isinstance(app, six.string_types):
             app = [app]
         elif not app:
             app = []
@@ -45,17 +45,19 @@ class Context(object):
 
     def load_stacks(self, path):
         stacks = read_yaml_file(path)
-        for key, val in stacks.iteritems():
+        for key, val in stacks.items():
             if isinstance(val, dict):
                 self.stacks[key] = Stack(**val)
             else:
                 self.stacks[key] = val
 
-    def log(self, msg, *args):
+    def log(self, msg, *args, **kwargs):
         """Logs a message to stderr."""
         if args:
             msg %= args
-        click.echo(msg, file=sys.stderr)
+        if 'color' in kwargs:
+            msg = click.style(msg, fg=kwargs['color'])
+        click.echo(msg, err=True)
 
 
 pass_context = click.make_pass_decorator(Context, ensure=True)

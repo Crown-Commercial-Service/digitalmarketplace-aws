@@ -1,3 +1,5 @@
+import sys
+
 import click
 
 from ..stacks import StackPlan
@@ -11,4 +13,6 @@ def delete_cmd(ctx, ignore_dependencies):
     """Destroy AWS environment and terminate running instances."""
 
     plan = StackPlan.from_ctx(ctx)
-    plan.delete(ignore_dependencies)
+    status = plan.delete(ignore_dependencies)
+    if not status:
+        sys.exit(1)

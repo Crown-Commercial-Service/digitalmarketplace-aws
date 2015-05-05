@@ -102,7 +102,7 @@ def get_other_tags(cwd, tag):
 def get_release_name_for_tag(cwd, tag):
     """Return release tag pointing to the same commit"""
     tags = get_other_tags(cwd, tag)
-    tags = filter(RELEASE_TAG_PATTERN.match, tags)
+    tags = list(filter(RELEASE_TAG_PATTERN.match, tags))
 
     if len(tags) == 1:
         return tags[0]

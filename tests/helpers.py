@@ -19,7 +19,9 @@ def set_cloudformation_stack(cloudformation_mock, stack_name, status,
         if stack in cloudformation_mock._stacks:
             return [cloudformation_mock._stacks[stack]]
         else:
-            raise boto.exception.BotoServerError(404, 'No Stack')
+            exc = boto.exception.BotoServerError(400, '')
+            exc.message = 'Stack does not exist'
+            raise exc
 
     def create_stack(stack, *args, **kwargs):
         if stack in cloudformation_mock._stacks:

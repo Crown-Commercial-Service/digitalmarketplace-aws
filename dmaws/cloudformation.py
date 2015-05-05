@@ -23,7 +23,7 @@ class Cloudformation(object):
             )
         except boto.exception.BotoServerError as e:
             if e.error_code == 'AlreadyExistsException':
-                self.log(e.message)
+                self.log('==> ' + e.message)
                 return self.update_stack(stack)
             else:
                 raise e
@@ -33,7 +33,7 @@ class Cloudformation(object):
     def update_stack(self, stack):
         info = self.describe_stack(stack)
         if not info:
-            self.log('Stack [%s] does not exist', stack.name)
+            self.log('==> Stack [%s] does not exist', stack.name, color='red')
             return self._response(info, failed=True)
 
         try:
@@ -46,10 +46,11 @@ class Cloudformation(object):
         except boto.exception.BotoServerError as e:
             info = self.describe_stack(stack)
             if e.message == 'No updates are to be performed.':
-                self.log('Stack [%s] is up-to-date', stack.name)
+                self.log('==> Stack [%s] is up-to-date', stack.name,
+                         color='green')
                 return self._response(info)
             else:
-                self.log(e.message)
+                self.log('    ' + e.message, color='red')
                 return self._response(info, failed=True)
 
         return self.wait_for(stack, 'UPDATE')
@@ -57,7 +58,7 @@ class Cloudformation(object):
     def delete_stack(self, stack):
         info = self.describe_stack(stack)
         if not info:
-            self.log('Stack [%s] does not exist', stack.name)
+            self.log('==> Stack [%s] does not exist', stack.name)
             return self._response(info)
 
         self.conn.delete_stack(stack.name)
@@ -66,8 +67,15 @@ class Cloudformation(object):
     def describe_stack(self, stack):
         try:
             stack = self.conn.describe_stacks(stack.name)[0]
-        except boto.exception.BotoServerError:
-            return {}
+        except boto.exception.BotoServerError as e:
+            if 'does not exist' in e.message:
+                return {}
+            elif 'Rate exceeded' in e.message:
+                time.sleep(5)
+                return self.describe_stack(stack)
+            else:
+                self.log(e.message)
+                raise e
 
         return {
             'status': stack.stack_status,
@@ -75,7 +83,7 @@ class Cloudformation(object):
                 (o.key, o.value) for o in stack.outputs
             ),
             'events': [
-                (ev.timestamp, str(ev))
+                (ev.timestamp, self._format_event(ev))
                 for ev in stack.describe_events()
             ],
             'resources': dict(
@@ -84,28 +92,44 @@ class Cloudformation(object):
             ),
         }
 
+    def _format_event(self, event):
+        msg = "{} {} {}".format(
+            event.resource_type,
+            event.logical_resource_id,
+            event.resource_status,
+        )
+
+        if event.resource_status_reason:
+            msg = '{} ({})'.format(msg, event.resource_status_reason)
+
+        return msg
+
     def wait_for(self, stack, operation, delay=5):
         last = datetime.datetime.utcnow()
-        self.log('Waiting for [%s] to %s', stack.name, operation)
+        self.log('=== Waiting for [%s] to %s', stack.name, operation)
         while True:
             info = self.describe_stack(stack)
             if not info and operation == 'DELETE':
-                self.log('Stack [%s] is now deleted', stack.name)
+                self.log('==> Stack [%s] is now deleted', stack.name,
+                         color='yellow')
                 return self._response(info)
             elif info.get('status') == '%s_COMPLETE' % operation:
-                self.log('Stack [%s] is now %s', stack.name, info['status'])
+                self.log('==> Stack [%s] is now %s', stack.name,
+                         info['status'], color='green')
                 return self._response(info)
             elif info.get('status') in ['ROLLBACK_COMPLETE',
                                         'ROLLBACK_FAILED',
                                         '%s_ROLLBACK_COMPLETE' % operation,
                                         '%s_FAILED' % operation]:
+                self.log('==> Stack [%s] is now %s', stack.name,
+                         info['status'], color='red')
                 return self._response(info, failed=True)
             else:
                 new_events = list(
                     takewhile(lambda x: x[0] > last, info.get('events', []))
                 )
                 for ts, event in reversed(new_events):
-                    self.log('%s %s', ts, event)
+                    self.log('    %s %s', ts, event)
                     last = ts
                 time.sleep(delay)
 

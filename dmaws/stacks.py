@@ -117,7 +117,7 @@ class StackPlan(object):
 
     def info(self, apps=None, with_aws=True):
         stacks = self.stacks(apps, with_dependencies=True)
-        self.log('Gathering info about %s stacks',
+        self.log('Gathering info about %s stacks\n',
                  ', '.join(s[0] for s in stacks))
 
         for name, stack in stacks:
@@ -134,10 +134,11 @@ class StackPlan(object):
         return self.stack_context['stacks']
 
     def create(self, create_dependencies=True):
-        self.log('Creating %s', ', '.join(self.apps))
+        self.log('\nCreating %s', ', '.join(self.apps))
+        failure = False
 
         stacks = self.stacks(with_dependencies=True)
-        self.log('Will run %s stacks', ', '.join(s[0] for s in stacks))
+        self.log('Will run %s stacks\n', ', '.join(s[0] for s in stacks))
 
         for name, stack in stacks:
             built_stack = self.build_stack(stack)
@@ -149,34 +150,37 @@ class StackPlan(object):
                 stack_info = self.cfn.describe_stack(built_stack)
                 if not stack_info:
                     self.log("Dependency %s doesn't exists, can't continue",
-                             built_stack.name)
+                             built_stack.name, color='red')
                     return False
 
+            failure = failure or stack_info.get('failed', False)
             self.stack_context['stacks'][name].update_info(stack_info)
 
-        return True
+        return not failure
 
     def delete(self, ignore_dependencies=False):
-        self.log('Deleting %s', ', '.join(self.apps))
+        self.log('\nDeleting %s', ', '.join(self.apps))
+        failure = False
 
         stacks = self.dependant_stacks()
-        self.log('Will check %s stacks', ', '.join(s[0] for s in stacks))
+        self.log('Will check %s stacks\n', ', '.join(s[0] for s in stacks))
 
         for name, stack in stacks:
             built_stack = self.build_stack(stack)
             status = self.cfn.describe_stack(built_stack)
             if name in self.apps:
-                self.cfn.delete_stack(built_stack)
+                stack_info = self.cfn.delete_stack(built_stack)
+                failure = failure or stack_info.get('failed', False)
             elif status and name not in self.apps and not ignore_dependencies:
                 self.log("Dependant stack %s exists, can't continue",
-                         built_stack.name)
+                         built_stack.name, color='red')
                 return False
 
-        return True
+        return not failure
 
     def get_deploy(self, repository_path=None):
         if len(self.apps) != 1:
-            raise StandardError("Can only deploy a single app at a time")
+            raise ValueError("Can only deploy a single app at a time")
         stack_info = self.info(with_aws=False)[self.apps[0]]
 
         return Deploy(

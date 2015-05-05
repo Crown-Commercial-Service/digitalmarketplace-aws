@@ -1,5 +1,6 @@
 ---
 all:
+  - www
   - apps
   - dev_access
   - data_storage
@@ -30,10 +31,13 @@ data_storage:
   - documents_s3
   - logs_s3
   - elasticsearch
+  - monitoring
 
 dev_access:
   - database_dev_access
   - elasticsearch_dev_access
+  - elasticsearch_ssh_access
+  - nginx_ssh_access
 
 route53zone:
   name: "route53-zone"
@@ -141,10 +145,9 @@ elasticsearch:
     - monitoring
   parameters:
     KeyName: "{{ key_name }}"
-    SSHCidrIp: "{{ user_cidr_ip }}"
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     Port: "{{ elasticsearch.port }}"
-    LoadBalancerName: "elasticsearch-{{ stage }}-{{ environment }}"
+    LoadBalancerName: "elasticsearch-{{ stage[:3] }}-{{ environment }}"
     LoadBalancerSubnets: "{{ subnets | join(',') }}"
     GroupTag: "elasticsearch-{{ stage }}-{{ environment }}"
     InstanceCount: "{{ elasticsearch.instance_count }}"
@@ -160,6 +163,17 @@ elasticsearch_dev_access:
     CidrIp: "{{ user_cidr_ip }}"
     FromPort: "{{ elasticsearch.port }}"
     ToPort: "{{ elasticsearch.port }}"
+    SecurityGroup: "{{ stacks.elasticsearch.outputs.InstanceSecurityGroup }}"
+
+elasticsearch_ssh_access:
+  name: "elasticsearch-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - elasticsearch
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
     SecurityGroup: "{{ stacks.elasticsearch.outputs.InstanceSecurityGroup }}"
 
 search_api_app:
@@ -336,7 +350,6 @@ nginx:
     - monitoring
   parameters:
     KeyName: "{{ key_name }}"
-    SSHCidrIp: "{{ user_cidr_ip }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     DocumentsS3URL: "{{stacks.documents_s3.outputs.URL}}"
@@ -354,6 +367,17 @@ nginx:
     InstanceCount: "{{ nginx.instance_count }}"
     InstanceType: "{{ nginx.instance_type }}"
     InstanceImage: "{{ nginx.instance_image }}"
+
+nginx_ssh_access:
+  name: "nginx-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - nginx
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.nginx.outputs.InstanceSecurityGroup }}"
 
 www_cloudfront:
   name: "digitalmarketplace-www-cloudfront-{{ stage }}"

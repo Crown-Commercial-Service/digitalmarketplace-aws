@@ -141,7 +141,7 @@ class TestBeanstalkClient(object):
 
         logger.assert_has_calls([
             mock.call(mock.ANY, mock.ANY, 'UPDATE', 'msg'),
-            mock.call(mock.ANY, 'Ready'),
+            mock.call(mock.ANY, mock.ANY, 'Ready', color=mock.ANY),
         ])
 
     def test_wait_for_ready_error_event(self, beanstalk_conn):
@@ -158,7 +158,7 @@ class TestBeanstalkClient(object):
 
         logger.assert_has_calls([
             mock.call(mock.ANY, mock.ANY, 'ERROR', ''),
-            mock.call(mock.ANY, 'Ready'),
+            mock.call(mock.ANY, mock.ANY, 'Ready', color=mock.ANY),
         ])
 
     def test_wait_for_ready_unknown_status(self, beanstalk_conn):
@@ -179,7 +179,7 @@ class TestBeanstalkClient(object):
 
         logger.assert_has_calls([
             mock.call(mock.ANY, mock.ANY, 'UPDATE', 'msg'),
-            mock.call(mock.ANY, 'NotARealStatus'),
+            mock.call(mock.ANY, mock.ANY, 'NotARealStatus', color=mock.ANY),
         ])
 
     def test_wait_for_ready_status_change(self, beanstalk_conn):
@@ -217,9 +217,9 @@ class TestBeanstalkClient(object):
         logger.assert_has_calls([
             mock.call(mock.ANY, mock.ANY, 'UPDATE', '0'),
             mock.call(mock.ANY, mock.ANY, 'UPDATE', '1'),
-            mock.call(mock.ANY, 'Updating'),
+            mock.call(mock.ANY, mock.ANY, 'Updating', color=mock.ANY),
             mock.call(mock.ANY, mock.ANY, 'UPDATE', '2'),
-            mock.call(mock.ANY, 'Ready'),
+            mock.call(mock.ANY, mock.ANY, 'Ready', color=mock.ANY),
         ])
 
     def test_update_environment(self):

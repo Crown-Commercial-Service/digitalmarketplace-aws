@@ -3,6 +3,7 @@ import collections
 import subprocess
 from subprocess import CalledProcessError
 
+import six
 import yaml
 import jinja2
 from jinja2.runtime import StrictUndefined
@@ -44,7 +45,7 @@ def load_file(path):
 
 def dict_from_path(path, value):
     result = {}
-    if isinstance(path, basestring):
+    if isinstance(path, six.string_types):
         path = path.split('.')
 
     if not path:
@@ -62,7 +63,7 @@ def merge_dicts(a, b):
         ))
 
     result = a.copy()
-    for key, val in b.iteritems():
+    for key, val in b.items():
         if isinstance(result.get(key), collections.Mapping):
             result[key] = merge_dicts(a[key], b[key])
         else:
@@ -74,7 +75,7 @@ def merge_dicts(a, b):
 def template(item, variables, **kwargs):
     variables = merge_dicts(variables, kwargs)
 
-    if isinstance(item, basestring):
+    if isinstance(item, (str, bytes)):
         varname = template_string(item, variables)
         return varname
 
@@ -83,7 +84,7 @@ def template(item, variables, **kwargs):
 
     elif isinstance(item, collections.Mapping):
         result = {}
-        for (key, val) in item.iteritems():
+        for (key, val) in item.items():
             result[key] = template(val, variables)
         return result
 
@@ -121,10 +122,10 @@ def template_string(string, variables, templates_path=None):
 
     try:
         template = jinja_env.from_string(string)
-    except jinja2.exceptions.TemplateSyntaxError, e:
+    except jinja2.exceptions.TemplateSyntaxError as e:
         raise ValueError(u"Template error: {}".format(e))
 
     try:
         return template.render(variables)
-    except jinja2.exceptions.UndefinedError, e:
+    except jinja2.exceptions.UndefinedError as e:
         raise ValueError(u"Variable {} in '{}'".format(e, string))
