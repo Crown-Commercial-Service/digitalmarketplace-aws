@@ -32,7 +32,7 @@ class Deploy(object):
             package_path = from_file
         elif self.repo_path:
             ref, sha, package_path = build.create_archive(self.repo_path)
-            self.log('Created a git archive at %s', package_path)
+            self.log('==> Created a git archive at %s', package_path)
         else:
             raise ValueError('Either repo_path or from_file must be set')
 
@@ -46,10 +46,11 @@ class Deploy(object):
 
         bucket = self.get_storage_location()
 
-        self.log('Uploading %s to %s/%s', package_path, bucket, package_name)
+        self.log('==> Uploading %s to %s/%s',
+                 package_path, bucket, package_name)
         _, s3_key = self.s3.upload_package(bucket, package_name, package_path)
 
-        self.log('Creating a new %s version: %s',
+        self.log('==> Creating a new %s version: %s',
                  self.eb_application, version_label)
         created_version = self.beanstalk.create_application_version(
             self.eb_application,
@@ -59,13 +60,13 @@ class Deploy(object):
             description
         )
 
-        self.log("Removing package file %s", package_path)
+        self.log("==> Removing package file %s", package_path)
         os.remove(package_path)
 
         return version_label, bool(created_version)
 
     def deploy(self, version_label):
-        self.log("Deploying version %s to %s",
+        self.log("=== Deploying version %s to %s",
                  version_label, self.eb_environment)
         return self.beanstalk.update_environment(
             self.eb_environment, version_label
@@ -98,7 +99,8 @@ class S3Client(object):
     def upload_package(self, bucket_name, package_name, package_file):
         bucket = self.conn.get_bucket(bucket_name)
         if bucket.get_key(package_name):
-            self.log('Not replacing existing S3 key %s', package_name)
+            self.log('    Not replacing existing S3 key %s', package_name,
+                     color='yellow')
             return bucket, package_name
         key = bucket.new_key(package_name)
         key.set_contents_from_filename(package_file)
@@ -172,13 +174,15 @@ class BeanstalkClient(object):
                 timestamp = datetime.fromtimestamp(
                     event['EventDate']
                 ).isoformat()
-                self.log('%s %s %s',
+                self.log('    %s %s %s',
                          timestamp, event['Severity'], event['Message'])
 
             info = self.describe_environment(environment_name)
             if info['Status'] != last_status:
-                self.log('Environment status is now %s', info['Status'])
                 last_status = info['Status']
+                self.log('=== %s Environment status is now %s',
+                         datetime.utcnow().isoformat(), last_status,
+                         color='green' if last_status == 'Ready' else 'yellow')
             if info['Status'] == 'Ready':
                 return success and info['CNAME']
             elif info['Status'] != 'Updating':
@@ -204,7 +208,7 @@ class BeanstalkClient(object):
                 description=description
             )
         except boto.exception.BotoServerError as e:
-            self.log(e.message)
+            self.log('    ' + e.message)
             return
 
         return version_label
