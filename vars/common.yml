@@ -25,6 +25,7 @@ supplier_frontend:
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
+  password_salt: ResetPasswordSalt
 
 database:
   port: 5432
