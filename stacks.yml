@@ -54,6 +54,7 @@ database:
     DBPassword: "{{ database.password }}"
     DBInstanceType: "{{ database.instance_type }}"
     DBAllocatedStorage: "{{ database.allocated_storage }}"
+    MultiAZ: "{{ rds_multi_az }}"
 
 documents_s3:
   name: "documents-s3-{{ stage }}-{{ environment }}"

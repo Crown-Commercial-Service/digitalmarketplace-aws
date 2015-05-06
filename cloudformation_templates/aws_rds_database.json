@@ -24,6 +24,10 @@
     "DBAllocatedStorage": {
       "Type": "String",
       "Description": "Database allocated storage"
+    },
+    "MultiAZ": {
+      "Type": "Boolean",
+      "Description": "Whether the instance is multi AZ or not"
     }
   },
 
@@ -45,7 +49,8 @@
         "DBInstanceClass": {"Ref": "DBInstanceType"},
         "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
         "MasterUserPassword": {"Ref": "DBPassword"},
-        "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}]
+        "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}],
+        "MultiAZ": {"Ref": "MultiAZ"}
       }
     }
   },
