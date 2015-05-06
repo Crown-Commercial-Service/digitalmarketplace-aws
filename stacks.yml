@@ -314,7 +314,6 @@ supplier_frontend:
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmMandrillApiKey: "{{ supplier_frontend.mandrill_key }}"
     EnvVarDmPasswordSecretKey: "{{ supplier_frontend.password_key }}"
-    EnvVarDmResetPasswordSalt: "{{ supplier_frontend.password_salt }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ supplier_frontend.instance_type }}"
