@@ -26,7 +26,7 @@
       "Description": "Database allocated storage"
     },
     "MultiAZ": {
-      "Type": "Boolean",
+      "Type": "String",
       "Description": "Whether the instance is multi AZ or not"
     }
   },
