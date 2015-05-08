@@ -22,10 +22,6 @@ eb_apps:
 www:
   - nginx
 
-cloudfront:
-  - api_cloudfront
-  - www_cloudfront
-
 data_storage:
   - database
   - documents_s3
@@ -117,19 +113,6 @@ api:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
-
-api_cloudfront:
-  name: "digitalmarketplace-api-cloudfront-{{ stage }}"
-  template: cloudformation_templates/aws_cloudfront_app.json
-  dependencies:
-    - api
-    - logs_s3
-  parameters:
-    Origin: "{{ stacks.api.parameters.Domain }}"
-    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}api.{{ root_domain }}"
-    IamCertificateId: "{{ iam_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
-    LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
 
 database_dev_access:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}-dev-access"
@@ -391,20 +374,3 @@ nginx_ssh_access:
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.nginx.outputs.InstanceSecurityGroup }}"
-
-www_cloudfront:
-  name: "digitalmarketplace-www-cloudfront-{{ stage }}"
-  template: cloudformation_templates/aws_cloudfront_www.json
-  dependencies:
-    - admin_frontend
-    - buyer_frontend
-    - supplier_frontend
-    - logs_s3
-  parameters:
-    AdminOrigin: "{{ stacks.admin_frontend.parameters.Domain }}"
-    BuyerOrigin: "{{ stacks.buyer_frontend.parameters.Domain }}"
-    SupplierOrigin: "{{ stacks.supplier_frontend.parameters.Domain }}"
-    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}www.{{ root_domain }}"
-    IamCertificateId: "{{ iam_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
-    LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
