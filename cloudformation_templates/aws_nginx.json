@@ -8,9 +8,13 @@
       "Description": "Group Tag"
     },
 
-    "Domain": {
+    "RootDomain": {
       "Type": "String",
-      "Description": "Domain to serve the Beanstalk environment from"
+      "Description": "Root domain for the public Route 53 records"
+    },
+    "Subdomain": {
+      "Type": "String",
+      "Description": "Subdomain to serve the Beanstalk environment from"
     },
     "AdminFrontendURL": {
       "Type": "String",
@@ -25,9 +29,18 @@
       "Description": "URL for the app."
     },
 
-    "AssetsDomain": {
+    "ApiSubdomain": {
       "Type": "String",
-      "Description": "Domain to serve assets from"
+      "Description": "Subdomain to serve api from"
+    },
+    "ApiURL": {
+      "Type": "String",
+      "Description": "URL for the app."
+    },
+
+    "AssetsSubdomain": {
+      "Type": "String",
+      "Description": "Subdomain to serve assets from"
     },
     "DocumentsS3URL": {
       "Type": "String",
@@ -179,7 +192,22 @@
       "Properties": {
         "HostedZoneName": {"Ref": "HostedZoneName"},
         "Name": {"Fn::Join": ["",[
-          {"Ref": "Domain"}, "."
+          {"Ref": "Subdomain"}, ".", {"Ref": "RootDomain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+        ],
+        "TTL": "300"
+      }
+    },
+
+    "ApiRoute53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "ApiSubdomain"}, ".", {"Ref": "RootDomain"}, "."
          ]]},
         "Type": "CNAME",
         "ResourceRecords": [
@@ -194,7 +222,7 @@
       "Properties": {
         "HostedZoneName": {"Ref": "HostedZoneName"},
         "Name": {"Fn::Join": ["",[
-          {"Ref": "AssetsDomain"}, "."
+          {"Ref": "AssetsSubdomain"}, ".", {"Ref": "RootDomain"}, "."
          ]]},
         "Type": "CNAME",
         "ResourceRecords": [
@@ -243,9 +271,11 @@
             "-t instance-config ",
             "-e aws_region=", {"Ref": "AWS::Region"}, " ",
             "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
-            "-e assets_domain=", {"Ref": "AssetsDomain"}, " ",
+            "-e assets_subdomain=", {"Ref": "AssetsSubdomain"}, " ",
             "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
-            "-e www_domain=", {"Ref": "Domain"}, " ",
+            "-e api_subdomain=", {"Ref": "ApiSubdomain"}, " ",
+            "-e api_url=", {"Ref": "ApiURL"}, " ",
+            "-e www_subdomain=", {"Ref": "Subdomain"}, " ",
             "-e buyer_frontend_url=", {"Ref": "BuyerFrontendURL"}, " ",
             "-e admin_frontend_url=", {"Ref": "AdminFrontendURL"}, " ",
             "-e supplier_frontend_url=", {"Ref": "SupplierFrontendURL"}
@@ -263,29 +293,36 @@
       "Description": "ELB security group",
       "Value": {"Ref": "LoadBalancerSecurityGroup"}
     },
-    "AssetsDomain": {
-      "Description": "CNAME of the assets server",
-      "Value": {"Ref" :"AssetsDomain"}
-    },
     "AssetsURL": {
       "Description": "URL of the assets server",
       "Value": {
         "Fn::Join": ["", [
           "https://",
-          {"Ref" :"AssetsDomain"}
+          {"Ref" :"AssetsSubdomain"},
+          ".",
+          {"Ref" :"RootDomain"}
         ]]
       }
     },
-    "Domain": {
-      "Description": "CNAME of the www server",
-      "Value": {"Ref" :"Domain"}
+    "ApiURL": {
+      "Description": "URL of the API server",
+      "Value": {
+        "Fn::Join": ["", [
+          "https://",
+          {"Ref" :"ApiSubdomain"},
+          ".",
+          {"Ref" :"RootDomain"}
+        ]]
+      }
     },
     "URL": {
       "Description": "URL of the www server",
       "Value": {
         "Fn::Join": ["", [
           "https://",
-          {"Ref" :"Domain"}
+          {"Ref" :"Subdomain"},
+          ".",
+          {"Ref" :"RootDomain"}
         ]]
       }
     }
