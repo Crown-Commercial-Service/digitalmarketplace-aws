@@ -1,4 +1,4 @@
 ---
 nginx_configs:
   - www
-  - s3
+  - assets

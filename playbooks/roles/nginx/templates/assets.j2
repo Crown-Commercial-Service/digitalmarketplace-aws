@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name {{ assets_domain }};
+    server_name {{ assets_subdomain }}.*;
     error_page 400 401 402 403 404 = /404;
 
     location / {

@@ -1,6 +1,6 @@
 server {
-    listen 80 default_server;
-    server_name {{ www_domain }};
+    listen 80;
+    server_name {{ www_subdomain }}.*;
 
     location / {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
