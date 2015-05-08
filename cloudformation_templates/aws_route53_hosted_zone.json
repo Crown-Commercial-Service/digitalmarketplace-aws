@@ -6,6 +6,14 @@
     "RootDomain": {
       "Type": "String",
       "Description": "Root domain"
+    },
+    "VPCId": {
+      "Type": "String",
+      "Description": "VPC ID"
+    },
+    "InternalRootDomain": {
+      "Type": "String",
+      "Description": "Internal root domain"
     }
   },
 
@@ -15,6 +23,17 @@
       "Properties": {
         "Name": {"Fn::Join": ["", [{"Ref": "RootDomain"}, "."]]}
       }
+    },
+
+    "InternalHostedZone": {
+      "Type": "AWS::Route53::HostedZone",
+      "Properties": {
+        "Name": {"Fn::Join": ["", [{"Ref": "InternalRootDomain"}, "."]]},
+        "VPCs": [{
+            "VPCId": {"Ref": "VPCId"},
+            "VPCRegion": {"Ref": "AWS::Region"}
+        }]
+      }
     }
   },
 
@@ -22,6 +41,10 @@
     "HostedZoneName": {
       "Description": "Hosted zone name",
       "Value": {"Fn::Join": ["", [{"Ref": "RootDomain"}, "."]]}
+    },
+    "InternalHostedZoneName": {
+      "Description": "Internal hosted zone name",
+      "Value": {"Fn::Join": ["", [{"Ref": "InternalRootDomain"}, "."]]}
     }
   }
 }

@@ -1,5 +1,6 @@
 ---
 aws_region: eu-west-1
+internal_root_domain: dmdev
 
 api:
   instance_type: t2.micro
