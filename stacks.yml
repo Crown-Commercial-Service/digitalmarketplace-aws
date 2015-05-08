@@ -44,6 +44,8 @@ route53zone:
   template: cloudformation_templates/aws_route53_hosted_zone.json
   parameters:
     RootDomain: "{{ root_domain }}"
+    VPCId: "{{ vpc_id }}"
+    InternalRootDomain: "{{ internal_root_domain }}"
 
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
@@ -109,9 +111,10 @@ api:
     MaxInstanceCount: "{{ api.max_instance_count }}"
     RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-api.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-api.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -209,9 +212,10 @@ search_api:
     ElasticsearchPort: "{{ elasticsearch.port }}"
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-search-api.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-search-api.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -251,9 +255,10 @@ admin_frontend:
     MinInstanceCount: "{{ admin_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ admin_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-admin-frontend.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-admin-frontend.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -294,9 +299,10 @@ buyer_frontend:
     MinInstanceCount: "{{ buyer_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ buyer_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-buyer-frontend.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-buyer-frontend.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -335,9 +341,10 @@ supplier_frontend:
     MinInstanceCount: "{{ supplier_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ supplier_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-supplier-frontend.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-supplier-frontend.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
