@@ -98,6 +98,7 @@ api:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
     EnvVarSqlalchemyDatabaseUri: "postgres://{{ database.user }}:{{ database.password}}@{{ stacks.database.outputs.URL }}"
     EnvVarDmApiAuthTokens: "{{ api.auth_tokens | join(':') }}"
     EnvVarDmSearchApiUrl: "{{ stacks.search_api.outputs.URL }}"
@@ -199,6 +200,7 @@ search_api:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
     EnvVarDmElasticsearchUrl: "{{ stacks.elasticsearch.outputs.URL }}"
     EnvVarDmSearchApiAuthTokens: "{{ search_api.auth_tokens | join(':') }}"
 
@@ -238,6 +240,7 @@ admin_frontend:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmS3DocumentBucket: "{{ stacks.documents_s3.outputs.Name }}"
     EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
@@ -281,6 +284,7 @@ buyer_frontend:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmBuyerFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmBuyerFrontendSearchApiAuthToken: "{{ search_api.auth_tokens[0] }}"
@@ -323,6 +327,7 @@ supplier_frontend:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
