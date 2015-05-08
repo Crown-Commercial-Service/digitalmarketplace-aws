@@ -34,6 +34,11 @@ dev_access:
   - elasticsearch_dev_access
   - elasticsearch_ssh_access
   - nginx_ssh_access
+  - api_ssh_access
+  - search_api_ssh_access
+  - admin_frontend_ssh_access
+  - buyer_frontend_ssh_access
+  - supplier_frontend_ssh_access
 
 route53zone:
   name: "route53-zone"
@@ -374,3 +379,58 @@ nginx_ssh_access:
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.nginx.outputs.InstanceSecurityGroup }}"
+
+api_ssh_access:
+  name: "api-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - api
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.api.outputs.InstanceSecurityGroup }}"
+
+search_api_ssh_access:
+  name: "search-api-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - search_api
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.search_api.outputs.InstanceSecurityGroup }}"
+
+admin_frontend_ssh_access:
+  name: "admin-frontend-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - admin_frontend
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.admin_frontend.outputs.InstanceSecurityGroup }}"
+
+buyer_frontend_ssh_access:
+  name: "buyer-frontend-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - buyer_frontend
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.buyer_frontend.outputs.InstanceSecurityGroup }}"
+
+supplier_frontend_ssh_access:
+  name: "supplier-frontend-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - supplier_frontend
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.supplier_frontend.outputs.InstanceSecurityGroup }}"
