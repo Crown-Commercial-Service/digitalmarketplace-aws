@@ -22,10 +22,6 @@ eb_apps:
 www:
   - nginx
 
-cloudfront:
-  - api_cloudfront
-  - www_cloudfront
-
 data_storage:
   - database
   - documents_s3
@@ -38,12 +34,19 @@ dev_access:
   - elasticsearch_dev_access
   - elasticsearch_ssh_access
   - nginx_ssh_access
+  - api_ssh_access
+  - search_api_ssh_access
+  - admin_frontend_ssh_access
+  - buyer_frontend_ssh_access
+  - supplier_frontend_ssh_access
 
 route53zone:
   name: "route53-zone"
   template: cloudformation_templates/aws_route53_hosted_zone.json
   parameters:
     RootDomain: "{{ root_domain }}"
+    VPCId: "{{ vpc_id }}"
+    InternalRootDomain: "{{ internal_root_domain }}"
 
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
@@ -109,24 +112,12 @@ api:
     MaxInstanceCount: "{{ api.max_instance_count }}"
     RDSSecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-api.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-api.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
-
-api_cloudfront:
-  name: "digitalmarketplace-api-cloudfront-{{ stage }}"
-  template: cloudformation_templates/aws_cloudfront_app.json
-  dependencies:
-    - api
-    - logs_s3
-  parameters:
-    Origin: "{{ stacks.api.parameters.Domain }}"
-    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}api.{{ root_domain }}"
-    IamCertificateId: "{{ iam_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
-    LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
 
 database_dev_access:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}-dev-access"
@@ -209,9 +200,10 @@ search_api:
     ElasticsearchPort: "{{ elasticsearch.port }}"
     ElasticsearchSecurityGroup: "{{ stacks.elasticsearch.outputs.LoadBalancerSecurityGroup }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-search-api.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-search-api.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -251,9 +243,10 @@ admin_frontend:
     MinInstanceCount: "{{ admin_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ admin_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-admin-frontend.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-admin-frontend.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -294,9 +287,10 @@ buyer_frontend:
     MinInstanceCount: "{{ buyer_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ buyer_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-buyer-frontend.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-buyer-frontend.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -335,9 +329,10 @@ supplier_frontend:
     MinInstanceCount: "{{ supplier_frontend.min_instance_count }}"
     MaxInstanceCount: "{{ supplier_frontend.max_instance_count }}"
 
-    Domain: "{{ stage }}{% if stage != environment %}-{{ environment }}{% endif %}-supplier-frontend.{{ root_domain }}"
-    SSLCertificateId: "{{ ssl_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    VPCId: "{{ vpc_id }}"
+    Subnets: "{{ subnets | join(',') }}"
+    Domain: "{{ stage }}-{{ environment }}-supplier-frontend.{{ internal_root_domain }}"
+    HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
 
@@ -356,12 +351,15 @@ nginx:
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     DocumentsS3URL: "{{stacks.documents_s3.outputs.URL}}"
+    ApiURL: "{{stacks.api.outputs.URL}}"
     AdminFrontendURL: "{{stacks.admin_frontend.outputs.URL}}"
     BuyerFrontendURL: "{{stacks.buyer_frontend.outputs.URL}}"
     SupplierFrontendURL: "{{stacks.supplier_frontend.outputs.URL}}"
 
-    Domain: "{% if stage != 'production' %}{{ stage }}{% else %}www{% endif %}{% if stage != environment %}-{{ environment }}{% endif %}.{{ root_domain }}"
-    AssetsDomain: "{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{ root_domain }}"
+    RootDomain: "{{ root_domain }}"
+    Subdomain: "{% if stage != 'production' %}{{ stage }}{% else %}www{% endif %}{% if stage != environment %}-{{ environment }}{% endif %}"
+    ApiSubdomain: "{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}api"
+    AssetsSubdomain: "{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets"
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     SSLCertificateId: "{{ ssl_certificate_id }}"
 
@@ -382,19 +380,57 @@ nginx_ssh_access:
     ToPort: 22
     SecurityGroup: "{{ stacks.nginx.outputs.InstanceSecurityGroup }}"
 
-www_cloudfront:
-  name: "digitalmarketplace-www-cloudfront-{{ stage }}"
-  template: cloudformation_templates/aws_cloudfront_www.json
+api_ssh_access:
+  name: "api-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - api
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.api.outputs.InstanceSecurityGroup }}"
+
+search_api_ssh_access:
+  name: "search-api-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - search_api
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.search_api.outputs.InstanceSecurityGroup }}"
+
+admin_frontend_ssh_access:
+  name: "admin-frontend-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
   dependencies:
     - admin_frontend
-    - buyer_frontend
-    - supplier_frontend
-    - logs_s3
   parameters:
-    AdminOrigin: "{{ stacks.admin_frontend.parameters.Domain }}"
-    BuyerOrigin: "{{ stacks.buyer_frontend.parameters.Domain }}"
-    SupplierOrigin: "{{ stacks.supplier_frontend.parameters.Domain }}"
-    Domain: "{% if stage != 'production' %}{{ stage }}-cloudfront-{% endif %}www.{{ root_domain }}"
-    IamCertificateId: "{{ iam_certificate_id }}"
-    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
-    LogsBucket: "{{ stacks.logs_s3.outputs.Domain }}"
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.admin_frontend.outputs.InstanceSecurityGroup }}"
+
+buyer_frontend_ssh_access:
+  name: "buyer-frontend-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - buyer_frontend
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.buyer_frontend.outputs.InstanceSecurityGroup }}"
+
+supplier_frontend_ssh_access:
+  name: "supplier-frontend-{{ stage }}-{{ environment }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - supplier_frontend
+  parameters:
+    CidrIp: "{{ user_cidr_ip }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.supplier_frontend.outputs.InstanceSecurityGroup }}"

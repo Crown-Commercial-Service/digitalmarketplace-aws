@@ -1,4 +1,6 @@
 ---
 nginx_configs:
   - www
-  - s3
+  - api
+  - assets
+  - healthcheck

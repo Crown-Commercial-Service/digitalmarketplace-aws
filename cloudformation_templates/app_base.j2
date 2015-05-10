@@ -22,6 +22,14 @@
       "Type": "String",
       "Description": "Elastic Beanstalk Environment name"
     },
+    "VPCId": {
+      "Type": "String",
+      "Description": "VPC ID"
+    },
+    "Subnets": {
+      "Type": "String",
+      "Description": "List of subnets for internal ELB and instances"
+    },
     "Domain": {
       "Type": "String",
       "Description": "Domain to serve the Beanstalk environment from"
@@ -45,10 +53,6 @@
     "LogGroupName": {
       "Type": "String",
       "Description": "Name of CloudWatch log group"
-    },
-    "SSLCertificateId": {
-      "Type": "String",
-      "Description": "Amazon Resource Name (ARN) for the SSL certificate"
     }{%- if self.parameters() %},
     {% endif %}
 
@@ -151,7 +155,12 @@
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
             "OptionName": "SecurityGroups",
-            "Value": {"Ref": "InstanceSecurityGroup"}
+            "Value": {"Fn::GetAtt": ["InstanceSecurityGroup", "GroupId"]}
+          },
+          {
+            "Namespace": "aws:autoscaling:launchconfiguration",
+            "OptionName": "SSHSourceRestriction",
+            "Value": "tcp, 22, 22, 127.0.0.1/32"
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
@@ -176,24 +185,34 @@
             "Value": "true"
           },
           {
+            "Namespace": "aws:ec2:vpc",
+            "OptionName": "VPCId",
+            "Value": {"Ref": "VPCId"}
+          },
+          {
+            "Namespace": "aws:ec2:vpc",
+            "OptionName": "Subnets",
+            "Value": {"Ref": "Subnets"}
+          },
+          {
+            "Namespace": "aws:ec2:vpc",
+            "OptionName": "ELBSubnets",
+            "Value": {"Ref": "Subnets"}
+          },
+          {
+            "Namespace": "aws:ec2:vpc",
+            "OptionName": "ELBScheme",
+            "Value": "internal"
+          },
+          {
             "Namespace": "aws:elb:loadbalancer",
             "OptionName": "CrossZone",
             "Value": true
           },
           {
             "Namespace": "aws:elb:loadbalancer",
-            "OptionName": "SSLCertificateId",
-            "Value": {"Ref": "SSLCertificateId"}
-          },
-          {
-            "Namespace": "aws:elb:loadbalancer",
-            "OptionName": "LoadBalancerHTTPSPort",
-            "Value": "443"
-          },
-          {
-            "Namespace": "aws:elb:loadbalancer",
             "OptionName": "LoadBalancerHTTPPort",
-            "Value": "OFF"
+            "Value": "80"
           },
           {
             "Namespace": "aws:autoscaling:updatepolicy:rollingupdate",
@@ -255,6 +274,10 @@
   },
 
   "Outputs": {
+    "InstanceSecurityGroup": {
+      "Description": "Instances security group",
+      "Value": {"Ref": "InstanceSecurityGroup"}
+    },
     "Environment": {
       "Description": "Digital Marketplace EB environment",
       "Value": {"Ref": "Environment"}
@@ -263,7 +286,7 @@
       "Description": "URL of the AWS Elastic Beanstalk Environment",
       "Value": {
         "Fn::Join": ["", [
-          "https://",
+          "http://",
           {"Ref": "Domain"}
         ]]
       }
