@@ -38,6 +38,15 @@
       "Description": "URL for the app."
     },
 
+    "SearchApiSubdomain": {
+      "Type": "String",
+      "Description": "Subdomain to serve API from"
+    },
+    "SearchApiURL": {
+      "Type": "String",
+      "Description": "URL for the app."
+    },
+
     "AssetsSubdomain": {
       "Type": "String",
       "Description": "Subdomain to serve assets from"
@@ -217,6 +226,21 @@
       }
     },
 
+    "SearchApiRoute53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "SearchApiSubdomain"}, ".", {"Ref": "RootDomain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+        ],
+        "TTL": "300"
+      }
+    },
+
     "AssetsRoute53RecordSet": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
@@ -275,6 +299,8 @@
             "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
             "-e api_subdomain=", {"Ref": "ApiSubdomain"}, " ",
             "-e api_url=", {"Ref": "ApiURL"}, " ",
+            "-e search_api_subdomain=", {"Ref": "SearchApiSubdomain"}, " ",
+            "-e search_api_url=", {"Ref": "SearchApiURL"}, " ",
             "-e www_subdomain=", {"Ref": "Subdomain"}, " ",
             "-e buyer_frontend_url=", {"Ref": "BuyerFrontendURL"}, " ",
             "-e admin_frontend_url=", {"Ref": "AdminFrontendURL"}, " ",
