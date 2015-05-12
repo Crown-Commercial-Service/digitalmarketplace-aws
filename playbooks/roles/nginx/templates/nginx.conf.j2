@@ -7,8 +7,10 @@ events {
 }
 
 http {
-    # Basic Settings
+    # Set DNS resolver address
+    resolver {{ nameserver_ip }} valid=300s;
 
+    # Basic Settings
     sendfile on;
     tcp_nopush on;
     tcp_nodelay on;
