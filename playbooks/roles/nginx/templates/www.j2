@@ -2,6 +2,10 @@ server {
     listen 80;
     server_name {{ www_subdomain }}.*;
 
+    set $buyer_frontend_url "{{ buyer_frontend_url }}";
+    set $admin_frontend_url "{{ admin_frontend_url }}";
+    set $supplier_frontend_url "{{ supplier_frontend_url }}";
+
     location / {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
@@ -9,7 +13,7 @@ server {
 
         proxy_redirect http:// https://;
 
-        proxy_pass {{ buyer_frontend_url }};
+        proxy_pass $buyer_frontend_url;
     }
 
     location /admin {
@@ -19,7 +23,7 @@ server {
 
         proxy_redirect http:// https://;
 
-        proxy_pass {{ admin_frontend_url }};
+        proxy_pass $admin_frontend_url;
     }
 
     location /suppliers {
@@ -29,6 +33,6 @@ server {
 
         proxy_redirect http:// https://;
 
-        proxy_pass {{ supplier_frontend_url }};
+        proxy_pass $supplier_frontend_url;
     }
 }
