@@ -39,6 +39,17 @@
     }
   },
 
+  "Conditions": {
+    "UseDbSnapshot": {
+      "Fn::Not": [{
+        "Fn::Equals" : [
+          {"Ref": "DBSnapshotIdentifier"},
+          ""
+        ]
+      }]
+    }
+  },
+
   "Resources": {
     "SecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
@@ -50,9 +61,10 @@
 
     "DB": {
       "Type": "AWS::RDS::DBInstance",
+      "DeletionPolicy": "Snapshot",
       "Properties": {
         "Engine": "postgres",
-        "DBName": {"Ref": "DBName"},
+        "DBName": {"Fn::If": ["UseDbSnapshot", {"Ref": "AWS::NoValue"}, {"Ref": "DBName"}]},
         "MasterUsername": {"Ref": "DBUser"},
         "DBInstanceClass": {"Ref": "DBInstanceType"},
         "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
@@ -60,7 +72,7 @@
         "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}],
         "MultiAZ": {"Ref": "MultiAZ"},
         "BackupRetentionPeriod": {"Ref": "BackupRetentionPeriod"},
-        "DBSnapshotIdentifier": {"Ref": "DBSnapshotIdentifier"}
+        "DBSnapshotIdentifier": {"Fn::If": ["UseDbSnapshot", {"Ref": "DBSnapshotIdentifier"}, {"Ref": "AWS::NoValue"}]}
       }
     }
   },
