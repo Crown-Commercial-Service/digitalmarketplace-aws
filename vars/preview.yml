@@ -6,6 +6,7 @@ iam_certificate_id: "ASCAIJITQ6F5D5P4NWJZS"
 rds:
   multi_az: "false"
   backup_retention_period: "1"
+  snapshot_id: "s2015-05-13t0953z"
 
 vpc_id: vpc-a29149c7
 subnets:
