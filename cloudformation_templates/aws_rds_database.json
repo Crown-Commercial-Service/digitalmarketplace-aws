@@ -28,6 +28,14 @@
     "MultiAZ": {
       "Type": "String",
       "Description": "Whether the instance is multi AZ or not"
+    },
+    "BackupRetentionPeriod": {
+      "Type": "String",
+      "Description": "Number of days to keep automatic backups for"
+    },
+    "DBSnapshotIdentifier": {
+      "Type": "String",
+      "Description": "The identifier for the DB snapshot to restore from."
     }
   },
 
@@ -50,7 +58,9 @@
         "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
         "MasterUserPassword": {"Ref": "DBPassword"},
         "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}],
-        "MultiAZ": {"Ref": "MultiAZ"}
+        "MultiAZ": {"Ref": "MultiAZ"},
+        "BackupRetentionPeriod": {"Ref": "BackupRetentionPeriod"},
+        "DBSnapshotIdentifier": {"Ref": "DBSnapshotIdentifier"}
       }
     }
   },
