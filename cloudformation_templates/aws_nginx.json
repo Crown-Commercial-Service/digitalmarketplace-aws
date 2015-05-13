@@ -294,7 +294,7 @@
             "ansible-playbook -c local -i localhost, nginx_playbook.yml ",
             "-t instance-config ",
             "-e aws_region=", {"Ref": "AWS::Region"}, " ",
-            "-e nameserver_ip=$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf)",
+            "-e nameserver_ip=$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf) ",
             "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
             "-e assets_subdomain=", {"Ref": "AssetsSubdomain"}, " ",
             "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
