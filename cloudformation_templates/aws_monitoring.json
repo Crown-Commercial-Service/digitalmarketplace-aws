@@ -20,6 +20,29 @@
         "LogGroupName": {"Ref": "LogGroupName"},
         "RetentionInDays": {"Ref": "RetentionInDays"}
       }
+    },
+
+    "RDSSNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": "RDSEvents",
+        "Subscription": [
+          {
+            "Protocol": "email",
+            "Endpoint": "support@digitalmarketplace.service.gov.uk"
+          }
+        ]
+      }
+    },
+
+    "RDSEventSubscription": {
+      "Type": "AWS::RDS::EventSubscription",
+      "Properties": {
+        "Enabled": true,
+        "EventCategories": ["deletion"],
+        "SnsTopicArn": {"Ref": "RDSSNSTopic"},
+        "SourceType": "db-instance"
+      }
     }
   },
 
