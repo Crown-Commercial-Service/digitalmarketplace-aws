@@ -51,6 +51,8 @@ route53zone:
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_rds_database.json
+  dependencies:
+    - monitoring
   parameters:
     DBName: "{{ database.name }}"
     DBUser: "{{ database.user }}"
