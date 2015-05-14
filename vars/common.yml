@@ -4,9 +4,6 @@ internal_root_domain: dmdev
 
 monitoring_email: support@digitalmarketplace.service.gov.uk
 
-rds:
-  snapshot_id: ""
-
 api:
   instance_type: t2.micro
   min_instance_count: 1
