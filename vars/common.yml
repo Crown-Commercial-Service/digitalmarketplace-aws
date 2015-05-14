@@ -2,6 +2,8 @@
 aws_region: eu-west-1
 internal_root_domain: dmdev
 
+monitoring_email: support@digitalmarketplace.service.gov.uk
+
 rds:
   snapshot_id: ""
 

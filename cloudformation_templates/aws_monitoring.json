@@ -10,6 +10,10 @@
     "RetentionInDays": {
       "Type": "Number",
       "Description": "Number of days logs should be kept before being deleted."
+    },
+    "Email": {
+      "Type": "String",
+      "Description": "The email address that alert emails will go to."
     }
   },
 
@@ -29,7 +33,7 @@
         "Subscription": [
           {
             "Protocol": "email",
-            "Endpoint": "support@digitalmarketplace.service.gov.uk"
+            "Endpoint": {"Ref": "Email"}
           }
         ]
       }
