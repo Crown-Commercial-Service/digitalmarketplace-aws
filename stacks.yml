@@ -57,7 +57,9 @@ database:
     DBPassword: "{{ database.password }}"
     DBInstanceType: "{{ database.instance_type }}"
     DBAllocatedStorage: "{{ database.allocated_storage }}"
-    MultiAZ: "{{ rds_multi_az }}"
+    MultiAZ: "{{ database.multi_az }}"
+    BackupRetentionPeriod: "{{ database.backup_retention_period }}"
+    DBSnapshotIdentifier: "{{ database.snapshot_id }}"
 
 documents_s3:
   name: "documents-s3-{{ stage }}-{{ environment }}"
@@ -77,6 +79,7 @@ monitoring:
   parameters:
     LogGroupName: "{{ stage }}-{{ environment }}"
     RetentionInDays: 3653
+    Email: "{{ monitoring_email }}"
 
 api_app:
   name: "digitalmarketplace-api-app"

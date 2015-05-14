@@ -10,6 +10,10 @@
     "RetentionInDays": {
       "Type": "Number",
       "Description": "Number of days logs should be kept before being deleted."
+    },
+    "Email": {
+      "Type": "String",
+      "Description": "The email address that alert emails will go to."
     }
   },
 
@@ -19,6 +23,29 @@
       "Properties": {
         "LogGroupName": {"Ref": "LogGroupName"},
         "RetentionInDays": {"Ref": "RetentionInDays"}
+      }
+    },
+
+    "RDSSNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": "RDSEvents",
+        "Subscription": [
+          {
+            "Protocol": "email",
+            "Endpoint": {"Ref": "Email"}
+          }
+        ]
+      }
+    },
+
+    "RDSEventSubscription": {
+      "Type": "AWS::RDS::EventSubscription",
+      "Properties": {
+        "Enabled": true,
+        "EventCategories": ["deletion"],
+        "SnsTopicArn": {"Ref": "RDSSNSTopic"},
+        "SourceType": "db-instance"
       }
     }
   },

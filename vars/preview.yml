@@ -2,7 +2,11 @@
 root_domain: "development.digitalmarketplace.service.gov.uk"
 ssl_certificate_id: "arn:aws:iam::381494870249:server-certificate/cloudfront/star-development-digitalmarketplace/star-development-digitalmarketplace"
 iam_certificate_id: "ASCAIJITQ6F5D5P4NWJZS"
-rds_multi_az: "false"
+
+database:
+  multi_az: "false"
+  backup_retention_period: "1"
+  snapshot_id: "s2015-05-13t0953z"
 
 vpc_id: vpc-a29149c7
 subnets:
