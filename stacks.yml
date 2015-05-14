@@ -81,7 +81,7 @@ monitoring:
   parameters:
     LogGroupName: "{{ stage }}-{{ environment }}"
     RetentionInDays: 3653
-    Email: "{{ monitoring_email }}"
+    Email: "{{ monitoring.email }}"
 
 api_app:
   name: "digitalmarketplace-api-app"

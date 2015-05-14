@@ -3,7 +3,8 @@ root_domain: "beta.digitalmarketplace.service.gov.uk"
 ssl_certificate_id: "arn:aws:iam::050019655025:server-certificate/star-beta-2016-05-05"
 iam_certificate_id: "ASCAJGSVATSZD7C6QICNM"
 
-monitoring_email: support@digitalmarketplace.service.gov.uk
+monitoring:
+  email: support@digitalmarketplace.service.gov.uk
 
 database:
   multi_az: "true"

@@ -3,7 +3,8 @@ root_domain: "development.digitalmarketplace.service.gov.uk"
 ssl_certificate_id: "arn:aws:iam::381494870249:server-certificate/cloudfront/star-development-digitalmarketplace/star-development-digitalmarketplace"
 iam_certificate_id: "ASCAIJITQ6F5D5P4NWJZS"
 
-monitoring_email: support@digitalmarketplace.service.gov.uk
+monitoring:
+  email: support@digitalmarketplace.service.gov.uk
 
 database:
   multi_az: "false"
