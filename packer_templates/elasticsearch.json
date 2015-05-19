@@ -8,7 +8,11 @@
     "source_ami": "ami-234ecc54",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
-    "ami_name": "elasticsearch-{{isotime | clean_ami_name}}"
+    "ami_name": "elasticsearch-{{isotime | clean_ami_name}}",
+    "ami_users": [
+      "050019655025",
+      "381494870249"
+    ]
   }],
   "provisioners": [
     {
