@@ -43,4 +43,4 @@ elasticsearch:
 nginx:
   instance_type: t2.micro
   instance_count: 2
-  instance_image: ami-697f081e
+  instance_image: ami-2b99ee5c
