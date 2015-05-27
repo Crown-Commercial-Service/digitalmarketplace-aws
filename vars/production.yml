@@ -4,7 +4,7 @@ ssl_certificate_id: "arn:aws:iam::050019655025:server-certificate/star-beta-2016
 iam_certificate_id: "ASCAJGSVATSZD7C6QICNM"
 
 monitoring:
-  email: support@digitalmarketplace.service.gov.uk
+  email: "support+production-production@digitalmarketplace.service.gov.uk"
 
 database:
   multi_az: "true"
