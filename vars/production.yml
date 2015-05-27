@@ -19,20 +19,20 @@ subnets:
 
 api:
   min_instance_count: 3
-  max_instance_count: 3
+  max_instance_count: 4
 
 search_api:
   min_instance_count: 3
-  max_instance_count: 3
+  max_instance_count: 4
 
 admin_frontend:
   min_instance_count: 3
-  max_instance_count: 3
+  max_instance_count: 4
 
 buyer_frontend:
   min_instance_count: 3
-  max_instance_count: 3
+  max_instance_count: 4
 
 supplier_frontend:
   min_instance_count: 3
-  max_instance_count: 3
+  max_instance_count: 4
