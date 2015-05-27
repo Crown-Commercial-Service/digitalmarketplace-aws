@@ -4,7 +4,7 @@ ssl_certificate_id: "arn:aws:iam::381494870249:server-certificate/cloudfront/sta
 iam_certificate_id: "ASCAIJITQ6F5D5P4NWJZS"
 
 monitoring:
-  email: support@digitalmarketplace.service.gov.uk
+  email: "support+development-preview@digitalmarketplace.service.gov.uk"
 
 database:
   multi_az: "false"
