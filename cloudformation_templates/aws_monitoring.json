@@ -26,10 +26,10 @@
       }
     },
 
-    "RDSSNSTopic": {
+    "MonitoringSNSTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
-        "DisplayName": "RDSEvents",
+        "DisplayName": "MonitoringEvents",
         "Subscription": [
           {
             "Protocol": "email",
@@ -44,7 +44,7 @@
       "Properties": {
         "Enabled": true,
         "EventCategories": ["deletion"],
-        "SnsTopicArn": {"Ref": "RDSSNSTopic"},
+        "SnsTopicArn": {"Ref": "MonitoringSNSTopic"},
         "SourceType": "db-instance"
       }
     }
