@@ -16,3 +16,23 @@ subnets:
   - subnet-9a9713ed
   - subnet-63b1683a
   - subnet-ad0894c8
+
+api:
+  min_instance_count: 3
+  max_instance_count: 4
+
+search_api:
+  min_instance_count: 3
+  max_instance_count: 4
+
+admin_frontend:
+  min_instance_count: 3
+  max_instance_count: 4
+
+buyer_frontend:
+  min_instance_count: 3
+  max_instance_count: 4
+
+supplier_frontend:
+  min_instance_count: 3
+  max_instance_count: 4
