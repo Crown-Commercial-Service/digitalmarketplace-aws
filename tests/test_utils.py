@@ -2,6 +2,7 @@ import mock
 import pytest
 
 from dmaws.utils import run_cmd, CalledProcessError
+from dmaws.utils import safe_path_join
 from dmaws.utils import dict_from_path, merge_dicts
 from dmaws.utils import DEFAULT_TEMPLATES_PATH
 from dmaws.utils import template, template_string, LazyTemplateMapping
@@ -71,6 +72,29 @@ class TestRunCmd(object):
             mock.call(mock.ANY, "ls"),
             mock.call(mock.ANY, "ls", 7)
         ])
+
+
+class TestSafePathJoin(object):
+    def test_simple_subpath(self):
+        assert safe_path_join('', 'app/static') == 'app/static'
+
+    def test_relative_basedir_subpath(self):
+        assert safe_path_join('./', 'app/static') == './app/static'
+
+    def test_relative_basedir_relative_subpath(self):
+        assert safe_path_join('./', './app/static') == '././app/static'
+
+    def test_relative_basedir_parent_subpath(self):
+        with pytest.raises(ValueError):
+            safe_path_join('./', '../../app/static')
+
+    def test_relative_basedir_root_subpath(self):
+        with pytest.raises(ValueError):
+            safe_path_join('./', '/app/static')
+
+    def test_relative_basedir_root_subdir_subpath(self):
+        with pytest.raises(ValueError):
+            safe_path_join('./', '/../../app/static')
 
 
 class TestDictFromPath(object):

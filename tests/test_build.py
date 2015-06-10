@@ -9,7 +9,9 @@ from dmaws.build import push_tag
 from dmaws.build import get_other_tags
 from dmaws.build import get_release_name_for_tag, get_release_name_for_repo
 from dmaws.build import create_archive, create_git_archive
+from dmaws.build import run_project_build_script
 from dmaws.build import add_directory_to_archive
+from dmaws.build import add_build_artefacts_to_archive
 
 
 class TestRunGitCmd(object):
@@ -133,7 +135,16 @@ class TestArchiveCreation(object):
     def test_add_directory_to_archive(self):
         add_directory_to_archive('does-not', 'exist', '/dev/null')
 
-    def test_create_archive(self):
+    def test_run_project_build_script(self, run_cmd):
+        run_cmd.return_value = 'path\npath2\npath3'
+
+        assert run_project_build_script('./') == ['path', 'path2', 'path3']
+
+    def test_add_build_artefacts_to_archive(self):
+        add_build_artefacts_to_archive('./', mock.Mock(), ['path1', 'path2'])
+
+    def test_create_archive(self, run_cmd):
+        run_cmd.return_value = 'path1\npath2'
         assert create_archive('does-not-exist')[2] == '/tmp/tempfile'
 
     def test_create_archive_patched(self, git_info):
