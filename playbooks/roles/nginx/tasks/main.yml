@@ -1,4 +1,20 @@
 ---
+- name: Add nginx apt key
+  apt_key:
+    url: http://nginx.org/keys/nginx_signing.key
+    state: present
+  tags: image-setup
+
+- name: Add Nginx repository
+  apt_repository:
+    repo: 'deb http://nginx.org/packages/ubuntu/ trusty nginx'
+    state: present
+  tags: image-setup
+
+- name: Update apt cache if repository just added.
+  apt: update_cache=yes
+  tags: image-setup
+
 - name: Install Nginx
   apt: name=nginx update_cache=yes state=installed
   tags: image-setup
