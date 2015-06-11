@@ -144,7 +144,12 @@ def create_git_archive(cwd):
 
 
 def run_project_build_script(cwd):
-    build_output = utils.run_cmd(['./scripts/build.sh'], cwd=cwd)
+    build_output = utils.run_cmd(
+        ['./scripts/build.sh'],
+        cwd=cwd,
+        stdout=subprocess.PIPE
+    )
+
     return build_output.split('\n')
 
 
