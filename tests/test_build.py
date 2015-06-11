@@ -136,7 +136,7 @@ class TestArchiveCreation(object):
         add_directory_to_archive('does-not', 'exist', '/dev/null')
 
     def test_run_project_build_script(self, run_cmd):
-        run_cmd.return_value = 'path\npath2\npath3'
+        run_cmd.return_value = 'path\n\n  path2 \n  \npath3'
 
         assert run_project_build_script('./') == ['path', 'path2', 'path3']
 

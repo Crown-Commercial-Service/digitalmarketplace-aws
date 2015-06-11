@@ -150,7 +150,7 @@ def run_project_build_script(cwd):
         stdout=subprocess.PIPE
     )
 
-    return build_output.split('\n')
+    return [line.strip() for line in build_output.split('\n') if line.strip()]
 
 
 def add_build_artefacts_to_archive(cwd, archive, build_artefacts):
