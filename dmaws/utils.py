@@ -12,14 +12,36 @@ from jinja2.runtime import StrictUndefined
 DEFAULT_TEMPLATES_PATH = 'cloudformation_templates/'
 
 
-def run_cmd(args, env=None, cwd=None, stdout=None,
+def run_cmd(args, env=None, cwd=None, stdout=None, stderr=None,
             logger=None, ignore_errors=False):
+    """Run an external process command.
+
+    :param args: a list of command arguments, including the command name
+    :param env: a dictionary of environment variables to add to the current
+                os.environ
+    :param cwd: a directory path to use as working directory when running
+                the command
+    :param stdout: sets the destination for command STDOUT. Set to ``None``
+                   to print the STDOUT or to ``subporcess.PIPE`` to capture
+                   STDOUT for ``run_cmd`` return value
+    :param stderr: sets the destination for command STDERR. Set to ``None``
+                   to print the STDERR or to ``subprocess.STDOUT`` to
+                   capture STDERR for return value when STDOUT is being
+                   captured
+    :param ignore_errors: if set to ``True`` will raise an exception if the
+                          command process exits with non-zero status code
+
+    :return: string containing captured stdout and stderr if stdout and stderr
+             parameters where set. Otherwise returns ``None`` by default
+
+    """
     cmd_env = os.environ.copy()
     cmd_env.update(env or {})
     if logger:
         logger("Running %s", args[0])
     cmd = subprocess.Popen(args, env=cmd_env, cwd=cwd,
-                           stdout=stdout, stderr=subprocess.STDOUT)
+                           stdout=stdout,
+                           stderr=stderr)
     streamdata = cmd.communicate()[0]
     if logger:
         logger("%s completed with return code %s", args[0], cmd.returncode)
