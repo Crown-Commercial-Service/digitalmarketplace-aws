@@ -122,8 +122,9 @@ def get_release_name_for_repo(cwd):
 
 
 def add_directory_to_archive(cwd, path, archive_path):
+    full_path = utils.safe_path_join(cwd, path)
     with zipfile.ZipFile(archive_path, 'a') as archive:
-        for root, dirs, files in os.walk(os.path.join(cwd, path)):
+        for root, dirs, files in os.walk(full_path):
             for f in dirs + files:
                 file_path = os.path.join(root, f)
                 archive.write(os.path.join(root, f),
@@ -143,12 +144,13 @@ def create_git_archive(cwd):
 
 
 def run_project_build_script(cwd):
-    utils.run_cmd(['./scripts/build.sh'], cwd=cwd)
+    build_output = utils.run_cmd(['./scripts/build.sh'], cwd=cwd)
+    return build_output.split('\n')
 
 
-def add_build_artefacts_to_archive(cwd, archive):
-    add_directory_to_archive(cwd, 'app/static', archive)
-    add_directory_to_archive(cwd, 'bower_components', archive)
+def add_build_artefacts_to_archive(cwd, archive, build_artefacts):
+    for artefact in build_artefacts:
+        add_directory_to_archive(cwd, artefact, archive)
 
 
 def add_version_label_to_archive(archive_path, version_label):
@@ -159,8 +161,8 @@ def add_version_label_to_archive(archive_path, version_label):
 def create_archive(cwd):
     ref, sha, archive_path = create_git_archive(cwd)
     try:
-        run_project_build_script(cwd)
-        add_build_artefacts_to_archive(cwd, archive_path)
+        build_artefacts = run_project_build_script(cwd)
+        add_build_artefacts_to_archive(cwd, archive_path, build_artefacts)
     except OSError:
         pass
 

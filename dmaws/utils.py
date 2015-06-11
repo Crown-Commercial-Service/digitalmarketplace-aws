@@ -33,6 +33,17 @@ def run_cmd(args, env=None, cwd=None, stdout=None,
     return streamdata
 
 
+def safe_path_join(basedir, path):
+    path = os.path.join(basedir, path)
+    abs_path = os.path.abspath(path)
+    abs_basedir = os.path.abspath(basedir)
+
+    if not abs_path.startswith(abs_basedir):
+        raise ValueError('Path outside base directory %s' % abs_basedir)
+
+    return path
+
+
 def read_yaml_file(path):
     with open(path) as f:
         return yaml.load(f) or {}
