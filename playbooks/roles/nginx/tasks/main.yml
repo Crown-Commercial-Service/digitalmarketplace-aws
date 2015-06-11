@@ -19,6 +19,18 @@
   apt: name=nginx update_cache=yes state=installed
   tags: image-setup
 
+- name: Ensure that sites-available directory exists
+  file:
+    path: /src/nginx/sites-available
+    state: directory
+  tags: image-setup
+
+- name: Ensure that sites-enabled directory exists
+  file:
+    path: /src/nginx/sites-enabled
+    state: directory
+  tags: image-setup
+
 - name: Ensure that the default site is disabled
   command: rm /etc/nginx/sites-enabled/default
            removes=/etc/nginx/sites-enabled/default
