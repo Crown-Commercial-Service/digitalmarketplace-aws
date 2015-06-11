@@ -21,13 +21,13 @@
 
 - name: Ensure that sites-available directory exists
   file:
-    path: /src/nginx/sites-available
+    path: /etc/nginx/sites-available
     state: directory
   tags: image-setup
 
 - name: Ensure that sites-enabled directory exists
   file:
-    path: /src/nginx/sites-enabled
+    path: /etc/nginx/sites-enabled
     state: directory
   tags: image-setup
 
