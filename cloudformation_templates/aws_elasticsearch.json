@@ -57,7 +57,7 @@
       }
     },
 
-    "ClusterDiscoveryIngress": {
+    "ClusterDiscoverySecurityGroupIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupName": {"Ref": "InstanceSecurityGroup"},
