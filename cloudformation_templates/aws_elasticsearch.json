@@ -62,8 +62,8 @@
       "Properties": {
         "GroupName": {"Ref": "InstanceSecurityGroup"},
         "IpProtocol": "-1",
-        "FromPort": "0",
-        "ToPort": "65535",
+        "FromPort": "9300",
+        "ToPort": "9300",
         "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
       }
     },
