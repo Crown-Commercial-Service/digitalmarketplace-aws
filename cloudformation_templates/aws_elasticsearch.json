@@ -61,7 +61,7 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupName": {"Ref": "InstanceSecurityGroup"},
-        "IpProtocol": "-1",
+        "IpProtocol": "tcp",
         "FromPort": "9300",
         "ToPort": "9300",
         "SourceSecurityGroupName": {"Ref": "InstanceSecurityGroup"}
