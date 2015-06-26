@@ -69,6 +69,12 @@ documents_s3:
   parameters:
     BucketName: "digitalmarketplace-documents-{{ stage }}-{{ environment }}"
 
+g7_draft_documents_s3:
+  name: "g7-draft-documents-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-g7-draft-documents-{{ stage }}-{{ environment }}"
+
 logs_s3:
   name: "logs-s3-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_s3.json
@@ -315,6 +321,7 @@ supplier_frontend:
   template: cloudformation_templates/aws_digitalmarketplace_supplier_frontend.json
   dependencies:
     - documents_s3
+    - g7_draft_documents_s3
     - api
     - supplier_frontend_app
     - route53zone
@@ -327,7 +334,7 @@ supplier_frontend:
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
-    EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
+    EnvVarDmG7DraftDocumentsBucket: "{{ stacks.g7_draft_documents_s3.outputs.Name }}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
