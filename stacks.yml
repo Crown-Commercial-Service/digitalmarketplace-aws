@@ -335,7 +335,6 @@ supplier_frontend:
     EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
     EnvVarDmG7DraftDocumentsBucket: "{{ stacks.g7_draft_documents_s3.outputs.Name }}"
-    EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
