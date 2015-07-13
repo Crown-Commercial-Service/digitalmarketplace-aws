@@ -177,9 +177,18 @@
         "LoadBalancerName": {"Ref": "LoadBalancerName"},
         "AvailabilityZones": {"Fn::GetAZs": ""},
         "CrossZone": "true",
+        "Policies": [{
+          "PolicyName": "LoadBalancerSSLPolicy",
+          "PolicyType": "SSLNegotiationPolicyType",
+          "Attributes": [{
+            "Name" : "Reference-Security-Policy",
+            "Value" : "ELBSecurityPolicy-2015-05"
+          }]
+        }],
         "Listeners": [{
           "LoadBalancerPort": "443",
           "InstancePort": "80",
+          "PolicyNames": ["LoadBalancerSSLPolicy"],
           "SSLCertificateId": {"Ref": "SSLCertificateId"},
           "Protocol": "HTTPS"
         }],
