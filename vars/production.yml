@@ -1,4 +1,3 @@
----
 root_domain: "beta.digitalmarketplace.service.gov.uk"
 ssl_certificate_id: "arn:aws:iam::050019655025:server-certificate/star-beta-2016-05-05"
 iam_certificate_id: "ASCAJGSVATSZD7C6QICNM"
@@ -18,21 +17,26 @@ subnets:
   - subnet-ad0894c8
 
 api:
-  min_instance_count: 3
+  instance_type: t2.medium
+  min_instance_count: 4
   max_instance_count: 5
 
 search_api:
-  min_instance_count: 3
+  instance_type: t2.medium
+  min_instance_count: 4
   max_instance_count: 5
 
 admin_frontend:
-  min_instance_count: 3
+  instance_type: t2.medium
+  min_instance_count: 4
   max_instance_count: 5
 
 buyer_frontend:
-  min_instance_count: 3
+  instance_type: t2.medium
+  min_instance_count: 4
   max_instance_count: 5
 
 supplier_frontend:
-  min_instance_count: 3
+  instance_type: t2.medium
+  min_instance_count: 4
   max_instance_count: 5
