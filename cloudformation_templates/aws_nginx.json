@@ -196,7 +196,7 @@
           {"Fn::GetAtt": ["LoadBalancerSecurityGroup", "GroupId"]}
         ],
         "HealthCheck": {
-          "Target": "HTTP:80/",
+          "Target": "HTTP:80/_status",
           "HealthyThreshold": "3",
           "UnhealthyThreshold": "5",
           "Interval": "30",
