@@ -1,14 +1,21 @@
-user www-data;
+user nginx;
 worker_processes 4;
-pid /run/nginx.pid;
+pid /var/run/nginx.pid;
 
 events {
-    worker_connections 768;
+    worker_connections 1024;
 }
 
 http {
     # Set DNS resolver address
     resolver {{ nameserver_ip }} valid=300s;
+
+    # Replace ELB IP with the real user IP
+    real_ip_header X-Forwarded-For;
+
+    # Only trust X-Forwarded-For for requests
+    # coming from the default VPC (ie ELB)
+    set_real_ip_from 172.31.0.0/16;
 
     # Basic Settings
     sendfile on;
@@ -26,7 +33,7 @@ http {
     # Logging Settings
 
     access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
+    error_log /var/log/nginx/error.log warn;
 
     # Gzip Settings
 

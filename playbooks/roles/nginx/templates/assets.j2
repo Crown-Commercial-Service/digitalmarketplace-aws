@@ -4,6 +4,9 @@ server {
     error_page 400 401 402 403 404 = /404;
 
     set $documents_s3_url "{{ documents_s3_url }}";
+    set $buyer_frontend_url "{{ buyer_frontend_url }}";
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
 
     location / {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -13,6 +16,6 @@ server {
     }
 
     location /404 {
-        proxy_pass http://localhost;
+        proxy_pass $buyer_frontend_url;
     }
 }

@@ -175,8 +175,13 @@
           },
 {% endfor %}
           {
+            "Namespace": "aws:elasticbeanstalk:application",
+            "OptionName": "Application Healthcheck URL",
+            "Value": "{% block url_prefix %}/{% endblock %}_status?ignore-dependencies"
+          },
+          {
             "Namespace": "aws:elasticbeanstalk:container:python:staticfiles",
-            "OptionName": "{% block static_url %}/static/{% endblock %}",
+            "OptionName": "{{ self.url_prefix() }}static/",
             "Value": "app/static/"
           },
           {
@@ -213,6 +218,11 @@
             "Namespace": "aws:elb:loadbalancer",
             "OptionName": "LoadBalancerHTTPPort",
             "Value": "80"
+          },
+          {
+            "Namespace": "aws:elb:policies",
+            "OptionName": "ConnectionDrainingEnabled",
+            "Value": true
           },
           {
             "Namespace": "aws:autoscaling:updatepolicy:rollingupdate",

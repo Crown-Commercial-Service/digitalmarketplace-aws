@@ -1,8 +1,8 @@
 server {
     listen 80 default_server;
 
-    location / {
+    location /_status {
         access_log off;
-        return 200;
+        return 200 'nginx healthcheck status ok\n';
     }
 }

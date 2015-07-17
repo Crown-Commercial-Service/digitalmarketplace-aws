@@ -6,6 +6,8 @@ server {
     set $admin_frontend_url "{{ admin_frontend_url }}";
     set $supplier_frontend_url "{{ supplier_frontend_url }}";
 
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
+
     location / {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
@@ -17,6 +19,11 @@ server {
     }
 
     location /admin {
+        {% for ip in admin_user_ips.split(",") %}
+        allow {{ user_ip }};
+        {% endfor %}
+        deny all;
+
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header Host $http_host;
