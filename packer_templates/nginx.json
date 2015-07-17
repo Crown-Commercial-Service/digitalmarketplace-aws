@@ -5,7 +5,7 @@
   "builders": [{
     "type": "amazon-ebs",
     "region": "{{ user `aws_region` }}",
-    "source_ami": "ami-234ecc54",
+    "source_ami": "ami-664b0a11",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_name": "nginx-{{isotime | clean_ami_name}}",
