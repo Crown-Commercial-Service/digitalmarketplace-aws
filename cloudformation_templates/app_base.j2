@@ -53,6 +53,10 @@
     "LogGroupName": {
       "Type": "String",
       "Description": "Name of CloudWatch log group"
+    },
+    "MonitoringSNSTopic": {
+      "Type": "String",
+      "Description": "SNS topic for monitoring events"
     }{%- if self.parameters() %},
     {% endif %}
 
@@ -248,6 +252,11 @@
             "Namespace": "aws:elasticbeanstalk:customoption",
             "OptionName": "ApplicationName",
             "Value": {"Ref": "ApplicationName"}
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:sns:topics",
+            "OptionName": "Notification Topic ARN",
+            "Value": {"Ref": "MonitoringSNSTopic"}
           }
         ]
       }

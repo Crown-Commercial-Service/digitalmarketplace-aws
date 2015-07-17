@@ -130,6 +130,7 @@ api:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 database_dev_access:
   name: "digitalmarketplace-api-{{ stage }}-{{ environment }}-dev-access"
@@ -219,6 +220,7 @@ search_api:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 admin_frontend_app:
   name: "digitalmarketplace-admin-frontend-app"
@@ -263,6 +265,7 @@ admin_frontend:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 buyer_frontend_app:
   name: "digitalmarketplace-buyer-frontend-app"
@@ -308,6 +311,7 @@ buyer_frontend:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 supplier_frontend_app:
   name: "digitalmarketplace-supplier-frontend-app"
@@ -352,6 +356,7 @@ supplier_frontend:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 nginx:
   name: "nginx-{{ stage }}-{{ environment }}"

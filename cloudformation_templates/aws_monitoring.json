@@ -54,6 +54,10 @@
     "LogGroupName": {
       "Description": "Log group",
       "Value": {"Ref": "LogGroup"}
+    },
+    "MonitoringSNSTopic": {
+      "Description": "SNS topic for monitoring events",
+      "Value": {"Ref": "MonitoringSNSTopic"}
     }
   }
 }
