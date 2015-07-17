@@ -1,9 +1,9 @@
-user www-data;
+user nginx;
 worker_processes 4;
-pid /run/nginx.pid;
+pid /var/run/nginx.pid;
 
 events {
-    worker_connections 768;
+    worker_connections 1024;
 }
 
 http {
@@ -26,7 +26,7 @@ http {
     # Logging Settings
 
     access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
+    error_log /var/log/nginx/error.log warn;
 
     # Gzip Settings
 
