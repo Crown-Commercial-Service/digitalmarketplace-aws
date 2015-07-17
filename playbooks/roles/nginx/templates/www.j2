@@ -19,8 +19,8 @@ server {
     }
 
     location /admin {
-        {% for ip in admin_user_ips.split(",") %}
-        allow {{ user_ip }};
+        {% for admin_ip in admin_user_ips.split(",") %}
+        allow {{ admin_ip }};
         {% endfor %}
         deny all;
 
