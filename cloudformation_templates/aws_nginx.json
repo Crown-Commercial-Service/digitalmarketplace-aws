@@ -8,6 +8,11 @@
       "Description": "Group Tag"
     },
 
+    "AdminUserIPs": {
+      "Type": "String",
+      "Description": "Comma-separated list of IPs for nginx /admin allow rule"
+    },
+
     "RootDomain": {
       "Type": "String",
       "Description": "Root domain for the public Route 53 records"
@@ -303,6 +308,7 @@
             "ansible-playbook -c local -i localhost, nginx_playbook.yml ",
             "-t instance-config ",
             "-e aws_region=", {"Ref": "AWS::Region"}, " ",
+            "-e admin_user_ips=", {"Ref": "AdminUserIPs"}, " ",
             "-e nameserver_ip=$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf) ",
             "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
             "-e assets_subdomain=", {"Ref": "AssetsSubdomain"}, " ",
