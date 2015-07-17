@@ -9,7 +9,7 @@ monitoring:
 database:
   multi_az: "true"
   backup_retention_period: "30"
-  snapshot_id: "production-2015-05-13t1508"
+  snapshot_id: "production-2015-07-17t1204"
 
 vpc_id: vpc-70319115
 subnets:
