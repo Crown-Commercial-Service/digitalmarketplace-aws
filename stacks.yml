@@ -48,6 +48,14 @@ route53zone:
     VPCId: "{{ vpc_id }}"
     InternalRootDomain: "{{ internal_root_domain }}"
 
+route53rootrecords:
+  name: "route53-root-records"
+  template: cloudformation_templates/aws_route53_root_records.json
+  dependencies:
+    - route53zone
+  parameters:
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_rds_database.json
