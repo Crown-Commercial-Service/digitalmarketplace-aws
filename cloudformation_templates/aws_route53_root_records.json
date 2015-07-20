@@ -32,7 +32,9 @@
         "HostedZoneName": {"Ref": "HostedZoneName"},
         "Name": {"Ref": "HostedZoneName"},
         "Type": "SPF",
-        "ResourceRecords": "v=spf1 include:_spf.google.com include:spf.mandrillapp.com ~all",
+        "ResourceRecords": [
+          "v=spf1 include:_spf.google.com include:spf.mandrillapp.com ~all"
+        ],
         "TTL": "3600"
       }
     },
@@ -43,7 +45,9 @@
         "HostedZoneName": {"Ref": "HostedZoneName"},
         "Name": {"Ref": "HostedZoneName"},
         "Type": "TXT",
-        "ResourceRecords": "google-site-verification=j6RvC0_ipOIvcyTR0WBAwa8C5SPblqFaJOS8QByISGI",
+        "ResourceRecords": [
+          "google-site-verification=j6RvC0_ipOIvcyTR0WBAwa8C5SPblqFaJOS8QByISGI"
+        ],
         "TTL": "3600"
       }
     },
