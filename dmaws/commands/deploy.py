@@ -11,7 +11,6 @@ from ..build import get_application_name
 @cli_command('deploy', max_apps=0)
 def deploy_cmd(ctx, repository_path):
     """Deploy a new application version to the Elastic Beanstalk environment.
-
     """
 
     app = get_application_name(repository_path)
