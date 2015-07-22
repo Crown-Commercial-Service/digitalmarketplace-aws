@@ -26,6 +26,14 @@
       }
     },
 
+    "JSONLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {"Fn::Join": ["", [{"Ref": "LogGroupName"}, "-json"]]},
+        "RetentionInDays": 30
+      }
+    },
+
     "MonitoringSNSTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
