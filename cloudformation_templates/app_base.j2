@@ -54,6 +54,10 @@
       "Type": "String",
       "Description": "Name of CloudWatch log group"
     },
+    "JSONLogGroupName": {
+      "Type": "String",
+      "Description": "Name of CloudWatch JSON log group"
+    },
     "MonitoringSNSTopic": {
       "Type": "String",
       "Description": "SNS topic for monitoring events"
@@ -247,6 +251,11 @@
             "Namespace": "aws:elasticbeanstalk:customoption",
             "OptionName": "LogGroupName",
             "Value": {"Ref": "LogGroupName"}
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:customoption",
+            "OptionName": "JSONLogGroupName",
+            "Value": {"Ref": "JSONLogGroupName"}
           },
           {
             "Namespace": "aws:elasticbeanstalk:customoption",
