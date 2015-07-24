@@ -63,6 +63,10 @@
       "Description": "Log group",
       "Value": {"Ref": "LogGroup"}
     },
+    "JSONLogGroupName": {
+      "Description": "JSON log group",
+      "Value": {"Ref": "JSONLogGroup"}
+    },
     "MonitoringSNSTopic": {
       "Description": "SNS topic for monitoring events",
       "Value": {"Ref": "MonitoringSNSTopic"}

@@ -138,6 +138,7 @@ api:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
     MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 database_dev_access:
@@ -228,6 +229,7 @@ search_api:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
     MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 admin_frontend_app:
@@ -273,6 +275,7 @@ admin_frontend:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
     MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 buyer_frontend_app:
@@ -319,6 +322,7 @@ buyer_frontend:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
     MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 supplier_frontend_app:
@@ -364,6 +368,7 @@ supplier_frontend:
     HostedZoneName: "{{ stacks.route53zone.outputs.InternalHostedZoneName }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
     MonitoringSNSTopic: "{{ stacks.monitoring.outputs.MonitoringSNSTopic }}"
 
 nginx:
