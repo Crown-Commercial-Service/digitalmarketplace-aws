@@ -27,6 +27,9 @@ http {
     # Raise bucket size for long domain names
     server_names_hash_bucket_size 128;
 
+    # Set max request size (up to 4 files x 10Mb size limit)
+    client_max_body_size 40m;
+
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
 
