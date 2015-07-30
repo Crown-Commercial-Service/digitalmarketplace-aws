@@ -293,6 +293,12 @@
         "MinSize" : {"Ref": "InstanceCount"},
         "MaxSize" : {"Ref": "InstanceCount"},
         "DesiredCapacity" : {"Ref": "InstanceCount"}
+      },
+      "UpdatePolicy" : {
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "1",
+          "MaxBatchSize": "1"
+        }
       }
     },
 
