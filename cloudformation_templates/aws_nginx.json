@@ -288,6 +288,8 @@
         "AvailabilityZones" : {"Fn::GetAZs": ""},
         "LaunchConfigurationName" : {"Ref": "LaunchConfiguration"},
         "LoadBalancerNames": [{"Ref": "LoadBalancer"}],
+        "HealthCheckType": "ELB",
+        "HealthCheckGracePeriod": 300,
         "MinSize" : {"Ref": "InstanceCount"},
         "MaxSize" : {"Ref": "InstanceCount"},
         "DesiredCapacity" : {"Ref": "InstanceCount"}
