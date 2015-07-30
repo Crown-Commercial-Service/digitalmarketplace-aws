@@ -200,6 +200,10 @@
         "SecurityGroups": [
           {"Fn::GetAtt": ["LoadBalancerSecurityGroup", "GroupId"]}
         ],
+        "ConnectionDrainingPolicy": {
+          "Enabled": true,
+          "Timeout": 300
+        },
         "HealthCheck": {
           "Target": "HTTP:80/_status",
           "HealthyThreshold": "3",
