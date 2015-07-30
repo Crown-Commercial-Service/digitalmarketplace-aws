@@ -44,6 +44,14 @@
   notify: reload nginx
   tags: instance-config
 
+- name: Ensure {{ static_files_root }} dir exists
+  file: path={{ static_files_root }} state=directory
+  tags: image-setup
+
+- name: Copy robots.txt file
+  copy: src=robots.txt dest={{ static_files_root }}/robots.txt owner=root group=root mode=0644
+  tags: image-setup
+
 - name: Create the Nginx configuration files
   template: src={{ item }}.j2
             dest=/etc/nginx/sites-available/{{ item }}
