@@ -18,4 +18,8 @@ server {
     location /404 {
         proxy_pass $buyer_frontend_url;
     }
+
+    location /static {
+        proxy_pass $buyer_frontend_url;
+    }
 }
