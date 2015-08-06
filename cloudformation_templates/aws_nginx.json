@@ -8,9 +8,14 @@
       "Description": "Group Tag"
     },
 
+    "UserIPs": {
+      "Type": "String",
+      "Description": "Comma-separated list of CIDRs for ELB ingress rule"
+    },
+
     "AdminUserIPs": {
       "Type": "String",
-      "Description": "Comma-separated list of IPs for nginx /admin allow rule"
+      "Description": "Comma-separated list of CIDRs/IPs for nginx /admin allow rule"
     },
 
     "RootDomain": {
@@ -106,18 +111,13 @@
     "LoadBalancerSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "ELB security group"
-      }
-    },
+        "GroupDescription": "ELB security group",
+        "SecurityGroupIngress": [
+{% for user_ip in parameters.UserIPs.split(",") %}
+          {"IpProtocol": "tcp", "CidrIp": "{{ user_ip }}", "FromPort": 443, "ToPort": 443}{% if not loop.last %},{% endif %}
 
-    "LoadBalancerIngress": {
-      "Type": "AWS::EC2::SecurityGroupIngress",
-      "Properties": {
-        "GroupName": {"Ref": "LoadBalancerSecurityGroup"},
-        "IpProtocol": "tcp",
-        "FromPort": 443,
-        "ToPort": 443,
-        "CidrIp": "0.0.0.0/0"
+{% endfor %}
+        ]
       }
     },
 

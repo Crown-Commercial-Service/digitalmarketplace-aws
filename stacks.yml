@@ -383,6 +383,7 @@ nginx:
     - monitoring
   parameters:
     KeyName: "{{ key_name }}"
+    UserIPs: "{{ user_ips | join(',') }}"
     AdminUserIPs: "{{ admin_user_ips | join(',') }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
