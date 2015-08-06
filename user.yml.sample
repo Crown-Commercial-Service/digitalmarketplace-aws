@@ -1,7 +1,9 @@
 ---
 key_name: ***
 
-dev_user_ip: ***
+dev_user_ips:
+  - ***
+
 admin_user_ips:
   - ***
 

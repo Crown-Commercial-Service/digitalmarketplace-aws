@@ -147,7 +147,7 @@ database_dev_access:
   dependencies:
     - database
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: "{{ database.port }}"
     ToPort: "{{ database.port }}"
     SecurityGroup: "{{ stacks.database.outputs.SecurityGroup }}"
@@ -174,7 +174,7 @@ elasticsearch_dev_access:
   dependencies:
     - elasticsearch
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: "{{ elasticsearch.port }}"
     ToPort: "{{ elasticsearch.port }}"
     SecurityGroup: "{{ stacks.elasticsearch.outputs.InstanceSecurityGroup }}"
@@ -185,7 +185,7 @@ elasticsearch_ssh_access:
   dependencies:
     - elasticsearch
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.elasticsearch.outputs.InstanceSecurityGroup }}"
@@ -414,7 +414,7 @@ nginx_ssh_access:
   dependencies:
     - nginx
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.nginx.outputs.InstanceSecurityGroup }}"
@@ -425,7 +425,7 @@ api_ssh_access:
   dependencies:
     - api
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.api.outputs.InstanceSecurityGroup }}"
@@ -436,7 +436,7 @@ search_api_ssh_access:
   dependencies:
     - search_api
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.search_api.outputs.InstanceSecurityGroup }}"
@@ -447,7 +447,7 @@ admin_frontend_ssh_access:
   dependencies:
     - admin_frontend
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.admin_frontend.outputs.InstanceSecurityGroup }}"
@@ -458,7 +458,7 @@ buyer_frontend_ssh_access:
   dependencies:
     - buyer_frontend
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.buyer_frontend.outputs.InstanceSecurityGroup }}"
@@ -469,7 +469,7 @@ supplier_frontend_ssh_access:
   dependencies:
     - supplier_frontend
   parameters:
-    CidrIp: "{{ dev_user_ip }}"
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
     SecurityGroup: "{{ stacks.supplier_frontend.outputs.InstanceSecurityGroup }}"

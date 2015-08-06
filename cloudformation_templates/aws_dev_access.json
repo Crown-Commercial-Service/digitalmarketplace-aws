@@ -7,9 +7,9 @@
       "Type": "String",
       "Description": "Target security group name"
     },
-    "CidrIp": {
+    "CidrIPs": {
       "Type": "String",
-      "Description": "CIDR IP to use for security group rules"
+      "Description": "List of CIDR IPs to use for security group rules"
     },
     "FromPort": {
       "Type": "Number",
@@ -22,15 +22,18 @@
   },
 
   "Resources": {
-    "DeveloperIngress": {
+{% for dev_ip in parameters.CidrIPs.split(',') %}
+    "DeveloperIngress{{ loop.index }}": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupName": {"Ref": "SecurityGroup"},
         "IpProtocol": "tcp",
         "FromPort": {"Ref": "FromPort"},
         "ToPort": {"Ref": "ToPort"},
-        "CidrIp": {"Ref": "CidrIp"}
+        "CidrIp": "{{ dev_ip }}"
       }
-    }
+    }{% if not loop.last %},{% endif %}
+
+{% endfor %}
   }
 }
