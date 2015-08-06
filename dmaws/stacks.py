@@ -66,6 +66,7 @@ class BuiltStack(Stack):
             return s2.upper().replace('ENV_VAR_', '')
 
         return template(template_body, {
+            "parameters": self.parameters,
             "environment_variables": environment_variables,
             "param_to_env": param_to_env,
         })

@@ -1,3 +1,4 @@
+import os
 import json
 
 from dmaws.stacks import Stack
@@ -12,8 +13,8 @@ def is_in(a, b):
     assert a in b
 
 
-def valid_stack_json(stack):
-    text = stack.build('stage', 'env', {}).template_body
+def valid_stack_json(ctx, stack):
+    text = stack.build('stage', 'env', ctx.variables).template_body
     template = json.loads(text)
 
     assert 'Parameters' in template
@@ -21,8 +22,19 @@ def valid_stack_json(stack):
     assert 'Resources' in template
 
 
+def _load_default_vars(ctx):
+    default_vars_files = [
+        'vars/common.yml',
+    ]
+    if os.path.exists('vars/user.yml'):
+        default_vars_files.append('vars/user.yml')
+
+    ctx.load_variables(files=default_vars_files)
+
+
 def test_stack_definitions():
     ctx = Context()
+    _load_default_vars(ctx)
     ctx.load_stacks('stacks.yml')
 
     yield('Found stacks in the stacks.yml',
@@ -40,4 +52,4 @@ def test_stack_definitions():
                 yield('%s dependency "%s" is defined' % (name, s),
                       is_in, s, ctx.stacks)
             yield('Stack "%s" template_body is valid JSON' % name,
-                  valid_stack_json, stack)
+                  valid_stack_json, ctx, stack)

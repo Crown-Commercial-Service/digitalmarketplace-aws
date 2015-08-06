@@ -2,6 +2,12 @@
 aws_region: eu-west-1
 internal_root_domain: dmdev
 
+user_ips:
+  - 0.0.0.0/0
+
+dev_user_ips:
+  - 127.0.0.1/32
+
 api:
   instance_type: t2.micro
   min_instance_count: 1
