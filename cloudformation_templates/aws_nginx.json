@@ -61,6 +61,10 @@
       "Type": "String",
       "Description": "Subdomain to serve assets from"
     },
+    "G7DraftDocumentsS3URL": {
+      "Type": "String",
+      "Description": "G7 Draft Documents S3 bucket URL"
+    },
     "DocumentsS3URL": {
       "Type": "String",
       "Description": "Documents S3 bucket URL"
@@ -304,6 +308,7 @@
       },
       "UpdatePolicy" : {
         "AutoScalingRollingUpdate": {
+          "PauseTime" : "PT10M",
           "MinInstancesInService": "1",
           "MaxBatchSize": "1"
         }
@@ -329,6 +334,7 @@
             "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
             "-e cloudwatch_json_log_group=", {"Ref": "JSONLogGroupName"}, " ",
             "-e assets_subdomain=", {"Ref": "AssetsSubdomain"}, " ",
+            "-e g7_draft_documents_s3_url=", {"Ref": "G7DraftDocumentsS3URL"}, " ",
             "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
             "-e api_subdomain=", {"Ref": "ApiSubdomain"}, " ",
             "-e api_url=", {"Ref": "ApiURL"}, " ",

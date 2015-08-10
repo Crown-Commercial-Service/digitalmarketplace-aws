@@ -353,6 +353,7 @@ supplier_frontend:
     EnvVarDmEnvironment: "{{ stage }}"
     EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
     EnvVarDmG7DraftDocumentsBucket: "{{ stacks.g7_draft_documents_s3.outputs.Name }}"
+    EnvVarDmG7DraftDocumentsUrl: "https://{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{root_domain}}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
@@ -392,6 +393,7 @@ nginx:
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
 
+    G7DraftDocumentsS3URL: "{{stacks.g7_draft_documents_s3.outputs.URL}}"
     DocumentsS3URL: "{{stacks.documents_s3.outputs.URL}}"
     ApiURL: "{{stacks.api.outputs.URL}}"
     SearchApiURL: "{{stacks.search_api.outputs.URL}}"
