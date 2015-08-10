@@ -263,6 +263,8 @@ admin_frontend:
     EnvVarDmAdminFrontendPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"
     EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
+    EnvVarDmMandrillApiKey: "{{ admin_frontend.mandrill_key }}"
+    EnvVarDmSharedEmailKey: "{{ admin_frontend.shared_email_key }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ admin_frontend.instance_type }}"
@@ -356,6 +358,7 @@ supplier_frontend:
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmMandrillApiKey: "{{ supplier_frontend.mandrill_key }}"
     EnvVarDmPasswordSecretKey: "{{ supplier_frontend.password_key }}"
+    EnvVarDmSharedEmailKey: "{{ supplier_frontend.shared_email_key }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ supplier_frontend.instance_type }}"
