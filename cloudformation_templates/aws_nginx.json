@@ -66,6 +66,10 @@
       "Description": "Documents S3 bucket URL"
     },
 
+    "JSONLogGroupName": {
+      "Type": "String",
+      "Description": "Name of CloudWatch JSON log group"
+    },
     "LogGroupName": {
       "Type": "String",
       "Description": "Name of CloudWatch log group"
@@ -323,6 +327,7 @@
             "-e admin_user_ips=", {"Ref": "AdminUserIPs"}, " ",
             "-e nameserver_ip=$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf) ",
             "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
+            "-e cloudwatch_json_log_group=", {"Ref": "JSONLogGroupName"}, " ",
             "-e assets_subdomain=", {"Ref": "AssetsSubdomain"}, " ",
             "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
             "-e api_subdomain=", {"Ref": "ApiSubdomain"}, " ",

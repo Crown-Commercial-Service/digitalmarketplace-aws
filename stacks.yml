@@ -390,6 +390,8 @@ nginx:
     AdminUserIPs: "{{ admin_user_ips | join(',') }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
+    JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
+
     DocumentsS3URL: "{{stacks.documents_s3.outputs.URL}}"
     ApiURL: "{{stacks.api.outputs.URL}}"
     SearchApiURL: "{{stacks.search_api.outputs.URL}}"
