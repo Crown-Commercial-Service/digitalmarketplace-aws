@@ -37,7 +37,8 @@ http {
 
     log_format access_txt 'nginx-access "$http_dm_request_id" $remote_addr - '
                           '$remote_user [$time_local] "$request" $status '
-                          '$body_bytes_sent "$http_referer" "$http_user_agent"';
+                          '$body_bytes_sent "$http_referer" "$http_user_agent" '
+                          '$request_time';
 
     log_format access_json '{"logType": "nginx-access", '
                            ' "requestId": "$http_dm_request_id", '
@@ -48,7 +49,8 @@ http {
                            ' "status": $status, '
                            ' "size": $body_bytes_sent, '
                            ' "referer": "$http_referer", '
-                           ' "userAgent": "$http_user_agent"}';
+                           ' "userAgent": "$http_user_agent", '
+                           ' "requestTime": $request_time}';
 
     access_log /var/log/nginx/access.log access_txt;
     access_log /var/log/nginx/access_json.log access_json;
