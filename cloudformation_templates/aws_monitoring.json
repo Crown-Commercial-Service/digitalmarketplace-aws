@@ -55,6 +55,21 @@
         "SnsTopicArn": {"Ref": "MonitoringSNSTopic"},
         "SourceType": "db-instance"
       }
+    },
+
+    "CloudWatchMetricNginxRequestTime": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "LogGroupName": {"Fn::Join": ["", [{"Ref": "LogGroupName"}, "-json"]]},
+        "FilterPattern": "{ $.logType = nginx-access }",
+        "MetricTransformations": [
+          {
+            "MetricName": "requestTime",
+            "MetricNamespace": {"Fn::Join": ["/", [{"Ref": "LogGroupName"}, "Nginx"]]},
+            "MetricValue": "$.requestTime"
+          }
+        ]
+      }
     }
   },
 
