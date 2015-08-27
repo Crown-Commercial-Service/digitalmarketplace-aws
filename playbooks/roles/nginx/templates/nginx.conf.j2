@@ -35,13 +35,13 @@ http {
 
     # Logging Settings
 
-    log_format access_txt 'nginx-access "$http_dm_request_id" $remote_addr - '
+    log_format access_txt 'nginx-access "$upstream_http_dm_request_id" $remote_addr - '
                           '$remote_user [$time_local] "$request" $status '
                           '$body_bytes_sent "$http_referer" "$http_user_agent" '
                           '$request_time $http_host';
 
     log_format access_json '{"logType": "nginx-access", '
-                           ' "requestId": "$http_dm_request_id", '
+                           ' "requestId": "$upstream_http_dm_request_id", '
                            ' "remoteHost": "$remote_addr", '
                            ' "user": "$remote_user", '
                            ' "time": "$time_local", '
