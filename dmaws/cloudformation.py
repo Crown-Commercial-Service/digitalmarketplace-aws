@@ -120,6 +120,7 @@ class Cloudformation(object):
             elif info.get('status') in ['ROLLBACK_COMPLETE',
                                         'ROLLBACK_FAILED',
                                         '%s_ROLLBACK_COMPLETE' % operation,
+                                        '%s_ROLLBACK_FAILED' % operation,
                                         '%s_FAILED' % operation]:
                 self.log('==> Stack [%s] is now %s', stack.name,
                          info['status'], color='red')

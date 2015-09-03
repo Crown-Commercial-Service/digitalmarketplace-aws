@@ -1,0 +1,36 @@
+{% macro metric_filter(name, pattern, metric_name, metric_value) -%}
+  "{{ name }}": {
+    "Type": "AWS::Logs::MetricFilter",
+    "Properties": {
+      "LogGroupName": {"Ref": "JSONLogGroupName"},
+      "FilterPattern": "{{ pattern }}",
+      "MetricTransformations": [
+        {
+          "MetricValue": {{ metric_value }},
+          "MetricNamespace": {"Ref": "EnvVarDmMetricsNamespace"},
+          "MetricName": "{{ metric_name }}"
+        }
+      ]
+    }
+  },
+{%- endmacro %}
+
+{% macro alarm(name, metric_name, statistic, period, evaluation_period, threshold, comparison_operator, depends_on) -%}
+  "{{ name }}": {
+    "Type": "AWS::CloudWatch::Alarm",
+    "DependsOn": ["{% if depends_on is sequence and depends_on is not string %}{{ depends_on|join('", "') }}{% else %}{{ depends_on }}{% endif %}"],
+    "Properties": {
+      "Namespace": {"Ref": "EnvVarDmMetricsNamespace"},
+      "MetricName": "{{ metric_name }}",
+      "AlarmDescription": {% include "alarms/%s.j2" % name %},
+      "Statistic": "{{ statistic }}",
+      "Period": {{ period }},
+      "EvaluationPeriods": {{ evaluation_period }},
+      "Threshold": {{ threshold }},
+      "ComparisonOperator": "{{ comparison_operator }}",
+      "AlarmActions": [
+        {"Ref": "MonitoringSNSTopic"}
+      ]
+    }
+  },
+{%- endmacro %}
