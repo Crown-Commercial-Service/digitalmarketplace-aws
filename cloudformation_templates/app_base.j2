@@ -1,3 +1,4 @@
+{% import "metrics.j2" as metrics %}
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Digital Marketplace Elastic Beanstalk Environment",
@@ -280,6 +281,28 @@
         "Description": "Digital Marketplace EB Environment"
       }
     },
+
+    {{ metrics.metric_filter("HTTP5xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status = 5*",
+                             metric_name="HTTP5xx",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("HTTPNon5xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status != 5*",
+                             metric_name="HTTP5xx",
+                             metric_value=0) }},
+
+    {{ metrics.alarm("HTTP5xxCountAlarm",
+                    metric_name="HTTP5xx",
+                    statistic="Sum",
+                    period=60,
+                    evaluation_period=1,
+                    threshold=10,
+                    comparison_operator="GreaterThanThreshold",
+                    depends_on=[
+                      "HTTP5xxMetricFilter",
+                      "HTTPNon5xxMetricFilter"
+                    ]) }},
 
     "Route53RecordSet": {
       "Type": "AWS::Route53::RecordSet",
