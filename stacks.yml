@@ -120,7 +120,7 @@ api:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
-    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}/{{ stacks.api_app.parameters.ApplicationName|replace('digitalmarketplace-', '') }}"
     EnvVarSqlalchemyDatabaseUri: "postgres://{{ database.user }}:{{ database.password}}@{{ stacks.database.outputs.URL }}"
     EnvVarDmApiAuthTokens: "{{ api.auth_tokens | join(':') }}"
     EnvVarDmSearchApiUrl: "{{ stacks.search_api.outputs.URL }}"
@@ -212,7 +212,7 @@ search_api:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
-    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}/{{ stacks.search_api_app.parameters.ApplicationName|replace('digitalmarketplace-', '') }}"
     EnvVarDmElasticsearchUrl: "{{ stacks.elasticsearch.outputs.URL }}"
     EnvVarDmSearchApiAuthTokens: "{{ search_api.auth_tokens | join(':') }}"
 
@@ -255,7 +255,7 @@ admin_frontend:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
-    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}/{{ stacks.admin_frontend_app.parameters.ApplicationName|replace('digitalmarketplace-', '') }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmS3DocumentBucket: "{{ stacks.documents_s3.outputs.Name }}"
     EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
@@ -304,7 +304,7 @@ buyer_frontend:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
-    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}/{{ stacks.buyer_frontend_app.parameters.ApplicationName|replace('digitalmarketplace-', '') }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmBuyerFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmBuyerFrontendSearchApiAuthToken: "{{ search_api.auth_tokens[0] }}"
@@ -351,7 +351,7 @@ supplier_frontend:
     # EnvVar* variables are written to Elastic Beanstalk environment
     # as EnvVarDmVarName -> DM_VAR_NAME
     EnvVarDmEnvironment: "{{ stage }}"
-    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}"
+    EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}/{{ stacks.supplier_frontend_app.parameters.ApplicationName|replace('digitalmarketplace-', '') }}"
     EnvVarDmG7DraftDocumentsBucket: "{{ stacks.g7_draft_documents_s3.outputs.Name }}"
     EnvVarDmG7DraftDocumentsUrl: "https://{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{root_domain}}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
