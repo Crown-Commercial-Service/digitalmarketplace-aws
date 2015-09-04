@@ -7,12 +7,12 @@
     {{ metrics.metric_filter("LoginFailureMetricFilter",
                              pattern="$.logType = application && $.message = *login.fail*",
                              metric_name="LoginFailure",
-                             metric_value=1) }}
+                             metric_value=1) }},
 
     {{ metrics.metric_filter("LoginSuccessMetricFilter",
                              pattern="$.logType = application && $.message = *login.success*",
                              metric_name="LoginFailure",
-                             metric_value=0) }}
+                             metric_value=0) }},
 
     {{ metrics.alarm("LoginFailurePercentAlarm",
                      metric_name="LoginFailure",
