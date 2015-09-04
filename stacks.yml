@@ -419,9 +419,16 @@ nginx:
 jenkins:
   name: "jenkins-{{ stage }}"
   template: cloudformation_templates/aws_jenkins.json
+  dependencies:
+    - route53zone
   parameters:
     UserIPs: "{{ dev_user_ips | join(',') }}"
+
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    RootDomain: "{{ root_domain }}"
+    Subdomain: "jenkins"
     Port: "{{ jenkins.port }}"
+
     KeyName: "{{ key_name }}"
     GroupTag: "jenkins-{{ stage }}"
     InstanceType: "{{ jenkins.instance_type }}"

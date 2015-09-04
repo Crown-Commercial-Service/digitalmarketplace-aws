@@ -11,6 +11,18 @@
       "Type": "Number",
       "Description": "External port for the instance ingress rule"
     },
+    "RootDomain": {
+      "Type": "String",
+      "Description": "Root domain for the public Route 53 records"
+    },
+    "Subdomain": {
+      "Type": "String",
+      "Description": "Subdomain to use"
+    },
+    "HostedZoneName": {
+      "Type": "String",
+      "Description": "Route53 hosted zone name"
+    },
     "GroupTag": {
       "Type": "String",
       "Description": "Group Tag"
@@ -60,6 +72,7 @@
         "Policies": []
       }
     },
+
     "InstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
@@ -67,6 +80,7 @@
         "Roles": [{"Ref": "IAMRole"}]
       }
     },
+
     "DataVolume": {
       "Type": "AWS::EC2::Volume",
       "Properties": {
@@ -77,6 +91,7 @@
       "VolumeType": "gp2"
       }
     },
+
     "JenkinsInstance": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
@@ -98,6 +113,21 @@
           "VolumeId" : {"Ref": "DataVolume"}
           }]
       }
+    },
+
+    "Route53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "Subdomain"}, ".", {"Ref": "RootDomain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Fn::GetAtt": ["JenkinsInstance", "PublicDnsName"]}
+        ],
+        "TTL": "300"
+      }
     }
   },
   "Outputs": {
@@ -105,9 +135,20 @@
       "Description": "Jenkins instances security group",
       "Value": {"Ref": "InstanceSecurityGroup"}
     },
-    "Domain": {
-      "Description": "Load balancer endpoint CNAME",
+    "InstanceDomain": {
+      "Description": "Instance public DNS",
       "Value": {"Fn::GetAtt": ["JenkinsInstance", "PublicDnsName"]}
+    },
+    "URL": {
+      "Description": "URL of the www server",
+      "Value": {
+        "Fn::Join": ["", [
+          "https://",
+          {"Ref" :"Subdomain"},
+          ".",
+          {"Ref" :"RootDomain"}
+        ]]
+      }
     }
   }
 }
