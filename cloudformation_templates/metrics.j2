@@ -17,7 +17,7 @@
   }
 {%- endmacro %}
 
-{% macro alarm(name, metric_name, statistic, period, evaluation_period, threshold, comparison_operator, depends_on) -%}
+{% macro alarm(name, metric_name, statistic, period, evaluation_periods, threshold, comparison_operator, depends_on) -%}
   "{{ name }}": {
     "Type": "AWS::CloudWatch::Alarm",
     "DependsOn": ["{% if depends_on is sequence and depends_on is not string %}{{ depends_on|join('", "') }}{% else %}{{ depends_on }}{% endif %}"],
@@ -27,7 +27,7 @@
       "AlarmDescription": {% include "alarms/%s.j2" % name %},
       "Statistic": "{{ statistic }}",
       "Period": {{ period }},
-      "EvaluationPeriods": {{ evaluation_period }},
+      "EvaluationPeriods": {{ evaluation_periods }},
       "Threshold": {{ threshold }},
       "ComparisonOperator": "{{ comparison_operator }}",
       "AlarmActions": [
