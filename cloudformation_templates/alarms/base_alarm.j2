@@ -2,10 +2,10 @@
   "Fn::Join": [
     "",
     [
-      "Too many 5xx\n",
+      "{% block description %}{% endblock %}\n",
       "Stage and environment: ", {"Ref": "LogGroupName"}, "\n",
       "Application: ", {"Ref": "ApplicationName"}, "\n",
-      "Manual: https://github.gds/pages/gds/digitalmarketplace-manual/alerts.html#5xx-error-rate\n",
+      "Manual: {% block manual_url %}{% endblock %}\n",
       "\n",
       "MetricNamespace: ", {"Ref": "EnvVarDmMetricsNamespace"}, "\n",
       "LogGroupName: ", {"Ref": "LogGroupName"}, "\n"
