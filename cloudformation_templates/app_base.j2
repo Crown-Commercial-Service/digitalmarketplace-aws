@@ -304,6 +304,11 @@
                       "HTTPNon5xxMetricFilter"
                     ]) }},
 
+    {{ metrics.metric_filter("ApacheRequestTimeFilter",
+                             pattern="$.logType = apache-access",
+                             metric_name="ApacheRequestTime",
+                             metric_value="\"$.requestTimeMicro\"") }},
+
     "Route53RecordSet": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
