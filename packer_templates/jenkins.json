@@ -1,0 +1,24 @@
+{
+  "variables": {
+      "aws_region": "eu-west-1"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "{{ user `aws_region` }}",
+    "source_ami": "ami-d9ba9eae",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "jenkins-{{isotime | clean_ami_name}}",
+    "launch_block_device_mappings": [{
+        "device_name": "/dev/sda1",
+        "volume_type": "gp2",
+        "volume_size": "20",
+        "delete_on_termination": true
+    }],
+    "ami_users": [
+      "050019655025",
+      "381494870249"
+    ]
+  }],
+  "provisioners": []
+}
