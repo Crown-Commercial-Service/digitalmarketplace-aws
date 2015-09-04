@@ -52,5 +52,6 @@ nginx:
   instance_image: ami-3b87dd4c
 
 jenkins:
+  port: 8080
   instance_type: t2.micro
   instance_image: ami-d9ba9eae

@@ -3,6 +3,14 @@
   "Description": "Jenkins instance",
 
   "Parameters": {
+    "UserIPs": {
+      "Type": "String",
+      "Description": "Comma-separated list of CIDRs for instance ingress rule"
+    },
+    "Port": {
+      "Type": "Number",
+      "Description": "External port for the instance ingress rule"
+    },
     "GroupTag": {
       "Type": "String",
       "Description": "Group Tag"
@@ -25,7 +33,13 @@
     "InstanceSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "Main instance security group"
+        "GroupDescription": "Main instance security group",
+        "SecurityGroupIngress": [
+{% for user_ip in parameters.UserIPs.split(",") %}
+          {"IpProtocol": "tcp", "CidrIp": "{{ user_ip }}", "FromPort": {"Ref": "Port"}, "ToPort": {"Ref": "Port"}}{% if not loop.last %},{% endif %}
+
+{% endfor %}
+        ]
       }
     },
 

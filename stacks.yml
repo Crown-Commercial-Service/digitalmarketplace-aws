@@ -420,6 +420,8 @@ jenkins:
   name: "jenkins-{{ stage }}"
   template: cloudformation_templates/aws_jenkins.json
   parameters:
+    UserIPs: "{{ dev_user_ips | join(',') }}"
+    Port: "{{ jenkins.port }}"
     KeyName: "{{ key_name }}"
     GroupTag: "jenkins-{{ stage }}"
     InstanceType: "{{ jenkins.instance_type }}"
