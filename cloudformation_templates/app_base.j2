@@ -1,3 +1,4 @@
+{% import "metrics.j2" as metrics %}
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Digital Marketplace Elastic Beanstalk Environment",
@@ -280,6 +281,74 @@
         "Description": "Digital Marketplace EB Environment"
       }
     },
+
+    {{ metrics.metric_filter("HTTP5xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status = 5*",
+                             metric_name="HTTP5xx",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("HTTPNon5xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status != 5*",
+                             metric_name="HTTP5xx",
+                             metric_value=0) }},
+
+    {{ metrics.alarm("HTTP5xxCountAlarm",
+                    metric_name="HTTP5xx",
+                    statistic="Sum",
+                    period=60,
+                    evaluation_periods=1,
+                    threshold=1,
+                    comparison_operator="GreaterThanThreshold",
+                    depends_on=[
+                      "HTTP5xxMetricFilter",
+                      "HTTPNon5xxMetricFilter"
+                    ]) }},
+
+    {{ metrics.metric_filter("ApacheRequestTimeFilter",
+                             pattern="$.logType = apache-access",
+                             metric_name="ApacheRequestTime",
+                             metric_value="\"$.requestTimeMicro\"") }},
+
+    {# 4xx related experimental metric filters #}
+    {{ metrics.metric_filter("HTTP4xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status = 4*",
+                             metric_name="HTTP4xx",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("HTTPNon4xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status != 4*",
+                             metric_name="HTTP4xx",
+                             metric_value=0) }},
+
+    {{ metrics.metric_filter("HTTPBadRequestMetricFilter",
+                             pattern="$.logType = apache-access && ($.status = 400 || $.status = 405)",
+                             metric_name="BadRequest",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("HTTPNonBadRequestMetricFilter",
+                             pattern="$.logType = apache-access && $.status != 400 && $.status != 405",
+                             metric_name="BadRequest",
+                             metric_value=0) }},
+
+    {{ metrics.metric_filter("HTTPBadAuthMetricFilter",
+                             pattern="$.logType = apache-access && ($.status >= 401 && $.status <= 403)",
+                             metric_name="BadAuth",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("HTTPNonBadAuthMetricFilter",
+                             pattern="$.logType = apache-access && ($.status < 401 || $.status > 403)",
+                             metric_name="BadAuth",
+                             metric_value=0) }},
+
+    {{ metrics.metric_filter("HTTPWhatThe4xxMetricFilter",
+                             pattern="$.logType = apache-access && ($.status >= 406 && $.status <= 499)",
+                             metric_name="WhatThe4xx",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("HTTPNonWhatThe4xxMetricFilter",
+                             pattern="$.logType = apache-access && ($.status < 406 || $.status > 499)",
+                             metric_name="WhatThe4xx",
+                             metric_value=0) }},
 
     "Route53RecordSet": {
       "Type": "AWS::Route53::RecordSet",

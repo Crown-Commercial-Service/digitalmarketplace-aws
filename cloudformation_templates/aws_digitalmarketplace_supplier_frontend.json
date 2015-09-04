@@ -1,3 +1,28 @@
 {% extends "app_base.j2" %}
+{% import "metrics.j2" as metrics %}
 
 {% block url_prefix %}/suppliers/{% endblock %}
+
+{% block resources %}
+    {{ metrics.metric_filter("LoginFailureMetricFilter",
+                             pattern="$.logType = application && $.message = *login.fail*",
+                             metric_name="LoginFailure",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("LoginSuccessMetricFilter",
+                             pattern="$.logType = application && $.message = *login.success*",
+                             metric_name="LoginFailure",
+                             metric_value=0) }},
+
+    {{ metrics.alarm("LoginFailurePercentAlarm",
+                     metric_name="LoginFailure",
+                     statistic="Average",
+                     period=60,
+                     evaluation_periods=5,
+                     threshold=0.20,
+                     comparison_operator="GreaterThanThreshold",
+                     depends_on=[
+                       "LoginFailureMetricFilter",
+                       "LoginSuccessMetricFilter"
+                    ]) }}
+{% endblock %}
