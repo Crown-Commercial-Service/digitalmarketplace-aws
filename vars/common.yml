@@ -50,3 +50,7 @@ nginx:
   instance_type: t2.micro
   instance_count: 2
   instance_image: ami-3b87dd4c
+
+jenkins:
+  instance_type: t2.micro
+  instance_image: ami-d9ba9eae
