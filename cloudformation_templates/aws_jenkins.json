@@ -128,6 +128,14 @@
         ],
         "TTL": "300"
       }
+    },
+
+    "ElasticIP": {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : {"Ref" : "JenkinsInstance"},
+        "Domain" : "vpc"
+      }
     }
   },
   "Outputs": {
@@ -149,6 +157,10 @@
           {"Ref" :"RootDomain"}
         ]]
       }
+    },
+    "ElasticIP": {
+      "Description": "Elastic IP address for Jenkins",
+      "Value": {"Ref": "ElasticIP"}
     }
   }
 }
