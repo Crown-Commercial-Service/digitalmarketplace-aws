@@ -68,6 +68,24 @@
         ],
         "TTL": "3600"
       }
+    },
+
+    "CI": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["", [
+          "beta", ".", {"Ref": "HostedZoneName"}
+        ]]},
+        "Type": "NS",
+        "ResourceRecords": [
+          "ns-895.awsdns-47.net.",
+          "ns-1187.awsdns-20.org.",
+          "ns-505.awsdns-63.com.",
+          "ns-1661.awsdns-15.co.uk."
+        ],
+        "TTL": "3600"
+      }
     }
   }
 }
