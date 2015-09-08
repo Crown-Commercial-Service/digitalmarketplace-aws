@@ -115,6 +115,14 @@
       }
     },
 
+    "ElasticIP": {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : {"Ref" : "JenkinsInstance"},
+        "Domain" : "vpc"
+      }
+    },
+
     "Route53RecordSet": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
@@ -124,17 +132,9 @@
          ]]},
         "Type": "CNAME",
         "ResourceRecords": [
-          {"Fn::GetAtt": ["JenkinsInstance", "PublicDnsName"]}
+          {"Ref": "ElasticIP"}
         ],
         "TTL": "300"
-      }
-    },
-
-    "ElasticIP": {
-      "Type" : "AWS::EC2::EIP",
-      "Properties" : {
-        "InstanceId" : {"Ref" : "JenkinsInstance"},
-        "Domain" : "vpc"
       }
     }
   },
