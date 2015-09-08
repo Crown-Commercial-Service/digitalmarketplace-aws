@@ -15,10 +15,7 @@
         "volume_size": "20",
         "delete_on_termination": true
     }],
-    "ami_users": [
-      "050019655025",
-      "381494870249"
-    ]
+    "ami_users": []
   }],
   "provisioners": []
 }
