@@ -1,0 +1,166 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Jenkins instance",
+
+  "Parameters": {
+    "UserIPs": {
+      "Type": "String",
+      "Description": "Comma-separated list of CIDRs for instance ingress rule"
+    },
+    "Port": {
+      "Type": "Number",
+      "Description": "External port for the instance ingress rule"
+    },
+    "RootDomain": {
+      "Type": "String",
+      "Description": "Root domain for the public Route 53 records"
+    },
+    "Subdomain": {
+      "Type": "String",
+      "Description": "Subdomain to use"
+    },
+    "HostedZoneName": {
+      "Type": "String",
+      "Description": "Route53 hosted zone name"
+    },
+    "GroupTag": {
+      "Type": "String",
+      "Description": "Group Tag"
+    },
+    "KeyName": {
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the server"
+    },
+    "InstanceImage" : {
+      "Description" : "EC2 instance image",
+      "Type" : "String"
+    },
+    "InstanceType" : {
+      "Description" : "EC2 instance type",
+      "Type" : "String"
+    }
+  },
+
+  "Resources": {
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Main instance security group",
+        "SecurityGroupIngress": [
+{% for user_ip in parameters.UserIPs.split(",") %}
+          {"IpProtocol": "tcp", "CidrIp": "{{ user_ip }}", "FromPort": {"Ref": "Port"}, "ToPort": {"Ref": "Port"}}{% if not loop.last %},{% endif %}
+
+{% endfor %}
+        ]
+      }
+    },
+
+    "IAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [ "ec2.amazonaws.com" ]
+            },
+            "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/",
+        "Policies": []
+      }
+    },
+
+    "InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [{"Ref": "IAMRole"}]
+      }
+    },
+
+    "DataVolume": {
+      "Type": "AWS::EC2::Volume",
+      "Properties": {
+        "Size": "100",
+      "AvailabilityZone" : {
+        "Fn::Select": [0, {"Fn::GetAZs": ""}]
+      },
+      "VolumeType": "gp2"
+      }
+    },
+
+    "JenkinsInstance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": false,
+        "IamInstanceProfile": {"Ref": "InstanceProfile"},
+        "ImageId": {"Ref": "InstanceImage"},
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "InstanceType": {"Ref": "InstanceType"},
+        "KeyName": {"Ref": "KeyName"},
+        "SecurityGroups": [{"Ref": "InstanceSecurityGroup"}],
+        "Tags": [
+          {"Key": "Name", "Value": {"Ref": "GroupTag"}}
+        ],
+        "AvailabilityZone" : {
+          "Fn::Select": [0, {"Fn::GetAZs": ""}]
+        },
+        "Volumes": [{
+          "Device" : "/dev/xvdf",
+          "VolumeId" : {"Ref": "DataVolume"}
+          }]
+      }
+    },
+
+    "ElasticIP": {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : {"Ref" : "JenkinsInstance"},
+        "Domain" : "vpc"
+      }
+    },
+
+    "Route53RecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["",[
+          {"Ref": "Subdomain"}, ".", {"Ref": "RootDomain"}, "."
+         ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          {"Ref": "ElasticIP"}
+        ],
+        "TTL": "300"
+      }
+    }
+  },
+  "Outputs": {
+    "InstanceSecurityGroup": {
+      "Description": "Jenkins instances security group",
+      "Value": {"Ref": "InstanceSecurityGroup"}
+    },
+    "InstanceDomain": {
+      "Description": "Instance public DNS",
+      "Value": {"Fn::GetAtt": ["JenkinsInstance", "PublicDnsName"]}
+    },
+    "URL": {
+      "Description": "URL of the www server",
+      "Value": {
+        "Fn::Join": ["", [
+          "https://",
+          {"Ref" :"Subdomain"},
+          ".",
+          {"Ref" :"RootDomain"}
+        ]]
+      }
+    },
+    "ElasticIP": {
+      "Description": "Elastic IP address for Jenkins",
+      "Value": {"Ref": "ElasticIP"}
+    }
+  }
+}

@@ -421,6 +421,35 @@ nginx:
     InstanceType: "{{ nginx.instance_type }}"
     InstanceImage: "{{ nginx.instance_image }}"
 
+jenkins:
+  name: "jenkins-{{ stage }}"
+  template: cloudformation_templates/aws_jenkins.json
+  dependencies:
+    - route53zone
+  parameters:
+    UserIPs: "{{ dev_user_ips | join(',') }}"
+
+    HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
+    RootDomain: "{{ root_domain }}"
+    Subdomain: "ci"
+    Port: "{{ jenkins.port }}"
+
+    KeyName: "{{ key_name }}"
+    GroupTag: "jenkins-{{ stage }}"
+    InstanceType: "{{ jenkins.instance_type }}"
+    InstanceImage: "{{ jenkins.instance_image }}"
+
+jenkins_ssh_access:
+  name: "jenkins-{{ stage }}-ssh-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - jenkins
+  parameters:
+    CidrIPs: "{{ dev_user_ips | join(',') }}"
+    FromPort: 22
+    ToPort: 22
+    SecurityGroup: "{{ stacks.jenkins.outputs.InstanceSecurityGroup }}"
+
 nginx_ssh_access:
   name: "nginx-{{ stage }}-{{ environment }}-ssh-access"
   template: cloudformation_templates/aws_dev_access.json

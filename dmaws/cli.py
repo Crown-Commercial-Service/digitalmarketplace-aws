@@ -13,6 +13,7 @@ STAGES = [
     'preview',
     'staging',
     'production',
+    'ci',
 ]
 
 
