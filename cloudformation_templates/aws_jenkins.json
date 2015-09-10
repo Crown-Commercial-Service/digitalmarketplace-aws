@@ -130,7 +130,7 @@
         "Name": {"Fn::Join": ["",[
           {"Ref": "Subdomain"}, ".", {"Ref": "RootDomain"}, "."
          ]]},
-        "Type": "CNAME",
+        "Type": "A",
         "ResourceRecords": [
           {"Ref": "ElasticIP"}
         ],
