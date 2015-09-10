@@ -281,6 +281,15 @@
         "Description": "Digital Marketplace EB Environment"
       }
     },
+    {{ metrics.metric_filter("HTTP2xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status = 2*",
+                             metric_name="HTTP2xx",
+                             metric_value=1) }},
+
+    {{ metrics.metric_filter("HTTPNon2xxMetricFilter",
+                             pattern="$.logType = apache-access && $.status != 2*",
+                             metric_name="HTTP2xx",
+                             metric_value=0) }},
 
     {{ metrics.metric_filter("HTTP5xxMetricFilter",
                              pattern="$.logType = apache-access && $.status = 5*",
