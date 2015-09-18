@@ -3,7 +3,7 @@ root_domain: "beta.digitalmarketplace.service.gov.uk"
 
 jenkins:
   port: 443
-  instance_type: t2.micro
+  instance_type: t2.large
   instance_image: ami-838aabf4
 
 vpc_id: vpc-4077b925
