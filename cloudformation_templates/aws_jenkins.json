@@ -92,13 +92,12 @@
       }
     },
 
-    "JenkinsInstance": {
+    "Instance": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
         "DisableApiTermination": false,
         "IamInstanceProfile": {"Ref": "InstanceProfile"},
         "ImageId": {"Ref": "InstanceImage"},
-        "InstanceInitiatedShutdownBehavior": "stop",
         "InstanceType": {"Ref": "InstanceType"},
         "KeyName": {"Ref": "KeyName"},
         "SecurityGroups": [{"Ref": "InstanceSecurityGroup"}],
@@ -118,7 +117,7 @@
     "ElasticIP": {
       "Type" : "AWS::EC2::EIP",
       "Properties" : {
-        "InstanceId" : {"Ref" : "JenkinsInstance"},
+        "InstanceId" : {"Ref" : "Instance"},
         "Domain" : "vpc"
       }
     },
@@ -145,7 +144,7 @@
     },
     "InstanceDomain": {
       "Description": "Instance public DNS",
-      "Value": {"Fn::GetAtt": ["JenkinsInstance", "PublicDnsName"]}
+      "Value": {"Fn::GetAtt": ["Instance", "PublicDnsName"]}
     },
     "URL": {
       "Description": "URL of the www server",
