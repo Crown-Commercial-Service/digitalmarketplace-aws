@@ -67,8 +67,9 @@ def release_to_preview(ctx, repository_path):
 
 
 def release_to_staging(ctx, repository_path, release_name, from_profile):
-    if release_name is None:
-        raise ValueError("Release name required for staging release")
+    if not release_name:
+        release_name = build.get_release_name_for_tag(repository_path, 'deployed-to-preview')
+        ctx.log("Deploying current preview version %s", release_name)
     if from_profile is None:
         raise ValueError("Source profile required for staging release")
 
