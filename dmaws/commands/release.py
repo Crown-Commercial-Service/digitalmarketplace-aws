@@ -36,6 +36,8 @@ def release_cmd(ctx, release_name=None, from_profile=None):
 
     if not success:
         sys.exit(1)
+
+    ctx.out("RELEASE_NAME", release_name)
     build.push_deployed_to_tag(repository_path, ctx.stage, release_name)
 
 
