@@ -59,5 +59,9 @@ class Context(object):
             msg = click.style(msg, fg=kwargs['color'])
         click.echo(msg, err=True)
 
+    def out(self, key, value):
+        """Print a key=value pair to stdout"""
+        click.echo("{}={}".format(key, value), err=False)
+
 
 pass_context = click.make_pass_decorator(Context, ensure=True)

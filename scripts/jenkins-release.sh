@@ -19,4 +19,5 @@ if [ "$STAGE" = "staging" ]; then
   OPTIONS="--from-profile=preview --release-name=$RELEASE_NAME"
 fi
 
-AWS_PROFILE="$STAGE" dmaws $STAGE $STAGE release $APPLICATION_NAME $OPTIONS
+rm release_properties.out
+AWS_PROFILE="$STAGE" dmaws $STAGE $STAGE release $APPLICATION_NAME $OPTIONS 1>release_properties.out
