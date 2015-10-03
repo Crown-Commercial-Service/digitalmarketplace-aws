@@ -18,8 +18,9 @@ subnets:
   - subnet-ad0894c8
 
 api:
+  instance_type: t2.medium
   min_instance_count: 3
-  max_instance_count: 5
+  max_instance_count: 10
 
 search_api:
   min_instance_count: 3
@@ -34,5 +35,6 @@ buyer_frontend:
   max_instance_count: 5
 
 supplier_frontend:
+  instance_type: t2.medium
   min_instance_count: 3
-  max_instance_count: 5
+  max_instance_count: 10
