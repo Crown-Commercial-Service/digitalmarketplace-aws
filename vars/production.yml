@@ -38,3 +38,6 @@ supplier_frontend:
   instance_type: t2.medium
   min_instance_count: 3
   max_instance_count: 10
+
+nginx:
+  instance_type: t2.medium
