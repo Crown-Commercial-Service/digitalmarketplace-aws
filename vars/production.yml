@@ -39,5 +39,11 @@ supplier_frontend:
   min_instance_count: 3
   max_instance_count: 10
 
+database:
+  instance_type: db.m3.medium
+
+elasticsearch:
+  instance_type: t2.medium
+
 nginx:
   instance_type: t2.medium
