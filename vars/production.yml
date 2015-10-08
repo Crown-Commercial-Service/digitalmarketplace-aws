@@ -6,16 +6,17 @@ iam_certificate_id: "ASCAJG65ZXOA7JBRVORN6"
 monitoring:
   email: "support+production-production@digitalmarketplace.service.gov.uk"
 
-database:
-  multi_az: "true"
-  backup_retention_period: "30"
-  snapshot_id: "production-2015-07-17t1204"
-
 vpc_id: vpc-70319115
 subnets:
   - subnet-9a9713ed
   - subnet-63b1683a
   - subnet-ad0894c8
+
+database:
+  multi_az: "true"
+  backup_retention_period: "30"
+  instance_type: db.m3.medium
+  snapshot_id: "production-2015-07-17t1204"
 
 api:
   instance_type: t2.medium
@@ -38,9 +39,6 @@ supplier_frontend:
   instance_type: t2.medium
   min_instance_count: 3
   max_instance_count: 10
-
-database:
-  instance_type: db.m3.medium
 
 elasticsearch:
   instance_type: t2.medium
