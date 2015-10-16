@@ -77,6 +77,24 @@ documents_s3:
   parameters:
     BucketName: "digitalmarketplace-documents-{{ stage }}-{{ environment }}"
 
+communications_s3:
+  name: "communications-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-communications-{{ stage }}-{{ environment }}"
+
+submissions_s3:
+  name: "submissions-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-submissions-{{ stage }}-{{ environment }}"
+
+agreements_s3:
+  name: "agreements-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-agreements-{{ stage }}-{{ environment }}"
+
 g7_draft_documents_s3:
   name: "g7-draft-documents-s3-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_s3.json
