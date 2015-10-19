@@ -411,6 +411,9 @@ nginx:
     - supplier_frontend
     - buyer_frontend
     - documents_s3
+    - communications_s3
+    - submissions_s3
+    - agreements_s3
     - route53zone
     - monitoring
   parameters:
