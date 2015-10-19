@@ -28,7 +28,6 @@ data_storage:
   - communications_s3
   - submissions_s3
   - agreements_s3
-  - logs_s3
   - elasticsearch
   - monitoring
 
@@ -103,12 +102,6 @@ g7_draft_documents_s3:
   template: cloudformation_templates/aws_s3.json
   parameters:
     BucketName: "digitalmarketplace-g7-draft-documents-{{ stage }}-{{ environment }}"
-
-logs_s3:
-  name: "logs-s3-{{ stage }}-{{ environment }}"
-  template: cloudformation_templates/aws_s3.json
-  parameters:
-    BucketName: "digitalmarketplace-logs-{{ stage }}-{{ environment }}"
 
 monitoring:
   name: "monitoring-{{ stage }}-{{ environment }}"
@@ -411,6 +404,9 @@ nginx:
     - supplier_frontend
     - buyer_frontend
     - documents_s3
+    - communications_s3
+    - submissions_s3
+    - agreements_s3
     - route53zone
     - monitoring
   parameters:
