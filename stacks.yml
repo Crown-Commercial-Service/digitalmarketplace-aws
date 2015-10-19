@@ -25,6 +25,9 @@ www:
 data_storage:
   - database
   - documents_s3
+  - communications_s3
+  - submissions_s3
+  - agreements_s3
   - logs_s3
   - elasticsearch
   - monitoring
