@@ -69,6 +69,18 @@
       "Type": "String",
       "Description": "Documents S3 bucket URL"
     },
+    "AgreementsS3URL": {
+      "Type": "String",
+      "Description": "Framework agreements S3 bucket URL"
+    },
+    "CommunicationsS3URL": {
+      "Type": "String",
+      "Description": "Framework communications S3 bucket URL"
+    },
+    "SubmissionsS3URL": {
+      "Type": "String",
+      "Description": "Framework communications S3 bucket URL"
+    },
 
     "JSONLogGroupName": {
       "Type": "String",
@@ -336,6 +348,9 @@
             "-e assets_subdomain=", {"Ref": "AssetsSubdomain"}, " ",
             "-e g7_draft_documents_s3_url=", {"Ref": "G7DraftDocumentsS3URL"}, " ",
             "-e documents_s3_url=", {"Ref": "DocumentsS3URL"}, " ",
+            "-e agreements_s3_url=", {"Ref": "AgreementsS3URL"}, " ",
+            "-e communications_s3_url=", {"Ref": "CommunicationsS3URL"}, " ",
+            "-e submissions_s3_url=", {"Ref": "SubmissionsS3URL"}, " ",
             "-e api_subdomain=", {"Ref": "ApiSubdomain"}, " ",
             "-e api_url=", {"Ref": "ApiURL"}, " ",
             "-e search_api_subdomain=", {"Ref": "SearchApiSubdomain"}, " ",
