@@ -260,6 +260,7 @@ admin_frontend:
   template: cloudformation_templates/aws_digitalmarketplace_admin_frontend.json
   dependencies:
     - documents_s3
+    - agreements_s3
     - api
     - admin_frontend_app
     - route53zone
@@ -275,6 +276,8 @@ admin_frontend:
     EnvVarDmMetricsNamespace: "{{ stage }}-{{ environment }}/{{ stacks.admin_frontend_app.parameters.ApplicationName|replace('digitalmarketplace-', '') }}"
     EnvVarDmApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmS3DocumentBucket: "{{ stacks.documents_s3.outputs.Name }}"
+    EnvVarDmAgreementsBucket: "{{ stacks.agreements_s3.outputs.Name }}"
+    EnvVarDmAssetsUrl: "https://{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{root_domain}}"
     EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmAdminFrontendCookieSecret: "{{ admin_frontend.cookie_secret }}"
     EnvVarDmAdminFrontendPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"
