@@ -26,6 +26,14 @@ server {
         proxy_pass $agreements_s3_url;
     }
 
+    # Hack to force g7 communications to the old bucket to preserve upload times
+    location ^~ /g-cloud-7-updates/communications {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_intercept_errors on;
+
+        proxy_pass $g7_draft_documents_s3_url;
+    }
+
     location ~ ^/[^/]+/communications/ {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_intercept_errors on;
