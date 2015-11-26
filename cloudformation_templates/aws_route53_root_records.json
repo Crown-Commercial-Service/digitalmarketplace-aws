@@ -46,9 +46,9 @@
         "Name": {"Ref": "HostedZoneName"},
         "Type": "TXT",
         "ResourceRecords": [
-          "\"google-site-verification=j6RvC0_ipOIvcyTR0WBAwa8C5SPblqFaJOS8QByISGI\""
+          "\"google-site-verification=wCZPbaSgAFuIlzK2CpzwiOYwgCUJP_ZUOhHTYCGs7aQ\""
         ],
-        "TTL": "3600"
+        "TTL": "300"
       }
     },
 
