@@ -360,6 +360,9 @@ supplier_frontend:
   template: cloudformation_templates/aws_digitalmarketplace_supplier_frontend.json
   dependencies:
     - documents_s3
+    - communications_s3
+    - submissions_s3
+    - agreements_s3
     - g7_draft_documents_s3
     - api
     - supplier_frontend_app
@@ -378,6 +381,8 @@ supplier_frontend:
     EnvVarDmG7DraftDocumentsUrl: "https://{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{root_domain}}"
     EnvVarDmAgreementsBucket: "{{ stacks.agreements_s3.outputs.Name }}"
     EnvVarDmCommunicationsBucket: "{{ stacks.communications_s3.outputs.Name }}"
+    EnvVarDmDocumentsBucket: "{{ stacks.documents_s3.outputs.Name }}"
+    EnvVarDmSubmissionsBucket: "{{ stacks.submissions_s3.outputs.Name }}"
     EnvVarDmAssetsUrl: "https://{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{ root_domain }}"
     EnvVarDmSupplierFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
