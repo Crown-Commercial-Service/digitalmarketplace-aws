@@ -26,18 +26,6 @@
         "TTL": "3600"
       }
     },
-    "SPFRecord": {
-      "Type": "AWS::Route53::RecordSet",
-      "Properties": {
-        "HostedZoneName": {"Ref": "HostedZoneName"},
-        "Name": {"Ref": "HostedZoneName"},
-        "Type": "TXT",
-        "ResourceRecords": [
-          "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com ~all\""
-        ],
-        "TTL": "300"
-      }
-    },
 
     "MandrillDKIMRecord": {
       "Type": "AWS::Route53::RecordSet",
@@ -61,7 +49,8 @@
         "Name": {"Ref": "HostedZoneName"},
         "Type": "TXT",
         "ResourceRecords": [
-          "\"google-site-verification=wCZPbaSgAFuIlzK2CpzwiOYwgCUJP_ZUOhHTYCGs7aQ\""
+          "\"google-site-verification=wCZPbaSgAFuIlzK2CpzwiOYwgCUJP_ZUOhHTYCGs7aQ\"",
+          "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com ~all\""
         ],
         "TTL": "300"
       }
