@@ -31,7 +31,7 @@
       "Properties": {
         "HostedZoneName": {"Ref": "HostedZoneName"},
         "Name": {"Ref": "HostedZoneName"},
-        "Type": "SPF",
+        "Type": "TXT",
         "ResourceRecords": [
           "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com ~all\""
         ],
