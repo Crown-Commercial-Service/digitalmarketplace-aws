@@ -31,11 +31,26 @@
       "Properties": {
         "HostedZoneName": {"Ref": "HostedZoneName"},
         "Name": {"Ref": "HostedZoneName"},
-        "Type": "SPF",
+        "Type": "TXT",
         "ResourceRecords": [
           "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com ~all\""
         ],
-        "TTL": "3600"
+        "TTL": "300"
+      }
+    },
+
+    "MandrillDKIMRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["", [
+          "mandrill._domainkey", ".", {"Ref": "HostedZoneName"}
+        ]]},
+        "Type": "TXT",
+        "ResourceRecords": [
+          "\"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrLHiExVd55zd/IQ/J/mRwSRMAocV/hMB3jXwaHH36d9NaVynQFYV8NaWi69c1veUtRzGt7yAioXqLj7Z4TeEUoOLgrKsn8YnckGs9i3B3tVFB+Ch/4mPhXWiNfNdynHWBcPcbJ8kjEQ2U8y78dHZj1YeRXXVvWob2OaKynO8/lQIDAQAB;\""
+        ],
+        "TTL": "300"
       }
     },
 
