@@ -1,5 +1,6 @@
 import pytest
 import mock
+from mock import call
 
 from .helpers import set_boto_response, set_boto_responses
 
@@ -56,6 +57,56 @@ class TestDeploy(object):
         assert deploy.create_version('release', with_sha=True) == (
             'release-master-dd93edd', True
         )
+
+    def test_prune_old_versions(self, beanstalk_conn):
+        deploy = Deploy('app', 'env', repo_path='test-path')
+        set_boto_response(beanstalk_conn, 'describe_application_versions', {
+            'ApplicationVersions': [
+                {
+                    'ApplicationName': 'app',
+                    'VersionLabel': 'release-3',
+                },
+                {
+                    'ApplicationName': 'app',
+                    'VersionLabel': 'release-2',
+                },
+                {
+                    'ApplicationName': 'app',
+                    'VersionLabel': 'release-1',
+                },
+            ]
+        })
+        assert deploy.prune_old_versions(1) == 2
+        beanstalk_conn.delete_application_version.assert_has_calls(
+            [call('app', 'release-2', delete_source_bundle=False),
+             call('app', 'release-1', delete_source_bundle=False)])
+
+    def test_prune_old_versions_nothing_to_prune(self, beanstalk_conn):
+        deploy = Deploy('app', 'env', repo_path='test-path')
+        set_boto_response(beanstalk_conn, 'describe_application_versions', {
+            'ApplicationVersions': [
+                {
+                    'ApplicationName': 'app',
+                    'VersionLabel': 'release-3',
+                },
+                {
+                    'ApplicationName': 'app',
+                    'VersionLabel': 'release-2',
+                },
+                {
+                    'ApplicationName': 'app',
+                    'VersionLabel': 'release-1',
+                },
+            ]
+        })
+        assert deploy.prune_old_versions(4) == 0
+        assert not beanstalk_conn.delete_application_version.called
+
+    def test_prune_old_versions_fails_with_bad_number_to_keep(self):
+        deploy = Deploy('app', 'env', repo_path='test-path')
+        for number_to_keep in ['123', None, deploy]:
+            with pytest.raises(AssertionError):
+                deploy.prune_old_versions(number_to_keep)
 
     def test_get_current_version(self):
         assert Deploy('app', 'env').get_current_version() == 'release-0'
@@ -255,6 +306,39 @@ class TestBeanstalkClient(object):
             'test-app', 'test-version', 'test-bucket', 'test-package', ''
         ) == 'test-version'
 
+    def test_delete_application_version(self, beanstalk_conn):
+        beanstalk = BeanstalkClient(AWS_REGION)
+        beanstalk.delete_application_version('test-app', 'test-version')
+        beanstalk_conn.delete_application_version.assert_called_once_with(
+            'test-app', 'test-version', delete_source_bundle=False
+        )
+
     def test_application_version_exists(self):
         beanstalk = BeanstalkClient(AWS_REGION)
         assert beanstalk.application_version_exists('test-env', 'test-version')
+
+    def test_list_application_versions(self, beanstalk_conn):
+        beanstalk = BeanstalkClient(AWS_REGION)
+        set_boto_response(beanstalk_conn, 'describe_application_versions', {
+            'ApplicationVersions': [
+                {
+                    'ApplicationName': 'test-env',
+                    'VersionLabel': 'release-3',
+                },
+                {
+                    'ApplicationName': 'test-env',
+                    'VersionLabel': 'release-2',
+                },
+                {
+                    'ApplicationName': 'test-env',
+                    'VersionLabel': 'release-1',
+                },
+            ]
+        })
+        assert len(beanstalk.list_application_versions('test-env')) == 3
+        beanstalk_conn.describe_application_versions.assert_called_once_with('test-env')
+
+    def test_list_application_versions_with_version_label(self, beanstalk_conn):
+        beanstalk = BeanstalkClient(AWS_REGION)
+        assert len(beanstalk.list_application_versions('test-env', 'test-version')) == 1
+        beanstalk_conn.describe_application_versions.assert_called_once_with('test-env', 'test-version')

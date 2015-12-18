@@ -60,6 +60,7 @@ def release_to_preview(ctx, repository_path):
     if build.tag_exists(repository_path, release_name):
         raise ValueError("Already have a tag for {}".format(release_name))
 
+    deploy.prune_old_versions(os.environ.get('DM_NUM_APPLICATIONS_TO_KEEP', 20))
     version, created = deploy.create_version(release_name)
     build.push_tag(repository_path, release_name)
 
@@ -83,6 +84,7 @@ def release_to_staging(ctx, repository_path, release_name, from_profile):
         source_deploy = source_plan.get_deploy(repository_path)
         package_path = source_deploy.download_package(release_name)
 
+        deploy.prune_old_versions(os.environ.get('DM_NUM_APPLICATIONS_TO_KEEP', 20))
         deploy.create_version(release_name, from_file=package_path)
 
     return deploy.deploy(release_name), release_name

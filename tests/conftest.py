@@ -82,7 +82,12 @@ def beanstalk_conn(request):
     })
 
     set_boto_response(beanstalk_mock, 'describe_application_versions', {
-        'ApplicationVersions': ['test-version']
+        'ApplicationVersions': [
+            {
+                'ApplicationName': 'test-env',
+                'VersionLabel': 'test-version'
+            }
+        ]
     })
 
     return beanstalk_mock

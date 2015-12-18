@@ -65,6 +65,19 @@ class Deploy(object):
 
         return version_label, bool(created_version)
 
+    def prune_old_versions(self, number_to_keep):
+        assert isinstance(number_to_keep, (int, float))
+
+        versions = self.beanstalk.list_application_versions(self.eb_application)
+
+        count = 0
+        if len(versions) > number_to_keep:
+            for version in versions[number_to_keep:]:
+                count += 1
+                self.beanstalk.delete_application_version(self.eb_application, version['VersionLabel'])
+
+        return count
+
     def deploy(self, version_label):
         self.log("=== Deploying version %s to %s",
                  version_label, self.eb_environment)
@@ -213,11 +226,21 @@ class BeanstalkClient(object):
 
         return version_label
 
-    def application_version_exists(self, application_name, version_label):
-        response = self.conn.describe_application_versions(
-            application_name, version_label
-        )['DescribeApplicationVersionsResponse']
+    def delete_application_version(self, application_name, version_label):
+        self.conn.delete_application_version(
+            application_name, version_label,
+            delete_source_bundle=False)
 
+    def application_version_exists(self, application_name, version_label):
+        return len(self.list_application_versions(application_name, version_label)) > 0
+
+    def list_application_versions(self, application_name, version_label=None):
+        if version_label is None:
+            response = self.conn.describe_application_versions(application_name)
+        else:
+            response = self.conn.describe_application_versions(application_name, version_label)
+
+        response = response['DescribeApplicationVersionsResponse']
         result = response['DescribeApplicationVersionsResult']
 
-        return len(result['ApplicationVersions']) > 0
+        return result['ApplicationVersions']
