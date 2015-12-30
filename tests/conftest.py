@@ -10,6 +10,7 @@ from boto.s3.bucket import Bucket as S3Bucket
 from boto.s3.connection import S3Connection
 from boto.beanstalk.layer1 import Layer1 as BeanstalkConnection
 from boto.cloudformation.connection import CloudFormationConnection
+from boto.rds import RDSConnection
 
 from dmaws.utils import run_cmd as run_cmd_orig
 from dmaws.build import get_repo_url, get_current_sha, get_current_ref
@@ -103,6 +104,18 @@ def s3_conn(request, s3_bucket):
     s3_mock.get_bucket.return_value = s3_bucket
 
     return s3_mock
+
+
+@pytest.fixture(autouse=True)
+def rds_conn(request):
+    rds_mock = mock.Mock(spec=RDSConnection)
+    rds_patch = mock.patch('boto.rds.connect_to_region',
+                           return_value=rds_mock)
+
+    rds_patch.start()
+    request.addfinalizer(rds_patch.stop)
+
+    return rds_mock
 
 
 @pytest.fixture()
