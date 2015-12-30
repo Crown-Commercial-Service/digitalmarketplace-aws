@@ -4,6 +4,7 @@ import pytest
 import mock
 import boto
 from boto.rds.dbsnapshot import DBSnapshot as _DBSnapshot
+from boto.rds.dbinstance import DBInstance as _DBInstance
 
 from .helpers import set_boto_response
 
@@ -12,13 +13,18 @@ from dmaws.syncdata import RDS
 
 AWS_REGION = 'eu-west-1'
 
-DBInstance = namedtuple('DBInstance', ['id', 'endpoint'])
+
+class DBInstance(_DBInstance):
+    def __init__(self, rds_conn, id, endpoint=None, status="available"):
+        super(DBInstance, self).__init__(rds_conn)
+        self.id = id
+        self.endpoint = endpoint or ("host1", "5432")
+        self.status = status
 
 
 class DBSnapshot(_DBSnapshot):
     def __init__(self, rds_conn, id, status='available'):
         super(DBSnapshot, self).__init__(rds_conn)
-        self.rds_conn = rds_conn
         self.id = id
         self.status = status
 
@@ -36,8 +42,8 @@ class TestRDS(object):
     def test_get_instance_by_url(self, rds_conn, url, expected_id):
         rds = RDS(AWS_REGION)
         rds_conn.get_all_dbinstances.return_value = [
-            DBInstance('db1', ('hostname1', '5432')),
-            DBInstance('db2', ('hostname2', '5432')),
+            DBInstance(rds_conn, 'db1', ('hostname1', '5432')),
+            DBInstance(rds_conn, 'db2', ('hostname2', '5432')),
         ]
 
         instance = rds.get_instance(url=url)
@@ -54,8 +60,8 @@ class TestRDS(object):
     def test_get_instance_by_id(self, rds_conn, id, expected_id):
         rds = RDS(AWS_REGION)
         rds_conn.get_all_dbinstances.return_value = [
-            DBInstance('db1', ('hostname1', '5432')),
-            DBInstance('db2', ('hostname2', '5432')),
+            DBInstance(rds_conn, 'db1', ('hostname1', '5432')),
+            DBInstance(rds_conn, 'db2', ('hostname2', '5432')),
         ]
 
         instance = rds.get_instance(id=id)
@@ -78,9 +84,7 @@ class TestRDS(object):
     def test_existing_snapshot_is_deleted_if_it_exists(self, rds_conn):
         rds = RDS(AWS_REGION)
 
-        rds_conn.get_all_dbsnapshots.return_value = [
-            DBSnapshot(rds_conn, 'snapshot_id')
-        ]
+        rds_conn.get_all_dbsnapshots.return_value = [DBSnapshot(rds_conn, 'snapshot_id')]
         rds_conn.create_dbsnapshot.return_value = DBSnapshot(rds_conn, 'snapshot_id')
 
         rds.create_new_snapshot("snapshot_id", "instance_id")
@@ -110,3 +114,50 @@ class TestRDS(object):
         rds.delete_snapshot("snapshot_id")
 
         rds_conn.delete_dbsnapshot.assert_called_once_with("snapshot_id")
+
+    def test_restore_instance_from_snapshot(self, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(rds_conn, "instance_id")
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, "instance_id")
+
+        instance = rds.restore_instance_from_snapshot("snapshot_id", "instance_id", ["sg1"])
+
+        assert instance.id == "instance_id"
+        assert instance.status == "available"
+        rds_conn.modify_dbinstance.assert_called_once_with("instance_id", vpc_security_groups=["sg1"])
+
+    @mock.patch('time.sleep')
+    def test_restore_instance_from_snapshot_blocks_until_restore_is_complete(self, sleep, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(
+            rds_conn, "instance_id", status="creating")
+        rds_conn.get_all_dbinstances.side_effect = [
+            [DBInstance(rds_conn, "instance_id", status="creating")],
+            [DBInstance(rds_conn, "instance_id", status="available")],
+        ]
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, "instance_id")
+
+        instance = rds.restore_instance_from_snapshot("snapshot_id", "instance", ["sg1"])
+
+        assert instance.status == "available"
+        assert rds_conn.get_all_dbinstances.call_count == 2
+
+    @mock.patch('time.sleep')
+    def test_restore_instance_from_snapshot_blocks_until_modify_is_complete(self, sleep, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(
+            rds_conn, "instance_id")
+        rds_conn.modify_dbinstance.return_value = DBInstance(
+            rds_conn, "instance_id", status="modifying")
+        rds_conn.get_all_dbinstances.side_effect = [
+            [DBInstance(rds_conn, "instance_id", status="modifying")],
+            [DBInstance(rds_conn, "instance_id", status="available")],
+        ]
+
+        instance = rds.restore_instance_from_snapshot("snapshot_id", "instance", ["sg1"])
+
+        assert instance.status == "available"
+        assert rds_conn.get_all_dbinstances.call_count == 2

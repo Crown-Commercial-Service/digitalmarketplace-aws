@@ -31,10 +31,29 @@ class RDS(object):
 
         snapshot = self.conn.create_dbsnapshot(snapshot_id, instance_id)
 
-        while snapshot.status != "available":
-            self.log("Waiting for snapshot creation")
-            time.sleep(20)
-            snapshot.update()
+        self._wait_for_available(snapshot, "snapshot", "creating")
 
     def delete_snapshot(self, snapshot_id):
         self.conn.delete_dbsnapshot(snapshot_id)
+
+    def restore_instance_from_snapshot(self, snapshot_id, instance_id, vpc_security_groups):
+        instance = self.conn.restore_dbinstance_from_dbsnapshot(
+            snapshot_id, instance_id,
+            "db.t2.micro",
+            multi_az=False)
+
+        self._wait_for_available(instance, "RDS instance", "creating")
+
+        instance = self.conn.modify_dbinstance(
+            instance_id,
+            vpc_security_groups=vpc_security_groups)
+
+        self._wait_for_available(instance, "RDS instance", "modifying")
+
+        return instance
+
+    def _wait_for_available(self, target, name, action):
+        while target.status != "available":
+            self.log("Waiting for {} to be available after {}".format(name, action))
+            time.sleep(20)
+            target.update()
