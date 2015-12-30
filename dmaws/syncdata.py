@@ -52,8 +52,22 @@ class RDS(object):
 
         return instance
 
+    def delete_instance(self, instance_id):
+        instance = self.conn.delete_dbinstance(instance_id, skip_final_snapshot=True)
+        self._wait_for_delete(instance, "RDS instance")
+
     def _wait_for_available(self, target, name, action):
         while target.status != "available":
             self.log("Waiting for {} to be available after {}".format(name, action))
             time.sleep(20)
             target.update()
+
+    def _wait_for_delete(self, target, name):
+        try:
+            while target.status == "deleting":
+                self.log("Waiting while deleting {}".format(name))
+                time.sleep(20)
+                target.update()
+        except boto.exception.BotoServerError as e:
+            if e.status != 404:
+                raise

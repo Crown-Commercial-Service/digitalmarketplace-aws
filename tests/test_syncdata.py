@@ -161,3 +161,30 @@ class TestRDS(object):
 
         assert instance.status == "available"
         assert rds_conn.get_all_dbinstances.call_count == 2
+
+    @mock.patch('time.sleep')
+    def test_delete_instance(self, sleep, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.delete_dbinstance.return_value = DBInstance(rds_conn, "instance_id", status="deleting")
+        rds_conn.get_all_dbinstances.side_effect = boto.exception.BotoServerError(404, "Not found")
+
+        rds.delete_instance("instance_id")
+
+        rds_conn.delete_dbinstance.assert_called_once_with("instance_id", skip_final_snapshot=True)
+
+    @mock.patch('time.sleep')
+    def test_delete_instance_blocks_until_complete(self, sleep, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.delete_dbinstance.return_value = DBInstance(rds_conn, "instance_id", status="deleting")
+        rds_conn.get_all_dbinstances.side_effect = [
+            [DBInstance(rds_conn, "instance_id", status="deleting")],
+            [DBInstance(rds_conn, "instance_id", status="deleting")],
+            boto.exception.BotoServerError(404, "Not found"),
+        ]
+
+        rds.delete_instance("instance_id")
+
+        rds_conn.delete_dbinstance.assert_called_once_with("instance_id", skip_final_snapshot=True)
+        assert rds_conn.get_all_dbinstances.call_count == 3
