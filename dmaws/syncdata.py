@@ -1,6 +1,9 @@
 import time
 
 import boto.rds
+import psycopg2
+
+from . import utils
 
 
 class RDS(object):
@@ -71,3 +74,48 @@ class RDS(object):
         except boto.exception.BotoServerError as e:
             if e.status != 404:
                 raise
+
+
+class RDSPostgresClient(object):
+    @staticmethod
+    def from_boto(instance, database, user, password, logger=None):
+        return RDSPostgresClient(
+            instance.endpoint[0], instance.endpoint[1],
+            database, user, password, logger)
+
+    def __init__(self, host, port, database, user, password, logger=None):
+        self.db_params = dict(
+            host=host,
+            port=port,
+            database=database,
+            user=user,
+            password=password,
+        )
+        self._connection = psycopg2.connect(**self.db_params)
+        self._cursor = None
+
+        self.log = logger or (lambda *args, **kwargs: None)
+
+    @property
+    def cursor(self):
+        if not self._cursor:
+            self._cursor = self._connection.cursor()
+
+        return self._cursor
+
+    def execute(self, sql):
+        return self.cursor.execute(sql)
+
+    def commit(self):
+        self._connection.commit()
+
+    def close(self):
+        if self._cursor:
+            self._cursor.close()
+        self._connection.close()
+
+    def dump(self, output_path):
+        db_path = "postgres://{user}:{password}@{host}:{port}/{database}".format(**self.db_params)
+        utils.run_cmd([
+            'pg_dump', '-cb', '-d', db_path, '-f', output_path
+        ], logger=self.log, ignore_errors=True)

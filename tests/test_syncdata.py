@@ -8,7 +8,7 @@ from boto.rds.dbinstance import DBInstance as _DBInstance
 
 from .helpers import set_boto_response
 
-from dmaws.syncdata import RDS
+from dmaws.syncdata import RDS, RDSPostgresClient
 
 
 AWS_REGION = 'eu-west-1'
@@ -188,3 +188,70 @@ class TestRDS(object):
 
         rds_conn.delete_dbinstance.assert_called_once_with("instance_id", skip_final_snapshot=True)
         assert rds_conn.get_all_dbinstances.call_count == 3
+
+
+@mock.patch('psycopg2.connect')
+class TestRDSPostgresClient(object):
+    def test_from_boto(self, pg_connect):
+        pg_connection = pg_connect.return_value
+
+        instance = DBInstance(None, 'instance_id')
+        client = RDSPostgresClient.from_boto(instance, "db_name", "db_user", "db_password")
+
+        pg_connect.assert_called_once_with(**dict(
+            host='host1',
+            port='5432',
+            database='db_name',
+            user='db_user',
+            password='db_password',
+        ))
+
+    def create_client(self, pg_connect):
+        pg_connection = pg_connect.return_value
+        pg_cursor = pg_connection.cursor.return_value
+
+        client = RDSPostgresClient('host1', '5432', 'db_name', 'db_user', 'db_password')
+
+        return pg_connection, pg_cursor, client
+
+    def test_cursor(self, pg_connect):
+        pg_connection, pg_cursor, client = self.create_client(pg_connect)
+
+        client.cursor
+
+        pg_connection.cursor.assert_called_once_with()
+
+    def test_cursor_reuses_same_cursor(self, pg_connect):
+        pg_connection, pg_cursor, client = self.create_client(pg_connect)
+
+        client.cursor
+        client.cursor
+
+        pg_connection.cursor.assert_called_once_with()
+
+    def test_commit(self, pg_connect):
+        pg_connection, pg_cursor, client = self.create_client(pg_connect)
+
+        client.cursor
+        client.commit()
+
+        pg_connection.cursor.assert_called_once_with()
+        pg_connection.commit.assert_called_once_with()
+
+    def test_close(self, pg_connect):
+        pg_connection, pg_cursor, client = self.create_client(pg_connect)
+
+        client.cursor
+        client.close()
+
+        pg_cursor.close.assert_called_once_with()
+        pg_connection.close.assert_called_once_with()
+
+    def test_dump(self, pg_connect, run_cmd):
+        pg_connection, pg_cursor, client = self.create_client(pg_connect)
+
+        client.dump("output.sql")
+
+        run_cmd.assert_called_once_with([
+            "pg_dump", "-cb", "-d", "postgres://db_user:db_password@host1:5432/db_name", "-f", "output.sql"
+        ], logger=mock.ANY, ignore_errors=True)
