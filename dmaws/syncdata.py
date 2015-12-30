@@ -1,3 +1,5 @@
+import time
+
 import boto.rds
 
 
@@ -27,7 +29,12 @@ class RDS(object):
             if e.status != 404:
                 raise
 
-        self.conn.create_dbsnapshot(snapshot_id, instance_id)
+        snapshot = self.conn.create_dbsnapshot(snapshot_id, instance_id)
+
+        while snapshot.status != "available":
+            self.log("Waiting for snapshot creation")
+            time.sleep(20)
+            snapshot.update()
 
     def delete_snapshot(self, snapshot_id):
         self.conn.delete_dbsnapshot(snapshot_id)

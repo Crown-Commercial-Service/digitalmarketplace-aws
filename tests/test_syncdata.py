@@ -1,7 +1,9 @@
 from collections import namedtuple
 
 import pytest
+import mock
 import boto
+from boto.rds.dbsnapshot import DBSnapshot as _DBSnapshot
 
 from .helpers import set_boto_response
 
@@ -11,7 +13,14 @@ from dmaws.syncdata import RDS
 AWS_REGION = 'eu-west-1'
 
 DBInstance = namedtuple('DBInstance', ['id', 'endpoint'])
-DBSnapshot = namedtuple('DBSnapshot', ['id'])
+
+
+class DBSnapshot(_DBSnapshot):
+    def __init__(self, rds_conn, id, status='available'):
+        super(DBSnapshot, self).__init__(rds_conn)
+        self.rds_conn = rds_conn
+        self.id = id
+        self.status = status
 
 
 class TestRDS(object):
@@ -59,6 +68,8 @@ class TestRDS(object):
         rds = RDS(AWS_REGION)
 
         rds_conn.get_all_dbsnapshots.side_effect = boto.exception.BotoServerError(404, "Not found")
+        rds_conn.create_dbsnapshot.return_value = DBSnapshot(rds_conn, "snapshot_id")
+
         rds.create_new_snapshot("snapshot_id", "instance_id")
 
         rds_conn.create_dbsnapshot.assert_called_once_with("snapshot_id", "instance_id")
@@ -68,14 +79,30 @@ class TestRDS(object):
         rds = RDS(AWS_REGION)
 
         rds_conn.get_all_dbsnapshots.return_value = [
-            DBSnapshot('snapshot_id')
+            DBSnapshot(rds_conn, 'snapshot_id')
         ]
+        rds_conn.create_dbsnapshot.return_value = DBSnapshot(rds_conn, 'snapshot_id')
 
         rds.create_new_snapshot("snapshot_id", "instance_id")
 
         rds_conn.get_all_dbsnapshots.assert_called_once_with("snapshot_id")
         rds_conn.delete_dbsnapshot.assert_called_once_with("snapshot_id")
         rds_conn.create_dbsnapshot.assert_called_once_with("snapshot_id", "instance_id")
+
+    @mock.patch('time.sleep')
+    def test_create_new_snapshot_blocks_until_complete(self, sleep, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.get_all_dbsnapshots.side_effect = [
+            boto.exception.BotoServerError(404, "Not found"),
+            [DBSnapshot(rds_conn, "snapshot_id", "creating")],
+            [DBSnapshot(rds_conn, "snapshot_id", "available")],
+        ]
+        rds_conn.create_dbsnapshot.return_value = DBSnapshot(rds_conn, "snapshot_id", "creating")
+
+        rds.create_new_snapshot("snapshot_id", "instance_id")
+
+        assert rds_conn.get_all_dbsnapshots.call_count == 3
 
     def test_delete_snapshot(self, rds_conn):
         rds = RDS(AWS_REGION)
