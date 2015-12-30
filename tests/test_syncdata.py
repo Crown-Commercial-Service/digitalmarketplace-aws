@@ -1,11 +1,17 @@
-import pytest
 from collections import namedtuple
-from dmaws.syncdata import RDS
+
+import pytest
+import boto
+
 from .helpers import set_boto_response
+
+from dmaws.syncdata import RDS
+
 
 AWS_REGION = 'eu-west-1'
 
 DBInstance = namedtuple('DBInstance', ['id', 'endpoint'])
+DBSnapshot = namedtuple('DBSnapshot', ['id'])
 
 
 class TestRDS(object):
@@ -48,3 +54,32 @@ class TestRDS(object):
             assert instance is None
         else:
             assert instance.id == expected_id
+
+    def test_create_new_snapshot(self, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.get_all_dbsnapshots.side_effect = boto.exception.BotoServerError(404, "Not found")
+        rds.create_new_snapshot("snapshot_id", "instance_id")
+
+        rds_conn.create_dbsnapshot.assert_called_once_with("snapshot_id", "instance_id")
+        assert not rds_conn.delete_dbsnapshot.called
+
+    def test_existing_snapshot_is_deleted_if_it_exists(self, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds_conn.get_all_dbsnapshots.return_value = [
+            DBSnapshot('snapshot_id')
+        ]
+
+        rds.create_new_snapshot("snapshot_id", "instance_id")
+
+        rds_conn.get_all_dbsnapshots.assert_called_once_with("snapshot_id")
+        rds_conn.delete_dbsnapshot.assert_called_once_with("snapshot_id")
+        rds_conn.create_dbsnapshot.assert_called_once_with("snapshot_id", "instance_id")
+
+    def test_delete_snapshot(self, rds_conn):
+        rds = RDS(AWS_REGION)
+
+        rds.delete_snapshot("snapshot_id")
+
+        rds_conn.delete_dbsnapshot.assert_called_once_with("snapshot_id")

@@ -16,3 +16,18 @@ class RDS(object):
         elif id is not None:
             predicate = lambda instance: instance.id == id
         return next(filter(predicate, instances), None)
+
+    def create_new_snapshot(self, snapshot_id, instance_id):
+        """Create a new RDS snapshot deleting the existing one if there
+        """
+        try:
+            self.conn.get_all_dbsnapshots(snapshot_id)
+            self.conn.delete_dbsnapshot(snapshot_id)
+        except boto.exception.BotoServerError as e:
+            if e.status != 404:
+                raise
+
+        self.conn.create_dbsnapshot(snapshot_id, instance_id)
+
+    def delete_snapshot(self, snapshot_id):
+        self.conn.delete_dbsnapshot(snapshot_id)
