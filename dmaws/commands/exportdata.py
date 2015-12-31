@@ -1,3 +1,5 @@
+import os
+
 import click
 
 from ..cli import cli_command
@@ -6,11 +8,13 @@ from ..rds import RDS, RDSPostgresClient
 
 
 @cli_command('exportdata', max_apps=0)
-def exportdata_cmd(ctx):
+@click.option('--export-path', default='.',
+              help="Path to write export files.")
+def exportdata_cmd(ctx, export_path):
     plan = StackPlan.from_ctx(ctx, apps=['database_dev_access'])
 
-    status = plan.create(create_dependencies=False)
-    if not status:
+    if not plan.create(create_dependencies=False):
+        ctx.log("Failed to allow dev access", color='red')
         sys.exit(1)
 
     plan.info(['database'])
@@ -32,12 +36,16 @@ def exportdata_cmd(ctx):
     )
 
     pg_client.clean_database_for_staging()
-    pg_client.dump("staging.sql")
+    pg_client.dump(os.path.join(export_path, "staging.sql"))
 
     pg_client.clean_database_for_preview()
-    pg_client.dump("preview.sql")
+    pg_client.dump(os.path.join(export_path, "preview.sql"))
 
     pg_client.close()
 
     rds.delete_instance('exportdata')
     rds.delete_snapshot('exportdata')
+
+    if not plan.delete():
+        ctx.log("Failed to remove dev access", color='red')
+        sys.exit(1)
