@@ -196,7 +196,7 @@ class TestRDSPostgresClient(object):
         pg_connection = pg_connect.return_value
 
         instance = DBInstance(None, 'instance_id')
-        client = RDSPostgresClient.from_boto(instance, "db_name", "db_user", "db_password")
+        RDSPostgresClient.from_boto(instance, "db_name", "db_user", "db_password").cursor
 
         pg_connect.assert_called_once_with(**dict(
             host='host1',
@@ -206,6 +206,19 @@ class TestRDSPostgresClient(object):
             password='db_password',
         ))
 
+    def test_from_url(self, pg_connect):
+        pg_connection = pg_connect.return_value
+
+        RDSPostgresClient.from_url("host1:port/the_db", "db_user", "db_password").cursor
+
+        pg_connect.assert_called_once_with(**dict(
+            host="host1",
+            port="port",
+            database="the_db",
+            user="db_user",
+            password="db_password",
+        ))
+
     def create_client(self, pg_connect):
         pg_connection = pg_connect.return_value
         pg_cursor = pg_connection.cursor.return_value
@@ -213,6 +226,14 @@ class TestRDSPostgresClient(object):
         client = RDSPostgresClient('host1', '5432', 'db_name', 'db_user', 'db_password')
 
         return pg_connection, pg_cursor, client
+
+    def test_connect_not_called_if_cursor_not_accessed(self, pg_connect):
+        pg_connection = pg_connect.return_value
+        pg_cursor = pg_connection.cursor.return_value
+
+        RDSPostgresClient('host1', '5432', 'db_name', 'db_user', 'db_password')
+
+        assert not pg_connect.called
 
     def test_cursor(self, pg_connect):
         pg_connection, pg_cursor, client = self.create_client(pg_connect)

@@ -82,6 +82,12 @@ class RDSPostgresClient(object):
             instance.endpoint[0], instance.endpoint[1],
             database, user, password, logger)
 
+    @staticmethod
+    def from_url(url, user, password, logger=None):
+        host, database = url.split('/')
+        host, port = host.split(':')
+        return RDSPostgresClient(host, port, database, user, password, logger)
+
     def __init__(self, host, port, database, user, password, logger=None):
         self.db_params = dict(
             host=host,
@@ -90,7 +96,6 @@ class RDSPostgresClient(object):
             user=user,
             password=password,
         )
-        self._connection = psycopg2.connect(**self.db_params)
         self._cursor = None
 
         self.log = logger or (lambda *args, **kwargs: None)
@@ -98,9 +103,14 @@ class RDSPostgresClient(object):
     @property
     def cursor(self):
         if not self._cursor:
+            self._connection = psycopg2.connect(**self.db_params)
             self._cursor = self._connection.cursor()
 
         return self._cursor
+
+    @property
+    def db_path(self):
+        return "postgres://{user}:{password}@{host}:{port}/{database}".format(**self.db_params)
 
     def execute(self, sql):
         return self.cursor.execute(sql)
@@ -111,12 +121,16 @@ class RDSPostgresClient(object):
     def close(self):
         if self._cursor:
             self._cursor.close()
-        self._connection.close()
+            self._connection.close()
 
     def dump(self, output_path):
-        db_path = "postgres://{user}:{password}@{host}:{port}/{database}".format(**self.db_params)
         utils.run_cmd([
-            'pg_dump', '-cb', '-d', db_path, '-f', output_path
+            'pg_dump', '-cb', '-d', self.db_path, '-f', output_path
+        ], logger=self.log, ignore_errors=True)
+
+    def load(self, export_path):
+        utils.run_cmd([
+            'psql', '-d', self.db_path, 'f', export_path
         ], logger=self.log, ignore_errors=True)
 
     def get_open_framework_ids(self):
