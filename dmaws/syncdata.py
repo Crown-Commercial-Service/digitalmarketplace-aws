@@ -2,6 +2,7 @@ import time
 
 import boto.rds
 import psycopg2
+import bcrypt
 
 from . import utils
 
@@ -119,3 +120,75 @@ class RDSPostgresClient(object):
         utils.run_cmd([
             'pg_dump', '-cb', '-d', db_path, '-f', output_path
         ], logger=self.log, ignore_errors=True)
+
+    def get_open_framework_ids(self):
+        self.cursor.execute("SELECT id FROM frameworks WHERE status = 'open'")
+        return tuple(framework[0] for framework in self.cursor.fetchall())
+
+    def clean_database_for_staging(self):
+        self.log("Update users")
+        self.cursor.execute(
+            "UPDATE users SET name = %s, email_address = id || '@example.com'",
+            ("Example User",))
+
+        open_framework_ids = self.get_open_framework_ids()
+        self.log("Delete draft services")
+        self.cursor.execute(
+            "DELETE FROM draft_services WHERE framework_id IN %s",
+            (open_framework_ids,))
+        self.log("Delete supplier frameworks")
+        self.cursor.execute(
+            "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
+            (open_framework_ids,))
+
+        # Fix suppliers with services but no supplier_framework
+        self.cursor.execute("""
+            INSERT INTO supplier_frameworks (supplier_id, framework_id) (
+                SELECT DISTINCT suppliers.supplier_id, services.framework_id
+                FROM suppliers
+                JOIN services ON suppliers.supplier_id=services.supplier_id
+                WHERE (
+                    SELECT COUNT(*) FROM supplier_frameworks WHERE supplier_id=suppliers.supplier_id
+                ) = 0
+            )
+        """)
+
+        self.log("Delete dangling suppliers")
+        self.cursor.execute("""
+            WITH dangling_suppliers AS (
+                    -- Suppliers that are not connected to any frameworks
+                    SELECT supplier_id FROM suppliers
+                    WHERE (
+                        SELECT COUNT(*) FROM supplier_frameworks WHERE supplier_id=suppliers.supplier_id
+                    ) = 0
+                ), d1 AS (
+                    DELETE FROM contact_information WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
+                ), d2 AS (
+                    DELETE FROM users WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
+                )
+             DELETE FROM suppliers WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
+        """)
+
+        self.log("Delete audit events")
+        self.cursor.execute("DELETE FROM audit_events")
+
+        self.log("Blank out declarations")
+        self.cursor.execute("""
+            UPDATE supplier_frameworks
+            SET declaration = (CASE
+                WHEN (declaration->'status') IS NULL
+                THEN '{}'
+                ELSE '{"status": "' || (declaration->>'status') || '"}'
+            END)::json
+            WHERE declaration IS NOT NULL AND declaration::varchar != 'null';
+        """)
+
+        self.commit()
+
+    def clean_database_for_preview(self):
+        self.log("Update user passwords")
+        self.cursor.execute(
+            "UPDATE users SET password = %s",
+            (bcrypt.hashpw(b"Password1234", bcrypt.gensalt(4)),))
+
+        self.commit()

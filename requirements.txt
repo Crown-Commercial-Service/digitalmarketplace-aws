@@ -9,3 +9,6 @@ six==1.9.0
 
 # loaddata dependencies
 requests==2.6.0
+
+# syncdata dependencies
+bcrypt==2.0.0
