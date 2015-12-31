@@ -2,11 +2,11 @@ import click
 
 from ..cli import cli_command
 from ..stacks import StackPlan
-from ..syncdata import RDS, RDSPostgresClient
+from ..rds import RDS, RDSPostgresClient
 
 
-@cli_command('syncdata', max_apps=0)
-def syncdata_cmd(ctx):
+@cli_command('exportdata', max_apps=0)
+def exportdata_cmd(ctx):
     plan = StackPlan.from_ctx(ctx, apps=['database_dev_access'])
 
     status = plan.create(create_dependencies=False)
@@ -18,9 +18,9 @@ def syncdata_cmd(ctx):
     rds = RDS(ctx.variables['aws_region'], logger=ctx.log)
     instance = rds.get_instance(plan.get_value('stacks.database.outputs')['URL'])
 
-    snapshot = rds.create_new_snapshot('syncdata', instance.id)
+    snapshot = rds.create_new_snapshot('exportdata', instance.id)
     tmp_instance = rds.restore_instance_from_snapshot(
-        "syncdata", "syncdata",
+        "exportdata", "exportdata",
         vpc_security_groups=instance.vpc_security_groups)
 
     pg_client = RDSPostgresClient.from_boto(
@@ -39,5 +39,5 @@ def syncdata_cmd(ctx):
 
     pg_client.close()
 
-    rds.delete_instance('syncdata')
-    rds.delete_snapshot('syncdata')
+    rds.delete_instance('exportdata')
+    rds.delete_snapshot('exportdata')

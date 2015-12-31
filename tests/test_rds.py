@@ -8,7 +8,7 @@ from boto.rds.dbinstance import DBInstance as _DBInstance
 
 from .helpers import set_boto_response
 
-from dmaws.syncdata import RDS, RDSPostgresClient
+from dmaws.rds import RDS, RDSPostgresClient
 
 
 AWS_REGION = 'eu-west-1'
