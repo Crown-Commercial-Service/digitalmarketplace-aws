@@ -11,27 +11,22 @@ from ..rds import RDS, RDSPostgresClient
 @click.option('--export-path', default='.',
               help="Path to write export files.")
 def exportdata_cmd(ctx, export_path):
-    plan = StackPlan.from_ctx(ctx, apps=['database_dev_access'])
-
-    if not plan.create(create_dependencies=False):
-        ctx.log("Failed to allow dev access", color='red')
-        sys.exit(1)
-
-    plan.info(['database'])
-
     rds = RDS(ctx.variables['aws_region'], logger=ctx.log)
-    instance = rds.get_instance(plan.get_value('stacks.database.outputs')['URL'])
 
-    snapshot = rds.create_new_snapshot('exportdata', instance.id)
+    snapshot = rds.create_new_snapshot(
+        'exportdata',
+        rds.get_instance(plan.get_value('stacks.database.outputs')['URL']).id)
+
     tmp_instance = rds.restore_instance_from_snapshot(
         "exportdata", "exportdata",
-        vpc_security_groups=instance.vpc_security_groups)
+        dev_user_ips=ctx.variables['dev_user_ips'],
+        vpc_id=ctx.variables['vpc_id'])
 
     pg_client = RDSPostgresClient.from_boto(
         tmp_instance,
-        plan.get_value('database.name'),
-        plan.get_value('database.user'),
-        plan.get_value('database.password'),
+        ctx.variables['database']['name'],
+        ctx.variables['database']['user'],
+        ctx.variables['database']['password'],
         logger=ctx.log
     )
 
@@ -45,7 +40,3 @@ def exportdata_cmd(ctx, export_path):
 
     rds.delete_instance('exportdata')
     rds.delete_snapshot('exportdata')
-
-    if not plan.delete():
-        ctx.log("Failed to remove dev access", color='red')
-        sys.exit(1)

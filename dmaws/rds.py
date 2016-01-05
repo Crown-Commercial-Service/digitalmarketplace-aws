@@ -1,6 +1,7 @@
 import time
 
 import boto.rds
+import boto.ec2
 import psycopg2
 import bcrypt
 
@@ -10,6 +11,9 @@ from . import utils
 class RDS(object):
     def __init__(self, region, logger=None, profile_name=None):
         self.conn = boto.rds.connect_to_region(
+            region,
+            profile_name=profile_name)
+        self.ec2conn = boto.ec2.connect_to_region(
             region,
             profile_name=profile_name)
         self.log = logger or (lambda *args, **kwargs: None)
@@ -26,7 +30,7 @@ class RDS(object):
         """
         try:
             self.conn.get_all_dbsnapshots(snapshot_id)
-            self.conn.delete_dbsnapshot(snapshot_id)
+            self.delete_snapshot(snapshot_id)
         except boto.exception.BotoServerError as e:
             if e.status != 404:
                 raise
@@ -38,7 +42,26 @@ class RDS(object):
     def delete_snapshot(self, snapshot_id):
         self.conn.delete_dbsnapshot(snapshot_id)
 
-    def restore_instance_from_snapshot(self, snapshot_id, instance_id, vpc_security_groups):
+    def create_new_security_group(self, name, dev_user_ips, vpc_id):
+        # The ec2 module does not raise helpful errors, everything is an EC2ResponseError
+        # making it hard to tell if the security group didn't exist or there was some other
+        # problem
+        if any(group.name == name for group in self.ec2conn.get_all_security_groups()):
+            self.ec2conn.delete_security_group(name)
+        security_group = self.ec2conn.create_security_group(
+            name, 'Allow access to the exportdata RDS instance',
+            vpc_id=vpc_id)
+        for dev_user_ip in dev_user_ips:
+            self.ec2conn.authorize_security_group(
+                ip_protocol='tcp', from_port=5432, to_port=5432,
+                cidr_ip=dev_user_ip, group_id=security_group.id)
+
+        return security_group
+
+    def restore_instance_from_snapshot(self, snapshot_id, instance_id, dev_user_ips, vpc_id):
+        security_group = self.create_new_security_group(
+            "exportdata-dev-access", dev_user_ips, vpc_id)
+
         instance = self.conn.restore_dbinstance_from_dbsnapshot(
             snapshot_id, instance_id,
             "db.t2.micro",
@@ -48,7 +71,7 @@ class RDS(object):
 
         instance = self.conn.modify_dbinstance(
             instance_id,
-            vpc_security_groups=vpc_security_groups)
+            vpc_security_groups=[security_group.id])
 
         self._wait_for_available(instance, "RDS instance", "modifying")
 

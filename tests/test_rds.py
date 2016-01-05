@@ -29,6 +29,9 @@ class DBSnapshot(_DBSnapshot):
         self.status = status
 
 
+SecurityGroup = namedtuple('SecurityGroup', ['id', 'name'])
+
+
 class TestRDS(object):
     def test_init(self, rds_conn):
         assert RDS(AWS_REGION).conn == rds_conn
@@ -115,22 +118,85 @@ class TestRDS(object):
 
         rds_conn.delete_dbsnapshot.assert_called_once_with("snapshot_id")
 
-    def test_restore_instance_from_snapshot(self, rds_conn):
+    def test_create_new_security_group(self, ec2_conn):
         rds = RDS(AWS_REGION)
 
+        ec2_conn.get_all_security_groups.return_value = []
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg1', 'sg-name')
+
+        security_group = rds.create_new_security_group('sg-name', ['ip1'], 'vpcid')
+
+        assert security_group.id == 'sg1'
+        assert security_group.name == 'sg-name'
+
+        assert not ec2_conn.delete_security_group.called
+        ec2_conn.create_security_group.assert_called_once_with(
+            'sg-name', mock.ANY,
+            vpc_id='vpcid')
+        ec2_conn.authorize_security_group.assert_called_once_with(
+            ip_protocol='tcp', from_port=5432, to_port=5432,
+            cidr_ip='ip1', group_id='sg1')
+
+    def test_create_new_security_group_deletes_existing_security_group(self, ec2_conn):
+        rds = RDS(AWS_REGION)
+
+        ec2_conn.get_all_security_groups.return_value = [SecurityGroup('sg1', 'sg-name')]
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg1', 'sg-name')
+
+        rds.create_new_security_group('sg-name', ['ip1'], 'vpcid')
+
+        ec2_conn.delete_security_group.assert_called_with('sg-name')
+
+    def test_create_new_security_group_does_not_delete_security_groups_with_other_names(self, ec2_conn):
+        rds = RDS(AWS_REGION)
+
+        ec2_conn.get_all_security_groups.return_value = [SecurityGroup('sg1', 'sg-bad')]
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg1', 'sg-name')
+
+        rds.create_new_security_group('sg-name', ['ip1'], 'vpcid')
+
+        assert not ec2_conn.delete_security_group.called
+
+    def test_create_new_security_group_adds_multiple_rules(self, ec2_conn):
+        rds = RDS(AWS_REGION)
+
+        ec2_conn.get_all_security_groups.return_value = []
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg1', 'sg-name')
+
+        security_group = rds.create_new_security_group('sg-name', ['ip1', 'ip2'], 'vpcid')
+
+        ec2_conn.authorize_security_group.call_args_list == [
+            mock.call(ip_protocol='tcp', from_port=5432, to_port=5432,
+                      cidr_ip='ip1', group_id='sg1'),
+            mock.call(ip_protocol='tcp', from_port=5432, to_port=5432,
+                      cidr_ip='ip2', group_id='sg1'),
+        ]
+
+    def test_restore_instance_from_snapshot(self, rds_conn):
+        rds = RDS(AWS_REGION)
+        rds.create_new_security_group = mock.Mock()
+
+        rds.create_new_security_group.return_value = SecurityGroup('sg1', 'sg-name')
         rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(rds_conn, "instance_id")
         rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, "instance_id")
 
-        instance = rds.restore_instance_from_snapshot("snapshot_id", "instance_id", ["sg1"])
+        instance = rds.restore_instance_from_snapshot(
+            "snapshot_id", "instance_id",
+            dev_user_ips=['anip'],
+            vpc_id='vpcid')
 
         assert instance.id == "instance_id"
         assert instance.status == "available"
+        rds_conn.restore_dbinstance_from_dbsnapshot("snapshot_id", "instance_id", "db.t2.micro", multi_az=False)
         rds_conn.modify_dbinstance.assert_called_once_with("instance_id", vpc_security_groups=["sg1"])
+        rds.create_new_security_group.assert_called_once_with('exportdata-dev-access', ['anip'], 'vpcid')
 
     @mock.patch('time.sleep')
     def test_restore_instance_from_snapshot_blocks_until_restore_is_complete(self, sleep, rds_conn):
         rds = RDS(AWS_REGION)
+        rds.create_new_security_group = mock.Mock()
 
+        rds.create_new_security_group.return_value = SecurityGroup('sg1', 'sg-name')
         rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(
             rds_conn, "instance_id", status="creating")
         rds_conn.get_all_dbinstances.side_effect = [
@@ -139,7 +205,8 @@ class TestRDS(object):
         ]
         rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, "instance_id")
 
-        instance = rds.restore_instance_from_snapshot("snapshot_id", "instance", ["sg1"])
+        instance = rds.restore_instance_from_snapshot(
+            "snapshot_id", "instance", ["ip1"], "vpcid")
 
         assert instance.status == "available"
         assert rds_conn.get_all_dbinstances.call_count == 2
@@ -147,7 +214,9 @@ class TestRDS(object):
     @mock.patch('time.sleep')
     def test_restore_instance_from_snapshot_blocks_until_modify_is_complete(self, sleep, rds_conn):
         rds = RDS(AWS_REGION)
+        rds.create_new_security_group = mock.Mock()
 
+        rds.create_new_security_group.return_value = SecurityGroup('sg1', 'sg-name')
         rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(
             rds_conn, "instance_id")
         rds_conn.modify_dbinstance.return_value = DBInstance(
@@ -157,7 +226,8 @@ class TestRDS(object):
             [DBInstance(rds_conn, "instance_id", status="available")],
         ]
 
-        instance = rds.restore_instance_from_snapshot("snapshot_id", "instance", ["sg1"])
+        instance = rds.restore_instance_from_snapshot(
+            "snapshot_id", "instance", ["ip1"], "vpcid")
 
         assert instance.status == "available"
         assert rds_conn.get_all_dbinstances.call_count == 2

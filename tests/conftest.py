@@ -11,6 +11,7 @@ from boto.s3.connection import S3Connection
 from boto.beanstalk.layer1 import Layer1 as BeanstalkConnection
 from boto.cloudformation.connection import CloudFormationConnection
 from boto.rds import RDSConnection
+from boto.ec2 import EC2Connection
 
 from dmaws.utils import run_cmd as run_cmd_orig
 from dmaws.build import get_repo_url, get_current_sha, get_current_ref
@@ -116,6 +117,18 @@ def rds_conn(request):
     request.addfinalizer(rds_patch.stop)
 
     return rds_mock
+
+
+@pytest.fixture(autouse=True)
+def ec2_conn(request):
+    ec2_mock = mock.Mock(spec=EC2Connection)
+    ec2_patch = mock.patch('boto.ec2.connect_to_region',
+                           return_value=ec2_mock)
+
+    ec2_patch.start()
+    request.addfinalizer(ec2_patch.stop)
+
+    return ec2_mock
 
 
 @pytest.fixture()
