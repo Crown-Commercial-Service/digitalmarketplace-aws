@@ -26,7 +26,7 @@ class RDS(object):
                 return instance
 
     def create_new_snapshot(self, snapshot_id, instance_id):
-        """Create a new RDS snapshot deleting the existing one if there
+        """Create a new RDS snapshot deleting the existing snapshot if there is one
         """
         try:
             self.conn.get_all_dbsnapshots(snapshot_id)
