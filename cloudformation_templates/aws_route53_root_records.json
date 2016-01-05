@@ -50,7 +50,7 @@
         "Type": "TXT",
         "ResourceRecords": [
           "\"google-site-verification=wCZPbaSgAFuIlzK2CpzwiOYwgCUJP_ZUOhHTYCGs7aQ\"",
-          "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com ~all\""
+          "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com include:mail.zendesk.com ~all\""
         ],
         "TTL": "300"
       }
