@@ -1,7 +1,7 @@
 import mock
 import pytest
 
-from dmaws.utils import run_cmd, CalledProcessError
+from dmaws.utils import run_cmd, run_piped_cmds, CalledProcessError
 from dmaws.utils import safe_path_join
 from dmaws.utils import dict_from_path, merge_dicts
 from dmaws.utils import DEFAULT_TEMPLATES_PATH
@@ -72,6 +72,47 @@ class TestRunCmd(object):
             mock.call(mock.ANY, "ls"),
             mock.call(mock.ANY, "ls", 7)
         ])
+
+
+class TestRunPipedCmds(object):
+    def test_run_piped_cmds(self, subprocess):
+        subprocess.PIPE = 'mypipe'
+        pipe1 = mock.Mock(stdout='p1stdout')
+        pipe2 = mock.Mock(returncode=0)
+        pipe2.communicate.return_value = ('out', 'err')
+        subprocess.Popen.side_effect = [
+            pipe1, pipe2
+        ]
+
+        run_piped_cmds([
+            ["ls"],
+            ["cat"],
+        ])
+
+        assert subprocess.Popen.call_args_list == [
+            mock.call(["ls"],
+                      env={}, stdout=subprocess.PIPE, stderr=mock.ANY, stdin=None, cwd=None),
+            mock.call(["cat"],
+                      env={}, stdout=None, stderr=mock.ANY, stdin='p1stdout', cwd=None),
+        ]
+
+    def test_env_is_set_to_all_procs(self, os_environ, subprocess):
+        os_environ.update({"OS": "1"})
+        pipe1 = mock.Mock(stdout='p1stdout')
+        pipe2 = mock.Mock(returncode=0)
+        pipe2.communicate.return_value = ('out', 'err')
+        subprocess.Popen.side_effect = [
+            pipe1, pipe2
+        ]
+
+        run_piped_cmds([['ls'], ['cat']], env={"ENV": "2"})
+
+        assert subprocess.Popen.call_args_list == [
+            mock.call(['ls'], env={"OS": "1", "ENV": "2"}, stdout=mock.ANY, stderr=mock.ANY, stdin=mock.ANY,
+                      cwd=mock.ANY),
+            mock.call(['cat'], env={"OS": "1", "ENV": "2"}, stdout=mock.ANY, stderr=mock.ANY, stdin=mock.ANY,
+                      cwd=mock.ANY),
+        ]
 
 
 class TestSafePathJoin(object):

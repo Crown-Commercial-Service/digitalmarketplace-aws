@@ -55,6 +55,48 @@ def run_cmd(args, env=None, cwd=None, stdout=None, stderr=None,
     return streamdata
 
 
+def run_piped_cmds(cmds, env=None, cwd=None, stdout=None, stderr=None,
+                   logger=None, ignore_errors=False):
+    """Run multiple external process commands piped together
+
+    Commands are piped together via stdout -> stdin.
+
+    Example:
+        >>> cmds = [["ls"], ["grep", "foo"]]
+
+        is equivalent to the following in BASH
+
+        `ls | grep foo`
+    """
+    cmd_env = os.environ.copy()
+    cmd_env.update(env or {})
+    cmd_chain = " | ".join(args[0] for args in cmds)
+    if logger:
+        logger("Running %s", cmd_chain)
+    cmd = None
+    for i, args in enumerate(cmds):
+        cmd_stdin = cmd.stdout if cmd else None
+        cmd_stdout = subprocess.PIPE if i < len(cmds) - 1 else stdout
+
+        cmd = subprocess.Popen(
+            args, env=cmd_env, cwd=cwd,
+            stdin=cmd_stdin,
+            stdout=cmd_stdout,
+            stderr=stderr)
+
+    streamdata = cmd.communicate()[0]
+    if logger:
+        logger("%s completed with return code %s", cmd_chain, cmd.returncode)
+    if cmd.returncode and not ignore_errors:
+        raise CalledProcessError(
+            cmd.returncode,
+            cmds[-1],
+            output=streamdata
+        )
+
+    return streamdata
+
+
 def safe_path_join(basedir, path):
     path = os.path.join(basedir, path)
     abs_path = os.path.abspath(path)
