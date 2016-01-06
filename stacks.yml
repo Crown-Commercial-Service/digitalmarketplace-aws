@@ -394,7 +394,7 @@ supplier_frontend:
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmMandrillApiKey: "{{ supplier_frontend.mandrill_key }}"
     EnvVarDmClarificationQuestionEmail: "{{ supplier_frontend.clarification_question_email }}"
-    EnvVarDmG7FollowUpEmailTo: "{{ supplier_frontend.g7_follow_up_email_to }}"
+    EnvVarDmFollowUpEmailTo: "{{ supplier_frontend.follow_up_email_to }}"
     EnvVarDmPasswordSecretKey: "{{ supplier_frontend.password_key }}"
     EnvVarDmSharedEmailKey: "{{ supplier_frontend.shared_email_key }}"
 
