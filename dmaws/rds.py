@@ -43,11 +43,7 @@ class RDS(object):
         self.conn.delete_dbsnapshot(snapshot_id)
 
     def create_new_security_group(self, name, dev_user_ips, vpc_id):
-        # The ec2 module does not raise helpful errors, everything is an EC2ResponseError
-        # making it hard to tell if the security group didn't exist or there was some other
-        # problem
-        if any(group.name == name for group in self.ec2conn.get_all_security_groups()):
-            self.ec2conn.delete_security_group(name)
+        self.delete_security_group(name)
         security_group = self.ec2conn.create_security_group(
             name, 'Allow access to the exportdata RDS instance',
             vpc_id=vpc_id)
@@ -58,10 +54,25 @@ class RDS(object):
 
         return security_group
 
-    def restore_instance_from_snapshot(self, snapshot_id, instance_id, dev_user_ips, vpc_id):
-        security_group = self.create_new_security_group(
-            "exportdata-dev-access", dev_user_ips, vpc_id)
+    def delete_security_group(self, name):
+        # The ec2 module does not raise helpful errors, everything is an EC2ResponseError
+        # making it hard to tell if the security group didn't exist or there was some other
+        # problem
+        if any(group.name == name for group in self.ec2conn.get_all_security_groups()):
+            self.ec2conn.delete_security_group(name)
 
+    def allow_access_to_instance(self, instance, security_group_name, dev_user_ips, vpc_id):
+        security_group = self.create_new_security_group(
+            security_group_name, dev_user_ips, vpc_id)
+
+        instance = self.conn.modify_dbinstance(
+            instance.id, vpc_security_groups=[security_group.id])
+
+        self._wait_for_available(instance, "RDS instance", "modifying")
+
+        return instance
+
+    def restore_instance_from_snapshot(self, snapshot_id, instance_id, dev_user_ips, vpc_id):
         instance = self.conn.restore_dbinstance_from_dbsnapshot(
             snapshot_id, instance_id,
             "db.t2.micro",
@@ -69,11 +80,9 @@ class RDS(object):
 
         self._wait_for_available(instance, "RDS instance", "creating")
 
-        instance = self.conn.modify_dbinstance(
-            instance_id,
-            vpc_security_groups=[security_group.id])
-
-        self._wait_for_available(instance, "RDS instance", "modifying")
+        instance = self.allow_access_to_instance(
+            instance, "exportdata-dev-access",
+            dev_user_ips, vpc_id)
 
         return instance
 
@@ -155,6 +164,12 @@ class RDSPostgresClient(object):
         utils.run_cmd([
             'psql', '-d', self.db_path, 'f', export_path
         ], logger=self.log, ignore_errors=True)
+
+    def dump_to(self, target_pg_client):
+        utils.run_piped_cmds([
+            ['pg_dump', '-cb', '-d', self.db_path],
+            ['psql', '-d', target_pg_client.db_path],
+        ], logger=self.log, ignore_errors=False)
 
     def get_open_framework_ids(self):
         self.cursor.execute("SELECT id FROM frameworks WHERE status = 'open'")
