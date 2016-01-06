@@ -1,4 +1,5 @@
 import os
+import copy
 
 import click
 import six
@@ -19,6 +20,18 @@ class Context(object):
         self.stacks = {}
         self.create_dependencies = False
 
+    def new_context(self, stage, environment, vars_files):
+        """Create a new context with different variables"""
+        ctx = Context()
+        ctx.stage = stage
+        ctx.environment = environment
+        ctx.load_variables(
+            files=ctx.get_variables_files(True, vars_files))
+        ctx.stacks = copy.deepcopy(self.stacks)
+        ctx.dry_run = self.dry_run
+
+        return ctx
+
     def add_apps(self, app):
         if isinstance(app, six.string_types):
             app = [app]
@@ -35,6 +48,19 @@ class Context(object):
     def add_dotted_variable(self, path, value):
         self.variables = merge_dicts(self.variables,
                                      dict_from_path(path, value))
+
+    def get_variables_files(self, load_default_files, vars_files):
+        vars_files = vars_files or []
+        if load_default_files:
+            default_vars_files = [
+                'vars/common.yml',
+                'vars/{}.yml'.format(self.stage),
+            ]
+            if os.path.exists('vars/user.yml'):
+                default_vars_files.append('vars/user.yml')
+            vars_files = default_vars_files + list(vars_files)
+
+        return vars_files
 
     def load_variables(self, files=None, pairs=None, variables=None):
         self.add_variables(variables or {})
