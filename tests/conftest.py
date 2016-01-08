@@ -219,3 +219,11 @@ def mkstemp(request):
     temp.return_value = -1, '/tmp/tempfile'
 
     return temp
+
+
+@pytest.fixture(autouse=True)
+def sleep(request):
+    sleep_patch = mock.patch('time.sleep')
+    request.addfinalizer(sleep_patch.stop)
+
+    return sleep_patch.start()
