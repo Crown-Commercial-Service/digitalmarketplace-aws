@@ -15,11 +15,13 @@ AWS_REGION = 'eu-west-1'
 
 
 class DBInstance(_DBInstance):
-    def __init__(self, rds_conn, id, endpoint=None, status="available"):
+    def __init__(self, rds_conn, id, endpoint=None, status="available",
+                 vpc_security_groups=None):
         super(DBInstance, self).__init__(rds_conn)
         self.id = id
         self.endpoint = endpoint or ("host1", "5432")
         self.status = status
+        self.vpc_security_groups = vpc_security_groups or []
 
 
 class DBSnapshot(_DBSnapshot):
@@ -30,6 +32,7 @@ class DBSnapshot(_DBSnapshot):
 
 
 SecurityGroup = namedtuple('SecurityGroup', ['id', 'name'])
+SecurityGroupMembership = namedtuple('SecurityGroupMembership', ['vpc_group'])
 
 
 class TestRDS(object):
@@ -174,11 +177,11 @@ class TestRDS(object):
 
     def test_restore_instance_from_snapshot(self, rds_conn):
         rds = RDS(AWS_REGION)
-        rds.create_new_security_group = mock.Mock()
+        rds.allow_access_to_instance = mock.Mock()
 
-        rds.create_new_security_group.return_value = SecurityGroup('sg1', 'sg-name')
-        rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(rds_conn, "instance_id")
-        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, "instance_id")
+        instance = DBInstance(rds_conn, "instance_id")
+        rds.allow_access_to_instance.return_value = instance
+        rds_conn.restore_dbinstance_from_dbsnapshot.return_value = instance
 
         instance = rds.restore_instance_from_snapshot(
             "snapshot_id", "instance_id",
@@ -188,41 +191,18 @@ class TestRDS(object):
         assert instance.id == "instance_id"
         assert instance.status == "available"
         rds_conn.restore_dbinstance_from_dbsnapshot("snapshot_id", "instance_id", "db.t2.micro", multi_az=False)
-        rds_conn.modify_dbinstance.assert_called_once_with("instance_id", vpc_security_groups=["sg1"])
-        rds.create_new_security_group.assert_called_once_with('exportdata-dev-access', ['anip'], 'vpcid')
+        rds.allow_access_to_instance.assert_called_once_with(instance, 'exportdata-dev-access', ['anip'], 'vpcid')
 
     @mock.patch('time.sleep')
     def test_restore_instance_from_snapshot_blocks_until_restore_is_complete(self, sleep, rds_conn):
         rds = RDS(AWS_REGION)
-        rds.create_new_security_group = mock.Mock()
+        rds.allow_access_to_instance = mock.Mock()
 
-        rds.create_new_security_group.return_value = SecurityGroup('sg1', 'sg-name')
+        rds.allow_access_to_instance.return_value = DBInstance(rds_conn, "instance_id")
         rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(
             rds_conn, "instance_id", status="creating")
         rds_conn.get_all_dbinstances.side_effect = [
             [DBInstance(rds_conn, "instance_id", status="creating")],
-            [DBInstance(rds_conn, "instance_id", status="available")],
-        ]
-        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, "instance_id")
-
-        instance = rds.restore_instance_from_snapshot(
-            "snapshot_id", "instance", ["ip1"], "vpcid")
-
-        assert instance.status == "available"
-        assert rds_conn.get_all_dbinstances.call_count == 2
-
-    @mock.patch('time.sleep')
-    def test_restore_instance_from_snapshot_blocks_until_modify_is_complete(self, sleep, rds_conn):
-        rds = RDS(AWS_REGION)
-        rds.create_new_security_group = mock.Mock()
-
-        rds.create_new_security_group.return_value = SecurityGroup('sg1', 'sg-name')
-        rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(
-            rds_conn, "instance_id")
-        rds_conn.modify_dbinstance.return_value = DBInstance(
-            rds_conn, "instance_id", status="modifying")
-        rds_conn.get_all_dbinstances.side_effect = [
-            [DBInstance(rds_conn, "instance_id", status="modifying")],
             [DBInstance(rds_conn, "instance_id", status="available")],
         ]
 
@@ -258,6 +238,164 @@ class TestRDS(object):
 
         rds_conn.delete_dbinstance.assert_called_once_with("instance_id", skip_final_snapshot=True)
         assert rds_conn.get_all_dbinstances.call_count == 3
+
+    def test_allow_access_to_instance(self, rds_conn, ec2_conn, sleep):
+        rds = RDS(AWS_REGION)
+
+        ec2_conn.get_all_security_groups.return_value = []
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg-1', 'sg#1')
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='modifying')
+        rds_conn.get_all_dbinstances.return_value = [DBInstance(rds_conn, 'ins-1', status='available')]
+
+        rds.allow_access_to_instance(
+            DBInstance(rds_conn, 'ins-1'), 'sg#1',
+            ['ip-one'], 'vpcid')
+
+        ec2_conn.create_security_group.assert_called_once_with(
+            'sg#1', mock.ANY, vpc_id='vpcid')
+        ec2_conn.authorize_security_group.assert_called_once_with(
+            ip_protocol=mock.ANY, from_port=mock.ANY, to_port=mock.ANY,
+            cidr_ip='ip-one', group_id='sg-1')
+        rds_conn.modify_dbinstance.assert_called_once_with(
+            'ins-1', vpc_security_groups=['sg-1'], apply_immediately=True)
+
+    def test_allow_access_revokes_existing_access_first(self, rds_conn, ec2_conn, sleep):
+        rds = RDS(AWS_REGION)
+        rds.revoke_access_to_instance = mock.Mock()
+
+        instance = DBInstance(rds_conn, 'ins-1')
+
+        ec2_conn.get_all_security_groups.return_value = [SecurityGroup('sg-1', 'sg#1')]
+        rds.revoke_access_to_instance.return_value = DBInstance(rds_conn, 'ins-1')
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg-1', 'sg#1')
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='modifying')
+        rds_conn.get_all_dbinstances.return_value = [DBInstance(rds_conn, 'ins-1', status='available')]
+
+        rds.allow_access_to_instance(
+            instance, 'sg#1',
+            ['ip-one'], 'vpcid')
+
+        rds.revoke_access_to_instance.assert_called_with(
+            instance, SecurityGroup('sg-1', 'sg#1'))
+        ec2_conn.delete_security_group.assert_called_with('sg#1')
+
+    def test_allow_access_waits_for_instance_to_become_unavailable_after_modify(self, rds_conn, ec2_conn, sleep):
+        rds = RDS(AWS_REGION)
+
+        ec2_conn.get_all_security_groups.return_value = []
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg-1', 'sg#1')
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='available')
+        rds_conn.get_all_dbinstances.side_effect = [
+            [DBInstance(rds_conn, 'ins-1', status='available')],
+            [DBInstance(rds_conn, 'ins-1', status='modifying')],
+            [DBInstance(rds_conn, 'ins-1', status='modifying')],
+            [DBInstance(rds_conn, 'ins-1', status='available')],
+        ]
+
+        rds.allow_access_to_instance(
+            DBInstance(rds_conn, 'ins-1'), 'sg#1',
+            ['ip-one'], 'vpcid')
+
+        assert rds_conn.get_all_dbinstances.call_count == 4
+
+    def test_allow_access_does_not_wait_for_instance_to_become_unavailable_indefinitely(self, rds_conn, ec2_conn,
+                                                                                        sleep):
+        rds = RDS(AWS_REGION)
+
+        ec2_conn.get_all_security_groups.return_value = []
+        ec2_conn.create_security_group.return_value = SecurityGroup('sg-1', 'sg#1')
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='available')
+        rds_conn.get_all_dbinstances.side_effect = [
+            [DBInstance(rds_conn, 'ins-1', status='available')],
+        ] * 30
+
+        rds.allow_access_to_instance(
+            DBInstance(rds_conn, 'ins-1'), 'sg#1',
+            ['ip-one'], 'vpcid')
+
+        assert rds_conn.get_all_dbinstances.call_count == 20
+
+    def test_revoke_access_to_instance(self, rds_conn, ec2_conn, sleep):
+        rds = RDS(AWS_REGION)
+
+        vpc_security_groups = [
+            SecurityGroupMembership('sg-1'),
+            SecurityGroupMembership('sg-2'),
+        ]
+        instance = DBInstance(rds_conn, 'inst-1', vpc_security_groups=vpc_security_groups)
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='modifying')
+        rds_conn.get_all_dbinstances.return_value = [DBInstance(rds_conn, 'ins-1', status='available')]
+
+        rds.revoke_access_to_instance(instance, SecurityGroup('sg-1', 'sgname'))
+
+        rds_conn.modify_dbinstance.assert_called_once_with(
+            'inst-1', vpc_security_groups=['sg-2'], apply_immediately=True)
+
+    def test_revoke_access_noops_if_security_group_is_not_on_instance(self, rds_conn, ec2_conn, sleep):
+        rds = RDS(AWS_REGION)
+
+        vpc_security_groups = [
+            SecurityGroupMembership('sg-2'),
+        ]
+        instance = DBInstance(rds_conn, 'inst-1', vpc_security_groups=vpc_security_groups)
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='modifying')
+        rds_conn.get_all_dbinstances.return_value = [DBInstance(rds_conn, 'ins-1', status='available')]
+
+        rds.revoke_access_to_instance(instance, SecurityGroup('sg-1', 'sgname'))
+
+        assert not rds_conn.modify_dbinstance.called
+
+    def test_revoke_access_adds_default_security_group_if_list_would_be_empty(self, rds_conn, ec2_conn, sleep):
+        rds = RDS(AWS_REGION)
+
+        vpc_security_groups = [
+            SecurityGroupMembership('sg-1'),
+        ]
+        instance = DBInstance(rds_conn, 'inst-1', vpc_security_groups=vpc_security_groups)
+        ec2_conn.get_all_security_groups.return_value = [SecurityGroup('default-id', 'default')]
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='modifying')
+        rds_conn.get_all_dbinstances.return_value = [DBInstance(rds_conn, 'ins-1', status='available')]
+
+        rds.revoke_access_to_instance(instance, SecurityGroup('sg-1', 'sgname'))
+
+        rds_conn.modify_dbinstance.assert_called_once_with(
+            'inst-1', vpc_security_groups=['default-id'], apply_immediately=True)
+
+    def test_revoke_access_waits_for_instance_to_become_unavailable_after_modify(self, rds_conn, ec2_conn, sleep):
+        rds = RDS(AWS_REGION)
+
+        vpc_security_groups = [
+            SecurityGroupMembership('sg-1'),
+            SecurityGroupMembership('sg-2'),
+        ]
+        instance = DBInstance(rds_conn, 'inst-1', vpc_security_groups=vpc_security_groups)
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='available')
+        rds_conn.get_all_dbinstances.side_effect = [
+            [DBInstance(rds_conn, 'ins-1', status='modifying')],
+            [DBInstance(rds_conn, 'ins-1', status='available')],
+        ]
+
+        rds.revoke_access_to_instance(instance, SecurityGroup('sg-1', 'sgname'))
+
+        assert rds_conn.get_all_dbinstances.call_count == 2
+
+    def test_revoke_access_does_not_wait_for_instance_to_become_unavailable_indefinitely(self, rds_conn, ec2_conn,
+                                                                                         sleep):
+        rds = RDS(AWS_REGION)
+
+        vpc_security_groups = [
+            SecurityGroupMembership('sg-1'),
+            SecurityGroupMembership('sg-2'),
+        ]
+        instance = DBInstance(rds_conn, 'inst-1', vpc_security_groups=vpc_security_groups)
+        rds_conn.modify_dbinstance.return_value = DBInstance(rds_conn, 'ins-1', status='available')
+        rds_conn.get_all_dbinstances.side_effect = [
+            [DBInstance(rds_conn, 'ins-1', status='available')],
+        ] * 30
+
+        rds.revoke_access_to_instance(instance, SecurityGroup('sg-1', 'sgname'))
+
+        assert rds_conn.get_all_dbinstances.call_count == 20
 
 
 @mock.patch('psycopg2.connect')

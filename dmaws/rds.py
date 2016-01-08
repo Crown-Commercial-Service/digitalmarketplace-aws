@@ -54,21 +54,69 @@ class RDS(object):
 
         return security_group
 
-    def delete_security_group(self, name):
+    def get_security_group(self, name):
         # The ec2 module does not raise helpful errors, everything is an EC2ResponseError
         # making it hard to tell if the security group didn't exist or there was some other
         # problem
-        if any(group.name == name for group in self.ec2conn.get_all_security_groups()):
+        return next(
+            (group for group in self.ec2conn.get_all_security_groups()
+             if group.name == name), None)
+
+    def delete_security_group(self, name):
+        security_group = self.get_security_group(name)
+        if security_group is not None:
             self.ec2conn.delete_security_group(name)
 
     def allow_access_to_instance(self, instance, security_group_name, dev_user_ips, vpc_id):
+        self.log("Allow access {} {}".format(instance.id, security_group_name))
+        security_group = self.get_security_group(security_group_name)
+        if security_group:
+            self.log("  > Found SG: {}:{}".format(security_group.id, security_group.name))
+            instance = self.revoke_access_to_instance(instance, security_group)
+            self.delete_security_group(security_group.name)
+
         security_group = self.create_new_security_group(
             security_group_name, dev_user_ips, vpc_id)
 
-        instance = self.conn.modify_dbinstance(
-            instance.id, vpc_security_groups=[security_group.id])
+        security_group_ids = [
+            sg.vpc_group for sg in instance.vpc_security_groups
+        ] + [security_group.id]
 
-        self._wait_for_available(instance, "RDS instance", "modifying")
+        self.log("  > Adding {} to {}".format(security_group.id, [
+            sg.vpc_group for sg in instance.vpc_security_groups
+        ]))
+
+        instance = self.conn.modify_dbinstance(
+            instance.id, vpc_security_groups=security_group_ids, apply_immediately=True)
+
+        self._wait_for_unavailable(instance, "RDS instance", "adding security group")
+        self._wait_for_available(instance, "RDS instance", "adding security group")
+
+        return instance
+
+    def revoke_access_to_instance(self, instance, security_group):
+        self.log("Revoking {} from {}".format(
+            security_group.id,
+            [sg.vpc_group for sg in instance.vpc_security_groups]))
+        if security_group.id not in [sg.vpc_group for sg in instance.vpc_security_groups]:
+            return instance
+        security_group_ids = [
+            sg.vpc_group for sg in instance.vpc_security_groups
+            if sg.vpc_group != security_group.id
+        ]
+        if not security_group_ids:
+            security_group_ids = [
+                sg.id for sg in self.ec2conn.get_all_security_groups("default")
+            ]
+
+        self.log("  > updating {} security groups to {}".format(
+            instance.id, security_group_ids))
+
+        instance = self.conn.modify_dbinstance(
+            instance.id, vpc_security_groups=security_group_ids, apply_immediately=True)
+
+        self._wait_for_unavailable(instance, "RDS instance", "removing security group")
+        self._wait_for_available(instance, "RDS instance", "removing security group")
 
         return instance
 
@@ -90,11 +138,24 @@ class RDS(object):
         instance = self.conn.delete_dbinstance(instance_id, skip_final_snapshot=True)
         self._wait_for_delete(instance, "RDS instance")
 
-    def _wait_for_available(self, target, name, action):
+    def _wait_for_available(self, target, name, action, sleep=5):
+        self.log(
+            "Waiting for {} {} to be available after {}".format(
+                name, target.id, action))
         while target.status != "available":
-            self.log("Waiting for {} to be available after {}".format(name, action))
-            time.sleep(20)
-            target.update()
+            self.log("  | {}".format(target.status))
+            time.sleep(sleep)
+            target.update(True)
+
+    def _wait_for_unavailable(self, target, name, action, sleep=1, tries=20):
+        self.log(
+            "Waiting for {} {} to be unavailable after {}".format(
+                name, target.id, action))
+        while target.status == "available" and tries > 0:
+            self.log("  | {}".format(target.status))
+            time.sleep(sleep)
+            tries -= 1
+            target.update(True)
 
     def _wait_for_delete(self, target, name):
         try:
