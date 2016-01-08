@@ -70,6 +70,7 @@ database:
     DBInstanceType: "{{ database.instance_type }}"
     DBAllocatedStorage: "{{ database.allocated_storage }}"
     MultiAZ: "{{ database.multi_az }}"
+    SlowQueryLogDurationMs: "{{ database.slow_query_log_duration_ms }}"
     BackupRetentionPeriod: "{{ database.backup_retention_period }}"
     DBSnapshotIdentifier: "{{ database.snapshot_id }}"
 

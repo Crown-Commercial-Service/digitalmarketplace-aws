@@ -15,6 +15,7 @@ subnets:
 database:
   multi_az: "true"
   backup_retention_period: "30"
+  slow_query_log_duration_ms: -1
   instance_type: db.m3.medium
   snapshot_id: "production-2015-07-17t1204"
 
