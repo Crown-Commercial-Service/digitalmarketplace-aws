@@ -43,7 +43,7 @@ class RDS(object):
         self.conn.delete_dbsnapshot(snapshot_id)
 
     def create_new_security_group(self, name, dev_user_ips, vpc_id):
-        self.delete_security_group(name)
+        self.delete_security_group(self.get_security_group(name))
         security_group = self.ec2conn.create_security_group(
             name, 'Allow access to the exportdata RDS instance',
             vpc_id=vpc_id)
@@ -62,10 +62,9 @@ class RDS(object):
             (group for group in self.ec2conn.get_all_security_groups()
              if group.name == name), None)
 
-    def delete_security_group(self, name):
-        security_group = self.get_security_group(name)
+    def delete_security_group(self, security_group):
         if security_group is not None:
-            self.ec2conn.delete_security_group(name)
+            self.ec2conn.delete_security_group(security_group.name)
 
     def allow_access_to_instance(self, instance, security_group_name, dev_user_ips, vpc_id):
         self.log("Allow access {} {}".format(instance.id, security_group_name))
@@ -73,7 +72,7 @@ class RDS(object):
         if security_group:
             self.log("  > Found SG: {}:{}".format(security_group.id, security_group.name))
             instance = self.revoke_access_to_instance(instance, security_group)
-            self.delete_security_group(security_group.name)
+            self.delete_security_group(security_group)
 
         security_group = self.create_new_security_group(
             security_group_name, dev_user_ips, vpc_id)
