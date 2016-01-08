@@ -300,6 +300,6 @@ class RDSPostgresClient(object):
         self.log("Update user passwords")
         self.cursor.execute(
             "UPDATE users SET password = %s",
-            (bcrypt.hashpw(b"Password1234", bcrypt.gensalt(4)),))
+            (bcrypt.hashpw(b"Password1234", bcrypt.gensalt(4)).decode('utf-8'),))
 
         self.commit()
