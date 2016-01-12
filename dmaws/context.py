@@ -17,6 +17,7 @@ class Context(object):
         self.environment = None
         self.apps = []
         self.variables = {}
+        self.stacks_file = None
         self.stacks = {}
         self.create_dependencies = False
 
@@ -27,8 +28,8 @@ class Context(object):
         ctx.environment = environment
         ctx.load_variables(
             files=ctx.get_variables_files(True, vars_files))
-        ctx.stacks = copy.deepcopy(self.stacks)
         ctx.dry_run = self.dry_run
+        ctx.load_stacks(self.stacks_file)
 
         return ctx
 
@@ -70,6 +71,9 @@ class Context(object):
             self.add_dotted_variable(*pair)
 
     def load_stacks(self, path):
+        if path is None:
+            raise ValueError("Cannot load None stacks file.")
+        self.stacks_file = path
         stacks = read_yaml_file(path)
         for key, val in stacks.items():
             if isinstance(val, dict):

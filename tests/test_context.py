@@ -1,4 +1,5 @@
 import mock
+import pytest
 
 from dmaws.context import Context
 
@@ -15,6 +16,7 @@ class TestContext(object):
         ctx = Context()
         ctx.stage = 'stage'
         ctx.environment = 'environment'
+        ctx.stacks_file = 'stacks.yml'
         read_yaml_file.return_value = {}
 
         ctx2 = ctx.new_context('stage2', 'environment2', [])
@@ -24,14 +26,26 @@ class TestContext(object):
         assert read_yaml_file.call_args_list == [
             mock.call('vars/common.yml'),
             mock.call('vars/stage2.yml'),
-            mock.call('vars/user.yml')
+            mock.call('vars/user.yml'),
+            mock.call('stacks.yml'),
         ]
+
+    @mock.patch('dmaws.context.read_yaml_file')
+    def test_new_context_fails_if_no_stacks_file(self, read_yaml_file, path_exists):
+        ctx = Context()
+        ctx.stage = 'stage'
+        ctx.environment = 'environment'
+        read_yaml_file.return_value = {}
+
+        with pytest.raises(ValueError):
+            ctx.new_context('stage2', 'environment2', [])
 
     @mock.patch('dmaws.context.read_yaml_file')
     def test_new_context_with_vars_file(self, read_yaml_file, path_exists):
         ctx = Context()
         ctx.stage = 'stage'
         ctx.environment = 'environment'
+        ctx.stacks_file = 'stacks.yml'
         read_yaml_file.return_value = {}
 
         ctx2 = ctx.new_context('stage2', 'environment2', ['test.yml'])
@@ -43,6 +57,7 @@ class TestContext(object):
             mock.call('vars/stage2.yml'),
             mock.call('vars/user.yml'),
             mock.call('test.yml'),
+            mock.call('stacks.yml'),
         ]
 
     def test_add_apps(self):
