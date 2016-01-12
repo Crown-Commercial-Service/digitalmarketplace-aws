@@ -83,7 +83,8 @@ def dump_to_target(ctx, src_pg_client):
         logger=ctx.log)
 
     src_pg_client.dump_to(pg_client)
-    src_pg_client.close()
+
+    pg_client.close()
 
     sg = rds.get_security_group(IMPORT_SECURITY_GROUP_NAME)
     rds.revoke_access_to_instance(instance, sg)
