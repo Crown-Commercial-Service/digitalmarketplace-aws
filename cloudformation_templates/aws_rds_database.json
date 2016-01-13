@@ -36,6 +36,10 @@
     "DBSnapshotIdentifier": {
       "Type": "String",
       "Description": "The identifier for the DB snapshot to restore from."
+    },
+    "SlowQueryLogDurationMs": {
+      "Type": "Number",
+      "Description": "Log queries that take longer than X ms (-1 to disable)"
     }
   },
 
@@ -59,6 +63,17 @@
       }
     },
 
+    "DBParameterGroup": {
+      "Type": "AWS::RDS::DBParameterGroup",
+      "Properties": {
+        "Description": "Custom DB parameter group",
+        "Family": "postgres9.3",
+        "Parameters": {
+          "log_min_duration_statement": {"Ref": "SlowQueryLogDurationMs" }
+        }
+      }
+    },
+
     "DB": {
       "Type": "AWS::RDS::DBInstance",
       "DeletionPolicy": "Snapshot",
@@ -69,6 +84,7 @@
         "DBInstanceClass": {"Ref": "DBInstanceType"},
         "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
         "MasterUserPassword": {"Ref": "DBPassword"},
+        "DBParameterGroupName": {"Ref": "DBParameterGroup"},
         "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}],
         "MultiAZ": {"Ref": "MultiAZ"},
         "BackupRetentionPeriod": {"Ref": "BackupRetentionPeriod"},
