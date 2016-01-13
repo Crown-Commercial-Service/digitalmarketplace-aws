@@ -10,6 +10,8 @@ from boto.s3.bucket import Bucket as S3Bucket
 from boto.s3.connection import S3Connection
 from boto.beanstalk.layer1 import Layer1 as BeanstalkConnection
 from boto.cloudformation.connection import CloudFormationConnection
+from boto.rds import RDSConnection
+from boto.ec2 import EC2Connection
 
 from dmaws.utils import run_cmd as run_cmd_orig
 from dmaws.build import get_repo_url, get_current_sha, get_current_ref
@@ -105,6 +107,30 @@ def s3_conn(request, s3_bucket):
     return s3_mock
 
 
+@pytest.fixture(autouse=True)
+def rds_conn(request):
+    rds_mock = mock.Mock(spec=RDSConnection)
+    rds_patch = mock.patch('boto.rds.connect_to_region',
+                           return_value=rds_mock)
+
+    rds_patch.start()
+    request.addfinalizer(rds_patch.stop)
+
+    return rds_mock
+
+
+@pytest.fixture(autouse=True)
+def ec2_conn(request):
+    ec2_mock = mock.Mock(spec=EC2Connection)
+    ec2_patch = mock.patch('boto.ec2.connect_to_region',
+                           return_value=ec2_mock)
+
+    ec2_patch.start()
+    request.addfinalizer(ec2_patch.stop)
+
+    return ec2_mock
+
+
 @pytest.fixture()
 def s3_bucket():
     bucket = mock.Mock(spec=S3Bucket)
@@ -193,3 +219,11 @@ def mkstemp(request):
     temp.return_value = -1, '/tmp/tempfile'
 
     return temp
+
+
+@pytest.fixture(autouse=True)
+def sleep(request):
+    sleep_patch = mock.patch('time.sleep')
+    request.addfinalizer(sleep_patch.stop)
+
+    return sleep_patch.start()
