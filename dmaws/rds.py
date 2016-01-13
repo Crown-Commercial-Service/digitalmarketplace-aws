@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 import boto.rds
 import boto.ec2
@@ -238,8 +239,7 @@ class RDSPostgresClient(object):
     def clean_database_for_staging(self):
         self.log("Update users")
         self.cursor.execute(
-            "UPDATE users SET name = %s, email_address = id || '@example.com'",
-            ("Example User",))
+            "UPDATE users SET name = 'Test user', email_address = id || '-user@example.com'")
 
         open_framework_ids = self.get_open_framework_ids()
         self.log("Delete draft services")
@@ -296,9 +296,45 @@ class RDSPostgresClient(object):
         self.commit()
 
     def clean_database_for_preview(self):
-        self.log("Update user passwords")
-        self.cursor.execute(
-            "UPDATE users SET password = %s",
-            (bcrypt.hashpw(b"Password1234", bcrypt.gensalt(4)).decode('utf-8'),))
+        hashed_password = bcrypt.hashpw(
+            b"Password1234",
+            bcrypt.gensalt(4)
+        ).decode('utf-8')
+
+        self.log("Create 1 supplier user per supplier")
+        self.cursor.execute("DELETE FROM users")
+        self.cursor.execute("""
+            INSERT INTO users (
+                name, email_address, password, active,
+                created_at, updated_at, password_changed_at,
+                role, supplier_id, failed_login_count
+            ) (
+                SELECT 'Test supplier user', 'supplier-' || supplier_id || '@example.com', %(password)s, 't',
+                    %(timestamp)s, %(timestamp)s, %(timestamp)s,
+                    'supplier', supplier_id, 0
+                FROM suppliers
+            )
+        """, {
+            'password': hashed_password,
+            'timestamp': datetime.now()
+        })
+        self.log("Create 1 admin user per role")
+        self.cursor.execute("""
+            INSERT INTO users (
+                name, email_address, password, active,
+                created_at, updated_at, password_changed_at,
+                role, failed_login_count
+            ) (
+                SELECT 'Test admin user', pg_enum.enumlabel || '@example.com', %(password)s, 't',
+                    %(timestamp)s, %(timestamp)s, %(timestamp)s,
+                    pg_enum.enumlabel::user_roles_enum, 0
+                FROM pg_type
+                JOIN pg_enum ON pg_type.oid = pg_enum.enumtypid
+                WHERE pg_type.typname = 'user_roles_enum' AND pg_enum.enumlabel LIKE 'admin%%'
+            )
+        """, {
+            'password': hashed_password,
+            'timestamp': datetime.now()
+        })
 
         self.commit()
