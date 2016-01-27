@@ -233,7 +233,7 @@ class RDSPostgresClient(object):
         ], logger=self.log, ignore_errors=False)
 
     def get_open_framework_ids(self):
-        self.cursor.execute("SELECT id FROM frameworks WHERE status = 'open'")
+        self.cursor.execute("SELECT id FROM frameworks WHERE status IN ('open', 'pending')")
         return tuple(framework[0] for framework in self.cursor.fetchall())
 
     def clean_database_for_staging(self):
@@ -243,13 +243,12 @@ class RDSPostgresClient(object):
 
         open_framework_ids = self.get_open_framework_ids()
         self.log("Delete draft services")
-        self.cursor.execute(
-            "DELETE FROM draft_services WHERE framework_id IN %s",
-            (open_framework_ids,))
+        self.cursor.execute("DELETE FROM draft_services")
         self.log("Delete supplier frameworks")
-        self.cursor.execute(
-            "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
-            (open_framework_ids,))
+        if len(open_framework_ids):
+            self.cursor.execute(
+                "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
+                (open_framework_ids,))
 
         # Fix suppliers with services but no supplier_framework
         self.cursor.execute("""
