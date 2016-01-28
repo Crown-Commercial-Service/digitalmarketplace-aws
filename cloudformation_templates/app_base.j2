@@ -124,6 +124,54 @@
       }
     },
 
+    "ServiceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [{
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "elasticbeanstalk.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {
+              "StringEquals": {
+                "sts:ExternalId": "elasticbeanstalk"
+              }
+            }
+          }]
+        },
+        "Path": "/",
+        "Policies": [{
+          "PolicyName": "digitalmarketplace-eb-policy",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": [
+                "elasticloadbalancing:DescribeInstanceHealth",
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceStatus",
+                "ec2:GetConsoleOutput",
+                "ec2:AssociateAddress",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeSecurityGroups",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeScalingActivities",
+                "autoscaling:DescribeNotificationConfigurations"
+              ],
+              "Resource": ["*"]
+            }]
+          }
+        }]
+      }
+    },
+
     "InstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
@@ -192,6 +240,11 @@
             "Namespace": "aws:elasticbeanstalk:container:python:staticfiles",
             "OptionName": "{{ self.url_prefix() }}static/",
             "Value": "app/static/"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:environment",
+            "OptionName": "ServiceRole",
+            "Value": {"Ref": "ServiceRole"}
           },
           {
             "Namespace": "aws:elasticbeanstalk:healthreporting:system",
