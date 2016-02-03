@@ -286,7 +286,6 @@ admin_frontend:
     EnvVarDmAssetsUrl: "https://{% if stage != 'production' %}{{ stage }}-{% endif %}{% if stage != environment %}{{ environment }}-{% endif %}assets.{{root_domain}}"
     EnvVarDmAdminFrontendApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmAdminFrontendCookieSecret: "{{ admin_frontend.cookie_secret }}"
-    EnvVarDmAdminFrontendPasswordHash: "{{ admin_frontend.admin_password_hash | replace('$', '\\$') }}"
     EnvVarDmDataApiUrl: "{{ stacks.api.outputs.URL }}"
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmMandrillApiKey: "{{ admin_frontend.mandrill_key }}"

@@ -19,7 +19,6 @@ search_api:
     - ***
 
 admin_frontend:
-  admin_password_hash: ***
   cookie_secret: ***
 
 supplier_frontend:
