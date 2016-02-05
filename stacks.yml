@@ -289,6 +289,7 @@ admin_frontend:
     EnvVarDmDataApiAuthToken: "{{ api.auth_tokens[0] }}"
     EnvVarDmMandrillApiKey: "{{ shared_tokens.mandrill_key }}"
     EnvVarDmSharedEmailKey: "{{ shared_tokens.shared_email_key }}"
+    EnvVarSharedEmailKey: "{{ shared_tokens.shared_email_key }}"
     EnvVarDmAdminFrontendCookieSecret: "{{ admin_frontend.cookie_secret }}"
     EnvVarSecretKey: "{{ admin_frontend.cookie_secret }}"
 
@@ -343,6 +344,7 @@ buyer_frontend:
     EnvVarDmPasswordSecretKey: "{{ shared_tokens.password_key }}"
     EnvVarSecretKey: "{{ shared_tokens.password_key }}"
     EnvVarDmSharedEmailKey: "{{ shared_tokens.shared_email_key }}"
+    EnvVarSharedEmailKey: "{{ shared_tokens.shared_email_key }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ buyer_frontend.instance_type }}"
@@ -403,6 +405,7 @@ supplier_frontend:
     EnvVarDmPasswordSecretKey: "{{ shared_tokens.password_key }}"
     EnvVarSecretKey: "{{ shared_tokens.password_key }}"
     EnvVarDmSharedEmailKey: "{{ shared_tokens.shared_email_key }}"
+    EnvVarSharedEmailKey: "{{ shared_tokens.shared_email_key }}"
 
     KeyName: "{{ key_name }}"
     InstanceType: "{{ supplier_frontend.instance_type }}"
