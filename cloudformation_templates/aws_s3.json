@@ -13,6 +13,9 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
         "BucketName": {"Ref": "BucketName"}
       }
     }
