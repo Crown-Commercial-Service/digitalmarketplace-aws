@@ -238,8 +238,14 @@ class RDSPostgresClient(object):
 
     def clean_database_for_staging(self):
         self.log("Update users")
+        hashed_password = bcrypt.hashpw(
+            b"Password1234",
+            bcrypt.gensalt(4)
+        ).decode('utf-8')
         self.cursor.execute(
-            "UPDATE users SET name = 'Test user', email_address = id || '-user@example.com'")
+            "UPDATE users SET name = 'Test user', email_address = id || '-user@example.com', password = '{}'"
+            .format(hashed_password)
+        )
 
         open_framework_ids = self.get_open_framework_ids()
         self.log("Delete draft services")
