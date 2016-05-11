@@ -1,6 +1,6 @@
 ---
 root_domain: "digitalmarketplace.service.gov.uk"
-ssl_certificate_id: "arn:aws:iam::050019655025:server-certificate/star-digitalmarketplace-2016-05-13"
+ssl_certificate_id: "arn:aws:iam::050019655025:server-certificate/star-digitalmarketplace-2017-05-24"
 
 monitoring:
   email: "support+production-staging@digitalmarketplace.service.gov.uk"
