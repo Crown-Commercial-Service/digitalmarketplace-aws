@@ -149,10 +149,10 @@ class StackPlan(object):
                 stack_info = self.cfn.create_stack(built_stack)
             else:
                 stack_info = self.cfn.describe_stack(built_stack)
-                if not stack_info:
-                    self.log("Dependency %s doesn't exists, can't continue",
-                             built_stack.name, color='red')
-                    return False
+
+            if not stack_info or stack_info.get('failed', False):
+                self.log("%s doesn't exist or can't be created, can't continue", built_stack.name, color='red')
+                return False
 
             failure = failure or stack_info.get('failed', False)
             self.stack_context['stacks'][name].update_info(stack_info)
