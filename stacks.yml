@@ -71,8 +71,6 @@ route53digitalservicesstore:
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_rds_database.json
-  dependencies:
-    - monitoring
   parameters:
     DBVersion: "{{ database.version }}"
     DBName: "{{ database.name }}"
