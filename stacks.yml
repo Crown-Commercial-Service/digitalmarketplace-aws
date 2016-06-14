@@ -64,7 +64,6 @@ database:
   dependencies:
     - monitoring
   parameters:
-    DBVersion: "{{ database.version }}"
     DBName: "{{ database.name }}"
     DBUser: "{{ database.user }}"
     DBPassword: "{{ database.password }}"

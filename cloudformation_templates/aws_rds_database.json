@@ -7,10 +7,6 @@
       "Type": "String",
       "Description": "Database name"
     },
-    "DBVersion": {
-      "Type": "String",
-      "Description": "Database version number"
-    },
     "DBUser": {
       "NoEcho": "true",
       "Type": "String",
@@ -67,11 +63,11 @@
       }
     },
 
-    "DBParameterGroup94": {
+    "DBParameterGroup": {
       "Type": "AWS::RDS::DBParameterGroup",
       "Properties": {
         "Description": "Custom DB parameter group",
-        "Family": {"Fn::Join": ["", ["postgres", {"Ref": "DBVersion"}]]},
+        "Family": "postgres9.3",
         "Parameters": {
           "log_min_duration_statement": {"Ref": "SlowQueryLogDurationMs" }
         }
@@ -83,14 +79,12 @@
       "DeletionPolicy": "Snapshot",
       "Properties": {
         "Engine": "postgres",
-        "EngineVersion": {"Ref": "DBVersion"},
-        "AllowMajorVersionUpgrade": true,
         "DBName": {"Fn::If": ["UseDbSnapshot", {"Ref": "AWS::NoValue"}, {"Ref": "DBName"}]},
         "MasterUsername": {"Ref": "DBUser"},
         "DBInstanceClass": {"Ref": "DBInstanceType"},
         "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
         "MasterUserPassword": {"Ref": "DBPassword"},
-        "DBParameterGroupName": {"Ref": "DBParameterGroup94"},
+        "DBParameterGroupName": {"Ref": "DBParameterGroup"},
         "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}],
         "MultiAZ": {"Ref": "MultiAZ"},
         "BackupRetentionPeriod": {"Ref": "BackupRetentionPeriod"},
