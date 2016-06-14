@@ -19,6 +19,7 @@ database:
   snapshot_id: "production-2015-07-17t1204"
 
 api:
+  instance_type: t2.medium
   min_instance_count: 3
   max_instance_count: 10
 
@@ -35,6 +36,7 @@ buyer_frontend:
   max_instance_count: 5
 
 supplier_frontend:
+  instance_type: t2.medium
   min_instance_count: 3
   max_instance_count: 10
 
