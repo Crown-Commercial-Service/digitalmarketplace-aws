@@ -4,6 +4,7 @@ all:
   - apps
   - dev_access
   - data_storage
+  - kibana
 
 apps:
   - api
@@ -493,6 +494,15 @@ jenkins:
     GroupTag: "jenkins-{{ stage }}"
     InstanceType: "{{ jenkins.instance_type }}"
     InstanceImage: "{{ jenkins.instance_image }}"
+
+kibana:
+  name: "kibana-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_kibana.json
+  dependencies:
+    - monitoring
+  parameters:
+    DomainName: "kibana-{{ stage }}-{{ environment }}"
+    UserIPs: "{{ dev_user_ips | join(',') }}"
 
 jenkins_ssh_access:
   name: "jenkins-{{ stage }}-ssh-access"
