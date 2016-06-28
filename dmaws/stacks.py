@@ -1,9 +1,7 @@
-import re
-
 from toposort import toposort_flatten
 
 from .cloudformation import Cloudformation
-from .utils import template, load_file, LazyTemplateMapping
+from .utils import template, load_file, LazyTemplateMapping, param_to_env
 from .deploy import Deploy
 
 
@@ -59,11 +57,6 @@ class BuiltStack(Stack):
         environment_variables = [
             p for p in self.parameters.keys() if p.startswith('EnvVar')
         ]
-
-        def param_to_env(name):
-            s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-            s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
-            return s2.upper().replace('ENV_VAR_', '')
 
         return template(template_body, {
             "parameters": self.parameters,

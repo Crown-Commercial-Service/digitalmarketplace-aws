@@ -1,4 +1,5 @@
 import os
+import re
 import collections
 import subprocess
 from subprocess import CalledProcessError
@@ -204,3 +205,9 @@ def template_string(string, variables, templates_path=None):
         return template.render(variables)
     except jinja2.exceptions.UndefinedError as e:
         raise ValueError(u"Variable {} in '{}'".format(e, string))
+
+
+def param_to_env(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
+    return s2.upper().replace('ENV_VAR_', '')
