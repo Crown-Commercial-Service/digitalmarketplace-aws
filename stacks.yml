@@ -493,6 +493,7 @@ jenkins:
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     RootDomain: "{{ root_domain }}"
     Subdomain: "ci"
+    LogsSubdomain: "logs"
     Port: "{{ jenkins.port }}"
 
     KeyName: "{{ key_name }}"
