@@ -2,6 +2,13 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "AWS Lambda function",
   "Parameters": {
+{% for variable in environment_variables %}
+    "{{ variable }}": {
+        "Type": "String",
+        "Description": "Lambda function environment variable",
+        "NoEcho": "true"
+    },
+{% endfor %}
     "FunctionName": {
       "Type": "String",
       "Description": "AWS Lambda function name"
