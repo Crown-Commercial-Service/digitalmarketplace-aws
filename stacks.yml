@@ -5,6 +5,7 @@ all:
   - dev_access
   - data_storage
   - kibana
+  - lambda_functions
 
 apps:
   - api
@@ -29,8 +30,12 @@ data_storage:
   - communications_s3
   - submissions_s3
   - agreements_s3
+  - lambda_code_s3
   - elasticsearch
   - monitoring
+
+lambda_functions:
+  - cloudwatch_logs_lambda
 
 dev_access:
   - database_dev_access
@@ -503,6 +508,22 @@ kibana:
   parameters:
     DomainName: "kibana-{{ stage }}-{{ environment }}"
     UserIPs: "{{ dev_user_ips | join(',') }}"
+
+lambda_code_s3:
+  name: "lambda-code-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-lambda-code-{{ stage }}-{{ environment }}"
+
+cloudwatch_logs_lambda:
+  name: "cloudwatch-logs-lambda-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_lambda.json
+  dependencies:
+    - kibana
+  parameters:
+    FunctionName: "dm-cloudwatch-logs-{{ stage }}-{{ environment }}"
+    S3Bucket: "digitalmarketplace-lambda-code-{{ stage }}-{{ environment }}"
+    S3Key: "cloudwatch-logs-{{ stage }}-{{ environment }}.zip"
 
 jenkins_ssh_access:
   name: "jenkins-{{ stage }}-ssh-access"
