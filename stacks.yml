@@ -531,6 +531,16 @@ cloudwatch_logs_lambda:
     # in the cloudformation template
     EnvVarElasticsearchEndpoint: "{{ stacks.kibana.outputs.Domain }}"
 
+lambda_logs_subscription:
+  name: "lambda-logs-subscription-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_log_subscription.json
+  dependencies:
+    - cloudwatch_logs_lambda
+  parameters:
+    Lambda: "{{ stacks.cloudwatch_logs_lambda.outputs.Arn }}"
+    FilterPattern: ''
+    LogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
+
 jenkins_ssh_access:
   name: "jenkins-{{ stage }}-ssh-access"
   template: cloudformation_templates/aws_dev_access.json
