@@ -525,6 +525,12 @@ cloudwatch_logs_lambda:
     S3Bucket: "digitalmarketplace-lambda-code-{{ stage }}-{{ environment }}"
     S3Key: "cloudwatch-logs-{{ stage }}-{{ environment }}.zip"
 
+    # Additional parameters used by the function code. Names match
+    # the ElasticBeanstalk environment variable convention since
+    # we need to autogenerate the matching parameter declaration
+    # in the cloudformation template
+    EnvVarElasticsearchEndpoint: "{{ stacks.kibana.outputs.Domain }}"
+
 jenkins_ssh_access:
   name: "jenkins-{{ stage }}-ssh-access"
   template: cloudformation_templates/aws_dev_access.json
