@@ -63,6 +63,23 @@ Packer and cloudformation won't automatically remove old AMI versions, so this h
 done manually. AMIs can be deleted from the EC2 console by deregestering the AMI and
 deleting the related EBS snapshot.
 
+## Deploying AWS Lambda functions
+
+Lambda functions are created by the CloudFormation stack, but rerunning the stack won't updated
+the function code. Instead, functions can be updating using the `lambda-release` command:
+
+```
+dmaws preview preview lambda-release cloudwatch_logs_lambda
+```
+
+This will package function code from `lambdas/cloudwatch_logs`, upload the archive to S3 and update
+the function code in AWS Lambda.
+
+This command can also be used to upload the initial function code archive to S3 before running the
+function stack for the first time. In this case, updating the function code will fail, since the
+function doesn't exist yet, but an archive will be uploaded to S3 and CloudFormation will use it
+when creating the function stack.
+
 ## SSHing into instances
 
 You can SSH onto instaces using the private key set up previously (SSH key pair).
