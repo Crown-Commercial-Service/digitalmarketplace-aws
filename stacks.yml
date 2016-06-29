@@ -553,6 +553,17 @@ jenkins_ssh_access:
     ToPort: 22
     SecurityGroup: "{{ stacks.jenkins.outputs.InstanceSecurityGroup }}"
 
+jenkins_letsencrypt_access:
+  name: "jenkins-{{ stage }}-letsencrypt-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - jenkins
+  parameters:
+    CidrIPs: "0.0.0.0/0"
+    FromPort: 80
+    ToPort: 80
+    SecurityGroup: "{{ stacks.jenkins.outputs.InstanceSecurityGroup }}"
+
 nginx_ssh_access:
   name: "nginx-{{ stage }}-{{ environment }}-ssh-access"
   template: cloudformation_templates/aws_dev_access.json
