@@ -508,7 +508,7 @@ kibana:
     - monitoring
   parameters:
     DomainName: "kibana-{{ stage }}-{{ environment }}"
-    UserIPs: "{{ dev_user_ips | join(',') }}"
+    UserIPs: "{{ jenkins_ips | join(',') }}"
 
 lambda_code_s3:
   name: "lambda-code-s3-{{ stage }}-{{ environment }}"
