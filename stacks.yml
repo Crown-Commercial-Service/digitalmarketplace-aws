@@ -58,6 +58,16 @@ route53rootrecords:
   parameters:
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
 
+route53digitalservicesstore:
+  name: "route53-digital-services-store"
+  template: cloudformation_templates/aws_route53_digital_services_store.json
+  dependencies:
+    - nginx
+  parameters:
+    Domain: '{% if stage == "production" %}digitalservicesstore.service.gov.uk{% endif %}'
+    LoadBalancerDNS: "{{ stacks.nginx.outputs.LoadBalancerDNS }}"
+    LoadBalancerHostedZoneID: "{{ stacks.nginx.outputs.LoadBalancerHostedZoneID }}"
+
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_rds_database.json

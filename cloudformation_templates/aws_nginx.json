@@ -373,6 +373,14 @@
       "Description": "ELB security group",
       "Value": {"Ref": "LoadBalancerSecurityGroup"}
     },
+    "LoadBalancerDNS": {
+      "Description": "Load Balancer DSN name",
+      "Value": {"Fn::GetAtt": ["LoadBalancer", "DNSName"]}
+    },
+    "LoadBalancerHostedZoneID": {
+      "Description": "Load Balancer hosted zone",
+      "Value": {"Fn::GetAtt": ["LoadBalancer", "CanonicalHostedZoneNameID"]}
+    },
     "AssetsURL": {
       "Description": "URL of the assets server",
       "Value": {

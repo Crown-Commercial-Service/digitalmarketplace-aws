@@ -1,0 +1,61 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "A public hosted zone for the given root domain.",
+
+  "Parameters": {
+    "Domain": {
+      "Type": "String",
+      "Description": "Route53 hosted zone root domain"
+    },
+    "LoadBalancerDNS": {
+      "Type": "String",
+      "Description": "DNS name for the target load balancer"
+    },
+    "LoadBalancerHostedZoneID": {
+      "Type": "String",
+      "Description": "Hosted zone ID for the target load balancer"
+    }
+  },
+
+  "Resources": {
+    "HostedZone": {
+      "Type": "AWS::Route53::HostedZone",
+      "Properties": {
+        "Name": {"Fn::Join": ["", [{"Ref": "Domain"}, "."]]}
+      }
+    },
+
+    "RootRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": {"Ref": "HostedZone"},
+        "Name": {"Fn::Join": ["", [{"Ref": "Domain"}, "."]]},
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": {"Ref": "LoadBalancerHostedZoneID"},
+          "DNSName": {"Ref": "LoadBalancerDNS"}
+        }
+      }
+    },
+
+    "WWWRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": {"Ref": "HostedZone"},
+        "Name": {"Fn::Join": ["", ["www.", {"Ref": "Domain"}, "."]]},
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": {"Ref": "LoadBalancerHostedZoneID"},
+          "DNSName": {"Ref": "LoadBalancerDNS"}
+        }
+      }
+    }
+  },
+
+  "Outputs": {
+    "HostedZoneName": {
+      "Description": "Hosted zone name",
+      "Value": {"Ref": "HostedZone"}
+    }
+  }
+}
