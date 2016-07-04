@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    server_name www.digitalservicesstore.service.gov.uk digitalservicesstore.service.gov.uk;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
+
+    location / {
+        return 301 https://www.digitalmarketplace.service.gov.uk;
+    }
+}
