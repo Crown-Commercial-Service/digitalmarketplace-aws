@@ -25,6 +25,36 @@
       }
     },
 
+    "GoogleMailServers": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": {"Ref": "HostedZone"},
+        "Name": {"Fn::Join": ["", [{"Ref": "Domain"}, "."]]},
+        "Type": "MX",
+        "ResourceRecords": [
+          "10 ALT4.ASPMX.L.GOOGLE.COM.",
+          "10 ALT3.ASPMX.L.GOOGLE.COM.",
+          "5 ALT2.ASPMX.L.GOOGLE.COM.",
+          "5 ALT1.ASPMX.L.GOOGLE.COM.",
+          "1 ASPMX.L.GOOGLE.COM."
+        ],
+        "TTL": "3600"
+      }
+    },
+
+    "TXTRecords": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": {"Ref": "HostedZone"},
+        "Name": {"Fn::Join": ["", [{"Ref": "Domain"}, "."]]},
+        "Type": "TXT",
+        "ResourceRecords": [
+          "\"v=spf1 mx include:_spf.google.com include:amazonses.com ?all\""
+        ],
+        "TTL": "300"
+      }
+    },
+
     "RootRecord": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
