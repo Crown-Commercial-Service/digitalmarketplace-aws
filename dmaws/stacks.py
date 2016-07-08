@@ -1,9 +1,7 @@
-import re
-
 from toposort import toposort_flatten
 
 from .cloudformation import Cloudformation
-from .utils import template, load_file, LazyTemplateMapping
+from .utils import template, load_file, LazyTemplateMapping, param_to_env
 from .deploy import Deploy
 
 
@@ -59,11 +57,6 @@ class BuiltStack(Stack):
         environment_variables = [
             p for p in self.parameters.keys() if p.startswith('EnvVar')
         ]
-
-        def param_to_env(name):
-            s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-            s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
-            return s2.upper().replace('ENV_VAR_', '')
 
         return template(template_body, {
             "parameters": self.parameters,
@@ -149,10 +142,10 @@ class StackPlan(object):
                 stack_info = self.cfn.create_stack(built_stack)
             else:
                 stack_info = self.cfn.describe_stack(built_stack)
-                if not stack_info:
-                    self.log("Dependency %s doesn't exists, can't continue",
-                             built_stack.name, color='red')
-                    return False
+
+            if not stack_info or stack_info.get('failed', False):
+                self.log("%s doesn't exist or can't be created, can't continue", built_stack.name, color='red')
+                return False
 
             failure = failure or stack_info.get('failed', False)
             self.stack_context['stacks'][name].update_info(stack_info)

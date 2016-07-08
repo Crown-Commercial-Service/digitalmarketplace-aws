@@ -4,6 +4,8 @@ all:
   - apps
   - dev_access
   - data_storage
+  - kibana
+  - lambda_functions
 
 apps:
   - api
@@ -28,8 +30,12 @@ data_storage:
   - communications_s3
   - submissions_s3
   - agreements_s3
+  - lambda_code_s3
   - elasticsearch
   - monitoring
+
+lambda_functions:
+  - cloudwatch_logs_lambda
 
 dev_access:
   - database_dev_access
@@ -71,8 +77,6 @@ route53digitalservicesstore:
 database:
   name: "rds-database-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_rds_database.json
-  dependencies:
-    - monitoring
   parameters:
     DBVersion: "{{ database.version }}"
     DBName: "{{ database.name }}"
@@ -489,12 +493,54 @@ jenkins:
     HostedZoneName: "{{ stacks.route53zone.outputs.HostedZoneName }}"
     RootDomain: "{{ root_domain }}"
     Subdomain: "ci"
+    LogsSubdomain: "logs"
     Port: "{{ jenkins.port }}"
 
     KeyName: "{{ key_name }}"
     GroupTag: "jenkins-{{ stage }}"
     InstanceType: "{{ jenkins.instance_type }}"
     InstanceImage: "{{ jenkins.instance_image }}"
+
+kibana:
+  name: "kibana-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_kibana.json
+  dependencies:
+    - monitoring
+  parameters:
+    DomainName: "kibana-{{ stage }}-{{ environment }}"
+    UserIPs: "{{ jenkins_ips | join(',') }}"
+
+lambda_code_s3:
+  name: "lambda-code-s3-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_s3.json
+  parameters:
+    BucketName: "digitalmarketplace-lambda-code-{{ stage }}-{{ environment }}"
+
+cloudwatch_logs_lambda:
+  name: "cloudwatch-logs-lambda-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_lambda.json
+  dependencies:
+    - kibana
+  parameters:
+    FunctionName: "dm-cloudwatch-logs-{{ stage }}-{{ environment }}"
+    S3Bucket: "digitalmarketplace-lambda-code-{{ stage }}-{{ environment }}"
+    S3Key: "cloudwatch-logs-{{ stage }}-{{ environment }}.zip"
+
+    # Additional parameters used by the function code. Names match
+    # the ElasticBeanstalk environment variable convention since
+    # we need to autogenerate the matching parameter declaration
+    # in the cloudformation template
+    EnvVarElasticsearchEndpoint: "{{ stacks.kibana.outputs.Domain }}"
+
+lambda_logs_subscription:
+  name: "lambda-logs-subscription-{{ stage }}-{{ environment }}"
+  template: cloudformation_templates/aws_log_subscription.json
+  dependencies:
+    - cloudwatch_logs_lambda
+  parameters:
+    Lambda: "{{ stacks.cloudwatch_logs_lambda.outputs.Arn }}"
+    FilterPattern: '{ $.request != "*/_status?ignore-dependencies *" || $.url != "*/_status?ignore-dependencies" }'
+    LogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
 
 jenkins_ssh_access:
   name: "jenkins-{{ stage }}-ssh-access"
@@ -505,6 +551,17 @@ jenkins_ssh_access:
     CidrIPs: "{{ dev_user_ips | join(',') }}"
     FromPort: 22
     ToPort: 22
+    SecurityGroup: "{{ stacks.jenkins.outputs.InstanceSecurityGroup }}"
+
+jenkins_letsencrypt_access:
+  name: "jenkins-{{ stage }}-letsencrypt-access"
+  template: cloudformation_templates/aws_dev_access.json
+  dependencies:
+    - jenkins
+  parameters:
+    CidrIPs: "0.0.0.0/0"
+    FromPort: 80
+    ToPort: 80
     SecurityGroup: "{{ stacks.jenkins.outputs.InstanceSecurityGroup }}"
 
 nginx_ssh_access:
