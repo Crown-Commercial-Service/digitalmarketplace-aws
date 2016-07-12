@@ -539,7 +539,7 @@ lambda_logs_subscription:
     - cloudwatch_logs_lambda
   parameters:
     Lambda: "{{ stacks.cloudwatch_logs_lambda.outputs.Arn }}"
-    FilterPattern: '{ $.request != "*/_status?ignore-dependencies *" || $.url != "*/_status?ignore-dependencies" }'
+    FilterPattern: '{ ($.request NOT EXISTS || $.request != "*/_status?ignore-dependencies *") && ($.url NOT EXISTS || $.url != "*/_status?ignore-dependencies") && ($.remoteHost NOT EXISTS || $.remoteHost != "::1") }'
     LogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"
 
 jenkins_ssh_access:

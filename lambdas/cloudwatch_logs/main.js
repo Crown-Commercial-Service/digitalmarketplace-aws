@@ -71,12 +71,7 @@ function transform(payload) {
         ].join('.');
 
         var source = buildSource(logEvent.message);
-        source['@id'] = logEvent.id;
         source['@timestamp'] = new Date(1 * logEvent.timestamp).toISOString();
-        source['@message'] = logEvent.message;
-        source['@owner'] = payload.owner;
-        source['@log_group'] = payload.logGroup;
-        source['@log_stream'] = payload.logStream;
 
         var action = { "index": {} };
         action.index._index = indexName;
