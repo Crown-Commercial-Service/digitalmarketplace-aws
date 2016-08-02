@@ -67,7 +67,7 @@
       }
     },
 
-    "DBParameterGroup94": {
+    "DBParameterGroup95": {
       "Type": "AWS::RDS::DBParameterGroup",
       "Properties": {
         "Description": "Custom DB parameter group",
@@ -90,7 +90,7 @@
         "DBInstanceClass": {"Ref": "DBInstanceType"},
         "AllocatedStorage": {"Ref": "DBAllocatedStorage"},
         "MasterUserPassword": {"Ref": "DBPassword"},
-        "DBParameterGroupName": {"Ref": "DBParameterGroup94"},
+        "DBParameterGroupName": {"Ref": "DBParameterGroup95"},
         "VPCSecurityGroups": [{"Fn::GetAtt": ["SecurityGroup", "GroupId"]}],
         "MultiAZ": {"Ref": "MultiAZ"},
         "BackupRetentionPeriod": {"Ref": "BackupRetentionPeriod"},

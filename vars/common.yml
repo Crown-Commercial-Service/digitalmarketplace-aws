@@ -34,7 +34,7 @@ supplier_frontend:
   max_instance_count: 2
 
 database:
-  version: 9.4
+  version: 9.5
   port: 5432
   user: "digitalmarketplace"
   name: "digitalmarketplace_api"
