@@ -6,6 +6,10 @@
       "Type": "String",
       "Description": "Domain name for AWS Elasticsearch service"
     },
+    "InstanceType": {
+      "Type": "String",
+      "Description": "AWS Elasticsearch instance type"
+    },
     "UserIPs": {
       "Type": "CommaDelimitedList",
       "Description": "List of IP addresses that can access the Elasticsearch domain"
@@ -19,11 +23,11 @@
         "DomainName": {"Ref": "DomainName"},
         "EBSOptions": {
           "EBSEnabled": true,
-          "VolumeSize": 15,
+          "VolumeSize": 50,
           "VolumeType": "gp2"
         },
         "ElasticsearchClusterConfig": {
-          "InstanceType": "t2.micro.elasticsearch",
+          "InstanceType": {"Ref": "InstanceType"},
           "InstanceCount": 1
         },
         "AccessPolicies": {

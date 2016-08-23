@@ -509,6 +509,7 @@ kibana:
   parameters:
     DomainName: "kibana-{{ stage }}-{{ environment }}"
     UserIPs: "{{ jenkins_ips | join(',') }}"
+    InstanceType: "{{ kibana.instance_type }}"
 
 lambda_code_s3:
   name: "lambda-code-s3-{{ stage }}-{{ environment }}"
