@@ -51,3 +51,6 @@ nginx:
   instance_type: t2.micro
   instance_count: 2
   instance_image: ami-e1d5b092
+
+kibana:
+  instance_type: m3.medium.elasticsearch

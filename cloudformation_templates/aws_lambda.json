@@ -57,7 +57,7 @@
         "MemorySize": 128,
         "Role": {"Fn::GetAtt" : ["LambdaExecutionRole", "Arn"]},
         "Runtime": "nodejs4.3",
-        "Timeout": 60
+        "Timeout": 5
       }
     }
   },
