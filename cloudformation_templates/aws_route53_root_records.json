@@ -42,6 +42,19 @@
       }
     },
 
+    "DMARCRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": [".", ["_dmarc", {"Ref": "HostedZoneName"}]]},
+        "Type": "TXT",
+        "ResourceRecords": [
+          "\"v=DMARC1; p=none; rua=mailto:support+dmarc-reports@digitalmarketplace.service.gov.uk; fo=1\""
+        ],
+        "TTL": "300"
+      }
+    },
+
     "GoogleVerification": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
