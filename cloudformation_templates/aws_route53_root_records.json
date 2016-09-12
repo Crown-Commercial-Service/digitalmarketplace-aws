@@ -42,6 +42,31 @@
       }
     },
 
+    "ZendeskDKIMRecord": {
+      "Type": "AWS::Route53::RecordSetGroup",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "RecordSets": [
+          {
+            "Name": {"Fn::Join": [".", [
+              "zendesk1._domainkey", {"Ref": "HostedZoneName"}
+            ]]},
+            "Type" : "CNAME",
+            "TTL" : "900",
+            "ResourceRecords" : ["zendesk1._domainkey.zendesk.com"]
+          },
+          {
+            "Name": {"Fn::Join": [".", [
+              "zendesk2._domainkey", {"Ref": "HostedZoneName"}
+            ]]},
+            "Type" : "CNAME",
+            "TTL" : "900",
+            "ResourceRecords" : ["zendesk2._domainkey.zendesk.com"]
+          }
+        ]
+      }
+    },
+
     "DMARCRecord": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
