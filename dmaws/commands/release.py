@@ -49,7 +49,7 @@ def release_cmd(ctx, release_name=None, from_profile=None, skip_publishing=False
 
     success = publish_deployment(
         token=os.getenv('GITHUB_TOKEN'),
-        repo=repository_path.partition(':')[-1].replace('.git', ''),
+        repo=ctx.stacks[ctx.apps[0]].repo_url.partition(':')[-1].replace('.git', ''),
         ref=release_name,
         environment=ctx.stage,
         build=os.getenv('BUILD_NUMBER'),
