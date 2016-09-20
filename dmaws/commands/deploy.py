@@ -4,7 +4,7 @@ from datetime import datetime
 
 import click
 
-from ..cli import cli_command, base
+from ..cli import cli_command, main
 from ..stacks import StackPlan
 from ..build import get_application_name
 from ..github import publish_deployment
@@ -31,7 +31,7 @@ def deploy_cmd(ctx, repository_path):
 
 @click.argument('deployments_json', nargs=1, type=click.File())
 @click.option('--github-token', help="Github API token", default=None)
-@base.command('publish-deployments')
+@main.command('publish-deployments')
 def publish_releases(deployments_json, github_token):
     """Publishes Jenkins deployments JSON dump to Github Deployments API"""
 

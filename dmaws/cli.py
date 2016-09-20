@@ -1,5 +1,4 @@
 from functools import wraps
-import os
 import sys
 
 import click
@@ -18,16 +17,8 @@ STAGES = [
 
 
 @click.group()
-@click.argument('stage', nargs=1, type=click.Choice(STAGES))
-@click.argument('environment', nargs=1)
 @pass_context
-def main(ctx, stage, environment):
-    ctx.stage = stage
-    ctx.environment = environment
-
-
-@click.group()
-def base():
+def main(ctx):
     pass
 
 
@@ -51,10 +42,12 @@ def cli_command(cmd_name, max_apps=-1):
             '--dry-run', is_flag=True, default=False,
             help="List tasks that would run without executing any of them"
         )
+        @click.argument('stage', nargs=1, type=click.Choice(STAGES))
         @pass_context
         @wraps(cmd)
         def wrapped(ctx, vars_file, var, stacks_file, load_default_files,
-                    dry_run, app=None, *args, **kwargs):
+                    dry_run, stage, app=None, *args, **kwargs):
+            ctx.stage = ctx.environment = stage
             ctx.load_variables(
                 files=ctx.get_variables_files(load_default_files, vars_file),
                 pairs=[v.split('=') for v in var])
@@ -79,4 +72,5 @@ def cli_command(cmd_name, max_apps=-1):
 from .commands import *  # noqa
 
 
-cli = click.CommandCollection(sources=[main, base])
+def cli():
+    main(auto_envvar_prefix='DM_AWS')

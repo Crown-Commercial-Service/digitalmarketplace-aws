@@ -20,4 +20,4 @@ if [ "$STAGE" = "staging" ]; then
 fi
 
 rm release_properties.out
-AWS_PROFILE="$STAGE" dmaws $STAGE $STAGE release $APPLICATION_NAME $OPTIONS 1>release_properties.out
+AWS_PROFILE="$STAGE" dmaws release $STAGE $APPLICATION_NAME $OPTIONS 1>release_properties.out
