@@ -69,7 +69,7 @@ Lambda functions are created by the CloudFormation stack, but rerunning the stac
 the function code. Instead, functions can be updating using the `lambda-release` command:
 
 ```
-dmaws preview preview lambda-release cloudwatch_logs_lambda
+dmaws lambda-release preview cloudwatch_logs_lambda
 ```
 
 This will package function code from `lambdas/cloudwatch_logs`, upload the archive to S3 and update
