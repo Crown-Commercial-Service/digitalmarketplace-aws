@@ -42,6 +42,46 @@
       }
     },
 
+    "MailchimpDKIMRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "Name": {"Fn::Join": ["", [
+          "k1._domainkey", ".", {"Ref": "HostedZoneName"}
+        ]]},
+        "Type": "CNAME",
+        "ResourceRecords": [
+          "dkim.mcsv.net"
+        ],
+        "TTL": "300"
+      }
+    },
+
+    "ZendeskDKIMRecord": {
+      "Type": "AWS::Route53::RecordSetGroup",
+      "Properties": {
+        "HostedZoneName": {"Ref": "HostedZoneName"},
+        "RecordSets": [
+          {
+            "Name": {"Fn::Join": [".", [
+              "zendesk1._domainkey", {"Ref": "HostedZoneName"}
+            ]]},
+            "Type" : "CNAME",
+            "TTL" : "900",
+            "ResourceRecords" : ["zendesk1._domainkey.zendesk.com"]
+          },
+          {
+            "Name": {"Fn::Join": [".", [
+              "zendesk2._domainkey", {"Ref": "HostedZoneName"}
+            ]]},
+            "Type" : "CNAME",
+            "TTL" : "900",
+            "ResourceRecords" : ["zendesk2._domainkey.zendesk.com"]
+          }
+        ]
+      }
+    },
+
     "DMARCRecord": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
@@ -63,7 +103,7 @@
         "Type": "TXT",
         "ResourceRecords": [
           "\"google-site-verification=wCZPbaSgAFuIlzK2CpzwiOYwgCUJP_ZUOhHTYCGs7aQ\"",
-          "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com include:mail.zendesk.com ~all\""
+          "\"v=spf1 include:_spf.google.com include:spf.mandrillapp.com include:mail.zendesk.com include:servers.mcsv.net ~all\""
         ],
         "TTL": "300"
       }
