@@ -26,6 +26,11 @@ def main(ctx, stage, environment):
     ctx.environment = environment
 
 
+@click.group()
+def base():
+    pass
+
+
 def cli_command(cmd_name, max_apps=-1):
     """Common options for deployment commands."""
 
@@ -74,5 +79,4 @@ def cli_command(cmd_name, max_apps=-1):
 from .commands import *  # noqa
 
 
-def cli():
-    main(auto_envvar_prefix='DM_AWS')
+cli = click.CommandCollection(sources=[main, base])

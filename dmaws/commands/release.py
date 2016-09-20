@@ -1,17 +1,20 @@
 import sys
 import os
+from datetime import datetime
 
 import click
 
 from ..cli import cli_command
 from ..stacks import StackPlan
+from ..github import publish_deployment
 from .. import build
 
 
 @click.option('--release-name')
 @click.option('--from-profile')
+@click.option('--skip-publishing', is_flag=True, help="Do not publish the deployment on Github")
 @cli_command('release', max_apps=1)
-def release_cmd(ctx, release_name=None, from_profile=None):
+def release_cmd(ctx, release_name=None, from_profile=None, skip_publishing=False):
     """Release an application to preview, staging or production.
 
     If releasing to preview:
@@ -40,6 +43,24 @@ def release_cmd(ctx, release_name=None, from_profile=None):
 
     ctx.out("RELEASE_NAME", release_name)
     build.push_deployed_to_tag(repository_path, ctx.stage, release_name)
+
+    if skip_publishing:
+        return
+
+    success = publish_deployment(
+        token=os.getnev('GITHUB_TOKEN'),
+        repo=repository_path.partition(':')[-1].replace('.git', ''),
+        ref=release_name,
+        environment=ctx.stage,
+        build=os.getenv('BUILD_NUMBER'),
+        created_at=datetime.utcnow(),
+        ci_url=os.getenv('BUILD_URL'),
+        status='success',
+        logger=ctx.log
+    )
+
+    if not success:
+        sys.exit(1)
 
 
 def get_deploy(ctx, repository_path):
