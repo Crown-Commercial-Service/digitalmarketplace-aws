@@ -39,7 +39,7 @@ database:
   user: "digitalmarketplace"
   name: "digitalmarketplace_api"
   instance_type: db.t2.micro
-  allocated_storage: 5
+  allocated_storage: 10
 
 elasticsearch:
   port: 9200
