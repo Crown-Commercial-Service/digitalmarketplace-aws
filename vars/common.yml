@@ -11,7 +11,7 @@ dev_user_ips:
 api:
   instance_type: t2.micro
   min_instance_count: 1
-  max_instance_count: 2
+  max_instance_count: 1
 
 search_api:
   instance_type: t2.micro
