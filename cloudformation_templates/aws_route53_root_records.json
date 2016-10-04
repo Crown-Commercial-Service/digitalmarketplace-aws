@@ -104,7 +104,7 @@
         "Name": {"Fn::Join": [".", ["_dmarc", {"Ref": "HostedZoneName"}]]},
         "Type": "TXT",
         "ResourceRecords": [
-          "\"v=DMARC1; p=none; rua=mailto:support+dmarc-reports@digitalmarketplace.service.gov.uk; fo=1\""
+          "\"v=DMARC1; p=quarantine; rua=mailto:support+dmarc-reports@digitalmarketplace.service.gov.uk; fo=1\""
         ],
         "TTL": "300"
       }
