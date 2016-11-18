@@ -6,8 +6,6 @@ server {
     set $admin_frontend_url "{{ admin_frontend_url }}";
     set $supplier_frontend_url "{{ supplier_frontend_url }}";
 
-    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
-
     location /robots.txt {
         alias {{ static_files_root }}/robots_www.txt;
     }

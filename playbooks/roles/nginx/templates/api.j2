@@ -4,8 +4,6 @@ server {
 
     set $api_url "{{ api_url }}";
 
-    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
-
     location / {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;

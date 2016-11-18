@@ -20,9 +20,10 @@ http {
     # ignore X-Forwarded-Host to prevent malicious 302s
     proxy_set_header X-Forwarded-Host "";
 
-    # couple of good practice security headers
+    # a few good practice security headers
     add_header X-Content-Type-Options nosniff;
     add_header X-Xss-Protection "1; mode=block" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
 
     # Basic Settings
     sendfile on;
