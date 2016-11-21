@@ -50,7 +50,7 @@ elasticsearch:
 nginx:
   instance_type: t2.micro
   instance_count: 2
-  instance_image: ami-e1d5b092
+  instance_image: ami-e6297495
 
 kibana:
   instance_type: m3.medium.elasticsearch
