@@ -453,6 +453,7 @@ nginx:
     KeyName: "{{ key_name }}"
     UserIPs: "{{ user_ips | join(',') }}"
     AdminUserIPs: "{{ admin_user_ips | join(',') }}"
+    DevUserIPs: "{{ dev_user_ips | join(',') }}"
 
     LogGroupName: "{{ stacks.monitoring.outputs.LogGroupName }}"
     JSONLogGroupName: "{{ stacks.monitoring.outputs.JSONLogGroupName }}"

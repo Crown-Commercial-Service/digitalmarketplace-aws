@@ -18,6 +18,11 @@
       "Description": "Comma-separated list of CIDRs/IPs for nginx /admin allow rule"
     },
 
+    "DevUserIPs": {
+      "Type": "String",
+      "Description": "Comma-separated list of CIDRs/IPs for nginx api access allow rule"
+    },
+
     "RootDomain": {
       "Type": "String",
       "Description": "Root domain for the public Route 53 records"
@@ -342,6 +347,7 @@
             "-t instance-config ",
             "-e aws_region=", {"Ref": "AWS::Region"}, " ",
             "-e admin_user_ips=", {"Ref": "AdminUserIPs"}, " ",
+            "-e dev_user_ips=", {"Ref": "DevUserIPs"}, " ",
             "-e nameserver_ip=$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf) ",
             "-e cloudwatch_log_group=", {"Ref": "LogGroupName"}, " ",
             "-e cloudwatch_json_log_group=", {"Ref": "JSONLogGroupName"}, " ",
