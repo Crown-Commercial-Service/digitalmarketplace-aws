@@ -10,8 +10,6 @@ server {
     set $communications_s3_url "{{ communications_s3_url }}";
     set $submissions_s3_url "{{ submissions_s3_url }}";
 
-    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
-
     location /robots.txt {
         alias {{ static_files_root }}/robots_assets.txt;
     }
