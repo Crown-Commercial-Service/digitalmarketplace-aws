@@ -105,6 +105,7 @@ documents_s3:
   parameters:
     BucketName: "digitalmarketplace-documents-{{ stage }}-{{ environment }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Name }}"
+    AccessControl: "Private"
 
 communications_s3:
   name: "communications-s3-{{ stage }}-{{ environment }}"
@@ -114,6 +115,7 @@ communications_s3:
   parameters:
     BucketName: "digitalmarketplace-communications-{{ stage }}-{{ environment }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Name }}"
+    AccessControl: "Private"
 
 submissions_s3:
   name: "submissions-s3-{{ stage }}-{{ environment }}"
@@ -123,6 +125,7 @@ submissions_s3:
   parameters:
     BucketName: "digitalmarketplace-submissions-{{ stage }}-{{ environment }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Name }}"
+    AccessControl: "Private"
 
 agreements_s3:
   name: "agreements-s3-{{ stage }}-{{ environment }}"
@@ -132,6 +135,7 @@ agreements_s3:
   parameters:
     BucketName: "digitalmarketplace-agreements-{{ stage }}-{{ environment }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Name }}"
+    AccessControl: "Private"
 
 g7_draft_documents_s3:
   name: "g7-draft-documents-s3-{{ stage }}-{{ environment }}"
@@ -141,6 +145,7 @@ g7_draft_documents_s3:
   parameters:
     BucketName: "digitalmarketplace-g7-draft-documents-{{ stage }}-{{ environment }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Name }}"
+    AccessControl: "Private"
 
 monitoring:
   name: "monitoring-{{ stage }}-{{ environment }}"
@@ -543,6 +548,7 @@ lambda_code_s3:
   parameters:
     BucketName: "digitalmarketplace-lambda-code-{{ stage }}-{{ environment }}"
     LogsBucket: "{{ stacks.logs_s3.outputs.Name }}"
+    AccessControl: "Private"
 
 cloudwatch_logs_lambda:
   name: "cloudwatch-logs-lambda-{{ stage }}-{{ environment }}"
