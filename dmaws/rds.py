@@ -305,9 +305,13 @@ class RDSPostgresClient(object):
         self.cursor.execute("""
             UPDATE supplier_frameworks
             SET declaration = (CASE
-                WHEN (declaration->'status') IS NULL
+                WHEN (declaration->'status') IS NULL OR (declaration->'nameOfOrganisation') IS NULL
                 THEN '{}'
-                ELSE '{"status": "' || (declaration->>'status') || '"}'
+                ELSE '{
+                   "status": "' || (declaration->>'status') || '",
+                   "nameOfOrganisation": "' || replace((declaration->>'nameOfOrganisation'), '"', '') || '",
+                   "primaryContactEmail": "supplier-user@example.com"
+                }'
             END)::json
             WHERE declaration IS NOT NULL AND declaration::varchar != 'null';
         """)
