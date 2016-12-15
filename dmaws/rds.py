@@ -256,17 +256,14 @@ class RDSPostgresClient(object):
                 "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
                 (open_framework_ids,))
 
+        # We can't tell if a procurement is ongoing, so delete all of them
+        self.log("Delete brief_responses")
+        self.cursor.execute("DELETE FROM brief_responses")
+
         self.log("Delete draft briefs")
         self.log("  > Delete draft brief users")
         self.cursor.execute("""
             DELETE FROM brief_users WHERE brief_id IN (
-                SELECT brief_id FROM briefs WHERE published_at IS NULL
-            )
-            """)
-        # somehow, we still have brief responses attached a draft brief
-        self.log("  > Delete draft brief responses")
-        self.cursor.execute("""
-            DELETE FROM brief_responses WHERE brief_id IN (
                 SELECT brief_id FROM briefs WHERE published_at IS NULL
             )
             """)
