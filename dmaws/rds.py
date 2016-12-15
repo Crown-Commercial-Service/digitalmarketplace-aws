@@ -250,11 +250,28 @@ class RDSPostgresClient(object):
         open_framework_ids = self.get_open_framework_ids()
         self.log("Delete draft services")
         self.cursor.execute("DELETE FROM draft_services")
-        self.log("Delete supplier frameworks")
+        self.log("Delete supplier frameworks for open frameworks")
         if len(open_framework_ids):
             self.cursor.execute(
                 "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
                 (open_framework_ids,))
+
+        self.log("Delete draft briefs")
+        self.log("  > Delete draft brief users")
+        self.cursor.execute("""
+            DELETE FROM brief_users WHERE brief_id IN (
+                SELECT brief_id FROM briefs WHERE published_at IS NULL
+            )
+            """)
+        # somehow, we still have brief responses attached a draft brief
+        self.log("  > Delete draft brief responses")
+        self.cursor.execute("""
+            DELETE FROM brief_responses WHERE brief_id IN (
+                SELECT brief_id FROM briefs WHERE published_at IS NULL
+            )
+            """)
+        self.log("  > Delete draft briefs")
+        self.cursor.execute("DELETE FROM briefs WHERE published_at IS NULL")
 
         # Fix suppliers with services but no supplier_framework
         self.cursor.execute("""
