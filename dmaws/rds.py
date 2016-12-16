@@ -301,6 +301,9 @@ class RDSPostgresClient(object):
         self.log("Delete audit events")
         self.cursor.execute("DELETE FROM audit_events")
 
+        self.log("Delete framework agreements")
+        self.cursor.execute("DELETE FROM framework_agreements")
+
         self.log("Blank out declarations")
         self.cursor.execute("""
             UPDATE supplier_frameworks
