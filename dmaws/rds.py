@@ -236,7 +236,7 @@ class RDSPostgresClient(object):
         self.cursor.execute("SELECT id FROM frameworks WHERE status IN ('open', 'pending')")
         return tuple(framework[0] for framework in self.cursor.fetchall())
 
-    def clean_database_for_staging(self):
+    def clean_database(self):
         self.log("Update users")
         hashed_password = bcrypt.hashpw(
             b"Password1234",
@@ -318,49 +318,5 @@ class RDSPostgresClient(object):
             END)::json
             WHERE declaration IS NOT NULL AND declaration::varchar != 'null';
         """)
-
-        self.commit()
-
-    def clean_database_for_preview(self):
-        hashed_password = bcrypt.hashpw(
-            b"Password1234",
-            bcrypt.gensalt(4)
-        ).decode('utf-8')
-
-        self.log("Create 1 supplier user per supplier")
-        self.cursor.execute("DELETE FROM users")
-        self.cursor.execute("""
-            INSERT INTO users (
-                name, email_address, password, active,
-                created_at, updated_at, password_changed_at,
-                role, supplier_id, failed_login_count
-            ) (
-                SELECT 'Test supplier user', 'supplier-' || supplier_id || '@example.com', %(password)s, 't',
-                    %(timestamp)s, %(timestamp)s, %(timestamp)s,
-                    'supplier', supplier_id, 0
-                FROM suppliers
-            )
-        """, {
-            'password': hashed_password,
-            'timestamp': datetime.now()
-        })
-        self.log("Create 1 admin user per role")
-        self.cursor.execute("""
-            INSERT INTO users (
-                name, email_address, password, active,
-                created_at, updated_at, password_changed_at,
-                role, failed_login_count
-            ) (
-                SELECT 'Test admin user', pg_enum.enumlabel || '@example.com', %(password)s, 't',
-                    %(timestamp)s, %(timestamp)s, %(timestamp)s,
-                    pg_enum.enumlabel::user_roles_enum, 0
-                FROM pg_type
-                JOIN pg_enum ON pg_type.oid = pg_enum.enumtypid
-                WHERE pg_type.typname = 'user_roles_enum' AND pg_enum.enumlabel LIKE 'admin%%'
-            )
-        """, {
-            'password': hashed_password,
-            'timestamp': datetime.now()
-        })
 
         self.commit()
