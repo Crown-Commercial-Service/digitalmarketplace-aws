@@ -9,7 +9,7 @@ database:
   multi_az: "true"
   backup_retention_period: "1"
   slow_query_log_duration_ms: -1
-  snapshot_id: "staging-2016-12-20t1037"
+  snapshot_id: "staging-2016-12-23t1115"
 
 vpc_id: vpc-70319115
 subnets:
