@@ -125,6 +125,32 @@ class TestStackPlan(object):
 
         assert plan.stack_context == {'aws_region': AWS_REGION, 'stacks': {}}
 
+    @pytest.mark.parametrize('from_ctx_kwargs', [
+        {},
+        {'profile_name': 'stage'},
+    ])
+    def test_stackplan_from_ctx(self, from_ctx_kwargs):
+        # stage will always be set in the context,
+        # but it should only be applied if passed in explicitly
+        mock_ctx = mock.Mock(
+            stacks={},
+            stage='stage',
+            environment='environment',
+            variables={'aws_region': AWS_REGION},
+            apps=[],
+            log=None
+        )
+
+        plan = StackPlan.from_ctx(mock_ctx, **from_ctx_kwargs)
+
+        assert plan._stacks == {}
+        assert plan.stage == 'stage'
+        assert plan.environment == 'environment'
+        assert plan.stack_context == {'aws_region': AWS_REGION, 'stacks': {}}
+        assert plan.apps == []
+        assert plan.log() is None
+        assert plan.profile_name is None if not from_ctx_kwargs else from_ctx_kwargs['profile_name']
+
     def test_stacks_variable_is_reserved(self):
         with pytest.raises(ValueError):
             StackPlan({
