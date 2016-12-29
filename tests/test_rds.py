@@ -178,6 +178,7 @@ class TestRDS(object):
     def test_restore_instance_from_snapshot(self, rds_conn):
         rds = RDS(AWS_REGION)
         rds.allow_access_to_instance = mock.Mock()
+        rds.delete_instance_if_found = mock.Mock()
 
         instance = DBInstance(rds_conn, "instance_id")
         rds.allow_access_to_instance.return_value = instance
@@ -197,6 +198,7 @@ class TestRDS(object):
     def test_restore_instance_from_snapshot_blocks_until_restore_is_complete(self, sleep, rds_conn):
         rds = RDS(AWS_REGION)
         rds.allow_access_to_instance = mock.Mock()
+        rds.delete_instance_if_found = mock.Mock()
 
         rds.allow_access_to_instance.return_value = DBInstance(rds_conn, "instance_id")
         rds_conn.restore_dbinstance_from_dbsnapshot.return_value = DBInstance(
@@ -211,6 +213,33 @@ class TestRDS(object):
 
         assert instance.status == "available"
         assert rds_conn.get_all_dbinstances.call_count == 2
+
+    @pytest.mark.parametrize("get_all_db_instances_side_effect, delete_instance_call_count", [
+        (boto.exception.BotoServerError(404, "Not found"), 0),
+        ([[DBInstance(mock.Mock(), "instance_id", status="available")]], 1)
+    ])
+    def test_restore_instance_from_snapshot_existing_instance_is_deleted_if_it_exists(
+        self, rds_conn, get_all_db_instances_side_effect, delete_instance_call_count
+    ):
+        rds = RDS(AWS_REGION)
+        rds.allow_access_to_instance = mock.Mock()
+        rds.delete_instance = mock.Mock()
+
+        instance = DBInstance(rds_conn, "instance_id")
+        rds_conn.get_all_dbinstances.side_effect = get_all_db_instances_side_effect
+        rds.allow_access_to_instance.return_value = instance
+        rds_conn.restore_dbinstance_from_dbsnapshot.return_value = instance
+
+        instance = rds.restore_instance_from_snapshot(
+            "snapshot_id", "instance_id",
+            dev_user_ips=['anip'],
+            vpc_id='vpcid')
+
+        assert instance.id == "instance_id"
+        assert instance.status == "available"
+        rds_conn.restore_dbinstance_from_dbsnapshot("snapshot_id", "instance_id", "db.t2.micro", multi_az=False)
+        rds.allow_access_to_instance.assert_called_once_with(instance, 'exportdata-dev-access', ['anip'], 'vpcid')
+        assert rds.delete_instance.call_count == delete_instance_call_count
 
     @mock.patch('time.sleep')
     def test_delete_instance(self, sleep, rds_conn):
