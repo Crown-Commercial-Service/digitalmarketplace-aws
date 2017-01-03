@@ -236,7 +236,7 @@ class RDSPostgresClient(object):
         self.cursor.execute("SELECT id FROM frameworks WHERE status IN ('open', 'pending')")
         return tuple(framework[0] for framework in self.cursor.fetchall())
 
-    def clean_database_for_staging(self):
+    def clean_database(self):
         self.log("Update users")
         hashed_password = bcrypt.hashpw(
             b"Password1234",
@@ -250,11 +250,25 @@ class RDSPostgresClient(object):
         open_framework_ids = self.get_open_framework_ids()
         self.log("Delete draft services")
         self.cursor.execute("DELETE FROM draft_services")
-        self.log("Delete supplier frameworks")
+        self.log("Delete supplier frameworks for open frameworks")
         if len(open_framework_ids):
             self.cursor.execute(
                 "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
                 (open_framework_ids,))
+
+        # We can't tell if a procurement is ongoing, so delete all of them
+        self.log("Delete brief_responses")
+        self.cursor.execute("DELETE FROM brief_responses")
+
+        self.log("Delete draft briefs")
+        self.log("  > Delete draft brief users")
+        self.cursor.execute("""
+            DELETE FROM brief_users WHERE brief_id IN (
+                SELECT brief_id FROM briefs WHERE published_at IS NULL
+            )
+            """)
+        self.log("  > Delete draft briefs")
+        self.cursor.execute("DELETE FROM briefs WHERE published_at IS NULL")
 
         # Fix suppliers with services but no supplier_framework
         self.cursor.execute("""
@@ -287,59 +301,22 @@ class RDSPostgresClient(object):
         self.log("Delete audit events")
         self.cursor.execute("DELETE FROM audit_events")
 
+        self.log("Delete framework agreements")
+        self.cursor.execute("DELETE FROM framework_agreements")
+
         self.log("Blank out declarations")
         self.cursor.execute("""
             UPDATE supplier_frameworks
             SET declaration = (CASE
-                WHEN (declaration->'status') IS NULL
+                WHEN (declaration->'status') IS NULL OR (declaration->'nameOfOrganisation') IS NULL
                 THEN '{}'
-                ELSE '{"status": "' || (declaration->>'status') || '"}'
+                ELSE '{
+                   "status": "' || (declaration->>'status') || '",
+                   "nameOfOrganisation": "' || replace((declaration->>'nameOfOrganisation'), '"', '') || '",
+                   "primaryContactEmail": "supplier-user@example.com"
+                }'
             END)::json
             WHERE declaration IS NOT NULL AND declaration::varchar != 'null';
         """)
-
-        self.commit()
-
-    def clean_database_for_preview(self):
-        hashed_password = bcrypt.hashpw(
-            b"Password1234",
-            bcrypt.gensalt(4)
-        ).decode('utf-8')
-
-        self.log("Create 1 supplier user per supplier")
-        self.cursor.execute("DELETE FROM users")
-        self.cursor.execute("""
-            INSERT INTO users (
-                name, email_address, password, active,
-                created_at, updated_at, password_changed_at,
-                role, supplier_id, failed_login_count
-            ) (
-                SELECT 'Test supplier user', 'supplier-' || supplier_id || '@example.com', %(password)s, 't',
-                    %(timestamp)s, %(timestamp)s, %(timestamp)s,
-                    'supplier', supplier_id, 0
-                FROM suppliers
-            )
-        """, {
-            'password': hashed_password,
-            'timestamp': datetime.now()
-        })
-        self.log("Create 1 admin user per role")
-        self.cursor.execute("""
-            INSERT INTO users (
-                name, email_address, password, active,
-                created_at, updated_at, password_changed_at,
-                role, failed_login_count
-            ) (
-                SELECT 'Test admin user', pg_enum.enumlabel || '@example.com', %(password)s, 't',
-                    %(timestamp)s, %(timestamp)s, %(timestamp)s,
-                    pg_enum.enumlabel::user_roles_enum, 0
-                FROM pg_type
-                JOIN pg_enum ON pg_type.oid = pg_enum.enumtypid
-                WHERE pg_type.typname = 'user_roles_enum' AND pg_enum.enumlabel LIKE 'admin%%'
-            )
-        """, {
-            'password': hashed_password,
-            'timestamp': datetime.now()
-        })
 
         self.commit()

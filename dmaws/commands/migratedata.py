@@ -56,9 +56,7 @@ def create_scrubbed_instance(ctx, target_stage):
         logger=ctx.log
     )
 
-    pg_client.clean_database_for_staging()
-    if target_stage != 'staging':
-        pg_client.clean_database_for_preview()
+    pg_client.clean_database()
 
     return rds, pg_client
 
