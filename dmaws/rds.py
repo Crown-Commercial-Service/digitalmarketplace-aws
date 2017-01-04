@@ -152,9 +152,11 @@ class RDS(object):
         if not instance:
             return
 
-        self.log("Found leftover RDS instance: {}:{}".format(
-            instance.id, instance.DBName
-        ))
+        log_msg = "Found leftover RDS instance: {}".format(instance.id)
+        if hasattr(instance, 'DBName'):
+            log_msg += ":{}".format(instance.DBName)
+
+        self.log(log_msg)
         self.delete_instance(instance_id)
 
     def _wait_for_available(self, target, name, action, sleep=5):
