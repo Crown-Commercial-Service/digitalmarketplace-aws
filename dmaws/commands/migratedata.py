@@ -30,6 +30,7 @@ def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file):
 
     pg_client.close()
 
+    rds.delete_security_group(rds.get_security_group(IMPORT_SECURITY_GROUP_NAME))
     rds.delete_instance(EXPORT_INSTANCE_NAME)
     rds.delete_snapshot(EXPORT_SNAPSHOT_NAME)
 
@@ -68,10 +69,7 @@ def dump_to_target(ctx, src_pg_client):
 
     instance = rds.get_instance(plan.get_value('stacks.database.outputs')['URL'])
 
-    instance = rds.allow_access_to_instance(
-        instance, IMPORT_SECURITY_GROUP_NAME,
-        ctx.variables['dev_user_ips'],
-        ctx.variables['vpc_id'])
+    StackPlan.from_ctx(ctx, apps=['database_dev_access'], profile_name=ctx.stage).create()
 
     pg_client = RDSPostgresClient.from_boto(
         instance,
@@ -84,6 +82,4 @@ def dump_to_target(ctx, src_pg_client):
 
     pg_client.close()
 
-    sg = rds.get_security_group(IMPORT_SECURITY_GROUP_NAME)
-    rds.revoke_access_to_instance(instance, sg)
-    rds.delete_security_group(sg)
+    StackPlan.from_ctx(ctx, apps=['database_dev_access'], profile_name=ctx.stage).delete()
