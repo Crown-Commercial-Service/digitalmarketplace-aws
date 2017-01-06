@@ -9,7 +9,7 @@ database:
   multi_az: "false"
   backup_retention_period: "1"
   slow_query_log_duration_ms: 1000
-  snapshot_id: "s2015-05-13t0953z"
+  snapshot_id: ""
 
 vpc_id: vpc-a29149c7
 subnets:
