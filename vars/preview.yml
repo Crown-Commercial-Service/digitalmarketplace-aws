@@ -6,6 +6,7 @@ monitoring:
   email: "support+development-preview@digitalmarketplace.service.gov.uk"
 
 database:
+  name: "digitalmarketplace_api_preview"
   multi_az: "false"
   backup_retention_period: "1"
   slow_query_log_duration_ms: 1000
