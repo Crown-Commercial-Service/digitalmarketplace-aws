@@ -264,7 +264,7 @@ class RDSPostgresClient(object):
         self.log("  > Delete draft brief users")
         self.cursor.execute("""
             DELETE FROM brief_users WHERE brief_id IN (
-                SELECT brief_id FROM briefs WHERE published_at IS NULL
+                SELECT id FROM briefs WHERE published_at IS NULL
             )
             """)
         self.log("  > Delete draft briefs")
