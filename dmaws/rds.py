@@ -248,8 +248,13 @@ class RDSPostgresClient(object):
         )
 
         open_framework_ids = self.get_open_framework_ids()
-        self.log("Delete draft services")
-        self.cursor.execute("DELETE FROM draft_services")
+        self.log("Delete draft services for open frameworks")
+        self.cursor.execute("""
+            DELETE FROM draft_services WHERE framework_id IN (
+                SELECT id FROM frameworks WHERE status='open'
+            )
+            """)
+
         self.log("Delete supplier frameworks for open frameworks")
         if len(open_framework_ids):
             self.cursor.execute(
