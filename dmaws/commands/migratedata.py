@@ -62,24 +62,24 @@ def create_scrubbed_instance(ctx, target_stage):
     return rds, pg_client
 
 
-def dump_to_target(ctx, src_pg_client):
-    rds = RDS(ctx.variables['aws_region'], logger=ctx.log, profile_name=ctx.stage)
-    plan = StackPlan.from_ctx(ctx, apps=['database'])
+def dump_to_target(target_ctx, src_pg_client):
+    rds = RDS(target_ctx.variables['aws_region'], logger=target_ctx.log, profile_name=target_ctx.stage)
+    plan = StackPlan.from_ctx(target_ctx, apps=['database'])
     plan.info()
 
     instance = rds.get_instance(plan.get_value('stacks.database.outputs')['URL'])
 
-    StackPlan.from_ctx(ctx, apps=['database_dev_access'], profile_name=ctx.stage).create()
+    StackPlan.from_ctx(target_ctx, apps=['database_dev_access'], profile_name=target_ctx.stage).create()
 
     pg_client = RDSPostgresClient.from_boto(
         instance,
-        ctx.variables['database']['name'],
-        ctx.variables['database']['user'],
-        ctx.variables['database']['password'],
-        logger=ctx.log)
+        target_ctx.variables['database']['name'],
+        target_ctx.variables['database']['user'],
+        target_ctx.variables['database']['password'],
+        logger=target_ctx.log)
 
     src_pg_client.dump_to(pg_client)
 
     pg_client.close()
 
-    StackPlan.from_ctx(ctx, apps=['database_dev_access'], profile_name=ctx.stage).delete()
+    StackPlan.from_ctx(target_ctx, apps=['database_dev_access'], profile_name=target_ctx.stage).delete()
