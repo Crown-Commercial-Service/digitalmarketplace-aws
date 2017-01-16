@@ -5,6 +5,15 @@
     "BucketName": {
       "Type": "String",
       "Description": "S3 bucket name"
+    },
+    "AccessControl": {
+      "Type": "String",
+      "Description": "S3 bucket ACL",
+      "Default": "Private"
+    },
+    "LogsBucket": {
+      "Type": "String",
+      "Description": "S3 bucket name for storing access logs"
     }
   },
 
@@ -12,9 +21,13 @@
     "S3Bucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "AccessControl": "Private",
+        "AccessControl": {"Ref": "AccessControl"},
         "VersioningConfiguration": {
           "Status": "Enabled"
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {"Ref": "LogsBucket"},
+          "LogFilePrefix": {"Fn::Join": ["", [{"Ref": "BucketName"}, "/"]]}
         },
         "BucketName": {"Ref": "BucketName"}
       }
