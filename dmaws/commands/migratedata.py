@@ -9,6 +9,7 @@ from ..rds import RDS, RDSPostgresClient
 
 EXPORT_SNAPSHOT_NAME = "exportdata"
 EXPORT_INSTANCE_NAME = "exportdata"
+EXPORT_FILE_PATH = "./dumps/sql/exportdata.sql"
 IMPORT_SECURITY_GROUP_NAME = "importdata-sg"
 
 
@@ -26,7 +27,7 @@ def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file):
         vars_files=[target_vars_file])
 
     rds, pg_client = create_scrubbed_instance(ctx, target_stage)
-    dump_to_target(target_ctx, pg_client)
+    dump_to_target(target_ctx, pg_client, export_file=EXPORT_FILE_PATH)
 
     pg_client.close()
 
@@ -62,7 +63,7 @@ def create_scrubbed_instance(ctx, target_stage):
     return rds, pg_client
 
 
-def dump_to_target(target_ctx, src_pg_client):
+def dump_to_target(target_ctx, src_pg_client, export_file=None):
     rds = RDS(target_ctx.variables['aws_region'], logger=target_ctx.log, profile_name=target_ctx.stage)
     plan = StackPlan.from_ctx(target_ctx, apps=['database'])
     plan.info()
@@ -78,7 +79,13 @@ def dump_to_target(target_ctx, src_pg_client):
         target_ctx.variables['database']['password'],
         logger=target_ctx.log)
 
-    src_pg_client.dump_to(pg_client)
+    if export_file:
+        if not os.path.exists(os.path.dirname(EXPORT_FILE_PATH)):
+            raise Exception("Path not found: {}".format(os.path.dirname(EXPORT_FILE_PATH)))
+        src_pg_client.dump(EXPORT_FILE_PATH)
+        pg_client.load(EXPORT_FILE_PATH)
+    else:
+        src_pg_client.dump_to(pg_client)
 
     pg_client.close()
 
