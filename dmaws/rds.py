@@ -248,6 +248,7 @@ class RDSPostgresClient(object):
         )
 
         open_framework_ids = self.get_open_framework_ids()
+
         self.log("Delete draft services for open frameworks")
         self.cursor.execute("""
             DELETE FROM draft_services WHERE framework_id IN (
@@ -275,18 +276,6 @@ class RDSPostgresClient(object):
         self.log("  > Delete draft briefs")
         self.cursor.execute("DELETE FROM briefs WHERE published_at IS NULL")
 
-        # Fix suppliers with services but no supplier_framework
-        self.cursor.execute("""
-            INSERT INTO supplier_frameworks (supplier_id, framework_id) (
-                SELECT DISTINCT suppliers.supplier_id, services.framework_id
-                FROM suppliers
-                JOIN services ON suppliers.supplier_id=services.supplier_id
-                WHERE (
-                    SELECT COUNT(*) FROM supplier_frameworks WHERE supplier_id=suppliers.supplier_id
-                ) = 0
-            )
-        """)
-
         self.log("Delete dangling suppliers")
         self.cursor.execute("""
             WITH dangling_suppliers AS (
@@ -295,12 +284,15 @@ class RDSPostgresClient(object):
                     WHERE (
                         SELECT COUNT(*) FROM supplier_frameworks WHERE supplier_id=suppliers.supplier_id
                     ) = 0
+                    AND supplier_id NOT IN (
+                        SELECT DISTINCT supplier_id FROM services
+                    )
                 ), d1 AS (
                     DELETE FROM contact_information WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
                 ), d2 AS (
                     DELETE FROM users WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
                 )
-             DELETE FROM suppliers WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
+            DELETE FROM suppliers WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
         """)
 
         self.log("Delete audit events")
