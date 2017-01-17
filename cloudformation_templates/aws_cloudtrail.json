@@ -1,0 +1,67 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Parameters" : {
+    "S3BucketName": {
+      "Description": "S3 Bucket to store CloudTrail logs",
+      "Type": "String"
+    }
+  },
+  "Resources" : {
+    "LogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "cloudtrail",
+        "RetentionInDays": 90
+      }
+    },
+
+    "IAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "cloudtrail.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          }]
+        },
+        "Policies": [{
+          "PolicyName": "cloudtrail-cloudwatch-policy",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["logs:CreateLogStream"],
+                "Resource": [{"Fn::GetAtt": ["LogGroup", "Arn"]}]
+              },
+              {
+                "Effect": "Allow",
+                "Action": ["logs:PutLogEvents"],
+                "Resource": [{"Fn::GetAtt": ["LogGroup", "Arn"]}]
+              }
+            ]
+          }
+        }]
+      }
+    },
+
+    "CloudTrail" : {
+      "Type" : "AWS::CloudTrail::Trail",
+      "Properties" : {
+        "IsLogging" : true,
+        "IsMultiRegionTrail": true,
+        "IncludeGlobalServiceEvents": true,
+        "EnableLogFileValidation": true,
+        "CloudWatchLogsLogGroupArn": {"Fn::GetAtt": ["LogGroup", "Arn"]},
+        "CloudWatchLogsRoleArn": {"Fn::GetAtt": ["IAMRole", "Arn"]},
+        "S3BucketName" : {"Ref": "S3BucketName"},
+        "S3KeyPrefix" : {"Ref": "AWS::AccountId"}
+      }
+    }
+  }
+}
