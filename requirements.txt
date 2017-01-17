@@ -12,5 +12,5 @@ six==1.10.0
 requests==2.6.0
 
 # exportdata dependencies
-bcrypt==2.0.0
+bcrypt==3.1.1
 psycopg2==2.5.4
