@@ -72,7 +72,7 @@ def dump_to_target(target_ctx, src_pg_client, export_file=None):
 
     StackPlan.from_ctx(target_ctx, apps=['database_dev_access'], profile_name=target_ctx.stage).create()
 
-    pg_client = RDSPostgresClient.from_boto(
+    target_pg_client = RDSPostgresClient.from_boto(
         instance,
         target_ctx.variables['database']['name'],
         target_ctx.variables['database']['user'],
@@ -83,10 +83,10 @@ def dump_to_target(target_ctx, src_pg_client, export_file=None):
         if not os.path.exists(os.path.dirname(EXPORT_FILE_PATH)):
             raise Exception("Path not found: {}".format(os.path.dirname(EXPORT_FILE_PATH)))
         src_pg_client.dump(EXPORT_FILE_PATH)
-        pg_client.load(EXPORT_FILE_PATH)
+        target_pg_client.load(EXPORT_FILE_PATH)
     else:
-        src_pg_client.dump_to(pg_client)
+        src_pg_client.dump_to(target_pg_client)
 
-    pg_client.close()
+    target_pg_client.close()
 
     StackPlan.from_ctx(target_ctx, apps=['database_dev_access'], profile_name=target_ctx.stage).delete()
