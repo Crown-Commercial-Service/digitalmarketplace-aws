@@ -5,11 +5,11 @@ import click
 from ..cli import cli_command, STAGES
 from ..stacks import StackPlan
 from ..rds import RDS, RDSPostgresClient
+from ..utils import mkdir_p
 
 
 EXPORT_SNAPSHOT_NAME = "exportdata"
 EXPORT_INSTANCE_NAME = "exportdata"
-EXPORT_FILE_PATH = "./dumps/sql/exportdata.sql"
 IMPORT_SECURITY_GROUP_NAME = "importdata-sg"
 
 
@@ -17,7 +17,8 @@ IMPORT_SECURITY_GROUP_NAME = "importdata-sg"
 @click.argument('target_stage', nargs=1, type=click.Choice(STAGES))
 @click.argument('target_environment', nargs=1)
 @click.argument('target_vars_file', nargs=1)
-def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file):
+@click.argument('exportdata_path', nargs=1, type=click.Path(writable=True))
+def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file, exportdata_path):
     if target_stage not in ['development', 'preview', 'staging']:
         raise Exception("Invalid target stage [{}]".format(target_stage))
 
@@ -27,7 +28,7 @@ def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file):
         vars_files=[target_vars_file])
 
     rds, pg_client = create_scrubbed_instance(ctx, target_stage)
-    dump_to_target(target_ctx, pg_client, export_file=EXPORT_FILE_PATH)
+    dump_to_target(target_ctx, pg_client, exportdata_path=exportdata_path)
 
     pg_client.close()
 
@@ -63,7 +64,7 @@ def create_scrubbed_instance(ctx, target_stage):
     return rds, pg_client
 
 
-def dump_to_target(target_ctx, src_pg_client, export_file=None):
+def dump_to_target(target_ctx, src_pg_client, exportdata_path=None):
     rds = RDS(target_ctx.variables['aws_region'], logger=target_ctx.log, profile_name=target_ctx.stage)
     plan = StackPlan.from_ctx(target_ctx, apps=['database'])
     plan.info()
@@ -79,11 +80,10 @@ def dump_to_target(target_ctx, src_pg_client, export_file=None):
         target_ctx.variables['database']['password'],
         logger=target_ctx.log)
 
-    if export_file:
-        if not os.path.exists(os.path.dirname(EXPORT_FILE_PATH)):
-            raise Exception("Path not found: {}".format(os.path.dirname(EXPORT_FILE_PATH)))
-        src_pg_client.dump(EXPORT_FILE_PATH)
-        target_pg_client.load(EXPORT_FILE_PATH)
+    if exportdata_path:
+        mkdir_p(os.path.dirname(exportdata_path))
+        src_pg_client.dump(exportdata_path)
+        target_pg_client.load(exportdata_path)
     else:
         src_pg_client.dump_to(target_pg_client)
 

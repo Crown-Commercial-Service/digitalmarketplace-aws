@@ -14,6 +14,7 @@ from boto.rds import RDSConnection
 from boto.ec2 import EC2Connection
 
 from dmaws.utils import run_cmd as run_cmd_orig
+from dmaws.utils import mkdir_p as mkdir_p_orig
 from dmaws.build import get_repo_url, get_current_sha, get_current_ref
 
 
@@ -178,12 +179,12 @@ def path_exists(request):
     return path_exists
 
 
-@pytest.fixture(autouse=True)
-def mkdir(request):
-    mkdir_patch = mock.patch('os.mkdir')
-    request.addfinalizer(mkdir_patch.stop)
+@pytest.fixture()
+def mkdir_p(request):
+    mkdir_p_patch = mock.patch('dmaws.utils.mkdir_p', wraps=mkdir_p_orig)
+    request.addfinalizer(mkdir_p_patch.stop)
 
-    return mkdir_patch.start()
+    return mkdir_p_patch.start()
 
 
 @pytest.fixture(autouse=True)
