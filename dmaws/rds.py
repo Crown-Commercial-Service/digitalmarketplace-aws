@@ -249,6 +249,7 @@ class RDSPostgresClient(object):
 
         open_framework_ids = self.get_open_framework_ids()
 
+        # Remove data about currently ongoing framework applications
         self.log("Delete draft services for open frameworks")
         self.cursor.execute("""
             DELETE FROM draft_services WHERE framework_id IN (
@@ -262,8 +263,9 @@ class RDSPostgresClient(object):
                 "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
                 (open_framework_ids,))
 
-        # We can't tell if a procurement is ongoing, so delete all of them
+        # Remove data related to open DOS procurements
         self.log("Delete brief_responses")
+        # (We can't tell if a procurement is ongoing, so delete all brief responses)
         self.cursor.execute("DELETE FROM brief_responses")
 
         self.log("Delete draft briefs")
@@ -276,6 +278,7 @@ class RDSPostgresClient(object):
         self.log("  > Delete draft briefs")
         self.cursor.execute("DELETE FROM briefs WHERE published_at IS NULL")
 
+        # Remove suppliers without framework agreements or submitted services
         self.log("Delete dangling suppliers")
         self.cursor.execute("""
             WITH dangling_suppliers AS (
@@ -295,12 +298,16 @@ class RDSPostgresClient(object):
             DELETE FROM suppliers WHERE supplier_id IN (SELECT supplier_id FROM dangling_suppliers)
         """)
 
+        # Remove audit events because we don't use them
         self.log("Delete audit events")
         self.cursor.execute("DELETE FROM audit_events")
 
+        # Remove framework agreements because they contain personal data and we don't rely on them
         self.log("Delete framework agreements")
         self.cursor.execute("DELETE FROM framework_agreements")
 
+        # Overwrite declarations with the smallest possible valid entry
+        # Removes all personal data while keeping our app working as expected
         self.log("Blank out declarations")
         self.cursor.execute("""
             UPDATE supplier_frameworks
