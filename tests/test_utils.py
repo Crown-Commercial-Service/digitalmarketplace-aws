@@ -6,6 +6,7 @@ from dmaws.utils import safe_path_join
 from dmaws.utils import dict_from_path, merge_dicts
 from dmaws.utils import DEFAULT_TEMPLATES_PATH
 from dmaws.utils import template, template_string, LazyTemplateMapping
+from dmaws.utils import mkdir_p
 
 
 class TestRunCmd(object):
@@ -279,3 +280,25 @@ class TestLazyTemplateMapping(object):
         mapping = LazyTemplateMapping({"a": "{{ var }}a", "b": "{{ var }}b"},
                                       {"var": "a"})
         assert set(mapping.items()) == set([("a", "aa"), ("b", "ab")])
+
+
+class TestMkdirP(object):
+
+    def test_directories_created(self, makedirs):
+        mkdir_p('path/to/create')
+        makedirs.assert_called_with('path/to/create')
+
+    @pytest.mark.parametrize("path_exists", [
+        True, False
+    ])
+    def test_directories_created_if_they_exist(self, makedirs, isdir, path_exists):
+        makedirs.side_effect = OSError()
+        isdir.return_value = path_exists
+
+        if path_exists:
+            mkdir_p('path/to/create')
+            makedirs.assert_called_with('path/to/create')
+
+        else:
+            with pytest.raises(OSError):
+                mkdir_p('path/to/create')

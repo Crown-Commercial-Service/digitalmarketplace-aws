@@ -214,6 +214,10 @@ def param_to_env(name):
 
 
 def mkdir_p(path):
+    """
+    Creates a nested directory structure (does nothing if the path already exists)
+    http://stackoverflow.com/a/14364249
+    """
     try:
         os.makedirs(path)
     except OSError:

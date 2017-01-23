@@ -180,6 +180,25 @@ def path_exists(request):
 
 
 @pytest.fixture()
+def isdir(request):
+    isdir_patch = mock.patch('os.path.isdir')
+    request.addfinalizer(isdir_patch.stop)
+
+    isdir = isdir_patch.start()
+    isdir.return_value = True
+
+    return isdir
+
+
+@pytest.fixture()
+def makedirs(request):
+    makedirs_patch = mock.patch('os.makedirs')
+    request.addfinalizer(makedirs_patch.stop)
+
+    return makedirs_patch.start()
+
+
+@pytest.fixture()
 def mkdir_p(request):
     mkdir_p_patch = mock.patch('dmaws.utils.mkdir_p', wraps=mkdir_p_orig)
     request.addfinalizer(mkdir_p_patch.stop)
