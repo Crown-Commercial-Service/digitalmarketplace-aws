@@ -150,10 +150,18 @@ g7_draft_documents_s3:
 monitoring:
   name: "monitoring-{{ stage }}-{{ environment }}"
   template: cloudformation_templates/aws_monitoring.json
+  dependencies:
+    - cloudtrail
   parameters:
     LogGroupName: "{{ stage }}-{{ environment }}"
     RetentionInDays: 3653
     Email: "{{ monitoring.email }}"
+
+cloudtrail:
+  name: "cloudtrail"
+  template: cloudformation_templates/aws_cloudtrail.json
+  parameters:
+    S3BucketName: "gds-audit-cloudtrails"
 
 api_app:
   name: "digitalmarketplace-api-app"
@@ -516,6 +524,7 @@ jenkins:
   template: cloudformation_templates/aws_jenkins.json
   dependencies:
     - route53zone
+    - cloudtrail
   parameters:
     UserIPs: "{{ dev_user_ips | join(',') }}"
 
