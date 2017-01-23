@@ -30,6 +30,7 @@ def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file):
 
     pg_client.close()
 
+    rds.delete_security_group(rds.get_security_group(IMPORT_SECURITY_GROUP_NAME))
     rds.delete_instance(EXPORT_INSTANCE_NAME)
     rds.delete_snapshot(EXPORT_SNAPSHOT_NAME)
 
@@ -61,29 +62,24 @@ def create_scrubbed_instance(ctx, target_stage):
     return rds, pg_client
 
 
-def dump_to_target(ctx, src_pg_client):
-    rds = RDS(ctx.variables['aws_region'], logger=ctx.log, profile_name=ctx.stage)
-    plan = StackPlan.from_ctx(ctx, apps=['database'])
+def dump_to_target(target_ctx, src_pg_client):
+    rds = RDS(target_ctx.variables['aws_region'], logger=target_ctx.log, profile_name=target_ctx.stage)
+    plan = StackPlan.from_ctx(target_ctx, apps=['database'])
     plan.info()
 
     instance = rds.get_instance(plan.get_value('stacks.database.outputs')['URL'])
 
-    instance = rds.allow_access_to_instance(
-        instance, IMPORT_SECURITY_GROUP_NAME,
-        ctx.variables['dev_user_ips'],
-        ctx.variables['vpc_id'])
+    StackPlan.from_ctx(target_ctx, apps=['database_dev_access'], profile_name=target_ctx.stage).create()
 
     pg_client = RDSPostgresClient.from_boto(
         instance,
-        ctx.variables['database']['name'],
-        ctx.variables['database']['user'],
-        ctx.variables['database']['password'],
-        logger=ctx.log)
+        target_ctx.variables['database']['name'],
+        target_ctx.variables['database']['user'],
+        target_ctx.variables['database']['password'],
+        logger=target_ctx.log)
 
     src_pg_client.dump_to(pg_client)
 
     pg_client.close()
 
-    sg = rds.get_security_group(IMPORT_SECURITY_GROUP_NAME)
-    rds.revoke_access_to_instance(instance, sg)
-    rds.delete_security_group(sg)
+    StackPlan.from_ctx(target_ctx, apps=['database_dev_access'], profile_name=target_ctx.stage).delete()

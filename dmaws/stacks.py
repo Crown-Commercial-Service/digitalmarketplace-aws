@@ -123,7 +123,10 @@ class StackPlan(object):
                 if stack_info:
                     self.stack_context['stacks'][name].update_info(stack_info)
                 else:
-                    self.log('Stack [%s] does not exist', name)
+                    self.log('Stack [{} ({})] does not exist'.format(
+                        name,
+                        built_stack.name
+                    ))
 
         return self.stack_context['stacks']
 
