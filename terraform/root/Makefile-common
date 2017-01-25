@@ -2,6 +2,7 @@
 SHELL := /bin/bash
 
 S3_BUCKET = digitalmarketplace-terraform-state${S3_BUCKET_POSTFIX}
+SOPS_FILE = ${DM_CREDENTIALS_REPO}/sops/terraform/${TERRAFORM_PROJECT}.json
 
 .PHONY: help
 help:
@@ -27,21 +28,21 @@ refresh: check-env-vars init ## Run terraform plan
 	. .envrc && \
 	terraform refresh \
 		-var-file=../common.tfvars \
-		-var-file=<(./../../scripts/extract_secrets.sh)
+		-var-file=<(sops -d ${SOPS_FILE})
 
 .PHONY: plan
 plan: check-env-vars init ## Run terraform plan
 	. .envrc && \
 	terraform plan \
 		-var-file=../common.tfvars \
-		-var-file=<(./../../scripts/extract_secrets.sh)
+		-var-file=<(sops -d ${SOPS_FILE})
 
 .PHONY: apply
 apply: check-env-vars init ## Run terraform apply
 	. .envrc && \
 	terraform apply \
 		-var-file=../common.tfvars \
-		-var-file=<(./../../scripts/extract_secrets.sh)
+		-var-file=<(sops -d ${SOPS_FILE})
 
 .PHONY: plan-resource
 plan-resource: check-env-vars init ## Run terraform plan with a specific resource target
@@ -49,7 +50,7 @@ plan-resource: check-env-vars init ## Run terraform plan with a specific resourc
 	. .envrc && \
 	terraform plan \
 		-var-file=../common.tfvars \
-		-var-file=<(./../../scripts/extract_secrets.sh) \
+		-var-file=<(sops -d ${SOPS_FILE})
 		-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g')
 
 .PHONY: apply-resource
@@ -58,7 +59,7 @@ apply-resource: check-env-vars init ## Run terraform apply with a specific resou
 	. .envrc && \
 	terraform apply \
 		-var-file=../common.tfvars \
-		-var-file=<(./../../scripts/extract_secrets.sh) \
+		-var-file=<(sops -d ${SOPS_FILE})
 		-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g')
 
 .PHONY: upload-state
