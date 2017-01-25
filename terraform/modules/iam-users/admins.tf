@@ -4,16 +4,16 @@ resource "aws_iam_group" "admins" {
 
 resource "aws_iam_group_policy_attachment" "admins_ip_restriced" {
   group = "${aws_iam_group.admins.name}"
-  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
+  policy_arn = "${var.ip_restricted_access_policy_arn}"
 }
 
 resource "aws_iam_group_policy_attachment" "admins_mfa_restriced" {
   group = "${aws_iam_group.admins.name}"
-  policy_arn = "${aws_iam_policy.mfa_restricted_access.arn}"
+  policy_arn = "${var.mfa_restricted_access_policy_arn}"
 }
 
 resource "aws_iam_group_membership" "admins" {
-  name = "admin"
+  name = "Admins"
   users = [
     "${var.admin_users}"
   ]
@@ -21,19 +21,7 @@ resource "aws_iam_group_membership" "admins" {
   depends_on = ["module.users"]
 }
 
-resource "aws_iam_group_policy" "admins" {
-  name = "admin"
+resource "aws_iam_group_policy_attachment" "admins" {
   group = "${aws_iam_group.admins.id}"
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "*",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }

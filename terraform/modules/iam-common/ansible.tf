@@ -1,17 +1,8 @@
-resource "aws_iam_group" "ansible" {
+resource "aws_iam_policy" "ansible" {
   name = "Ansible"
-}
-
-resource "aws_iam_group_policy_attachment" "ansible_ip_restriced" {
-  group = "${aws_iam_group.ansible.name}"
-  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
-}
-
-resource "aws_iam_group_policy" "ansible" {
-  name = "Ansible"
-  group = "${aws_iam_group.ansible.id}"
   policy = <<EOF
 {
+  "Version": "2012-10-17",
   "Statement": [
     {
       "Action": [
@@ -47,9 +38,22 @@ resource "aws_iam_group_policy" "ansible" {
 EOF
 }
 
+resource "aws_iam_group" "ansible" {
+  name = "Ansible"
+}
+
+resource "aws_iam_group_policy_attachment" "ansible_ip_restriced" {
+  group = "${aws_iam_group.ansible.name}"
+  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "ansible_ansible" {
+  group = "${aws_iam_group.ansible.id}"
+  policy_arn = "${aws_iam_policy.ansible.arn}"
+}
+
 resource "aws_iam_group_membership" "ansible" {
   name = "ansible"
-  users = ["${var.ansible_users}"]
+  users = []
   group = "${aws_iam_group.ansible.name}"
-  depends_on = ["module.users"]
 }

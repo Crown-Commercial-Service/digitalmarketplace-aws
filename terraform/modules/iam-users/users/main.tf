@@ -10,10 +10,10 @@ resource "aws_iam_user" "andras_ferencz_szabo" {
   name = "andras.ferencz-szabo"
 }
 
-resource "aws_iam_user" "andras_terraform" {
-  name = "andras-terraform"
-}
-
 resource "aws_iam_user" "andras_dev" {
   name = "andras-dev"
+}
+
+resource "aws_iam_user" "andras_s3_only" {
+  name = "andras-s3-only"
 }

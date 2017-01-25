@@ -6,6 +6,6 @@ output "aws_kms_key_sops_credentials_secondary_arn" {
   value = "${aws_kms_key.sops_credentials_secondary.arn}"
 }
 
-output "aws_iam_policy_sops_credentials_access_arn" {
-  value = "${aws_iam_policy.sops_credentials_access.arn}"
+output "aws_iam_role_sops_credentials_access_arn" {
+  value = "${aws_iam_role.sops_credentials_access.arn}"
 }

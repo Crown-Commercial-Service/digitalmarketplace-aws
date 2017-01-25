@@ -1,15 +1,5 @@
-resource "aws_iam_group" "terraform" {
+resource "aws_iam_policy" "terraform" {
   name = "Terraform"
-}
-
-resource "aws_iam_group_policy_attachment" "terraform_ip_restriced" {
-  group = "${aws_iam_group.terraform.name}"
-  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
-}
-
-resource "aws_iam_group_policy" "terraform" {
-  name = "Terraform"
-  group = "${aws_iam_group.terraform.id}"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -44,9 +34,28 @@ resource "aws_iam_group_policy" "terraform" {
 EOF
 }
 
+resource "aws_iam_group" "terraform" {
+  name = "Terraform"
+}
+
+resource "aws_iam_group_policy_attachment" "terraform_ip_restriced" {
+  group = "${aws_iam_group.terraform.name}"
+  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "terraform_terraform" {
+  group = "${aws_iam_group.terraform.id}"
+  policy_arn = "${aws_iam_policy.terraform.arn}"
+}
+
+resource "aws_iam_user" "andras_terraform" {
+  name = "andras-terraform"
+}
+
 resource "aws_iam_group_membership" "terraform" {
   name = "terraform"
-  users = ["${var.terraform_users}"]
+  users = [
+    "${aws_iam_user.andras_terraform.name}"
+  ]
   group = "${aws_iam_group.terraform.name}"
-  depends_on = ["module.users"]
 }

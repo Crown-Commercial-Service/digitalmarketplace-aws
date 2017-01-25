@@ -16,7 +16,7 @@ Download the zip file, extract it and copy the terraform executable to /usr/loca
 
 Check the install with running ```terraform -v```.
 
-### Direnv (optional, but recommended)
+### Direnv (optional)
 
 Install direnv (https://github.com/direnv/direnv) to automatically load environment variables from .envrc files
 
@@ -34,13 +34,19 @@ File: dm-development/.envrc
 export AWS_REGION=eu-west-1
 export AWS_ACCESS_KEY_ID=<access key>
 export AWS_SECRET_ACCESS_KEY=<secret key>
-
 ```
+
+or if you're using an AWS profile:
+```
+export AWS_REGION=eu-west-1
+export AWS_PROFILE=profile-name
+```
+
+Note: defining your credentials in ~/.aws/credentials or ~/.aws/config is more secure and has more options (e.g. you can assume roles or use MFA).
 
 ### Terraform remote state
 
-The remote state files are stored on S3 and the initialisation is automatic when you run the terraform make targets
-(see below).
+The remote state files are stored on S3 and the initialisation is automatic when you run the terraform make targets (see below).
 
 ### Local secret storage
 
@@ -73,50 +79,4 @@ The bucket name should be: digitalmarketplace-terraform-state-<account>, where <
 
 ### IAM groups / AWS users
 
-Create the following policy:
-
-	Dashboard -> IAM -> Policies -> Create policy -> Create own policy
-
-Name: Terraform
-
-```
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "*",
-      "Resource": "*"
-    },
-    {
-      "Effect": "Deny",
-      "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::digitalmarketplace-terraform-state*/*",
-      "Condition": {
-        "StringNotEquals": {
-          "s3:x-amz-server-side-encryption": "AES256"
-        }
-      }
-    },
-    {
-      "Effect": "Deny",
-      "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::digitalmarketplace-terraform-state*/*",
-      "Condition": {
-        "Null": {
-          "s3:x-amz-server-side-encryption": "true"
-        }
-      }
-    }
-  ]
-}
-```
-
-In order to run the terraform script certain permissions need to be available to the IAM user. To enable this create an
-IAM group:
-
-	Dashboard -> IAM -> Groups -> Create Group
-
-Call the group terraform and add the Terraform policy.
-
-Once the group is completed create your own user and add it to the terraform group.
+The first time you should simply use an admin user, and after the first run there will be a Terraform group where you can create additional users.

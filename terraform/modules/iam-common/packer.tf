@@ -1,17 +1,8 @@
-resource "aws_iam_group" "packer" {
+resource "aws_iam_policy" "packer" {
   name = "Packer"
-}
-
-resource "aws_iam_group_policy_attachment" "packer_ip_restriced" {
-  group = "${aws_iam_group.packer.name}"
-  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
-}
-
-resource "aws_iam_group_policy" "packer" {
-  name = "Packer"
-  group = "${aws_iam_group.packer.id}"
   policy = <<EOF
 {
+  "Version": "2012-10-17",
   "Statement": [
     {
       "Sid": "PackerSecurityGroupAccess",
@@ -94,9 +85,22 @@ resource "aws_iam_group_policy" "packer" {
 EOF
 }
 
+resource "aws_iam_group" "packer" {
+  name = "Packer"
+}
+
+resource "aws_iam_group_policy_attachment" "packer_ip_restriced" {
+  group = "${aws_iam_group.packer.name}"
+  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "packer_packer" {
+  group = "${aws_iam_group.packer.id}"
+  policy_arn = "${aws_iam_policy.packer.arn}"
+}
+
 resource "aws_iam_group_membership" "packer" {
   name = "packer"
-  users = ["${var.packer_users}"]
+  users = []
   group = "${aws_iam_group.packer.name}"
-  depends_on = ["module.users"]
 }

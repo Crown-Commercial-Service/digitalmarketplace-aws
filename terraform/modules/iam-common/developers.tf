@@ -1,20 +1,5 @@
-resource "aws_iam_group" "developers" {
-  name = "Developers"
-}
-
-resource "aws_iam_group_policy_attachment" "developers_ip_restriced" {
-  group = "${aws_iam_group.developers.name}"
-  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
-}
-
-resource "aws_iam_group_membership" "developers" {
-  name = "developers"
-  users = ["${var.developer_users}"]
-  group = "${aws_iam_group.developers.name}"
-}
-
-resource "aws_iam_policy" "developers" {
-  name = "Developers"
+resource "aws_iam_policy" "developer" {
+  name = "Developer"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -48,7 +33,24 @@ resource "aws_iam_policy" "developers" {
         "events:List*",
         "events:TestEventPattern",
         "kms:DescribeKey",
-        "kms:List*"
+        "kms:List*",
+        "ec2:RunInstances",
+        "ec2:StartInstances",
+        "ec2:StopInstances",
+        "ec2:RebootInstances",
+        "ec2:TerminateInstances",
+        "ec2:AttachVolume",
+        "ec2:CreateVolume",
+        "ec2:DeleteVolume",
+        "ec2:DetachVolume",
+        "ec2:AllocateAddress",
+        "ec2:AssociateAddress",
+        "ec2:*NetworkAcl*",
+        "ec2:DisassociateAddress",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:ReleaseAddress",
+        "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+        "elasticloadbalancing:RegisterInstancesWithLoadBalancer"
       ],
       "Effect": "Allow",
       "Resource": "*",
@@ -90,19 +92,4 @@ resource "aws_iam_policy" "developers" {
   ]
 }
 EOF
-}
-
-resource "aws_iam_group_policy_attachment" "developers_developers" {
-  group = "${aws_iam_group.developers.name}"
-  policy_arn = "${aws_iam_policy.developers.arn}"
-}
-
-resource "aws_iam_group_policy_attachment" "developers_iam_manage_account" {
-  group = "${aws_iam_group.developers.name}"
-  policy_arn = "${aws_iam_policy.iam_manage_account.arn}"
-}
-
-resource "aws_iam_group_policy_attachment" "developers_sops_credentials_access" {
-  group = "${aws_iam_group.developers.name}"
-  policy_arn = "${var.sops_credentials_access_policy_arn}"
 }
