@@ -17,7 +17,7 @@ IMPORT_SECURITY_GROUP_NAME = "importdata-sg"
 @click.argument('target_stage', nargs=1, type=click.Choice(STAGES))
 @click.argument('target_environment', nargs=1)
 @click.argument('target_vars_file', nargs=1)
-@click.argument('exportdata_path', nargs=1, type=click.Path(writable=True))
+@click.argument('exportdata_path', nargs=1, type=click.Path(writable=True), required=False)
 def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file, exportdata_path):
     if target_stage not in ['development', 'preview', 'staging']:
         raise Exception("Invalid target stage [{}]".format(target_stage))
