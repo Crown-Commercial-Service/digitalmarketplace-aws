@@ -16,6 +16,14 @@ Download the zip file, extract it and copy the terraform executable to /usr/loca
 
 Check the install with running ```terraform -v```.
 
+### AWS cli
+
+Please follow the instructions here: http://docs.aws.amazon.com/cli/latest/userguide/installing.html
+
+### jq
+
+Please follow the instructions here: https://stedolan.github.io/jq/download/
+
 ### Direnv (optional)
 
 Install direnv (https://github.com/direnv/direnv) to automatically load environment variables from .envrc files

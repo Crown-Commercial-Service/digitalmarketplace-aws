@@ -1,5 +1,5 @@
 resource "aws_iam_role" "s3_only" {
-  name = "S3Only"
+  name = "s3-only"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -53,7 +53,7 @@ resource "aws_iam_policy" "s3_only" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "s3_only_ip_restrice_access" {
+resource "aws_iam_role_policy_attachment" "s3_only_ip_restriced_access" {
   role = "${aws_iam_role.s3_only.name}"
   policy_arn = "${var.ip_restricted_access_policy_arn}"
 }

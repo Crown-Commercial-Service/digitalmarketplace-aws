@@ -85,22 +85,30 @@ resource "aws_iam_policy" "packer" {
 EOF
 }
 
-resource "aws_iam_group" "packer" {
-  name = "Packer"
+resource "aws_iam_role" "packer" {
+  name = "packer"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${var.main_aws_account_id}:root"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
 }
 
-resource "aws_iam_group_policy_attachment" "packer_ip_restriced" {
-  group = "${aws_iam_group.packer.name}"
+resource "aws_iam_role_policy_attachment" "packer_ip_restriced" {
+  role = "${aws_iam_role.packer.name}"
   policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
 }
 
-resource "aws_iam_group_policy_attachment" "packer_packer" {
-  group = "${aws_iam_group.packer.id}"
+resource "aws_iam_role_policy_attachment" "packer_packer" {
+  role = "${aws_iam_role.packer.id}"
   policy_arn = "${aws_iam_policy.packer.arn}"
-}
-
-resource "aws_iam_group_membership" "packer" {
-  name = "packer"
-  users = []
-  group = "${aws_iam_group.packer.name}"
 }

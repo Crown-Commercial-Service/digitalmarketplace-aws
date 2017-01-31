@@ -9,21 +9,18 @@ variable "aws_sub_account_ids" {
 variable "aws_dev_account_id" {}
 variable "aws_prod_account_id" {}
 
-variable "admin_users" {
+variable "admins" {
   type = "list"
 }
-variable "developer_users" {
+variable "developers" {
   type = "list"
 }
-variable "basic_users" {
+variable "dev_developers" {
   type = "list"
 }
-variable "switch_to_dev_developer_users" {
+variable "prod_developers" {
   type = "list"
 }
-variable "switch_to_prod_developer_users" {
-  type = "list"
-}
-variable "switch_to_dev_s3_only_users" {
+variable "dev_s3_only_users" {
   type = "list"
 }

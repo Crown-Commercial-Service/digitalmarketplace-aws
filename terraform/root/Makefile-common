@@ -2,8 +2,8 @@
 SHELL := /bin/bash
 
 S3_BUCKET = digitalmarketplace-terraform-state${S3_BUCKET_POSTFIX}
-SOPS_FILE = ${DM_CREDENTIALS_REPO}/sops/terraform/${TERRAFORM_PROJECT}.json
-SOPS_COMMON_FILE = ${DM_CREDENTIALS_REPO}/sops/terraform/common.json
+SOPS_FILE = ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json
+SOPS_COMMON_FILE = ${DM_CREDENTIALS_REPO}/terraform/common.json
 
 .PHONY: help
 help:
@@ -16,8 +16,8 @@ check-env-vars: ## Check mandatory environment variables
 
 .PHONY: init
 init:: ## Run init
-	terraform get
-	terraform remote config \
+	. .envrc && ../../scripts/aws-assume-role terraform get
+	. .envrc && ../../scripts/aws-assume-role terraform remote config \
 		-backend=S3 \
 		-backend-config="bucket=${S3_BUCKET}" \
 		-backend-config='key=${TERRAFORM_PROJECT}/terraform.tfstate' \
@@ -26,10 +26,10 @@ init:: ## Run init
 
 define run_terraform
 	@. .envrc && \
-	terraform ${1} \
+	../../scripts/aws-assume-role terraform ${1} \
 		-var-file=../common.tfvars \
-		-var-file=<(sops -d ${SOPS_FILE}) \
-		-var-file=<(sops -d ${SOPS_COMMON_FILE}) \
+		-var-file=<(. .envrc && ../../scripts/aws-assume-role sops -d ${SOPS_COMMON_FILE}) \
+		-var-file=<(. .envrc && ../../scripts/aws-assume-role sops -d ${SOPS_FILE}) \
 		${2}
 endef
 

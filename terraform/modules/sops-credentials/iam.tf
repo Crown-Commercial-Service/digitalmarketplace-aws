@@ -17,6 +17,13 @@ resource "aws_iam_policy" "sops_credentials_access" {
         "${aws_kms_key.sops_credentials_primary.arn}",
         "${aws_kms_key.sops_credentials_secondary.arn}"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": "arn:aws:iam::*:role/sops-credentials-access"
     }
   ]
 }
@@ -57,7 +64,12 @@ resource "aws_iam_policy" "assume_sops_credentials_access" {
       "Action": [
         "sts:AssumeRole"
       ],
-      "Resource": "${aws_iam_role.sops_credentials_access.arn}"
+      "Resource": "${aws_iam_role.sops_credentials_access.arn}",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": true
+        }
+      }
     }
   ]
 }

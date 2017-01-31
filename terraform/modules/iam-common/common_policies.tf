@@ -21,28 +21,6 @@ resource "aws_iam_policy" "ip_restricted_access" {
 EOF
 }
 
-resource "aws_iam_policy" "mfa_restricted_access" {
-  name = "MFARestrictedAccess"
-  description = "Access is only allowed if the IAM user has been authenticated with MFA"
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Deny",
-      "Action": "*",
-      "Resource": "*",
-      "Condition": {
-        "BoolIfExists": {
-          "aws:MultiFactorAuthPresent": false
-        }
-      }
-    }
-  ]
-}
-EOF
-}
-
 resource "aws_iam_policy" "iam_manage_account" {
   name = "IAMManageAccount"
   policy = <<EOF
