@@ -13,3 +13,7 @@ output "aws_iam_policy_iam_manage_account_arn" {
 output "aws_iam_role_packer_arn" {
   value = "${aws_iam_role.packer.arn}"
 }
+
+output "aws_iam_policy_infrastructure_arn" {
+  value = "${aws_iam_role.infrastructure.arn}"
+}

@@ -43,7 +43,7 @@ resource "aws_iam_role" "infrastructure" {
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::${var.main_aws_account_id}:root"
+        "AWS": "arn:aws:iam::${var.aws_main_account_id}:root"
       },
       "Action": "sts:AssumeRole"
     }

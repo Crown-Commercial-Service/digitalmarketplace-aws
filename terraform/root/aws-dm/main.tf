@@ -1,7 +1,7 @@
 module "iam_common" {
   source = "../../modules/iam-common"
   whitelisted_ips = "${var.whitelisted_ips}"
-  main_aws_account_id = "${var.aws_main_account_id}"
+  aws_main_account_id = "${var.aws_main_account_id}"
 }
 
 module "iam_users" {
@@ -27,4 +27,10 @@ module "sops_credentials" {
     "${module.iam_users.developers_group_name}"
   ]
   aws_account_ids = "${concat(list(var.aws_main_account_id), var.aws_sub_account_ids)}"
+}
+
+module "jenkins" {
+  source = "../../modules/jenkins"
+  aws_main_account_id = "${var.aws_main_account_id}"
+  aws_sub_account_ids = "${var.aws_sub_account_ids}"
 }
