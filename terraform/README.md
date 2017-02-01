@@ -32,25 +32,35 @@ Install direnv (https://github.com/direnv/direnv) to automatically load environm
 
 ### Set up AWS credentials for different environments
 
-The aws-dm*/.envrc file will be sourced for Terraform therefore you can save your environment-specific AWS
-credentials there. These files are in .gitignore so you don't have to worry about committing them accidentally.
+Terraform can be used only with MFA therefore you have to set up your profiles both in ~/.aws/credentials and ~/.aws/config
 
-#### Example
+Note: You can use direnv (https://github.com/direnv/direnv) to load the AWS_PROFILE value automatically for the root modules (aws-dm*/.envrc). Nonetheless the Terraform wrapper script and the Makefile is going to source the .envrc files automatically.
 
-File: dm-development/.envrc
-```
-export AWS_REGION=eu-west-1
-export AWS_ACCESS_KEY_ID=<access key>
-export AWS_SECRET_ACCESS_KEY=<secret key>
-```
+### Example
 
-or if you're using an AWS profile:
+File: ~/.aws/credentials
+
 ```
-export AWS_REGION=eu-west-1
-export AWS_PROFILE=profile-name
+[dm-main-account]
+region=eu-west-1
+aws_access_key_id=AKIAI...
+aws_secret_access_key=FYd4t...
 ```
 
-Note: defining your credentials in ~/.aws/credentials or ~/.aws/config is more secure and has more options (e.g. you can assume roles or use MFA).
+File: ~/.aws/config
+
+```
+[dm-main-account-infrastructure]
+source_profile=dm-andras
+mfa_serial=arn:aws:iam::<main account id>:mfa/<your username>
+role_arn = arn:aws:iam::<main account id>:role/infrastructure
+```
+
+File: root/aws-dm/.envrc
+
+```
+export AWS_PROFILE=dm-main-account-infrastructure
+```
 
 ### Terraform remote state
 
@@ -78,6 +88,22 @@ upload-state                   Upload the local state file to S3, use it careful
 ```
 
 For more information check the Makefile contents.
+
+## Run bare Terraform commands
+
+You have to use the terraform wrapper script to run terraform commands directly:
+
+```
+cd root/aws-dm
+./../../terraform-wrapper output
+```
+
+This command would have the same effect:
+
+```
+cd root/aws-dm
+. .envrc && ../../scripts/aws-assume-role terraform output
+```
 
 ## Requirements in a new AWS environment
 
