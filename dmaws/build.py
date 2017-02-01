@@ -28,7 +28,7 @@ def clone_or_update(repo_url):
     repository_path = os.path.join(REPOS_PATH,
                                    'digitalmarketplace-{}'.format(app_name))
     if not os.path.exists(REPOS_PATH):
-        os.mkdir(REPOS_PATH)
+        utils.mkdir_p(REPOS_PATH)
     if not os.path.exists(repository_path):
         run_git_cmd(['clone', repo_url], REPOS_PATH)
     else:

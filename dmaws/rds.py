@@ -223,7 +223,7 @@ class RDSPostgresClient(object):
 
     def load(self, export_path):
         utils.run_cmd([
-            'psql', '-d', self.db_path, 'f', export_path
+            'psql', '-d', self.db_path, '-f', export_path
         ], logger=self.log, ignore_errors=True)
 
     def dump_to(self, target_pg_client):

@@ -47,11 +47,11 @@ class TestGetApplicationName(object):
 class TestCloneOrUpdate(object):
     example_repo = 'git@github.com:alphagov/digitalmarketplace-aws.git'
 
-    def test_no_folder(self, run_cmd, mkdir, path_exists):
+    def test_no_folder(self, run_cmd, mkdir_p, path_exists):
         path_exists.return_value = False
         clone_or_update(self.example_repo)
 
-        mkdir.assert_called_with(REPOS_PATH)
+        mkdir_p.assert_called_with(REPOS_PATH)
 
     def test_clone(self, run_cmd):
         clone_or_update(self.example_repo)
