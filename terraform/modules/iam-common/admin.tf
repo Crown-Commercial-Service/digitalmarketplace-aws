@@ -15,9 +15,18 @@ resource "aws_iam_policy" "admin" {
       }
     },
     {
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": [
+        "arn:aws:iam::${var.aws_dev_account_id}:role/s3-only"
+      ]
+    },
+    {
       "Effect": "Deny",
       "Action": "sts:AssumeRole",
-      "Resource": "*",
+      "NotResource": [
+        "arn:aws:iam::${var.aws_dev_account_id}:role/s3-only"
+      ],
       "Condition": {
         "BoolIfExists": {
           "aws:MultiFactorAuthPresent": false

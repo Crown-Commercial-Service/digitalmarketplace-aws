@@ -135,3 +135,8 @@ resource "aws_iam_group_membership" "dev_s3_only" {
   group = "${aws_iam_group.dev_s3_only.name}"
   depends_on = ["module.users"]
 }
+
+resource "aws_iam_group_policy_attachment" "dev_s3_only_iam_manage_account" {
+  group = "${aws_iam_group.dev_s3_only.name}"
+  policy_arn = "${var.iam_manage_account_policy_arn}"
+}
