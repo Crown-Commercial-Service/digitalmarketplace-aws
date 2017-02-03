@@ -14,6 +14,16 @@ resource "aws_iam_group_policy" "developers" {
       "Action": [
         "sts:AssumeRole"
       ],
+      "Resource": [
+        "arn:aws:iam::${var.aws_dev_account_id}:role/developers",
+        "arn:aws:iam::${var.aws_dev_account_id}:role/s3-only"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
       "Resource": "arn:aws:iam::*:role/packer",
       "Condition": {
         "Bool": {
@@ -41,39 +51,6 @@ resource "aws_iam_group_membership" "developers" {
 resource "aws_iam_group_policy_attachment" "developers_iam_manage_account" {
   group = "${aws_iam_group.developers.name}"
   policy_arn = "${var.iam_manage_account_policy_arn}"
-}
-
-resource "aws_iam_group" "dev_developers" {
-  name = "DevDevelopers"
-}
-
-resource "aws_iam_group_policy" "dev_developers" {
-  name = "SwitchToDevDeveloper"
-  group = "${aws_iam_group.dev_developers.name}"
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sts:AssumeRole"
-      ],
-      "Resource": [
-        "arn:aws:iam::${var.aws_dev_account_id}:role/developers",
-        "arn:aws:iam::${var.aws_dev_account_id}:role/s3-only"
-      ]
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_group_membership" "dev_developers" {
-  name = "dev_developers"
-  users = ["${var.developers}"]
-  group = "${aws_iam_group.dev_developers.name}"
-  depends_on = ["module.users"]
 }
 
 resource "aws_iam_group" "prod_developers" {

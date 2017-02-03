@@ -14,7 +14,6 @@ module "iam_users" {
   developer_policy_arn = "${module.iam_common.aws_iam_policy_developer_arn}"
   aws_dev_account_id = "${var.aws_dev_account_id}"
   aws_prod_account_id = "${var.aws_prod_account_id}"
-  dev_developers = "${var.dev_developers}"
   prod_developers = "${var.prod_developers}"
   dev_s3_only_users = "${var.dev_s3_only_users}"
   admin_policy_arn = "${module.iam_common.aws_iam_policy_admin_arn}"

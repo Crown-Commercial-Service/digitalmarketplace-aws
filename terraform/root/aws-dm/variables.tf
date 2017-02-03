@@ -15,9 +15,6 @@ variable "admins" {
 variable "developers" {
   type = "list"
 }
-variable "dev_developers" {
-  type = "list"
-}
 variable "prod_developers" {
   type = "list"
 }
