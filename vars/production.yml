@@ -22,22 +22,32 @@ api:
   instance_type: t2.medium
   min_instance_count: 3
   max_instance_count: 10
+  paas:
+    instances: 2
 
 search_api:
   min_instance_count: 3
   max_instance_count: 5
+  paas:
+    instances: 2
 
 admin_frontend:
   min_instance_count: 3
   max_instance_count: 5
+  paas:
+    instances: 2
 
 buyer_frontend:
   min_instance_count: 3
   max_instance_count: 5
+  paas:
+    instances: 2
 
 supplier_frontend:
   min_instance_count: 3
   max_instance_count: 10
+  paas:
+    instances: 2
 
 elasticsearch:
   instance_type: t2.medium
