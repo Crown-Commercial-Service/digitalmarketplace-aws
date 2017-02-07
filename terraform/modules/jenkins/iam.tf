@@ -24,8 +24,8 @@ resource "aws_iam_instance_profile" "jenkins" {
   roles = ["${aws_iam_role.jenkins.id}"]
 }
 
-resource "aws_iam_role_policy" "assume_roles" {
-  name = "AssumeRoles"
+resource "aws_iam_role_policy" "jenkins" {
+  name = "Jenkins"
   role = "${aws_iam_role.jenkins.id}"
   policy = <<EOF
 {
@@ -44,6 +44,19 @@ resource "aws_iam_role_policy" "assume_roles" {
         "sts:AssumeRole"
       ],
       "Resource": "arn:aws:iam::${var.aws_main_account_id}:role/sops-credentials-access"
+    },
+    {
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::digitalmarketplace-deployment"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::digitalmarketplace-deployment/*"
     }
   ]
 }
