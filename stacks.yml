@@ -161,7 +161,7 @@ cloudtrail:
   name: "cloudtrail"
   template: cloudformation_templates/aws_cloudtrail.json
   parameters:
-    S3BucketName: "gds-audit-cloudtrails"
+    S3BucketName: "{{ cloudtrail_s3_bucket }}"
 
 api_app:
   name: "digitalmarketplace-api-app"
