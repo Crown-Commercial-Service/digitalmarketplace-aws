@@ -1,0 +1,61 @@
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+
+S3_BUCKET = digitalmarketplace-terraform-state${S3_BUCKET_POSTFIX}
+SOPS_FILE = ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json
+SOPS_COMMON_FILE = ${DM_CREDENTIALS_REPO}/terraform/common.json
+
+.PHONY: help
+help:
+	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: check-env-vars
+check-env-vars: ## Check mandatory environment variables
+	$(if ${S3_BUCKET_POSTFIX},,$(error Must specify S3_BUCKET_POSTFIX))
+	$(if ${TERRAFORM_PROJECT},,$(error Must specify TERRAFORM_PROJECT))
+
+.PHONY: init
+init:: ## Run init
+	. .envrc && ../../scripts/aws-assume-role terraform get
+	. .envrc && ../../scripts/aws-assume-role terraform remote config \
+		-backend=S3 \
+		-backend-config="bucket=${S3_BUCKET}" \
+		-backend-config='key=${TERRAFORM_PROJECT}/terraform.tfstate' \
+		-backend-config='region=eu-west-1' \
+		-backend-config='encrypt=true'
+
+define run_terraform
+	@. .envrc && \
+	../../scripts/aws-assume-role terraform ${1} \
+		-var-file=../common.tfvars \
+		-var-file=<(. .envrc && ../../scripts/aws-assume-role sops -d ${SOPS_COMMON_FILE}) \
+		-var-file=<(. .envrc && ../../scripts/aws-assume-role sops -d ${SOPS_FILE}) \
+		${2}
+endef
+
+.PHONY: refresh
+refresh: check-env-vars init ## Run terraform plan
+	$(call run_terraform,refresh)
+
+.PHONY: plan
+plan: check-env-vars init ## Run terraform plan
+	$(call run_terraform,plan)
+
+.PHONY: apply
+apply: check-env-vars init ## Run terraform apply
+	$(call run_terraform,apply)
+
+.PHONY: plan-resource
+plan-resource: check-env-vars init ## Run terraform plan with a specific resource target
+	$(if ${TERRAFORM_TARGET},,$(error Must specify TERRAFORM_TARGET))
+	$(call run_terraform,plan,-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g'))
+
+.PHONY: apply-resource
+apply-resource: check-env-vars init ## Run terraform apply with a specific resource target
+	$(if ${TERRAFORM_TARGET},,$(error Must specify TERRAFORM_TARGET))
+	$(call run_terraform,apply,-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g'))
+
+.PHONY: upload-state
+upload-state: check-env-vars ## Upload the local state file to S3, use it carefully
+	. .envrc && \
+	aws s3 cp --region eu-west-1 --sse AES256 .terraform/terraform.tfstate s3://${S3_BUCKET}/${TERRAFORM_PROJECT}/terraform.tfstate

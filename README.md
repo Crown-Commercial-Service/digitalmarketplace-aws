@@ -43,6 +43,9 @@ actual variable values.
 don't have any defaults set in the playbook roles and environment files.
 It can also be used to overwrite default values for existing variables.
 
+## Terraform
+
+For Terraform setup and usage please check the separate ([README](terraform/README.md)).
 
 ## Creating AMIs with packer
 
