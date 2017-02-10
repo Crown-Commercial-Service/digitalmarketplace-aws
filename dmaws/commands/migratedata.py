@@ -39,7 +39,7 @@ def migratedata_cmd(ctx, target_stage, target_environment, target_vars_file, exp
 
 def create_scrubbed_instance(ctx, target_stage):
     rds = RDS(ctx.variables['aws_region'], logger=ctx.log, profile_name=ctx.stage)
-    plan = StackPlan.from_ctx(ctx, apps=['database'])
+    plan = StackPlan.from_ctx(ctx, apps=['database'], profile_name=ctx.stage)
     plan.info()
 
     snapshot = rds.create_new_snapshot(
@@ -66,7 +66,7 @@ def create_scrubbed_instance(ctx, target_stage):
 
 def dump_to_target(target_ctx, src_pg_client, exportdata_path=None):
     rds = RDS(target_ctx.variables['aws_region'], logger=target_ctx.log, profile_name=target_ctx.stage)
-    plan = StackPlan.from_ctx(target_ctx, apps=['database'])
+    plan = StackPlan.from_ctx(target_ctx, apps=['database'], profile_name=target_ctx.stage)
     plan.info()
 
     instance = rds.get_instance(plan.get_value('stacks.database.outputs')['URL'])
