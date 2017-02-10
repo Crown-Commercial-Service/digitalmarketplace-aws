@@ -52,11 +52,6 @@ resource "aws_iam_role" "infrastructure" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "infrastructure_ip_restricted" {
-  role = "${aws_iam_role.infrastructure.name}"
-  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
-}
-
 resource "aws_iam_role_policy_attachment" "infrastructure_infrastructure" {
   role = "${aws_iam_role.infrastructure.id}"
   policy_arn = "${aws_iam_policy.infrastructure.arn}"
