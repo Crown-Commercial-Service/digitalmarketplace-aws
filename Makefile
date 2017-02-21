@@ -55,8 +55,12 @@ download-deployment-zip: virtualenv ## Downloads the deployment zip file from S3
 paas-generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
+	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
 	mkdir -p ${DEPLOYMENT_DIR}
-	${VIRTUALENV_ROOT}/bin/dmaws paas-manifest preview api -o ${DEPLOYMENT_DIR}/manifest.yml
+	${VIRTUALENV_ROOT}/bin/dmaws paas-manifest preview api \
+		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/common.yaml) \
+		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/${STAGE}.yaml) \
+		-o ${DEPLOYMENT_DIR}/manifest.yml
 
 .PHONY: paas-login
 paas-login: ## Log in to PaaS
