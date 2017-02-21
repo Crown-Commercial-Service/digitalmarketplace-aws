@@ -24,6 +24,10 @@ Please follow the instructions here: http://docs.aws.amazon.com/cli/latest/userg
 
 Please follow the instructions here: https://stedolan.github.io/jq/download/
 
+### Install aws-auth
+
+Follow the instructions outlined here: https://github.com/alphagov/aws-auth
+
 ### Direnv (optional)
 
 Install direnv (https://github.com/direnv/direnv) to automatically load environment variables from .envrc files
@@ -102,7 +106,7 @@ This command would have the same effect:
 
 ```
 cd root/aws-dm
-. .envrc && ../../scripts/aws-assume-role terraform output
+. .envrc && aws-auth terraform output
 ```
 
 ## Requirements in a new AWS environment

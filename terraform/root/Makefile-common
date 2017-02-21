@@ -16,8 +16,8 @@ check-env-vars: ## Check mandatory environment variables
 
 .PHONY: init
 init:: ## Run init
-	. .envrc && ../../scripts/aws-assume-role terraform get
-	. .envrc && ../../scripts/aws-assume-role terraform remote config \
+	. .envrc && aws-auth terraform get
+	. .envrc && aws-auth terraform remote config \
 		-backend=S3 \
 		-backend-config="bucket=${S3_BUCKET}" \
 		-backend-config='key=${TERRAFORM_PROJECT}/terraform.tfstate' \
@@ -26,10 +26,10 @@ init:: ## Run init
 
 define run_terraform
 	@. .envrc && \
-	../../scripts/aws-assume-role terraform ${1} \
+	aws-auth terraform ${1} \
 		-var-file=../common.tfvars \
-		-var-file=<(. .envrc && ../../scripts/aws-assume-role sops -d ${SOPS_COMMON_FILE}) \
-		-var-file=<(. .envrc && ../../scripts/aws-assume-role sops -d ${SOPS_FILE}) \
+		-var-file=<(. .envrc && aws-auth sops -d ${SOPS_COMMON_FILE}) \
+		-var-file=<(. .envrc && aws-auth sops -d ${SOPS_FILE}) \
 		${2}
 endef
 
