@@ -4,4 +4,4 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 [ -f .envrc ] && source .envrc
 
-exec ${DIR}/scripts/aws-assume-role terraform "$@"
+exec aws-auth terraform "$@"
