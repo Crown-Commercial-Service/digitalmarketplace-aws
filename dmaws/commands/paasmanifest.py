@@ -2,7 +2,8 @@ import click
 import os
 
 from ..cli import cli_command
-from ..utils import load_file, template_string, run_piped_cmds
+from ..utils import load_file, template_string
+
 
 @cli_command('paas-manifest', max_apps=1)
 @click.option('--template', '-t', default='paas/manifest.j2',
@@ -14,7 +15,7 @@ def paas_manifest(ctx, template, out_file):
     """Generate a PaaS manifest file from a Jinja2 template"""
     app = ctx.apps[0]
 
-    if not app in ctx.variables:
+    if app not in ctx.variables:
         raise ValueError('Application configuration not found')
 
     templace_content = load_file(template)
