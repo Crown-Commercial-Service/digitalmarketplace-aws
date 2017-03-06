@@ -34,26 +34,25 @@ define run_terraform
 endef
 
 .PHONY: refresh
-refresh: check-env-vars init ## Run terraform plan
+refresh: check-env-vars init ## Run terraform refresh
 	$(call run_terraform,refresh)
 
 .PHONY: plan
 plan: check-env-vars init ## Run terraform plan
-	$(call run_terraform,plan)
-
-.PHONY: apply
-apply: check-env-vars init ## Run terraform apply
-	$(call run_terraform,apply)
+	rm -f terraform.plan
+	$(call run_terraform,plan,-out=terraform.plan)
 
 .PHONY: plan-resource
 plan-resource: check-env-vars init ## Run terraform plan with a specific resource target
 	$(if ${TERRAFORM_TARGET},,$(error Must specify TERRAFORM_TARGET))
-	$(call run_terraform,plan,-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g'))
+	rm -f terraform.plan
+	$(call run_terraform,plan,-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g') -out=terraform.plan)
 
-.PHONY: apply-resource
-apply-resource: check-env-vars init ## Run terraform apply with a specific resource target
-	$(if ${TERRAFORM_TARGET},,$(error Must specify TERRAFORM_TARGET))
-	$(call run_terraform,apply,-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g'))
+.PHONY: apply
+apply: check-env-vars init ## Run terraform apply
+	. .envrc && \
+		../../scripts/aws-assume-role terraform apply terraform.plan
+	rm -f terraform.plan
 
 .PHONY: upload-state
 upload-state: check-env-vars ## Upload the local state file to S3, use it carefully
