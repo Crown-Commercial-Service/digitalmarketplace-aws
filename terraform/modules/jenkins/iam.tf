@@ -55,7 +55,10 @@ resource "aws_iam_role_policy" "jenkins" {
     },
     {
       "Effect": "Allow",
-      "Action": "s3:GetObject",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
       "Resource": "arn:aws:s3:::digitalmarketplace-deployment/*"
     }
   ]
