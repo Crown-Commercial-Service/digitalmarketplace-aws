@@ -36,6 +36,13 @@ admin_frontend:
   max_instance_count: 5
   paas:
     instances: 2
+    env:
+      DM_S3_DOCUMENT_BUCKET: digitalmarketplace-documents-production-production
+      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-production-production
+      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-production-production
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-production-production
+      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-production-production
+      DM_ASSETS_URL: https://assets.digitalmarketplace.service.gov.uk
 
 buyer_frontend:
   min_instance_count: 3

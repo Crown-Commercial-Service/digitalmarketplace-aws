@@ -47,7 +47,7 @@ download-deployment-zip: virtualenv ## Downloads the deployment zip file from S3
 	$(if ${RELEASE_NUMBER},,$(error Must specify RELEASE_NUMBER))
 	rm -rf ${DEPLOYMENT_DIR}
 	mkdir ${DEPLOYMENT_DIR}
-	${VIRTUALENV_ROOT}/bin/aws s3 cp --region eu-west-1 s3://digitalmarketplace-deployment/${APPLICATION_NAME}/release-${RELEASE_NUMBER}.zip ${DEPLOYMENT_DIR}/release.zip
+	${VIRTUALENV_ROOT}/bin/aws s3 --only-show-errors cp --region eu-west-1 s3://digitalmarketplace-deployment/${APPLICATION_NAME}/release-${RELEASE_NUMBER}.zip ${DEPLOYMENT_DIR}/release.zip
 	unzip -q -d ${DEPLOYMENT_DIR} ${DEPLOYMENT_DIR}/release.zip
 	rm ${DEPLOYMENT_DIR}/release.zip
 
@@ -57,7 +57,7 @@ paas-generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${STAGE},,$(error Must specify STAGE))
 	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
 	mkdir -p ${DEPLOYMENT_DIR}
-	${VIRTUALENV_ROOT}/bin/dmaws paas-manifest preview api \
+	${VIRTUALENV_ROOT}/bin/dmaws paas-manifest ${STAGE} ${APPLICATION_NAME} \
 		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/common.yaml) \
 		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/${STAGE}.yaml) \
 		-o ${DEPLOYMENT_DIR}/manifest.yml

@@ -21,7 +21,7 @@ def paas_manifest(ctx, template, out_file):
     templace_content = load_file(template)
     variables = {
         'environment': ctx.environment,
-        'app': app
+        'app': app.replace('_', '-')
     }
     variables.update(ctx.variables[app])
 

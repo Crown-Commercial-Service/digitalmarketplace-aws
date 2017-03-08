@@ -16,3 +16,13 @@ subnets:
   - subnet-9a9713ed
   - subnet-63b1683a
   - subnet-ad0894c8
+
+admin_frontend:
+  paas:
+    env:
+      DM_S3_DOCUMENT_BUCKET: digitalmarketplace-documents-staging-staging
+      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-staging-staging
+      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-staging-staging
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-staging-staging
+      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-staging-staging
+      DM_ASSETS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
