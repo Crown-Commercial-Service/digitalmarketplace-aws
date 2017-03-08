@@ -47,9 +47,9 @@ download-deployment-zip: virtualenv ## Downloads the deployment zip file from S3
 	$(if ${RELEASE_NUMBER},,$(error Must specify RELEASE_NUMBER))
 	rm -rf ${DEPLOYMENT_DIR}
 	mkdir ${DEPLOYMENT_DIR}
-	${VIRTUALENV_ROOT}/bin/aws s3 cp --region eu-west-1 s3://digitalmarketplace-deployment/${APPLICATION_NAME}/${RELEASE_NUMBER}.zip ${DEPLOYMENT_DIR}/deployment.zip
-	unzip -q -d ${DEPLOYMENT_DIR} ${DEPLOYMENT_DIR}/deployment.zip
-	rm ${DEPLOYMENT_DIR}/deployment.zip
+	${VIRTUALENV_ROOT}/bin/aws s3 cp --region eu-west-1 s3://digitalmarketplace-deployment/${APPLICATION_NAME}/release-${RELEASE_NUMBER}.zip ${DEPLOYMENT_DIR}/release.zip
+	unzip -q -d ${DEPLOYMENT_DIR} ${DEPLOYMENT_DIR}/release.zip
+	rm ${DEPLOYMENT_DIR}/release.zip
 
 .PHONY: paas-generate-manifest
 paas-generate-manifest: virtualenv ## Generate manifest file for PaaS
@@ -89,3 +89,6 @@ paas-push: ## Pushes the app to PaaS
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	rm -rf ${DEPLOYMENT_DIR}
+
+build-app:
+	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
