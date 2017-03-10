@@ -5,13 +5,13 @@ set -e -o pipefail
 TERMINATE_TIMEOUT=30
 
 function check_params {
-  if [ -z "${APPLICATION_NAME}" ]; then
-    echo "You must set APPLICATION_NAME"
+  if [ -z "${DM_APP_NAME}" ]; then
+    echo "You must set DM_APP_NAME"
     exit 1
   fi
 
   if [ -z "${CW_APP_NAME}" ]; then
-    CW_APP_NAME=${APPLICATION_NAME}
+    CW_APP_NAME=${DM_APP_NAME}
   fi
 }
 
