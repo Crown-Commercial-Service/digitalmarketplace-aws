@@ -24,7 +24,8 @@ resource "aws_iam_policy" "s3_only" {
   "Statement": [
     {
       "Action": [
-        "s3:ListBuckets"
+        "s3:ListAllMyBuckets",
+        "s3:GetBucketLocation"
       ],
       "Effect": "Allow",
       "Resource": "*"
