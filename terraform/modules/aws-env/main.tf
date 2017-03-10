@@ -12,3 +12,7 @@ module "switch_roles" {
   developer_policy_arn = "${module.iam_common.aws_iam_policy_developer_arn}"
   aws_main_account_id = "${var.aws_main_account_id}"
 }
+
+module "paas" {
+  source = "../../modules/paas"
+}
