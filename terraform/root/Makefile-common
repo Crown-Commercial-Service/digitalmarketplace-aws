@@ -51,7 +51,7 @@ plan-resource: check-env-vars init ## Run terraform plan with a specific resourc
 .PHONY: apply
 apply: check-env-vars init ## Run terraform apply
 	. .envrc && \
-		../../scripts/aws-assume-role terraform apply terraform.plan
+		aws-auth terraform apply terraform.plan
 	rm -f terraform.plan
 
 .PHONY: upload-state
