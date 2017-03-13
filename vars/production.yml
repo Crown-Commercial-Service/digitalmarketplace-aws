@@ -55,7 +55,16 @@ supplier_frontend:
   max_instance_count: 10
   paas:
     instances: 2
-
+    env:
+      DM_G7_DRAFT_DOCUMENTS_BUCKET: digitalmarketplace-g7-draft-documents-production-production
+      DM_G7_DRAFT_DOCUMENTS_URL: https://assets.digitalmarketplace.service.gov.uk
+      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-production-production
+      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-production-production
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communicationsproduction-production
+      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-production-production
+      DM_ASSETS_URL: https://assets.digitalmarketplace.service.gov.uk
+      DM_CLARIFICATION_QUESTION_EMAIL: clarification@digitalmarketplace.service.gov.uk
+      DM_FOLLOW_UP_EMAIL_TO: enquiries@digitalmarketplace.service.gov.uk
 elasticsearch:
   instance_type: t2.medium
 

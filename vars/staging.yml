@@ -17,8 +17,17 @@ subnets:
   - subnet-63b1683a
   - subnet-ad0894c8
 
+api:
+  paas:
+    instances: 2
+
+search_api:
+  paas:
+    instances: 2
+
 admin_frontend:
   paas:
+    instances: 2
     env:
       DM_S3_DOCUMENT_BUCKET: digitalmarketplace-documents-staging-staging
       DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-staging-staging
@@ -26,3 +35,21 @@ admin_frontend:
       DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-staging-staging
       DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-staging-staging
       DM_ASSETS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
+
+buyer_frontend:
+  paas:
+    instances: 2
+
+supplier_frontend:
+  paas:
+    instances: 2
+    env:
+      DM_G7_DRAFT_DOCUMENTS_BUCKET: digitalmarketplace-g7-draft-documents-staging-staging
+      DM_G7_DRAFT_DOCUMENTS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
+      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-staging-staging
+      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-staging-staging
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communicationsstaging-staging
+      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-staging-staging
+      DM_ASSETS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
+      DM_CLARIFICATION_QUESTION_EMAIL: clarification@digitalmarketplace.service.gov.uk
+      DM_FOLLOW_UP_EMAIL_TO: enquiries@digitalmarketplace.service.gov.uk
