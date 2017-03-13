@@ -73,12 +73,21 @@ paas-login: ## Log in to PaaS
 .PHONY: paas-deploy
 paas-deploy: ## Deploys the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	$(eval export PAAS_INSTANCE_COUNT=$(shell cf curl /v2/apps/$(shell cf app --guid ${APPLICATION_NAME}) | jq -r ".entity.instances"))
-	@echo "Original instance count: ${PAAS_INSTANCE_COUNT}"
 	cd ${DEPLOYMENT_DIR} && \
-		cf check-manifest ${APPLICATION_NAME} -f manifest.yml && \
-		cf zero-downtime-push ${APPLICATION_NAME} -f manifest.yml && \
-		cf scale -i ${PAAS_INSTANCE_COUNT} ${APPLICATION_NAME}
+		cf app --guid ${APPLICATION_NAME} && \
+		cf rename ${APPLICATION_NAME} ${APPLICATION_NAME}-rollback && \
+		cf push -f manifest.yml && \
+		cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}) | jq -r ".entity.instances" && \ 2>/dev/null || echo "1") ${APPLICATION_NAME} && \
+		cf stop ${APPLICATION_NAME}-rollback && \
+		cf delete -f ${APPLICATION_NAME}-rollback
+
+.PHONY: paas-rollback
+paas-rollback: ## Rollbacks the app to the previous release on PaaS
+	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	cd ${DEPLOYMENT_DIR} && \
+		cf app --guid notify-admin-rollback && \
+		cf delete -f notify-admin && \
+		cf rename notify-admin-rollback notify-admin
 
 .PHONY: paas-push
 paas-push: ## Pushes the app to PaaS
