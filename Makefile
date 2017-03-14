@@ -98,6 +98,3 @@ paas-push: ## Pushes the app to PaaS
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	rm -rf ${DEPLOYMENT_DIR}
-
-build-app:
-	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
