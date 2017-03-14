@@ -11,6 +11,14 @@ variable "dev_s3_only_users" {
   type = "list"
 }
 
+variable "dev_infrastructure_users" {
+  type = "list"
+}
+
+variable "prod_infrastructure_users" {
+  type = "list"
+}
+
 variable "ip_restricted_access_policy_arn" {}
 variable "iam_manage_account_policy_arn" {}
 variable "developer_policy_arn" {}

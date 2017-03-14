@@ -17,6 +17,8 @@ module "iam_users" {
   prod_developers = "${var.prod_developers}"
   dev_s3_only_users = "${var.dev_s3_only_users}"
   admin_policy_arn = "${module.iam_common.aws_iam_policy_admin_arn}"
+  dev_infrastructure_users = "${var.dev_infrastructure_users}"
+  prod_infrastructure_users = "${var.prod_infrastructure_users}"
 }
 
 module "sops_credentials" {
