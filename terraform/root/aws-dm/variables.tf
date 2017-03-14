@@ -21,3 +21,9 @@ variable "prod_developers" {
 variable "dev_s3_only_users" {
   type = "list"
 }
+variable "dev_infrastructure_users" {
+  type = "list"
+}
+variable "prod_infrastructure_users" {
+  type = "list"
+}
