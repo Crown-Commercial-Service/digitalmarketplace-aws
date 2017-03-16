@@ -53,6 +53,11 @@ resource "aws_iam_group_policy_attachment" "developers_iam_manage_account" {
   policy_arn = "${var.iam_manage_account_policy_arn}"
 }
 
+resource "aws_iam_group_policy_attachment" "developers_dev_s3_access" {
+  group = "${aws_iam_group.developers.name}"
+  policy_arn = "${aws_iam_policy.dev_s3_access.arn}"
+}
+
 resource "aws_iam_group" "prod_developers" {
   name = "ProdDevelopers"
 }
@@ -74,6 +79,11 @@ resource "aws_iam_group_policy" "switch_to_prod_developer" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_group_policy_attachment" "prod_developers_dev_s3_access" {
+  group = "${aws_iam_group.prod_developers.name}"
+  policy_arn = "${aws_iam_policy.dev_s3_access.arn}"
 }
 
 resource "aws_iam_group_membership" "prod_developers" {
@@ -116,4 +126,37 @@ resource "aws_iam_group_membership" "dev_s3_only" {
 resource "aws_iam_group_policy_attachment" "dev_s3_only_iam_manage_account" {
   group = "${aws_iam_group.dev_s3_only.name}"
   policy_arn = "${var.iam_manage_account_policy_arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "dev_s3_only_dev_s3_access" {
+  group = "${aws_iam_group.dev_s3_only.name}"
+  policy_arn = "${aws_iam_policy.dev_s3_access.arn}"
+}
+
+resource "aws_iam_policy" "dev_s3_access" {
+  name = "DevS3Access"
+  policy = <<EOF
+{
+   "Version": "2012-10-17",
+   "Statement": [
+      {
+        "Action": [
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
+        ],
+        "Effect": "Allow",
+        "Resource": "arn:aws:s3:::digitalmarketplace-*-dev-dev"
+      },
+      {
+        "Action": [
+          "s3:DeleteObject",
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        "Effect": "Allow",
+        "Resource": "arn:aws:s3:::digitalmarketplace-*-dev-dev/*"
+      }
+   ]
+}
+EOF
 }

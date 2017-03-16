@@ -18,3 +18,8 @@ resource "aws_iam_group_membership" "admins" {
   group = "${aws_iam_group.admins.name}"
   depends_on = ["module.users"]
 }
+
+resource "aws_iam_group_policy_attachment" "admins_dev_s3_access" {
+  group = "${aws_iam_group.admins.name}"
+  policy_arn = "${aws_iam_policy.dev_s3_access.arn}"
+}
