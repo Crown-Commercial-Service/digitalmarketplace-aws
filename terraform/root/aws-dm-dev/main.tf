@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "eu-west-1"
+}
+
 module "aws_env" {
   source = "../../modules/aws-env"
   whitelisted_ips = "${var.whitelisted_ips}"
