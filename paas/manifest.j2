@@ -1,0 +1,31 @@
+---
+
+applications:
+  - name: digitalmarketplace-{{ app|replace('_', '-') }}
+    stack: cflinuxfs2
+    buildpack: python_buildpack
+    command: ./run.sh gunicorn -w 4 -b 0.0.0.0:$PORT application:application --log-file -
+    routes:
+      - route: {{ paas.subdomain }}-{{ environment }}.cloudapps.digital{{ paas.path|default('') }}
+    instances: {{ paas.instances|default(1) }}
+    memory: {{ paas.memory|default('512M') }}
+    disk_quota: {{ paas.disk_quota|default('1024M') }}
+    env:
+      DM_APP_NAME: {{ app }}
+      DM_ENVIRONMENT: {{ environment }}
+      DM_METRICS_NAMESPACE: {{ environment }}-{{ environment }}/{{ app }}
+      DM_LOG_PATH: ''
+      DM_SEARCH_API_URL: https://dm-search-api-{{ environment }}.cloudapps.digital
+      DM_ELASTICSEARCH_URL: https://preview-elasticsearch.development.digitalmarketplace.service.gov.uk
+      DM_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
+      DM_DATA_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
+      {% for env_key, env_value in (paas.env|default({})).iteritems() -%}
+      {{ env_key }}: "{{ env_value }}"
+      {% endfor %}
+
+    {% if paas.services|default([])|length > 0 -%}
+    services:
+      {% for service in paas.services -%}
+        - {{ service }}
+      {% endfor -%}
+    {% endif %}

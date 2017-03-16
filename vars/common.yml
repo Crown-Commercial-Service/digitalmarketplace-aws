@@ -12,26 +12,40 @@ api:
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 1
+  paas:
+    subdomain: dm-api
+    services:
+      - digitalmarketplace_api_db
 
 search_api:
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
+  paas:
+    subdomain: dm-search
 
 admin_frontend:
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
+  paas:
+    subdomain: dm
+    path: /admin
 
 buyer_frontend:
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
+  paas:
+    subdomain: dm
 
 supplier_frontend:
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
+  paas:
+    subdomain: dm
+    path: /suppliers
 
 database:
   version: 9.5

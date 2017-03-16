@@ -3,4 +3,5 @@
 *.pyc
 user.yml
 venv
+/tmp
 .envrc
