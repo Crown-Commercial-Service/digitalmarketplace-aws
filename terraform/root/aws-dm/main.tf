@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "eu-west-1"
+}
+
 module "iam_common" {
   source = "../../modules/iam-common"
   whitelisted_ips = "${var.whitelisted_ips}"
