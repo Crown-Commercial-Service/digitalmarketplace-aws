@@ -12,5 +12,5 @@ module "aws_env" {
 module "s3-bucket" {
   source = "../../modules/s3-bucket"
   access_account_id = "${var.aws_main_account_id}"
-  bucket_name = "digitalmarketplace-dev"
+  bucket_name = "digitalmarketplace-dev-uploads"
 }
