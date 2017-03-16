@@ -84,6 +84,7 @@ paas-deploy: ## Deploys the app to PaaS
 .PHONY: paas-rollback
 paas-rollback: ## Rollbacks the app to the previous release on PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	@[ $$(cf curl /v2/apps/`cf app --guid ${APPLICATION_NAME}-rollback` | jq -r ".entity.state") = "STARTED" ] || (echo "Error: rollback is not possible because ${APPLICATION_NAME}-rollback is not in a started state" && exit 1)
 	cd ${DEPLOYMENT_DIR} && \
 		cf app --guid notify-admin-rollback && \
 		cf delete -f notify-admin && \

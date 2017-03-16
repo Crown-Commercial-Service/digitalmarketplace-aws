@@ -22,8 +22,7 @@ search_api:
   min_instance_count: 1
   max_instance_count: 2
   paas:
-    subdomain: dm
-    path: /search
+    subdomain: dm-search
 
 admin_frontend:
   instance_type: t2.micro
