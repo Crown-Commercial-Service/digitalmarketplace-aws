@@ -1,7 +1,7 @@
-resource "aws_s3_bucket" "s3_bucket" {
+resource "aws_s3_bucket" "dev_s3_bucket" {
   bucket = "${var.bucket_name}"
   acl    = "private"
-  policy = <<EOF
+  policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [{
@@ -11,5 +11,5 @@ resource "aws_s3_bucket" "s3_bucket" {
     "Resource": "arn:aws:s3:::${var.bucket_name}/*"
   }]
 }
-EOF
+POLICY
 }
