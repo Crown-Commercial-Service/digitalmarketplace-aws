@@ -39,7 +39,7 @@ resource "aws_iam_role" "sops_credentials_access" {
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": [${join(",", formatlist("\"arn:aws:iam::%s:root\"", var.aws_account_ids))}]
+        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
       },
       "Action": "sts:AssumeRole"
     }
