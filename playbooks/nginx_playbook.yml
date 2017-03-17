@@ -5,6 +5,8 @@
   sudo: True
 
   roles:
+    - role: common
+      tags: common
     - role: nginx
       tags: nginx
     - role: cloudwatch
