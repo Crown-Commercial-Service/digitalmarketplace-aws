@@ -150,3 +150,13 @@ resource "aws_iam_group_policy_attachment" "developers_dev_uploads_s3" {
   group = "${aws_iam_group.developers.name}"
   policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
 }
+
+resource "aws_iam_group_policy_attachment" "prod_developers_dev_uploads_s3" {
+  group = "${aws_iam_group.prod_developers.name}"
+  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "dev_s3_only_dev_uploads_s3" {
+  group = "${aws_iam_group.dev_s3_only.name}"
+  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+}
