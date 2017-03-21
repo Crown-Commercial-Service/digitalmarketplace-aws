@@ -26,7 +26,6 @@ variable "json_log_group_name" {}
 variable "assets_subdomain" {}
 variable "api_subdomain" {}
 variable "search_api_subdomain" {}
-variable "www_subdomain" {}
 
 variable "g7_draft_documents_s3_url" {}
 variable "documents_s3_url" {}

@@ -27,7 +27,7 @@ resource "aws_autoscaling_group" "nginx_autoscaling_group" {
 
   vpc_zone_identifier = ["${var.subnet_ids}"]
 
-  load_balancers = ["${aws_elb.nginx_elb.name}"]
+  load_balancers = ["${aws_elb.nginx.name}"]
   launch_configuration = "${aws_launch_configuration.nginx.name}"
 
   tag {
