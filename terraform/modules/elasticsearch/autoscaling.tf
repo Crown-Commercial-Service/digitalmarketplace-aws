@@ -82,30 +82,10 @@ END
 resource "aws_iam_role" "elasticsearch" {
   name = "${var.name}"
   path = "/"
-  assume_role_policy = <<ENDPOLICY
-{
-  "Version" : "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Action": [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:GetLogEvents",
-      "logs:PutLogEvents",
-      "logs:DescribeLogGroups",
-      "logs:DescribeLogStreams"
-    ],
-    "Resource": [
-      "arn:aws:logs:eu-west-1:*:*"
-    ]
-  }]
-}
-ENDPOLICY
-}
 
 resource "aws_iam_instance_profile" "elasticsearch_profile" {
   name = "${var.name}"
-  roles = ["${aws_iam_role.elasticsearch_role}"]
+  roles = ["${aws_iam_role.elasticsearch}"]
 }
 
 resource "aws_iam_policy" "elasticsearch_discovery" {

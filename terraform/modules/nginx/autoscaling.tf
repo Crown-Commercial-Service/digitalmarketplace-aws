@@ -64,7 +64,7 @@ resource "aws_launch_configuration" "nginx" {
 #!/bin/bash
 cd /home/ubuntu/provisioning && ansible-playbook -c local -i localhost, nginx_playbook.yml -t instance-config \
     -e admin_user_ips=${var.admin_user_ips} \
-    -e dev_user_ips=${var.dev_user_i_ps} \
+    -e dev_user_ips=${var.dev_user_ips} \
     -e cloudwatch_log_group=${var.log_group_name} \
     -e cloudwatch_json_log_group=${var.json_log_group_name} \
     -e assets_subdomain=${var.assets_subdomain} \
