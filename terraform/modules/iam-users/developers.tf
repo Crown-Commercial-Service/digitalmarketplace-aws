@@ -117,3 +117,46 @@ resource "aws_iam_group_policy_attachment" "dev_s3_only_iam_manage_account" {
   group = "${aws_iam_group.dev_s3_only.name}"
   policy_arn = "${var.iam_manage_account_policy_arn}"
 }
+
+resource "aws_iam_policy" "dev_uploads_s3_access" {
+  name = "devUploadsS3Access"
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads",
+    },
+    {
+      "Action": [
+        "s3:DeleteObject",
+        "s3:PutObject",
+        "s3:GetObject",
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads/*"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_group_policy_attachment" "developers_dev_uploads_s3" {
+  group = "${aws_iam_group.developers.name}"
+  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "prod_developers_dev_uploads_s3" {
+  group = "${aws_iam_group.prod_developers.name}"
+  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "dev_s3_only_dev_uploads_s3" {
+  group = "${aws_iam_group.dev_s3_only.name}"
+  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+}
