@@ -22,21 +22,16 @@ function configure_aws_logs {
 [general]
 state_file = /home/vcap/logs/awslogs-state
 
-[/home/vcap/logs/app-stdout.log]
-file = /home/vcap/logs/app-stdout.log*
-log_group_name = paas-${CW_APP_NAME}-application
-log_stream_name = {hostname}-stdout
-
-[/home/vcap/logs/app-stderr.log]
-file = /home/vcap/logs/app-stderr.log*
-log_group_name = paas-${CW_APP_NAME}-application
-log_stream_name = {hostname}-stderr
+[/home/vcap/logs/app.log]
+file = /home/vcap/logs/app.log*
+log_group_name = ${DM_ENVIRONMENT}-${CW_APP_NAME}
+log_stream_name = {hostname}
 EOF
 }
 
 function on_exit {
   echo "Terminating application process with pid ${APP_PID}"
-  kill ${APP_PID} || true
+  kill ${APP_PID} 2&>/dev/null || true
   n=0
   while (kill -0 ${APP_PID} 2&>/dev/null); do
     echo "Application is still running.."
@@ -55,7 +50,7 @@ function on_exit {
 }
 
 function start_appplication {
-  exec "$@" 2>/home/vcap/logs/app-stderr.log | while read line; do echo $line; echo $line >> /home/vcap/logs/app-stdout.log.`date +%Y-%m-%d`; done &
+  exec "$@" 2>&1 | while read line; do echo $line; echo $line >> /home/vcap/logs/app.log.`date +%Y-%m-%d`; done &
   LOGGER_PID=$!
   APP_PID=`jobs -p`
   echo "Logger process pid: ${LOGGER_PID}"

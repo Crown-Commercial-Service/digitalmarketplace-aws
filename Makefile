@@ -56,11 +56,10 @@ paas-generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
 	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
-	mkdir -p ${DEPLOYMENT_DIR}
+	${DM_CREDENTIALS_REPO}/sops-wrapper -v > /dev/null # Avoid asking for MFA twice (when mandatory)
 	${VIRTUALENV_ROOT}/bin/dmaws paas-manifest ${STAGE} ${APPLICATION_NAME} \
 		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/common.yaml) \
-		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/${STAGE}.yaml) \
-		-o ${DEPLOYMENT_DIR}/manifest.yml
+		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/${STAGE}.yaml)
 
 .PHONY: paas-login
 paas-login: ## Log in to PaaS
@@ -70,16 +69,33 @@ paas-login: ## Log in to PaaS
 	mkdir -p ${CF_HOME}
 	@cf login -a "${PAAS_API}" -u ${PAAS_USERNAME} -p "${PAAS_PASSWORD}" -o "${PAAS_ORG}" -s "${PAAS_SPACE}"
 
+.PHONY: paas-build
+paas-build: ## Build the PaaS application
+	cp paas/run.sh ${DEPLOYMENT_DIR}/run.sh
+	chmod +x ${DEPLOYMENT_DIR}/run.sh
+
 .PHONY: paas-deploy
-paas-deploy: ## Deploys the app to PaaS
+paas-deploy: paas-build ## Deploys the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cd ${DEPLOYMENT_DIR} && \
 		cf app --guid ${APPLICATION_NAME} && \
 		cf rename ${APPLICATION_NAME} ${APPLICATION_NAME}-rollback && \
-		cf push -f manifest.yml && \
+		cf push -f <(make -s -C ${CURDIR} paas-generate-manifest) && \
 		cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}) | jq -r ".entity.instances" && \ 2>/dev/null || echo "1") ${APPLICATION_NAME} && \
 		cf stop ${APPLICATION_NAME}-rollback && \
 		cf delete -f ${APPLICATION_NAME}-rollback
+
+.PHONY: paas-deploy-db-migration
+paas-deploy-db-migration: paas-build ## Deploys the db migration app
+	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	cd ${DEPLOYMENT_DIR} && \
+		cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} paas-generate-manifest) --no-route --health-check-type none -i 1 -m 128M -c 'sleep infinity' && \
+		cf run-task ${APPLICATION_NAME}-db-migration "python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
+
+.PHONY: paas-check-db-migration-task
+paas-check-db-migration-task: ## Get the status for the last db migration task
+	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	@cf curl /v3/apps/`cf app --guid ${APPLICATION_NAME}-db-migration`/tasks?order_by=-created_at | jq -r ".resources[0].state"
 
 .PHONY: paas-rollback
 paas-rollback: ## Rollbacks the app to the previous release on PaaS
@@ -91,10 +107,10 @@ paas-rollback: ## Rollbacks the app to the previous release on PaaS
 		cf rename notify-admin-rollback notify-admin
 
 .PHONY: paas-push
-paas-push: ## Pushes the app to PaaS
+paas-push: paas-build ## Pushes the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cd ${DEPLOYMENT_DIR} && \
-		cf push ${APPLICATION_NAME} -f manifest.yml
+		cf push ${APPLICATION_NAME} -f <(make -s -C ${CURDIR} paas-generate-manifest)
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
