@@ -2,6 +2,15 @@ provider "aws" {
   region = "eu-west-1"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "digitalmarketplace-terraform-state-main"
+    key = "accounts/main/terraform.tfstate"
+    region = "eu-west-1"
+    encrypt =  "true"
+  }
+}
+
 module "iam_common" {
   source = "../../modules/iam-common"
   whitelisted_ips = "${var.whitelisted_ips}"

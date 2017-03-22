@@ -1,9 +1,6 @@
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
 
-S3_BUCKET = digitalmarketplace-terraform-state${S3_BUCKET_POSTFIX}
-SOPS_FILE = ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json
-SOPS_COMMON_FILE = ${DM_CREDENTIALS_REPO}/terraform/common.json
 
 .PHONY: help
 help:
@@ -11,25 +8,19 @@ help:
 
 .PHONY: check-env-vars
 check-env-vars: ## Check mandatory environment variables
-	$(if ${S3_BUCKET_POSTFIX},,$(error Must specify S3_BUCKET_POSTFIX))
 	$(if ${TERRAFORM_PROJECT},,$(error Must specify TERRAFORM_PROJECT))
+	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
 
 .PHONY: init
 init:: ## Run init
 	. .envrc && aws-auth terraform get
-	. .envrc && aws-auth terraform remote config \
-		-backend=S3 \
-		-backend-config="bucket=${S3_BUCKET}" \
-		-backend-config='key=${TERRAFORM_PROJECT}/terraform.tfstate' \
-		-backend-config='region=eu-west-1' \
-		-backend-config='encrypt=true'
+	. .envrc && aws-auth terraform init
 
 define run_terraform
-	@. .envrc && \
-	aws-auth terraform ${1} \
+	. .envrc && aws-auth terraform ${1} \
 		-var-file=../common.tfvars \
-		-var-file=<(. .envrc && aws-auth sops -d ${SOPS_COMMON_FILE}) \
-		-var-file=<(. .envrc && aws-auth sops -d ${SOPS_FILE}) \
+		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json) \
+		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/common.json) \
 		${2}
 endef
 
@@ -50,8 +41,7 @@ plan-resource: check-env-vars init ## Run terraform plan with a specific resourc
 
 .PHONY: apply
 apply: check-env-vars init ## Run terraform apply
-	. .envrc && \
-		aws-auth terraform apply terraform.plan
+	. .envrc && aws-auth terraform apply terraform.plan
 	rm -f terraform.plan
 
 .PHONY: upload-state
