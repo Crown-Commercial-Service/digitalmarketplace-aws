@@ -11,8 +11,13 @@
     "ami_name": "nginx-{{isotime | clean_ami_name}}",
     "ami_users": [
       "050019655025",
-      "381494870249"
-    ]
+      "381494870249",
+      "398263320410"
+    ],
+    "tags": {
+      "server-role": "nginx",
+      "source-ami": "ami-664b0a11"
+    }
   }],
   "provisioners": [
     {
@@ -28,7 +33,8 @@
       "playbook_file": "playbooks/nginx_playbook.yml",
       "role_paths": [
         "playbooks/roles/nginx/",
-        "playbooks/roles/cloudwatch/"
+        "playbooks/roles/cloudwatch/",
+        "playbooks/roles/common"
       ],
       "extra_arguments": [
         "-t image-setup",
