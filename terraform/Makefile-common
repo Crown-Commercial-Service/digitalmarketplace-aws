@@ -18,7 +18,6 @@ init:: ## Run init
 
 define run_terraform
 	. .envrc && aws-auth terraform ${1} \
-		-var-file=../common.tfvars \
 		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json) \
 		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/common.json) \
 		${2}
