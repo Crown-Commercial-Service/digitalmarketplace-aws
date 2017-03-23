@@ -1,7 +1,7 @@
 ---
 
 applications:
-  - name: digitalmarketplace-{{ app|replace('_', '-') }}
+  - name: {{ app|replace('_', '-') }}
     stack: cflinuxfs2
     buildpack: python_buildpack
     command: ./run.sh gunicorn -w 4 -b 0.0.0.0:$PORT application:application --log-file -
