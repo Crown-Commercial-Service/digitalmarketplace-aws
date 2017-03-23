@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name {{ api_subdomain }}.*;
+    server_name api.*;
 
     set $api_url "{{ api_url }}";
 
@@ -18,7 +18,7 @@ server {
 
 server {
     listen 80;
-    server_name {{ search_api_subdomain }}.*;
+    server_name search-api.*;
 
     {% for dev_ip in dev_user_ips.split(",") %}
     allow {{ dev_ip }};
@@ -26,8 +26,6 @@ server {
     deny all;
 
     set $search_api_url "{{ search_api_url }}";
-
-    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
 
     location / {
         proxy_redirect http:// https://;
