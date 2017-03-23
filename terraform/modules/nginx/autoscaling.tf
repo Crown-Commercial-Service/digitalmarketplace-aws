@@ -53,7 +53,7 @@ resource "aws_launch_configuration" "nginx" {
   name_prefix = "${var.name}-"
   image_id = "${data.aws_ami.nginx_ami.id}"
   instance_type = "${var.instance_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.nginx_profile}"
+  iam_instance_profile = "${aws_iam_instance_profile.nginx_profile.name}"
   security_groups = [
     "${aws_security_group.nginx_instance.id}"
   ]
@@ -93,7 +93,7 @@ ENDPOLICY
 
 resource "aws_iam_instance_profile" "nginx_profile" {
   name = "${var.name}"
-  roles = ["${aws_iam_role.nginx_role}"]
+  roles = ["${aws_iam_role.nginx_role.name}"]
 }
 
 resource "aws_security_group" "nginx_instance" {
