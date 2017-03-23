@@ -8,7 +8,11 @@ resource "aws_iam_policy" "packer" {
       "Sid": "PackerSecurityGroupAccess",
       "Action": [
         "ec2:DescribeSubnets",
-        "ec2:DescribeSecurityGroups"
+        "ec2:CreateSecurityGroup",
+        "ec2:DeleteSecurityGroup",
+        "ec2:DescribeSecurityGroups",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupIngress"
       ],
       "Effect": "Allow",
       "Resource": [
@@ -73,6 +77,8 @@ resource "aws_iam_policy" "packer" {
     {
       "Sid": "PackerKeyPairAccess",
       "Action": [
+        "ec2:CreateKeyPair",
+        "ec2:DeleteKeyPair",
         "ec2:DescribeKeyPairs"
       ],
       "Effect": "Allow",
