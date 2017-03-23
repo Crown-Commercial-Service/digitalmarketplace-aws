@@ -10,12 +10,8 @@ variable "subnet_ids" {
 variable "ssl_cert_arn" {}
 
 variable "instance_count" {}
-variable "min_instance_count" {
-  default = "${var.instance_count}"
-}
-variable "max_instance_count" {
-  default = "${var.instance_count}"
-}
+variable "min_instance_count" {}
+variable "max_instance_count" {}
 variable "instance_type" {}
 
 variable "ssh_key_name" {}
@@ -24,6 +20,7 @@ variable "ami_owner_account_id" {}
 
 variable "admin_user_ips" {}
 variable "dev_user_ips" {}
+variable "user_ips" {}
 
 variable "log_retention_days" {}
 
