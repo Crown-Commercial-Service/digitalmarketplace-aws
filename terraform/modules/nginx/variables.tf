@@ -1,5 +1,6 @@
 variable "name" {}
 variable "environment" {}
+variable "domain" {}
 
 variable "vpc_id" {}
 variable "subnet_ids" {
@@ -24,7 +25,7 @@ variable "ami_owner_account_id" {}
 variable "admin_user_ips" {}
 variable "dev_user_ips" {}
 
-variable "log_group_name" {}
+variable "log_retention_days" {}
 
 variable "g7_draft_documents_s3_url" {}
 variable "documents_s3_url" {}
