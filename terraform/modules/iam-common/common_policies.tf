@@ -10,7 +10,7 @@ resource "aws_iam_policy" "ip_restricted_access" {
     "Resource": "*",
     "Condition": {
       "NotIpAddress": {
-        "aws:SourceIp": [${join(",", formatlist("\"%s\"", var.whitelisted_ips))}]
+        "aws:SourceIp": [${join(",", formatlist("\"%s\"", var.dev_user_ips))}]
       },
       "Null": {
         "kms:ViaService": "true"
