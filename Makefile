@@ -81,7 +81,7 @@ paas-deploy: paas-build ## Deploys the app to PaaS
 		cf app --guid ${APPLICATION_NAME} && \
 		cf rename ${APPLICATION_NAME} ${APPLICATION_NAME}-rollback && \
 		cf push -f <(make -s -C ${CURDIR} paas-generate-manifest) && \
-		cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}) | jq -r ".entity.instances" && \ 2>/dev/null || echo "1") ${APPLICATION_NAME} && \
+		cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}-rollback) | jq -r ".entity.instances" 2>/dev/null || echo "1") ${APPLICATION_NAME} && \
 		cf stop ${APPLICATION_NAME}-rollback && \
 		cf delete -f ${APPLICATION_NAME}-rollback
 
@@ -102,15 +102,15 @@ paas-rollback: ## Rollbacks the app to the previous release on PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	@[ $$(cf curl /v2/apps/`cf app --guid ${APPLICATION_NAME}-rollback` | jq -r ".entity.state") = "STARTED" ] || (echo "Error: rollback is not possible because ${APPLICATION_NAME}-rollback is not in a started state" && exit 1)
 	cd ${DEPLOYMENT_DIR} && \
-		cf app --guid notify-admin-rollback && \
-		cf delete -f notify-admin && \
-		cf rename notify-admin-rollback notify-admin
+		cf app --guid ${APPLICATION_NAME}-rollback && \
+		cf delete -f ${APPLICATION_NAME} && \
+		cf rename ${APPLICATION_NAME}-rollback ${APPLICATION_NAME}
 
 .PHONY: paas-push
 paas-push: paas-build ## Pushes the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cd ${DEPLOYMENT_DIR} && \
-		cf push ${APPLICATION_NAME} -f <(make -s -C ${CURDIR} paas-generate-manifest)
+		cf push -f <(make -s -C ${CURDIR} paas-generate-manifest)
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
