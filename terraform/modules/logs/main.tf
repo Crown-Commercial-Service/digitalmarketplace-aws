@@ -1,10 +1,5 @@
-resource "aws_cloudwatch_log_group" "plaintext_logs" {
+resource "aws_cloudwatch_log_group" "logs" {
   name = "${var.name}"
-  retention_in_days = "${var.log_retention_days}"
-}
-
-resource "aws_cloudwatch_log_group" "json_logs" {
-  name = "${var.name}-json"
   retention_in_days = "${var.log_retention_days}"
 }
 
@@ -24,9 +19,8 @@ resource "aws_iam_policy" "cloudwatch_policy" {
       "logs:DescribeLogStreams"
     ],
     "Resource": [
-      "${aws_cloudwatch_log_group.plaintext_logs.arn}",
-      "${aws_cloudwatch_log_group.json_logs.arn}"
-    ]
+      "${aws_cloudwatch_log_group.logs.arn}"
+  ]
   }]
 }
 ENDPOLICY
