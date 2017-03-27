@@ -25,37 +25,35 @@ module "preview_nginx" {
       "subnet-82dc63f5"
   ]
 
-  ssl_cert_arn = "arn:aws:acm:eu-west-1:381494870249:certificate/5be12edd-af5b-4463-b3c5-acd3df600a1e"
-
   instance_count = "2"
   min_instance_count = "2"
   max_instance_count = "2"
 
   instance_type = "t2.micro"
 
-  ssh_key_name = ""
+  log_retention_days = "180"
 
   ami_owner_account_id = "${var.aws_main_account_id}"
+
+  ssh_key_name = "${var.ssh_key_name}"
 
   admin_user_ips = "${var.admin_user_ips}"
   dev_user_ips = "${var.dev_user_ips}"
   user_ips = "${var.user_ips}"
 
-  log_retention_days = "180"
+  g7_draft_documents_s3_url = "${var.g7_draft_documents_s3_url}"
+  documents_s3_url = "${var.documents_s3_url}"
+  agreements_s3_url = "${var.agreements_s3_url}"
+  communications_s3_url = "${var.communications_s3_url}"
+  submissions_s3_url = "${var.submissions_s3_url}"
 
-  g7_draft_documents_s3_url = ""
-  documents_s3_url = ""
-  agreements_s3_url = ""
-  communications_s3_url = ""
-  submissions_s3_url = ""
+  api_url = "${var.api_url}"
+  search_api_url = "${var.search_api_url}"
+  buyer_frontend_url = "${var.buyer_frontend_url}"
+  admin_frontend_url = "${var.admin_frontend_url}"
+  supplier_frontend_url = "${var.supplier_frontend_url}"
+  elasticsearch_url = "${var.elasticsearch_url}"
 
-  api_url = ""
-  search_api_url = ""
-  buyer_frontend_url = ""
-  admin_frontend_url = ""
-  supplier_frontend_url = ""
-  elasticsearch_url = ""
-
-  elasticsearch_auth = ""
-  app_auth = ""
+  elasticsearch_auth = "${var.elasticsearch_auth}"
+  app_auth = "${var.app_auth}"
 }
