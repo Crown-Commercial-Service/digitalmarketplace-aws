@@ -18,9 +18,15 @@ variable "ssh_key_name" {}
 
 variable "ami_owner_account_id" {}
 
-variable "admin_user_ips" {}
-variable "dev_user_ips" {}
-variable "user_ips" {}
+variable "admin_user_ips" {
+  type = "list"
+}
+variable "dev_user_ips" {
+  type = "list"
+}
+variable "user_ips" {
+  type = "list"
+}
 
 variable "log_retention_days" {}
 
