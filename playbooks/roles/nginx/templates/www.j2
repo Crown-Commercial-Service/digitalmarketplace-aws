@@ -12,7 +12,7 @@ server {
 
     location / {
         proxy_redirect http:// https://;
-        proxy_set_header Authorization "Basic {{ app_auth }}"
+        proxy_set_header Authorization "Basic {{ app_auth }}";
         proxy_pass $buyer_frontend_url;
     }
 
@@ -23,13 +23,13 @@ server {
         deny all;
 
         proxy_redirect http:// https://;
-        proxy_set_header Authorization "Basic {{ app_auth }}"
+        proxy_set_header Authorization "Basic {{ app_auth }}";
         proxy_pass $admin_frontend_url;
     }
 
     location ~ ^/suppliers(/|$) {
         proxy_redirect http:// https://;
-        proxy_set_header Authorization "Basic {{ app_auth }}"
+        proxy_set_header Authorization "Basic {{ app_auth }}";
         proxy_pass $supplier_frontend_url;
     }
 }
