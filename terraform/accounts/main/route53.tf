@@ -7,7 +7,12 @@ resource "aws_route53_record" "preview_ns" {
   name = "preview.marketplace.team"
   type = "NS"
   ttl = "3600"
-  records = ["${var.preview_name_servers}"]
+  records = [
+    "ns-389.awsdns-48.com",
+    "ns-2018.awsdns-60.co.uk",
+    "ns-1176.awsdns-19.org",
+    "ns-530.awsdns-02.net",
+  ]
 }
 
 resource "aws_route53_record" "staging_ns" {
@@ -15,5 +20,7 @@ resource "aws_route53_record" "staging_ns" {
   name = "staging.marketplace.team"
   type = "NS"
   ttl = "3600"
-  records = ["${var.staging_name_servers}"]
+  records = [
+    /* NS records for staging once the hosted zone has been created */
+  ]
 }

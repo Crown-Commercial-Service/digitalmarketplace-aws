@@ -27,10 +27,3 @@ variable "dev_infrastructure_users" {
 variable "prod_infrastructure_users" {
   type = "list"
 }
-
-variable "preview_name_servers" {
-  type = "list"
-}
-variable "staging_name_servers" {
-  type = "list"
-}
