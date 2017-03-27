@@ -44,3 +44,12 @@ resource "aws_security_group" "nginx_elb" {
     Name = "${var.name}-elb"
   }
 }
+
+resource "aws_security_group_rule" "allow_http_from_elb" {
+  security_group_id = "${aws_security_group.nginx_elb.id}"
+  type = "egress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.nginx_instance.id}"
+}

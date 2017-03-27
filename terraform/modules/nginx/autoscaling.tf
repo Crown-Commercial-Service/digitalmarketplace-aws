@@ -115,9 +115,16 @@ resource "aws_security_group" "nginx_instance" {
   tags = {
     Name = "${var.name}"
   }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
-resource "aws_security_group_rule" "allow_http_from_elb" {
+resource "aws_security_group_rule" "allow_http_to_instances" {
   security_group_id = "${aws_security_group.nginx_instance.id}"
   type = "ingress"
   from_port = 80
