@@ -4,14 +4,13 @@ data "aws_region" "current" {
 
 data "aws_ami" "nginx_ami" {
   owners = ["${var.ami_owner_account_id}"]
+  name_regex = "^nginx-"
+
   filter {
     name = "state"
     values = ["available"]
   }
-  filter {
-    name = "tag:server-role"
-    values = ["nginx"]
-  }
+
   most_recent = true
 }
 
