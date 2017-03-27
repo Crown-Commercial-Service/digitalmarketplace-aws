@@ -7,8 +7,6 @@ variable "subnet_ids" {
   type = "list"
 }
 
-variable "ssl_cert_arn" {}
-
 variable "instance_count" {}
 variable "min_instance_count" {}
 variable "max_instance_count" {}

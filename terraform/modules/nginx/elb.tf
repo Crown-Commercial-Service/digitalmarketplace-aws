@@ -1,3 +1,8 @@
+data "aws_acm_certificate" "nginx" {
+  domain = "*.${var.domain}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_elb" "nginx" {
   name = "${var.name}"
 
@@ -12,7 +17,7 @@ resource "aws_elb" "nginx" {
   listener {
     lb_port = 443
     lb_protocol = "https"
-    ssl_certificate_id = "${var.ssl_cert_arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.nginx.arn}"
     instance_port = 80
     instance_protocol = "http"
   }
