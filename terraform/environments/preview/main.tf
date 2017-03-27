@@ -14,7 +14,7 @@ terraform {
 module "preview_nginx" {
   source = "../../modules/nginx"
 
-  name = "nginx-preview"
+  name = "preview-nginx"
   environment = "preview"
   domain = "preview.marketplace.team"
 
