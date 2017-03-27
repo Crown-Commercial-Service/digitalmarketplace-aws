@@ -1,5 +1,5 @@
 resource "aws_elb" "nginx" {
-  name = "{var.name}"
+  name = "${var.name}"
 
   subnets = ["${var.subnet_ids}"]
   security_groups = [

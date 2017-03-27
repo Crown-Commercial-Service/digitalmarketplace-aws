@@ -19,7 +19,7 @@ resource "aws_autoscaling_group" "nginx_autoscaling_group" {
 
   min_size = "${var.min_instance_count}"
   max_size = "${var.max_instance_count}"
-  desired_capicity = "${var.instance_count}"
+  desired_capacity = "${var.instance_count}"
 
   health_check_type = "ELB"
   health_check_grace_period = 300
@@ -59,7 +59,28 @@ resource "aws_launch_configuration" "nginx" {
 
   key_name = "${var.ssh_key_name}"
 
-  user_data = "${file("user_data_script.sh")}"
+  user_data = <<END
+#!/bin/bash
+cd /home/ubuntu/provisioning && ansible-playbook -c local -i localhost, nginx_playbook.yml -t instance-config \
+    -e admin_user_ips=${join(",", var.admin_user_ips)} \
+    -e dev_user_ips=${join(",", var.dev_user_ips)} \
+    -e cloudwatch_log_group=${module.preview_logs.log_group_name} \
+    -e g7_draft_documents_s3_url=${var.g7_draft_documents_s3_url} \
+    -e documents_s3_url=${var.documents_s3_url} \
+    -e agreements_s3_url=${var.agreements_s3_url} \
+    -e communications_s3_url=${var.communications_s3_url} \
+    -e submissions_s3_url=${var.submissions_s3_url} \
+    -e api_url=${var.api_url} \
+    -e search_api_url=${var.search_api_url} \
+    -e buyer_frontend_url=${var.buyer_frontend_url} \
+    -e admin_frontend_url=${var.admin_frontend_url} \
+    -e supplier_frontend_url=${var.supplier_frontend_url} \
+    -e elasticsearch_url=${var.elasticsearch_url} \
+    -e elasticsearch_auth=${var.elasticsearch_auth} \
+    -e app_auth=${var.app_auth} \
+    -e aws_region=${data.aws_region.current.name} \
+    -e nameserver_ip=$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf)
+END
 
   lifecycle {
     create_before_destroy = true
@@ -68,23 +89,15 @@ resource "aws_launch_configuration" "nginx" {
 
 resource "aws_iam_role" "nginx_role" {
   name = "${var.name}"
-  path = "/"
   assume_role_policy = <<ENDPOLICY
 {
   "Version" : "2012-10-17",
   "Statement": [{
     "Effect": "Allow",
-    "Action": [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:GetLogEvents",
-      "logs:PutLogEvents",
-      "logs:DescribeLogGroups",
-      "logs:DescribeLogStreams"
-    ],
-    "Resource": [
-      "arn:aws:logs:eu-west-1:*:*"
-    ]
+    "Principal": {
+      "Service": [ "ec2.amazonaws.com" ]
+    },
+    "Action": [ "sts:AssumeRole" ]
   }]
 }
 ENDPOLICY
