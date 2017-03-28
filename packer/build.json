@@ -1,6 +1,7 @@
 {
   "variables": {
-      "aws_region": "eu-west-1"
+    "name": null,
+    "aws_region": "eu-west-1"
   },
   "builders": [{
     "type": "amazon-ebs",
@@ -8,14 +9,14 @@
     "source_ami": "ami-971238f1",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
-    "ami_name": "nginx-{{isotime | clean_ami_name}}",
+    "ami_name": "{{ user `name` }}-{{isotime | clean_ami_name}}",
     "ami_users": [
       "050019655025",
       "381494870249",
       "398263320410"
     ],
     "tags": {
-      "server-role": "nginx",
+      "server-role": "{{ user `name` }}",
       "source-ami": "ami-971238f1"
     }
   }],
@@ -30,11 +31,11 @@
     },
     {
       "type": "ansible-local",
-      "playbook_file": "playbooks/nginx_playbook.yml",
+      "playbook_file": "../playbooks/{{ user `name` }}_playbook.yml",
       "role_paths": [
-        "playbooks/roles/nginx/",
-        "playbooks/roles/cloudwatch/",
-        "playbooks/roles/common"
+        "../playbooks/roles/{{ user `name` }}/",
+        "../playbooks/roles/cloudwatch/",
+        "../playbooks/roles/common/"
       ],
       "extra_arguments": [
         "-t image-setup",
