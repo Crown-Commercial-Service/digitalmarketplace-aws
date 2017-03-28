@@ -1,5 +1,5 @@
 resource "aws_elb" "elasticsearch_elb" {
-  name = "{var.name}"
+  name = "${var.name}"
   internal = true
 
   subnets = ["${var.subnet_ids}"]
@@ -37,11 +37,20 @@ resource "aws_security_group" "elasticsearch_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_http_from_nginx" {
+resource "aws_security_group_rule" "allow_access_to_instances" {
   security_group_id = "${aws_security_group.elasticsearch_elb.id}"
-  type = "ingress"
+  type = "egress"
   from_port = "${var.elasticsearch_port}"
   to_port = "${var.elasticsearch_port}"
   protocol = "tcp"
-  source_security_group_id = "${aws_security_group.nginx_instance.id}"
+  source_security_group_id = "${aws_security_group.elasticsearch_instance.id}"
+}
+
+resource "aws_security_group_rule" "allow_http_from_nginx" {
+  security_group_id = "${aws_security_group.elasticsearch_elb.id}"
+  type = "ingress"
+  from_port = "80"
+  to_port = "80"
+  protocol = "tcp"
+  source_security_group_id = "${var.nginx_security_group_id}"
 }

@@ -15,9 +15,11 @@ variable "ssh_key_name" {}
 
 variable "ami_owner_account_id" {}
 
-variable "log_group_name" {}
+variable "log_retention_days" {}
 
 variable "elasticsearch_port" {
   type = "string"
   default = "9200"
 }
+
+variable "nginx_security_group_id" {}

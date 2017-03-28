@@ -97,9 +97,9 @@ resource "aws_iam_role" "nginx_role" {
   "Statement": [{
     "Effect": "Allow",
     "Principal": {
-      "Service": [ "ec2.amazonaws.com" ]
+      "Service": ["ec2.amazonaws.com"]
     },
-    "Action": [ "sts:AssumeRole" ]
+    "Action": ["sts:AssumeRole"]
   }]
 }
 ENDPOLICY
