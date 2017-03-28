@@ -15,11 +15,12 @@ data "aws_ami" "nginx_ami" {
 }
 
 resource "aws_autoscaling_group" "nginx_autoscaling_group" {
-  name = "${var.name}"
+  name = "${var.name}-${aws_launch_configuration.nginx.name}"
 
   min_size = "${var.min_instance_count}"
   max_size = "${var.max_instance_count}"
   desired_capacity = "${var.instance_count}"
+  min_elb_capacity = "${var.instance_count}"
 
   health_check_type = "ELB"
   health_check_grace_period = 300
@@ -28,6 +29,10 @@ resource "aws_autoscaling_group" "nginx_autoscaling_group" {
 
   load_balancers = ["${aws_elb.nginx.name}"]
   launch_configuration = "${aws_launch_configuration.nginx.name}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tag {
     key = "Name"
