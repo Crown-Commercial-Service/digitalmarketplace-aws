@@ -52,7 +52,7 @@ module "preview_nginx" {
   buyer_frontend_url = "${var.buyer_frontend_url}"
   admin_frontend_url = "${var.admin_frontend_url}"
   supplier_frontend_url = "${var.supplier_frontend_url}"
-  elasticsearch_url = "${var.elasticsearch_url}"
+  elasticsearch_url = "${module.preview_elasticsearch.elb_url}"
 
   elasticsearch_auth = "${var.elasticsearch_auth}"
   app_auth = "${var.app_auth}"
