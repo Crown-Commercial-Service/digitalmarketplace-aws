@@ -1,3 +1,4 @@
+{% from "_macros.j2" import proxy_headers with context %}
 server {
     listen 80;
     server_name api.*;
@@ -10,8 +11,7 @@ server {
     deny all;
 
     location / {
-        proxy_redirect http:// https://;
-
+        {{ proxy_headers() }}
         proxy_pass $api_url;
     }
 }
@@ -28,8 +28,7 @@ server {
     set $search_api_url "{{ search_api_url }}";
 
     location / {
-        proxy_redirect http:// https://;
-
+        {{ proxy_headers() }}
         proxy_pass $search_api_url;
     }
 }

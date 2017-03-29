@@ -1,3 +1,4 @@
+{% from "_macros.j2" import proxy_headers with context %}
 server {
     listen 80;
     server_name www.*;
@@ -11,8 +12,9 @@ server {
     }
 
     location / {
-        proxy_redirect http:// https://;
+        {{ proxy_headers () }}
         proxy_set_header Authorization "Basic {{ app_auth }}";
+
         proxy_pass $buyer_frontend_url;
     }
 
@@ -22,14 +24,16 @@ server {
         {% endfor %}
         deny all;
 
-        proxy_redirect http:// https://;
+        {{ proxy_headers () }}
         proxy_set_header Authorization "Basic {{ app_auth }}";
+
         proxy_pass $admin_frontend_url;
     }
 
     location ~ ^/suppliers(/|$) {
-        proxy_redirect http:// https://;
+        {{ proxy_headers () }}
         proxy_set_header Authorization "Basic {{ app_auth }}";
+
         proxy_pass $supplier_frontend_url;
     }
 }
