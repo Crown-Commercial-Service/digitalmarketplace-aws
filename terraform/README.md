@@ -54,7 +54,7 @@ aws_secret_access_key=FYd4t...
 File: ~/.aws/config
 
 ```
-[dm-main-account-infrastructure]
+[profile dm-main-account-infrastructure]
 source_profile=dm-andras
 mfa_serial=arn:aws:iam::<main account id>:mfa/<your username>
 role_arn = arn:aws:iam::<main account id>:role/infrastructure
