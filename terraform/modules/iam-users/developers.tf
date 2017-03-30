@@ -126,17 +126,14 @@ resource "aws_iam_policy" "dev_uploads_s3_access" {
   "Statement": [
     {
       "Action": [
-        "s3:ListBucket",
-        "s3:GetBucketLocation"
+        "s3:*"
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads"
     },
     {
       "Action": [
-        "s3:DeleteObject",
-        "s3:PutObject",
-        "s3:GetObject"
+        "s3:*"
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads/*"

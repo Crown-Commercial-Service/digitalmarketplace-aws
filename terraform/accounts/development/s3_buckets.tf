@@ -19,7 +19,9 @@ resource "aws_s3_bucket" "dev_uploads_s3_bucket" {
       "Action": [
         "s3:DeleteObject",
         "s3:GetObject",
-        "s3:PutObject"
+        "s3:PutObject",
+        "s3:GetObjectAcl",
+        "s3:PutObjectAcl"
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads/*"
