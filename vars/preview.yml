@@ -23,7 +23,7 @@ admin_frontend:
       DM_S3_DOCUMENT_BUCKET: digitalmarketplace-documents-preview-preview
       DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-preview-preview
       DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-preview-preview
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communicationspreview-preview
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-preview-preview
       DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-preview-preview
       DM_ASSETS_URL: https://preview-assets.development.digitalmarketplace.service.gov.uk
 
@@ -34,7 +34,7 @@ supplier_frontend:
       DM_G7_DRAFT_DOCUMENTS_URL: https://preview-assets.development.digitalmarketplace.service.gov.uk
       DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-preview-preview
       DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-preview-preview
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communicationspreview-preview
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-preview-preview
       DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-preview-preview
       DM_ASSETS_URL: https://preview-assets.development.digitalmarketplace.service.gov.uk
       DM_CLARIFICATION_QUESTION_EMAIL: clarification@digitalmarketplace.service.gov.uk

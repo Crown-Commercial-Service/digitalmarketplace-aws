@@ -60,7 +60,7 @@ supplier_frontend:
       DM_G7_DRAFT_DOCUMENTS_URL: https://assets.digitalmarketplace.service.gov.uk
       DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-production-production
       DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-production-production
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communicationsproduction-production
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-production-production
       DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-production-production
       DM_ASSETS_URL: https://assets.digitalmarketplace.service.gov.uk
       DM_CLARIFICATION_QUESTION_EMAIL: clarification@digitalmarketplace.service.gov.uk
