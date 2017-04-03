@@ -4,6 +4,11 @@ server {
     server_name assets.*;
     error_page 400 401 402 403 404 = /404;
 
+    {% for user_ip in user_ips.split(",") %}
+    allow {{ user_ip }};
+    {% endfor %}
+    deny all;
+
     set $documents_s3_url "{{ documents_s3_url }}";
     set $g7_draft_documents_s3_url "{{ g7_draft_documents_s3_url }}";
     set $buyer_frontend_url "{{ buyer_frontend_url }}";

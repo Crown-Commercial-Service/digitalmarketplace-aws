@@ -42,7 +42,7 @@ resource "aws_security_group" "nginx_elb" {
     from_port = 443
     to_port = 443
     protocol = "tcp"
-    cidr_blocks = ["${var.user_ips}"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {

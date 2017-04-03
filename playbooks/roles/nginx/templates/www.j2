@@ -3,6 +3,11 @@ server {
     listen 80;
     server_name www.*;
 
+    {% for user_ip in user_ips.split(",") %}
+    allow {{ user_ip }};
+    {% endfor %}
+    deny all;
+
     set $buyer_frontend_url "{{ buyer_frontend_url }}";
     set $admin_frontend_url "{{ admin_frontend_url }}";
     set $supplier_frontend_url "{{ supplier_frontend_url }}";
