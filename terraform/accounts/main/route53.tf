@@ -21,6 +21,9 @@ resource "aws_route53_record" "staging_ns" {
   type = "NS"
   ttl = "3600"
   records = [
-    /* NS records for staging once the hosted zone has been created */
+    "ns-175.awsdns-21.com",
+    "ns-781.awsdns-33.net",
+    "ns-1457.awsdns-54.org",
+    "ns-1828.awsdns-36.co.uk",
   ]
 }
