@@ -22,16 +22,16 @@ module "iam_users" {
   source = "../../modules/iam-users"
   admins = "${var.admins}"
   developers = "${var.developers}"
+  dev_s3_only_users = "${var.dev_s3_only_users}"
+  prod_developers = "${var.prod_developers}"
+  dev_infrastructure_users = "${var.dev_infrastructure_users}"
+  prod_infrastructure_users = "${var.prod_infrastructure_users}"
   ip_restricted_access_policy_arn = "${module.iam_common.aws_iam_policy_ip_restricted_access_arn}"
   iam_manage_account_policy_arn = "${module.iam_common.aws_iam_policy_iam_manage_account_arn}"
+  admin_policy_arn = "${module.iam_common.aws_iam_policy_admin_arn}"
   developer_policy_arn = "${module.iam_common.aws_iam_policy_developer_arn}"
   aws_dev_account_id = "${var.aws_dev_account_id}"
   aws_prod_account_id = "${var.aws_prod_account_id}"
-  prod_developers = "${var.prod_developers}"
-  dev_s3_only_users = "${var.dev_s3_only_users}"
-  admin_policy_arn = "${module.iam_common.aws_iam_policy_admin_arn}"
-  dev_infrastructure_users = "${var.dev_infrastructure_users}"
-  prod_infrastructure_users = "${var.prod_infrastructure_users}"
 }
 
 module "sops_credentials" {

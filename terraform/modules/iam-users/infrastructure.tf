@@ -48,8 +48,6 @@ resource "aws_iam_group_policy" "prod_infrastructure" {
         "sts:AssumeRole"
       ],
       "Resource": [
-        "arn:aws:iam::${var.aws_dev_account_id}:role/infrastructure",
-        "arn:aws:iam::${var.aws_dev_account_id}:role/packer",
         "arn:aws:iam::${var.aws_prod_account_id}:role/infrastructure",
         "arn:aws:iam::${var.aws_prod_account_id}:role/packer"
       ]

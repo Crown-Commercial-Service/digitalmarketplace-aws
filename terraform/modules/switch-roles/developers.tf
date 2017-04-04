@@ -35,8 +35,3 @@ resource "aws_iam_role_policy_attachment" "developers_iam_manage_account" {
   role = "${aws_iam_role.developers.name}"
   policy_arn = "${var.iam_manage_account_policy_arn}"
 }
-
-resource "aws_iam_role_policy_attachment" "developers_s3_only" {
-  role = "${aws_iam_role.developers.name}"
-  policy_arn = "${aws_iam_policy.s3_only.arn}"
-}
