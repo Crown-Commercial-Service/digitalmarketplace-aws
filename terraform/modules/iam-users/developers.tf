@@ -15,8 +15,7 @@ resource "aws_iam_group_policy" "developers" {
         "sts:AssumeRole"
       ],
       "Resource": [
-        "arn:aws:iam::${var.aws_dev_account_id}:role/developers",
-        "arn:aws:iam::${var.aws_dev_account_id}:role/s3-only"
+        "arn:aws:iam::${var.aws_dev_account_id}:role/developers"
       ]
     },
     {
@@ -87,23 +86,9 @@ resource "aws_iam_group" "dev_s3_only" {
   name = "DevS3Only"
 }
 
-resource "aws_iam_group_policy" "switch_to_dev_s3_only" {
-  name = "SwitchToDevS3Only"
+resource "aws_iam_group_policy_attachment" "dev_s3_only" {
   group = "${aws_iam_group.dev_s3_only.name}"
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sts:AssumeRole"
-      ],
-      "Resource": "arn:aws:iam::${var.aws_dev_account_id}:role/s3-only"
-    }
-  ]
-}
-EOF
+  policy_arn = "${var.ip_restricted_access_policy_arn}"
 }
 
 resource "aws_iam_group_membership" "dev_s3_only" {
@@ -126,17 +111,14 @@ resource "aws_iam_policy" "dev_uploads_s3_access" {
   "Statement": [
     {
       "Action": [
-        "s3:ListBucket",
-        "s3:GetBucketLocation",
+        "s3:*"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads",
+      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads"
     },
     {
       "Action": [
-        "s3:DeleteObject",
-        "s3:PutObject",
-        "s3:GetObject",
+        "s3:*"
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads/*"
@@ -148,11 +130,6 @@ POLICY
 
 resource "aws_iam_group_policy_attachment" "developers_dev_uploads_s3" {
   group = "${aws_iam_group.developers.name}"
-  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
-}
-
-resource "aws_iam_group_policy_attachment" "prod_developers_dev_uploads_s3" {
-  group = "${aws_iam_group.prod_developers.name}"
   policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
 }
 

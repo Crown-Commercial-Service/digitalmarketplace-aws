@@ -1,0 +1,49 @@
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+
+
+.PHONY: help
+help:
+	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: check-env-vars
+check-env-vars: ## Check mandatory environment variables
+	$(if ${TERRAFORM_PROJECT},,$(error Must specify TERRAFORM_PROJECT))
+	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
+
+.PHONY: init
+init:: ## Run init
+	. .envrc && aws-auth terraform get
+	. .envrc && aws-auth terraform init
+
+define run_terraform
+	. .envrc && aws-auth terraform ${1} \
+		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json) \
+		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/common.json) \
+		${2}
+endef
+
+.PHONY: refresh
+refresh: check-env-vars init ## Run terraform refresh
+	$(call run_terraform,refresh)
+
+.PHONY: plan
+plan: check-env-vars init ## Run terraform plan
+	rm -f terraform.plan
+	$(call run_terraform,plan,-out=terraform.plan)
+
+.PHONY: plan-resource
+plan-resource: check-env-vars init ## Run terraform plan with a specific resource target
+	$(if ${TERRAFORM_TARGET},,$(error Must specify TERRAFORM_TARGET))
+	rm -f terraform.plan
+	$(call run_terraform,plan,-target=$(shell echo ${TERRAFORM_TARGET} | sed -e 's/,/ -target=/g') -out=terraform.plan)
+
+.PHONY: apply
+apply: check-env-vars init ## Run terraform apply
+	. .envrc && aws-auth terraform apply terraform.plan
+	rm -f terraform.plan
+
+.PHONY: upload-state
+upload-state: check-env-vars ## Upload the local state file to S3, use it carefully
+	. .envrc && \
+	aws s3 cp --region eu-west-1 --sse AES256 .terraform/terraform.tfstate s3://${S3_BUCKET}/${TERRAFORM_PROJECT}/terraform.tfstate

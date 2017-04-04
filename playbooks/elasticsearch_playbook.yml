@@ -6,6 +6,8 @@
   sudo: True
 
   roles:
+    - role: common
+      tags: common
     - role: elasticsearch
       tags: elasticsearch
     - role: cloudwatch

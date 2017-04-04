@@ -37,13 +37,6 @@
   notify: reload nginx
   tags: image-setup
 
-- name: Create main Nginx configuration file
-  template: src=nginx.conf.j2
-            dest=/etc/nginx/nginx.conf
-            backup=no
-  notify: reload nginx
-  tags: instance-config
-
 - name: Ensure {{ static_files_root }} dir exists
   file: path={{ static_files_root }} state=directory
   tags: image-setup
@@ -54,6 +47,20 @@
     - robots_www.txt
     - robots_assets.txt
   tags: image-setup
+
+- name: Create nginx http auth file
+  template: src=nginx_htpasswd.j2
+            dest=/etc/nginx/.htpasswd
+            backup=no
+  notify: reload nginx
+  tags: instance-config
+
+- name: Create main Nginx configuration file
+  template: src=nginx.conf.j2
+            dest=/etc/nginx/nginx.conf
+            backup=no
+  notify: reload nginx
+  tags: instance-config
 
 - name: Create the Nginx configuration files
   template: src={{ item }}.j2

@@ -4,6 +4,7 @@ nginx_configs:
   - api
   - assets
   - healthcheck
+  - elasticsearch
   - digitalservicesstore
 
 static_files_root: /usr/share/nginx/html

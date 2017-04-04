@@ -16,7 +16,6 @@ applications:
       DM_METRICS_NAMESPACE: {{ environment }}-{{ environment }}/{{ app }}
       DM_LOG_PATH: ''
       DM_SEARCH_API_URL: https://dm-search-api-{{ environment }}.cloudapps.digital
-      DM_ELASTICSEARCH_URL: https://preview-elasticsearch.development.digitalmarketplace.service.gov.uk
       DM_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
       DM_DATA_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
       {% for env_key, env_value in (paas.env|default({})).iteritems() -%}

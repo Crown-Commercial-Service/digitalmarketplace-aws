@@ -48,7 +48,7 @@ supplier_frontend:
       DM_G7_DRAFT_DOCUMENTS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
       DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-staging-staging
       DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-staging-staging
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communicationsstaging-staging
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-staging-staging
       DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-staging-staging
       DM_ASSETS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
       DM_CLARIFICATION_QUESTION_EMAIL: clarification@digitalmarketplace.service.gov.uk

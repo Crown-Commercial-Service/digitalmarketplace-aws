@@ -1,0 +1,8 @@
+---
+- name: Install ntp
+  apt: name=ntp update_cache=yes state=installed
+  tags: image-setup
+
+- name: Ensure ntp service is started
+  service: name=ntp state=started enabled=yes
+  tags: instance-config

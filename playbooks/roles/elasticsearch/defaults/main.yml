@@ -1,11 +1,11 @@
 ---
-elasticsearch_version: 1.4
+elasticsearch_version: 1.7
 
 elasticsearch_plugins:
   kopf:
     source: lmenezes/elasticsearch-kopf
   cloud-aws:
-    source: elasticsearch/elasticsearch-cloud-aws/2.4.1
+    source: elasticsearch/elasticsearch-cloud-aws/2.7.1
 
 elasticsearch_deps:
-  - openjdk-7-jdk
+  - default-jdk

@@ -1,4 +1,4 @@
-variable "whitelisted_ips" {
+variable "dev_user_ips" {
   type = "list"
 }
 variable "aws_main_account_id" {}

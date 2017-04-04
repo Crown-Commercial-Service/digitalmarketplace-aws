@@ -1,7 +1,13 @@
+{% from "_macros.j2" import proxy_headers with context %}
 server {
     listen 80;
-    server_name {{ assets_subdomain }}.*;
+    server_name assets.*;
     error_page 400 401 402 403 404 = /404;
+
+    {% for user_ip in user_ips.split(",") %}
+    allow {{ user_ip }};
+    {% endfor %}
+    deny all;
 
     set $documents_s3_url "{{ documents_s3_url }}";
     set $g7_draft_documents_s3_url "{{ g7_draft_documents_s3_url }}";
@@ -10,11 +16,7 @@ server {
     set $communications_s3_url "{{ communications_s3_url }}";
     set $submissions_s3_url "{{ submissions_s3_url }}";
 
-    # host must be set to S3's domain for S3 requests
-    proxy_set_header Host $proxy_host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    proxy_set_header X-Forwarded-Host "";
+    {{ proxy_headers() }}
 
     location /robots.txt {
         alias {{ static_files_root }}/robots_assets.txt;
