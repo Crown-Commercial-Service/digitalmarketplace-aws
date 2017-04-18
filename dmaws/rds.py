@@ -232,10 +232,6 @@ class RDSPostgresClient(object):
             ['psql', '-d', target_pg_client.db_path],
         ], logger=self.log, ignore_errors=False)
 
-    def get_open_framework_ids(self):
-        self.cursor.execute("SELECT id FROM frameworks WHERE status IN ('open', 'pending')")
-        return tuple(framework[0] for framework in self.cursor.fetchall())
-
     def clean_database(self):
         self.log("Update users")
         hashed_password = bcrypt.hashpw(
@@ -247,8 +243,6 @@ class RDSPostgresClient(object):
             .format(hashed_password)
         )
 
-        open_framework_ids = self.get_open_framework_ids()
-
         # Remove data about currently ongoing framework applications
         self.log("Delete draft services for open frameworks")
         self.cursor.execute("""
@@ -258,10 +252,11 @@ class RDSPostgresClient(object):
             """)
 
         self.log("Delete supplier frameworks for open frameworks")
-        if len(open_framework_ids):
-            self.cursor.execute(
-                "DELETE FROM supplier_frameworks WHERE framework_id IN %s",
-                (open_framework_ids,))
+        self.cursor.execute("""
+            DELETE FROM supplier_frameworks WHERE framework_id IN (
+                SELECT id FROM frameworks WHERE status='open'
+            )
+            """)
 
         # Remove data related to open DOS procurements
         self.log("Delete brief_responses")
