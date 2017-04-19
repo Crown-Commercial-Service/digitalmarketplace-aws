@@ -48,6 +48,10 @@
     - robots_assets.txt
   tags: image-setup
 
+- name: Copy maintenance.html file
+  copy: src=maintenance.html dest={{ static_files_root }}/maintenance.html owner=root group=root mode=0644
+  tags: image-setup
+
 - name: Create nginx http auth file
   template: src=nginx_htpasswd.j2
             dest=/etc/nginx/.htpasswd
@@ -62,21 +66,41 @@
   notify: reload nginx
   tags: instance-config
 
-- name: Create the Nginx configuration files
+- name: Create the Nginx live configuration files
   template: src={{ item }}.j2
             dest=/etc/nginx/sites-available/{{ item }}
             backup=yes
   notify: reload nginx
-  with_items: nginx_configs
+  with_items: "{{ live_config }}"
   tags: instance-config
+  when: nginx_config == "live_config"
 
-- name: Ensure that the configuration files are enabled
+- name: Create the Nginx maintenance configuration files
+  template: src={{ item }}.j2
+            dest=/etc/nginx/sites-available/{{ item }}
+            backup=yes
+  notify: reload nginx
+  with_items: "{{ maintenance_config }}"
+  tags: instance-config
+  when: nginx_config == "maintenance_config"
+
+- name: Ensure that the live configuration files are enabled
   command: ln -s /etc/nginx/sites-available/{{ item }}
            /etc/nginx/sites-enabled/{{ item }}
            creates=/etc/nginx/sites-enabled/{{ item }}
   notify: reload nginx
-  with_items: nginx_configs
+  with_items: "{{ live_config }}"
   tags: instance-config
+  when: nginx_config == "live_config"
+
+- name: Ensure that the maintenance configuration files are enabled
+  command: ln -s /etc/nginx/sites-available/{{ item }}
+           /etc/nginx/sites-enabled/{{ item }}
+           creates=/etc/nginx/sites-enabled/{{ item }}
+  notify: reload nginx
+  with_items: "{{ maintenance_config }}"
+  tags: instance-config
+  when: nginx_config == "maintenance_config"
 
 - name: Ensure Nginx service is started
   service: name=nginx state=started enabled=yes
