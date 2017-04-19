@@ -364,7 +364,8 @@
             "-e www_subdomain=", {"Ref": "Subdomain"}, " ",
             "-e buyer_frontend_url=", {"Ref": "BuyerFrontendURL"}, " ",
             "-e admin_frontend_url=", {"Ref": "AdminFrontendURL"}, " ",
-            "-e supplier_frontend_url=", {"Ref": "SupplierFrontendURL"}
+            "-e supplier_frontend_url=", {"Ref": "SupplierFrontendURL"}, " ",
+            "-e nginx_config=live_config"
         ]]}}
       }
     }
