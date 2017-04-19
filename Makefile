@@ -7,8 +7,6 @@ PAAS_ORG ?= digitalmarketplace
 PAAS_SPACE ?= ${STAGE}
 
 DEPLOYMENT_DIR := ${CURDIR}/tmp
-CF_HOME ?= ${DEPLOYMENT_DIR}
-$(eval export CF_HOME)
 
 .PHONY: help
 help:
@@ -66,7 +64,6 @@ paas-login: ## Log in to PaaS
 	$(if ${PAAS_USERNAME},,$(error Must specify PAAS_USERNAME))
 	$(if ${PAAS_PASSWORD},,$(error Must specify PAAS_PASSWORD))
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
-	mkdir -p ${CF_HOME}
 	@cf login -a "${PAAS_API}" -u ${PAAS_USERNAME} -p "${PAAS_PASSWORD}" -o "${PAAS_ORG}" -s "${PAAS_SPACE}"
 
 .PHONY: paas-build
@@ -115,3 +112,4 @@ paas-push: paas-build ## Pushes the app to PaaS
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	rm -rf ${DEPLOYMENT_DIR}
+	cf logout
