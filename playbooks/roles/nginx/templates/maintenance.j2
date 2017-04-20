@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name _;
+    server_name www.*;
     root {{ static_files_root }};
 
     {% for user_ip in user_ips.split(",") %}
