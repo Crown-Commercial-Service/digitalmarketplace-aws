@@ -121,6 +121,8 @@ class RDS(object):
         return instance
 
     def restore_instance_from_snapshot(self, snapshot_id, instance_id, dev_user_ips, vpc_id):
+        self.delete_instance_if_found(instance_id)
+
         instance = self.conn.restore_dbinstance_from_dbsnapshot(
             snapshot_id, instance_id,
             "db.t2.micro",
@@ -137,6 +139,25 @@ class RDS(object):
     def delete_instance(self, instance_id):
         instance = self.conn.delete_dbinstance(instance_id, skip_final_snapshot=True)
         self._wait_for_delete(instance, "RDS instance")
+
+    def delete_instance_if_found(self, instance_id):
+        instance = None
+
+        try:
+            instance = self.conn.get_all_dbinstances(instance_id)[0]
+        except boto.exception.BotoServerError as e:
+            if e.status != 404:
+                raise
+
+        if not instance:
+            return
+
+        log_msg = "Found leftover RDS instance: {}".format(instance.id)
+        if hasattr(instance, 'DBName'):
+            log_msg += ":{}".format(instance.DBName)
+
+        self.log(log_msg)
+        self.delete_instance(instance_id)
 
     def _wait_for_available(self, target, name, action, sleep=5):
         self.log(
