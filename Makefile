@@ -39,10 +39,10 @@ production: ## Set stage to production
 
 download-deployment-zip: virtualenv ## Downloads the deployment zip file from S3
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	$(if ${RELEASE_NUMBER},,$(error Must specify RELEASE_NUMBER))
+	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
 	rm -rf ${DEPLOYMENT_DIR}
 	mkdir -p ${DEPLOYMENT_DIR}
-	${VIRTUALENV_ROOT}/bin/aws s3 --only-show-errors cp --region eu-west-1 s3://digitalmarketplace-deployment/${APPLICATION_NAME}/release-${RELEASE_NUMBER}.zip ${DEPLOYMENT_DIR}/release.zip
+	${VIRTUALENV_ROOT}/bin/aws s3 --only-show-errors cp --region eu-west-1 s3://digitalmarketplace-deployment/${APPLICATION_NAME}/${RELEASE_NAME}.zip ${DEPLOYMENT_DIR}/release.zip
 	unzip -q -d ${DEPLOYMENT_DIR} ${DEPLOYMENT_DIR}/release.zip
 	rm ${DEPLOYMENT_DIR}/release.zip
 
