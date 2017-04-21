@@ -79,12 +79,16 @@ def release_to_preview(ctx, repository_path):
         ctx.log('Redeploying existing version %s', release_name)
         return deploy.deploy(release_name), release_name
 
-    if build.tag_exists(repository_path, release_name):
-        raise ValueError("Already have a tag for {}".format(release_name))
-
     deploy.prune_old_versions(os.environ.get('DM_NUM_APPLICATIONS_TO_KEEP', 20))
+
+    # We're running PaaS deployments in parallel with existing EB ones at the
+    # moment, and they're creating the same release-* tags. Which means we can
+    # no longer depend on the EB application version existing when the tag
+    # exists. Since we don't have a way to check that EB version exists,
+    # we ignore any errors instead and force the tag push.
+
     version, created = deploy.create_version(release_name)
-    build.push_tag(repository_path, release_name)
+    build.push_tag(repository_path, release_name, force=True)
 
     return deploy.deploy(version), release_name
 
