@@ -6,10 +6,11 @@ monitoring:
   email: "support+production-staging@digitalmarketplace.service.gov.uk"
 
 database:
+  name: "digitalmarketplace_api_staging"
   multi_az: "true"
   backup_retention_period: "1"
   slow_query_log_duration_ms: -1
-  snapshot_id: "staging-2016-12-23t1115"
+  snapshot_id: ""
 
 vpc_id: vpc-70319115
 subnets:
