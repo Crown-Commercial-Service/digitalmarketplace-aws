@@ -22,9 +22,6 @@ virtualenv: ${VIRTUALENV_ROOT}/activate ## Create virtualenv if it does not exis
 ${VIRTUALENV_ROOT}/activate:
 	@[ -z "${VIRTUAL_ENV}" ] && [ ! -d venv ] && virtualenv venv || true
 
-.PHONY: build
-build: requirements ## Build project
-
 .PHONY: preview
 preview: ## Set stage to preview
 	$(eval export STAGE=preview)
