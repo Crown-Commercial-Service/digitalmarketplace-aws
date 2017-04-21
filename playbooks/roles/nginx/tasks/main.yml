@@ -73,7 +73,7 @@
   notify: reload nginx
   with_items: "{{ live_config }}"
   tags: instance-config
-  when: nginx_config == "live_config"
+  when: nginx_config == "live"
 
 - name: Create the Nginx maintenance configuration files
   template: src={{ item }}.j2
@@ -82,7 +82,7 @@
   notify: reload nginx
   with_items: "{{ maintenance_config }}"
   tags: instance-config
-  when: nginx_config == "maintenance_config"
+  when: nginx_config == "maintenance"
 
 - name: Ensure that the live configuration files are enabled
   command: ln -s /etc/nginx/sites-available/{{ item }}
@@ -91,7 +91,7 @@
   notify: reload nginx
   with_items: "{{ live_config }}"
   tags: instance-config
-  when: nginx_config == "live_config"
+  when: nginx_config == "live"
 
 - name: Ensure that the maintenance configuration files are enabled
   command: ln -s /etc/nginx/sites-available/{{ item }}
@@ -100,7 +100,7 @@
   notify: reload nginx
   with_items: "{{ maintenance_config }}"
   tags: instance-config
-  when: nginx_config == "maintenance_config"
+  when: nginx_config == "maintenance"
 
 - name: Ensure Nginx service is started
   service: name=nginx state=started enabled=yes

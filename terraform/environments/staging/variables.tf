@@ -27,5 +27,5 @@ variable "elasticsearch_auth" {}
 variable "app_auth" {}
 
 variable "nginx_config" {
-  default = "live_config"
+  default = "live"
 }
