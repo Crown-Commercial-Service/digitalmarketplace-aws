@@ -8,6 +8,11 @@ PAAS_SPACE ?= ${STAGE}
 
 DEPLOYMENT_DIR := ${CURDIR}/releases/${RELEASE_NAME}
 
+define check_space
+	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
+	@[ $$(cf target | grep 'Space' | cut -d':' -f2) = "${PAAS_SPACE}" ] || (echo "${PAAS_SPACE} is not currently active cf space" && exit 1)
+endef
+
 .PHONY: help
 help:
 	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -110,3 +115,9 @@ paas-push: paas-build ## Pushes the app to PaaS
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	rm -rf ${DEPLOYMENT_DIR}
 	cf logout
+
+.PHONY: paas-populate-db
+paas-populate-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
+	$(call check_space)
+	$(if ${DB_DUMP},,$(error Must specify DB_DUMP))
+	./scripts/paas_populate_db.sh ${DB_DUMP}
