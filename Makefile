@@ -132,4 +132,4 @@ paas-clean: ## Cleans up all files created for the PaaS deployment
 paas-populate-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
 	$(if ${DB_DUMP},,$(error Must specify DB_DUMP))
-	./scripts/paas_populate_db.sh ${DB_DUMP}
+	./scripts/populate-paas-db.sh ${DB_DUMP}
