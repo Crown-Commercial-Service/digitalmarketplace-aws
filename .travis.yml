@@ -5,6 +5,6 @@ python:
 install:
   - pip install --no-use-wheel -r requirements_for_test.txt
 script:
-  - ./scripts/run_tests.sh
+  - make test
 notifications:
   email: false

@@ -17,6 +17,18 @@ endef
 help:
 	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+
+.PHONY: test
+test: test_pep8 test_unit
+
+.PHONY: test_pep8
+test_pep8: virtualenv
+	${VIRTUALENV_ROOT}/bin/pep8 .
+
+.PHONY: test_unit
+test_unit: virtualenv
+	${VIRTUALENV_ROOT}/bin/py.test ${PYTEST_ARGS}
+
 .PHONY: requirements
 requirements: virtualenv ## Install requirements
 	${VIRTUALENV_ROOT}/bin/pip install -e .
