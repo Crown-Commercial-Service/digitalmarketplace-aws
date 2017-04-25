@@ -44,4 +44,4 @@ variable "elasticsearch_url" {}
 variable "elasticsearch_auth" {}
 variable "app_auth" {}
 
-variable "nginx_config" {}
+variable "mode" {}

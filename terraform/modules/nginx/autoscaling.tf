@@ -88,7 +88,7 @@ cd /home/ubuntu/provisioning && ansible-playbook -c local -i localhost, nginx_pl
     -e app_auth='${var.app_auth}' \
     -e aws_region='${data.aws_region.current.name}' \
     -e nameserver_ip="$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf)" \
-    -e nginx_config='${var.nginx_config}'
+    -e mode='${var.mode}'
 END
 
   lifecycle {

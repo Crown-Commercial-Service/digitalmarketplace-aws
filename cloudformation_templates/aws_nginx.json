@@ -365,7 +365,7 @@
             "-e buyer_frontend_url=", {"Ref": "BuyerFrontendURL"}, " ",
             "-e admin_frontend_url=", {"Ref": "AdminFrontendURL"}, " ",
             "-e supplier_frontend_url=", {"Ref": "SupplierFrontendURL"}, " ",
-            "-e nginx_config=live"
+            "-e mode=live"
         ]]}}
       }
     }

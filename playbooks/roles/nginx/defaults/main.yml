@@ -1,14 +1,14 @@
 ---
-live_config:
-  - www
-  - api
-  - assets
-  - healthcheck
-  - elasticsearch
-  - digitalservicesstore
-
-maintenance_config:
-  - healthcheck
-  - maintenance
+nginx_configs:
+  live:
+    - www
+    - api
+    - assets
+    - healthcheck
+    - elasticsearch
+    - digitalservicesstore
+  maintenance:
+    - healthcheck
+    - maintenance
 
 static_files_root: /usr/share/nginx/html

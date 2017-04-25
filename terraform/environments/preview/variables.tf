@@ -26,6 +26,6 @@ variable "supplier_frontend_url" {}
 variable "elasticsearch_auth" {}
 variable "app_auth" {}
 
-variable "nginx_config" {
+variable "mode" {
   default = "live"
 }
