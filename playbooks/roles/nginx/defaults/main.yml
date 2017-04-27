@@ -11,4 +11,6 @@ nginx_configs:
     - healthcheck
     - maintenance
 
+mode: live
+
 static_files_root: /usr/share/nginx/html
