@@ -10,12 +10,24 @@ DEPLOYMENT_DIR := ${CURDIR}/releases/${RELEASE_NAME}
 
 define check_space
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
-	@[ $$(cf target | grep 'Space' | cut -d':' -f2) = "${PAAS_SPACE}" ] || (echo "${PAAS_SPACE} is not currently active cf space" && exit 1)
+	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "${PAAS_SPACE}" ] || (echo "${PAAS_SPACE} is not currently active cf space" && exit 1)
 endef
 
 .PHONY: help
 help:
 	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+
+.PHONY: test
+test: test_pep8 test_unit
+
+.PHONY: test_pep8
+test_pep8: virtualenv
+	${VIRTUALENV_ROOT}/bin/pep8 .
+
+.PHONY: test_unit
+test_unit: virtualenv
+	${VIRTUALENV_ROOT}/bin/py.test ${PYTEST_ARGS}
 
 .PHONY: requirements
 requirements: virtualenv ## Install requirements
@@ -51,8 +63,8 @@ download-deployment-zip: virtualenv ## Downloads the deployment zip file from S3
 	unzip -q -d ${DEPLOYMENT_DIR} ${DEPLOYMENT_DIR}/release.zip
 	rm ${DEPLOYMENT_DIR}/release.zip
 
-.PHONY: paas-generate-manifest
-paas-generate-manifest: virtualenv ## Generate manifest file for PaaS
+.PHONY: generate-manifest
+generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
 	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
@@ -68,56 +80,48 @@ paas-login: ## Log in to PaaS
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
 	@cf login -a "${PAAS_API}" -u ${PAAS_USERNAME} -p "${PAAS_PASSWORD}" -o "${PAAS_ORG}" -s "${PAAS_SPACE}"
 
-.PHONY: paas-build
-paas-build: ## Build the PaaS application
+.PHONY: build-app
+build-app: ## Build the PaaS application
 	cp paas/run.sh ${DEPLOYMENT_DIR}/run.sh
 	chmod +x ${DEPLOYMENT_DIR}/run.sh
 
-.PHONY: paas-deploy
-paas-deploy: paas-build ## Deploys the app to PaaS
+.PHONY: deply-app
+deploy-app: build-app ## Deploys the app to PaaS
+	$(call check_space)
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cd ${DEPLOYMENT_DIR} && \
-		cf app --guid ${APPLICATION_NAME} && \
-		cf rename ${APPLICATION_NAME} ${APPLICATION_NAME}-rollback && \
-		cf push -f <(make -s -C ${CURDIR} paas-generate-manifest) && \
-		cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}-rollback) | jq -r ".entity.instances" 2>/dev/null || echo "1") ${APPLICATION_NAME} && \
-		cf stop ${APPLICATION_NAME}-rollback && \
-		cf delete -f ${APPLICATION_NAME}-rollback
+	cd ${DEPLOYMENT_DIR} && cf push -f <(make -s -C ${CURDIR} generate-manifest)
 
-.PHONY: paas-deploy-db-migration
-paas-deploy-db-migration: paas-build ## Deploys the db migration app
+	# TODO restore scaling before route switch once we have autoscaling set up
+	# TODO for now, we're using the instance counts set in the manifest
+	# cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}-rollback) | jq -r ".entity.instances" 2>/dev/null || echo "1") ${APPLICATION_NAME}
+
+	@if cf app ${APPLICATION_NAME} >/dev/null; then ./scripts/unmap-route.sh ${APPLICATION_NAME}; fi
+
+	@echo "Waiting for previous app version to process existing requests..."
+	sleep 60
+
+	cf delete -f ${APPLICATION_NAME}
+	cf rename ${APPLICATION_NAME}-release ${APPLICATION_NAME}
+
+.PHONY: deploy-db-migration
+deploy-db-migration: build-app ## Deploys the db migration app
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cd ${DEPLOYMENT_DIR} && \
-		cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} paas-generate-manifest) --no-route --health-check-type none -i 1 -m 128M -c 'sleep infinity' && \
+		cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) --no-route --health-check-type none -i 1 -m 128M -c 'sleep infinity' && \
 		cf run-task ${APPLICATION_NAME}-db-migration "python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
 
-.PHONY: paas-check-db-migration-task
-paas-check-db-migration-task: ## Get the status for the last db migration task
+.PHONY: check-db-migration-task
+check-db-migration-task: ## Get the status for the last db migration task
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	@cf curl /v3/apps/`cf app --guid ${APPLICATION_NAME}-db-migration`/tasks?order_by=-created_at | jq -r ".resources[0].state"
-
-.PHONY: paas-rollback
-paas-rollback: ## Rollbacks the app to the previous release on PaaS
-	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	@[ $$(cf curl /v2/apps/`cf app --guid ${APPLICATION_NAME}-rollback` | jq -r ".entity.state") = "STARTED" ] || (echo "Error: rollback is not possible because ${APPLICATION_NAME}-rollback is not in a started state" && exit 1)
-	cd ${DEPLOYMENT_DIR} && \
-		cf app --guid ${APPLICATION_NAME}-rollback && \
-		cf delete -f ${APPLICATION_NAME} && \
-		cf rename ${APPLICATION_NAME}-rollback ${APPLICATION_NAME}
-
-.PHONY: paas-push
-paas-push: paas-build ## Pushes the app to PaaS
-	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cd ${DEPLOYMENT_DIR} && \
-		cf push -f <(make -s -C ${CURDIR} paas-generate-manifest)
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	rm -rf ${DEPLOYMENT_DIR}
 	cf logout
 
-.PHONY: paas-populate-db
-paas-populate-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
+.PHONY: populate-paas-db
+populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
 	$(if ${DB_DUMP},,$(error Must specify DB_DUMP))
-	./scripts/paas_populate_db.sh ${DB_DUMP}
+	./scripts/populate-paas-db.sh ${DB_DUMP}
