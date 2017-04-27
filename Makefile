@@ -10,7 +10,7 @@ DEPLOYMENT_DIR := ${CURDIR}/releases/${RELEASE_NAME}
 
 define check_space
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
-	@[ $$(cf target | grep 'Space' | cut -d':' -f2) = "${PAAS_SPACE}" ] || (echo "${PAAS_SPACE} is not currently active cf space" && exit 1)
+	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "${PAAS_SPACE}" ] || (echo "${PAAS_SPACE} is not currently active cf space" && exit 1)
 endef
 
 .PHONY: help
