@@ -10,6 +10,8 @@ applications:
     instances: {{ paas.instances|default(1) }}
     memory: {{ paas.memory|default('512M') }}
     disk_quota: {{ paas.disk_quota|default('1024M') }}
+    health-check-type: http
+    health-check-http-endpoint: /_status?ignore-dependencies
     env:
       DM_APP_NAME: {{ app }}
       DM_ENVIRONMENT: {{ environment }}
