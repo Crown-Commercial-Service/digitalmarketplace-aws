@@ -63,8 +63,8 @@ download-deployment-zip: virtualenv ## Downloads the deployment zip file from S3
 	unzip -q -d ${DEPLOYMENT_DIR} ${DEPLOYMENT_DIR}/release.zip
 	rm ${DEPLOYMENT_DIR}/release.zip
 
-.PHONY: paas-generate-manifest
-paas-generate-manifest: virtualenv ## Generate manifest file for PaaS
+.PHONY: generate-manifest
+generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
 	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
@@ -80,13 +80,14 @@ paas-login: ## Log in to PaaS
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
 	@cf login -a "${PAAS_API}" -u ${PAAS_USERNAME} -p "${PAAS_PASSWORD}" -o "${PAAS_ORG}" -s "${PAAS_SPACE}"
 
-.PHONY: paas-build
-paas-build: ## Build the PaaS application
+.PHONY: build-app
+build-app: ## Build the PaaS application
 	cp paas/run.sh ${DEPLOYMENT_DIR}/run.sh
 	chmod +x ${DEPLOYMENT_DIR}/run.sh
 
-.PHONY: paas-deploy
-paas-deploy: paas-build ## Deploys the app to PaaS
+.PHONY: deply-app
+deploy-app: build-app ## Deploys the app to PaaS
+	$(call check_space)
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cd ${DEPLOYMENT_DIR} && cf push -f <(make -s -C ${CURDIR} generate-manifest)
 
@@ -102,15 +103,15 @@ paas-deploy: paas-build ## Deploys the app to PaaS
 	cf delete -f ${APPLICATION_NAME}
 	cf rename ${APPLICATION_NAME}-release ${APPLICATION_NAME}
 
-.PHONY: paas-deploy-db-migration
-paas-deploy-db-migration: paas-build ## Deploys the db migration app
+.PHONY: deploy-db-migration
+deploy-db-migration: build-app ## Deploys the db migration app
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cd ${DEPLOYMENT_DIR} && \
-		cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} paas-generate-manifest) --no-route --health-check-type none -i 1 -m 128M -c 'sleep infinity' && \
+		cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) --no-route --health-check-type none -i 1 -m 128M -c 'sleep infinity' && \
 		cf run-task ${APPLICATION_NAME}-db-migration "python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
 
-.PHONY: paas-check-db-migration-task
-paas-check-db-migration-task: ## Get the status for the last db migration task
+.PHONY: check-db-migration-task
+check-db-migration-task: ## Get the status for the last db migration task
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	@cf curl /v3/apps/`cf app --guid ${APPLICATION_NAME}-db-migration`/tasks?order_by=-created_at | jq -r ".resources[0].state"
 
@@ -119,8 +120,8 @@ paas-clean: ## Cleans up all files created for the PaaS deployment
 	rm -rf ${DEPLOYMENT_DIR}
 	cf logout
 
-.PHONY: paas-populate-db
-paas-populate-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
+.PHONY: populate-paas-db
+populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
 	$(if ${DB_DUMP},,$(error Must specify DB_DUMP))
 	./scripts/populate-paas-db.sh ${DB_DUMP}
