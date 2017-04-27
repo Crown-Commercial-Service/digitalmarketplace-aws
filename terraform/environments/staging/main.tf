@@ -56,6 +56,8 @@ module "staging_nginx" {
 
   elasticsearch_auth = "${var.elasticsearch_auth}"
   app_auth = "${var.app_auth}"
+
+  mode = "${var.mode}"
 }
 
 module "staging_elasticsearch" {

@@ -56,6 +56,8 @@ module "preview_nginx" {
 
   elasticsearch_auth = "${var.elasticsearch_auth}"
   app_auth = "${var.app_auth}"
+
+  mode = "${var.mode}"
 }
 
 module "preview_elasticsearch" {

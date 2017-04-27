@@ -1,0 +1,19 @@
+server {
+    listen 80;
+    server_name www.*;
+    root {{ static_files_root }};
+
+    {% for user_ip in user_ips.split(",") %}
+    allow {{ user_ip }};
+    {% endfor %}
+    deny all;
+
+    location / {
+        return 503;
+    }
+
+    error_page 503 @maintenance;
+    location @maintenance {
+        rewrite ^(.*)$ /maintenance.html break;
+    }
+}

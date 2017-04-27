@@ -25,3 +25,7 @@ variable "supplier_frontend_url" {}
 
 variable "elasticsearch_auth" {}
 variable "app_auth" {}
+
+variable "mode" {
+  default = "live"
+}

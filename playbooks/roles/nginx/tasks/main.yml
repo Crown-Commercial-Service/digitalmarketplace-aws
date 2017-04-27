@@ -48,6 +48,10 @@
     - robots_assets.txt
   tags: image-setup
 
+- name: Copy maintenance.html file
+  copy: src=maintenance.html dest={{ static_files_root }}/maintenance.html owner=root group=root mode=0644
+  tags: image-setup
+
 - name: Create nginx http auth file
   template: src=nginx_htpasswd.j2
             dest=/etc/nginx/.htpasswd
@@ -67,7 +71,7 @@
             dest=/etc/nginx/sites-available/{{ item }}
             backup=yes
   notify: reload nginx
-  with_items: nginx_configs
+  with_items: "{{ nginx_configs[mode] }}"
   tags: instance-config
 
 - name: Ensure that the configuration files are enabled
@@ -75,7 +79,7 @@
            /etc/nginx/sites-enabled/{{ item }}
            creates=/etc/nginx/sites-enabled/{{ item }}
   notify: reload nginx
-  with_items: nginx_configs
+  with_items: "{{ nginx_configs[mode] }}"
   tags: instance-config
 
 - name: Ensure Nginx service is started

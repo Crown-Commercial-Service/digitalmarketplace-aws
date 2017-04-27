@@ -33,6 +33,12 @@ resource "aws_elb" "nginx" {
   cross_zone_load_balancing = true
 }
 
+resource "aws_lb_cookie_stickiness_policy" "nginx_elb_sticky_sessions" {
+  name = "${var.name}-elb-sticky-sessions"
+  load_balancer = "${aws_elb.nginx.id}"
+  lb_port = 443
+}
+
 resource "aws_security_group" "nginx_elb" {
   name = "${var.name}-elb"
   vpc_id = "${var.vpc_id}"

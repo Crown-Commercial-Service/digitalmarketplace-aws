@@ -1,10 +1,16 @@
 ---
 nginx_configs:
-  - www
-  - api
-  - assets
-  - healthcheck
-  - elasticsearch
-  - digitalservicesstore
+  live:
+    - www
+    - api
+    - assets
+    - healthcheck
+    - elasticsearch
+    - digitalservicesstore
+  maintenance:
+    - healthcheck
+    - maintenance
+
+mode: live
 
 static_files_root: /usr/share/nginx/html

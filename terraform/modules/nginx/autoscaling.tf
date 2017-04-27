@@ -87,7 +87,8 @@ cd /home/ubuntu/provisioning && ansible-playbook -c local -i localhost, nginx_pl
     -e elasticsearch_auth='${var.elasticsearch_auth}' \
     -e app_auth='${var.app_auth}' \
     -e aws_region='${data.aws_region.current.name}' \
-    -e nameserver_ip="$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf)"
+    -e nameserver_ip="$(awk '/nameserver/{ print $2; exit}' /etc/resolv.conf)" \
+    -e mode='${var.mode}'
 END
 
   lifecycle {
