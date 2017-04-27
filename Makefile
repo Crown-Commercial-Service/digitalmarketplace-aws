@@ -88,13 +88,19 @@ paas-build: ## Build the PaaS application
 .PHONY: paas-deploy
 paas-deploy: paas-build ## Deploys the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cd ${DEPLOYMENT_DIR} && \
-		cf app --guid ${APPLICATION_NAME} && \
-		cf rename ${APPLICATION_NAME} ${APPLICATION_NAME}-rollback && \
-		cf push -f <(make -s -C ${CURDIR} paas-generate-manifest) && \
-		cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}-rollback) | jq -r ".entity.instances" 2>/dev/null || echo "1") ${APPLICATION_NAME} && \
-		cf stop ${APPLICATION_NAME}-rollback && \
-		cf delete -f ${APPLICATION_NAME}-rollback
+	cd ${DEPLOYMENT_DIR} && cf push -f <(make -s -C ${CURDIR} generate-manifest)
+
+	# TODO restore scaling before route switch once we have autoscaling set up
+	# TODO for now, we're using the instance counts set in the manifest
+	# cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}-rollback) | jq -r ".entity.instances" 2>/dev/null || echo "1") ${APPLICATION_NAME}
+
+	@if cf app ${APPLICATION_NAME} >/dev/null; then ./scripts/unmap-route.sh ${APPLICATION_NAME}; fi
+
+	@echo "Waiting for previous app version to process existing requests..."
+	sleep 60
+
+	cf delete -f ${APPLICATION_NAME}
+	cf rename ${APPLICATION_NAME}-release ${APPLICATION_NAME}
 
 .PHONY: paas-deploy-db-migration
 paas-deploy-db-migration: paas-build ## Deploys the db migration app
@@ -107,21 +113,6 @@ paas-deploy-db-migration: paas-build ## Deploys the db migration app
 paas-check-db-migration-task: ## Get the status for the last db migration task
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	@cf curl /v3/apps/`cf app --guid ${APPLICATION_NAME}-db-migration`/tasks?order_by=-created_at | jq -r ".resources[0].state"
-
-.PHONY: paas-rollback
-paas-rollback: ## Rollbacks the app to the previous release on PaaS
-	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	@[ $$(cf curl /v2/apps/`cf app --guid ${APPLICATION_NAME}-rollback` | jq -r ".entity.state") = "STARTED" ] || (echo "Error: rollback is not possible because ${APPLICATION_NAME}-rollback is not in a started state" && exit 1)
-	cd ${DEPLOYMENT_DIR} && \
-		cf app --guid ${APPLICATION_NAME}-rollback && \
-		cf delete -f ${APPLICATION_NAME} && \
-		cf rename ${APPLICATION_NAME}-rollback ${APPLICATION_NAME}
-
-.PHONY: paas-push
-paas-push: paas-build ## Pushes the app to PaaS
-	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cd ${DEPLOYMENT_DIR} && \
-		cf push -f <(make -s -C ${CURDIR} paas-generate-manifest)
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
