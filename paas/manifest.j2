@@ -3,8 +3,6 @@
 applications:
   - name: {{ app|replace('_', '-') }}-release
     stack: cflinuxfs2
-    buildpack: python_buildpack
-    command: ./run.sh gunicorn -w 4 -b 0.0.0.0:$PORT application:application --log-file -
     routes:
       - route: {{ paas.subdomain }}-{{ environment }}.cloudapps.digital{{ paas.path|default('') }}
     instances: {{ paas.instances|default(1) }}

@@ -6,8 +6,6 @@ PAAS_API ?= api.cloud.service.gov.uk
 PAAS_ORG ?= digitalmarketplace
 PAAS_SPACE ?= ${STAGE}
 
-DEPLOYMENT_DIR := ${CURDIR}/releases/${RELEASE_NAME}
-
 define check_space
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
 	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "${PAAS_SPACE}" ] || (echo "${PAAS_SPACE} is not currently active cf space" && exit 1)
@@ -54,15 +52,6 @@ production: ## Set stage to production
 	$(eval export STAGE=production)
 	@true
 
-download-deployment-zip: virtualenv ## Downloads the deployment zip file from S3
-	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
-	rm -rf ${DEPLOYMENT_DIR}
-	mkdir -p ${DEPLOYMENT_DIR}
-	${VIRTUALENV_ROOT}/bin/aws s3 --only-show-errors cp --region eu-west-1 s3://digitalmarketplace-deployment/${APPLICATION_NAME}/${RELEASE_NAME}.zip ${DEPLOYMENT_DIR}/release.zip
-	unzip -q -d ${DEPLOYMENT_DIR} ${DEPLOYMENT_DIR}/release.zip
-	rm ${DEPLOYMENT_DIR}/release.zip
-
 .PHONY: generate-manifest
 generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
@@ -80,16 +69,11 @@ paas-login: ## Log in to PaaS
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
 	@cf login -a "${PAAS_API}" -u ${PAAS_USERNAME} -p "${PAAS_PASSWORD}" -o "${PAAS_ORG}" -s "${PAAS_SPACE}"
 
-.PHONY: build-app
-build-app: ## Build the PaaS application
-	cp paas/run.sh ${DEPLOYMENT_DIR}/run.sh
-	chmod +x ${DEPLOYMENT_DIR}/run.sh
-
-.PHONY: deply-app
-deploy-app: build-app ## Deploys the app to PaaS
+.PHONY: deploy-app
+deploy-app: ## Deploys the app to PaaS
 	$(call check_space)
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cd ${DEPLOYMENT_DIR} && cf push -f <(make -s -C ${CURDIR} generate-manifest)
+	cf push -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
 
 	# TODO restore scaling before route switch once we have autoscaling set up
 	# TODO for now, we're using the instance counts set in the manifest
@@ -104,11 +88,10 @@ deploy-app: build-app ## Deploys the app to PaaS
 	cf rename ${APPLICATION_NAME}-release ${APPLICATION_NAME}
 
 .PHONY: deploy-db-migration
-deploy-db-migration: build-app ## Deploys the db migration app
+deploy-db-migration: ## Deploys the db migration app
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cd ${DEPLOYMENT_DIR} && \
-		cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) --no-route --health-check-type none -i 1 -m 128M -c 'sleep infinity' && \
-		cf run-task ${APPLICATION_NAME}-db-migration "python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
+	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAM} --no-route --health-check-type none -i 1 -m 128M -c 'sleep infinity'
+	cf run-task ${APPLICATION_NAME}-db-migration "python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
 
 .PHONY: check-db-migration-task
 check-db-migration-task: ## Get the status for the last db migration task
@@ -117,7 +100,6 @@ check-db-migration-task: ## Get the status for the last db migration task
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
-	rm -rf ${DEPLOYMENT_DIR}
 	cf logout
 
 .PHONY: populate-paas-db
