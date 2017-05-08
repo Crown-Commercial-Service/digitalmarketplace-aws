@@ -91,7 +91,7 @@ deploy-app: ## Deploys the app to PaaS
 deploy-db-migration: ## Deploys the db migration app
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
-	cf run-task ${APPLICATION_NAME}-db-migration "python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
+	cf run-task ${APPLICATION_NAME}-db-migration "python /app/application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
 
 .PHONY: check-db-migration-task
 check-db-migration-task: ## Get the status for the last db migration task
