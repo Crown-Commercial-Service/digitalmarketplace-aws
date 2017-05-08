@@ -2,7 +2,6 @@
 
 applications:
   - name: {{ app|replace('_', '-') }}-release
-    stack: cflinuxfs2
     routes:
       - route: {{ paas.subdomain }}-{{ environment }}.cloudapps.digital{{ paas.path|default('') }}
     instances: {{ paas.instances|default(1) }}
