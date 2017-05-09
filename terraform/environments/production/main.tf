@@ -87,3 +87,10 @@ module "production_elasticsearch" {
 
   nginx_security_group_id = "${module.production_nginx.instance_security_group_id}"
 }
+
+module "application_logs" {
+  source = "../../modules/application-logs"
+
+  environment = "production"
+  retention_in_days = "3653"
+}
