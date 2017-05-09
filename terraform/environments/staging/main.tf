@@ -87,3 +87,10 @@ module "staging_elasticsearch" {
 
   nginx_security_group_id = "${module.staging_nginx.instance_security_group_id}"
 }
+
+module "application_logs" {
+  source = "../../modules/application-logs"
+
+  environment = "staging"
+  retention_in_days = "180"
+}

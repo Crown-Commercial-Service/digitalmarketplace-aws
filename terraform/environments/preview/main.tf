@@ -87,3 +87,10 @@ module "preview_elasticsearch" {
 
   nginx_security_group_id = "${module.preview_nginx.instance_security_group_id}"
 }
+
+module "application_logs" {
+  source = "../../modules/application-logs"
+
+  environment = "preview"
+  retention_in_days = "180"
+}
