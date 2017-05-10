@@ -9,43 +9,49 @@ dev_user_ips:
   - 127.0.0.1/32
 
 api:
+  subdomain: dm-api
+  services:
+    - digitalmarketplace_api_db
+
+  # AWS
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 1
-  paas:
-    subdomain: dm-api
-    services:
-      - digitalmarketplace_api_db
+
 
 search_api:
+  subdomain: dm-search-api
+
+  # AWS
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
-  paas:
-    subdomain: dm-search-api
 
 admin_frontend:
+  subdomain: dm
+  path: /admin
+
+  # AWS
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
-  paas:
-    subdomain: dm
-    path: /admin
 
 buyer_frontend:
+  subdomain: dm
+
+  # AWS
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
-  paas:
-    subdomain: dm
 
 supplier_frontend:
+  subdomain: dm
+  path: /suppliers
+
+  # AWS
   instance_type: t2.micro
   min_instance_count: 1
   max_instance_count: 2
-  paas:
-    subdomain: dm
-    path: /suppliers
 
 database:
   version: 9.5

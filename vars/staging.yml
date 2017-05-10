@@ -1,4 +1,9 @@
 ---
+domain: staging.marketplace.team
+instances: 2
+
+# AWS
+
 root_domain: "digitalmarketplace.service.gov.uk"
 ssl_certificate_id: "arn:aws:acm:eu-west-1:050019655025:certificate/a0eb63fa-fdf8-4598-bae5-17d082966e0b"
 
@@ -16,40 +21,3 @@ subnets:
   - subnet-9a9713ed
   - subnet-63b1683a
   - subnet-ad0894c8
-
-api:
-  paas:
-    instances: 2
-
-search_api:
-  paas:
-    instances: 2
-
-admin_frontend:
-  paas:
-    instances: 2
-    env:
-      DM_S3_DOCUMENT_BUCKET: digitalmarketplace-documents-staging-staging
-      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-staging-staging
-      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-staging-staging
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-staging-staging
-      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-staging-staging
-      DM_ASSETS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
-
-buyer_frontend:
-  paas:
-    instances: 2
-
-supplier_frontend:
-  paas:
-    instances: 2
-    env:
-      DM_G7_DRAFT_DOCUMENTS_BUCKET: digitalmarketplace-g7-draft-documents-staging-staging
-      DM_G7_DRAFT_DOCUMENTS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
-      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-staging-staging
-      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-staging-staging
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-staging-staging
-      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-staging-staging
-      DM_ASSETS_URL: https://staging-assets.digitalmarketplace.service.gov.uk
-      DM_CLARIFICATION_QUESTION_EMAIL: clarification@digitalmarketplace.service.gov.uk
-      DM_FOLLOW_UP_EMAIL_TO: enquiries@digitalmarketplace.service.gov.uk
