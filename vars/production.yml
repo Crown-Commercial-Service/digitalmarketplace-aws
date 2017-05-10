@@ -1,4 +1,10 @@
 ---
+domain: "digitalmarketplace.service.gov.uk"
+instances: 3
+
+
+# AWS
+
 root_domain: "digitalmarketplace.service.gov.uk"
 ssl_certificate_id: "arn:aws:acm:eu-west-1:050019655025:certificate/a0eb63fa-fdf8-4598-bae5-17d082966e0b"
 
@@ -22,49 +28,23 @@ api:
   instance_type: t2.medium
   min_instance_count: 3
   max_instance_count: 10
-  paas:
-    instances: 2
 
 search_api:
   min_instance_count: 3
   max_instance_count: 5
-  paas:
-    instances: 2
 
 admin_frontend:
   min_instance_count: 3
   max_instance_count: 5
-  paas:
-    instances: 2
-    env:
-      DM_S3_DOCUMENT_BUCKET: digitalmarketplace-documents-production-production
-      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-production-production
-      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-production-production
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-production-production
-      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-production-production
-      DM_ASSETS_URL: https://assets.digitalmarketplace.service.gov.uk
 
 buyer_frontend:
   min_instance_count: 3
   max_instance_count: 5
-  paas:
-    instances: 2
 
 supplier_frontend:
   min_instance_count: 3
   max_instance_count: 10
-  paas:
-    instances: 2
-    env:
-      DM_G7_DRAFT_DOCUMENTS_BUCKET: digitalmarketplace-g7-draft-documents-production-production
-      DM_G7_DRAFT_DOCUMENTS_URL: https://assets.digitalmarketplace.service.gov.uk
-      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-production-production
-      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-production-production
-      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-production-production
-      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-production-production
-      DM_ASSETS_URL: https://assets.digitalmarketplace.service.gov.uk
-      DM_CLARIFICATION_QUESTION_EMAIL: clarification@digitalmarketplace.service.gov.uk
-      DM_FOLLOW_UP_EMAIL_TO: enquiries@digitalmarketplace.service.gov.uk
+
 elasticsearch:
   instance_type: t2.medium
 
