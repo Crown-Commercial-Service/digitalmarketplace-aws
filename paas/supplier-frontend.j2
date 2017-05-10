@@ -1,0 +1,27 @@
+{% extends "_base.j2" %}
+
+{% block env %}
+
+      AWS_ACCESS_KEY_ID: {{ aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: {{ aws_secret_access_key }}
+
+      DM_DATA_API_AUTH_TOKEN: {{ api.auth_tokens[0] }}
+      DM_DATA_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
+
+      DM_MANDRILL_API_KEY: {{ shared_tokens.mandrill_key }}
+
+      SECRET_KEY: {{ shared_tokens.password_key }}
+      SHARED_EMAIL_KEY: {{ shared_tokens.shared_email_key }}
+
+      PROXY_AUTH_CREDENTIALS: {{ proxy_auth_credentials }}
+
+      DM_AGREEMENTS_BUCKET: digitalmarketplace-agreements-{{ environment }}-{{ environment }}
+      DM_COMMUNICATIONS_BUCKET: digitalmarketplace-communications-{{ environment }}-{{ environment }}
+      DM_DOCUMENTS_BUCKET: digitalmarketplace-documents-{{ environment }}-{{ environment }}
+      DM_SUBMISSIONS_BUCKET: digitalmarketplace-submissions-{{ environment }}-{{ environment }}
+
+      DM_ASSETS_URL: https://assets.{{ domain }}
+
+      DM_CLARIFICATION_QUESTION_EMAIL: {{ supplier_frontend.clarification_question_email }}
+      DM_FOLLOW_UP_EMAIL_TO: {{ supplier_frontend.follow_up_email_to }}
+{% endblock %}

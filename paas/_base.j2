@@ -1,0 +1,26 @@
+---
+
+applications:
+  - name: {{ app|replace('_', '-') }}-release
+    routes:
+      - route: {{ subdomain }}-{{ environment }}.cloudapps.digital{{ path|default('') }}
+    instances: {{ instances|default(1) }}
+    memory: {{ memory|default('512M') }}
+    disk_quota: {{ disk_quota|default('1024M') }}
+    health-check-type: http
+    health-check-http-endpoint: {{ path|default('') }}/_status?ignore-dependencies
+    env:
+      DM_APP_NAME: {{ app }}
+      DM_ENVIRONMENT: {{ environment }}
+      DM_METRICS_NAMESPACE: {{ environment }}-{{ environment }}/{{ app }}
+
+      DM_LOG_PATH: ''
+      {% block env %}
+      {% endblock %}
+
+    {% if services|default([])|length > 0 -%}
+    services:
+      {% for service in services -%}
+        - {{ service }}
+      {% endfor -%}
+    {% endif %}
