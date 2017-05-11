@@ -5,7 +5,7 @@
       AWS_ACCESS_KEY_ID: {{ aws_access_key_id }}
       AWS_SECRET_ACCESS_KEY: {{ aws_secret_access_key }}
 
-      DM_ELASTICSEARCH_URL: https://{{ environment }}-elasticsearch:{{ elasticsearch_password }}@elasticsearch.{{ environment }}.marketplace.team
+      DM_ELASTICSEARCH_URL: https://{{ environment }}-elasticsearch:{{ elasticsearch_password }}@elasticsearch.{{ domain }}
 
       DM_SEARCH_API_AUTH_TOKENS: {{ search_api.auth_tokens|join(':') }}
 {% endblock %}
