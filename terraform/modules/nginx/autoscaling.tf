@@ -114,7 +114,7 @@ ENDPOLICY
 
 resource "aws_iam_instance_profile" "nginx_profile" {
   name = "${var.name}"
-  roles = ["${aws_iam_role.nginx_role.name}"]
+  role = "${aws_iam_role.nginx_role.name}"
 }
 
 resource "aws_security_group" "nginx_instance" {
