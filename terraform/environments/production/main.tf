@@ -16,7 +16,7 @@ module "production_nginx" {
 
   name = "production-nginx"
   environment = "production"
-  domain = "production.marketplace.team"
+  domain = "digitalmarketplace.service.gov.uk"
 
   vpc_id = "vpc-70319115"
   subnet_ids = [

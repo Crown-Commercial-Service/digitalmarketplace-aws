@@ -96,7 +96,7 @@ ENDPOLICY
 
 resource "aws_iam_instance_profile" "elasticsearch_profile" {
   name = "${var.name}"
-  roles = ["${aws_iam_role.elasticsearch.name}"]
+  role = "${aws_iam_role.elasticsearch.name}"
 }
 
 resource "aws_iam_policy" "elasticsearch_discovery" {
