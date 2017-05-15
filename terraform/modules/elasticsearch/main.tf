@@ -1,5 +1,5 @@
 module "logs" {
-  source = "../logs"
+  source = "../log-group"
 
   name = "${var.name}"
   iam_role_id = "${aws_iam_role.elasticsearch.id}"
