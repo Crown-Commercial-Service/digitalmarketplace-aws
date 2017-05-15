@@ -39,7 +39,7 @@ module "production_nginx" {
 
   admin_user_ips = "${var.admin_user_ips}"
   dev_user_ips = "${var.dev_user_ips}"
-  user_ips = "${var.user_ips}"
+  user_ips = ["0.0.0.0/0"]
 
   g7_draft_documents_s3_url = "${var.g7_draft_documents_s3_url}"
   documents_s3_url = "${var.documents_s3_url}"
