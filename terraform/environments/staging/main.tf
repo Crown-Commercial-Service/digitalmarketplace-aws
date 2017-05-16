@@ -94,3 +94,14 @@ module "application_logs" {
   environment = "staging"
   retention_in_days = "180"
 }
+
+module "log_streaming" {
+  source = "../../modules/log-streaming"
+
+  name = "staging-log-stream-lambda"
+  elasticsearch_url = "${var.logs_elasticsearch_url}"
+
+  aws_account_id = "${var.aws_prod_account_id}"
+
+  log_groups = ["${concat(module.staging_nginx.json_log_groups, module.application_logs.log_groups)}"]
+}

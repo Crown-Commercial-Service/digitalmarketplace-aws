@@ -94,3 +94,14 @@ module "application_logs" {
   environment = "production"
   retention_in_days = "3653"
 }
+
+module "log_streaming" {
+  source = "../../modules/log-streaming"
+
+  name = "production-log-stream-lambda"
+  elasticsearch_url = "${var.logs_elasticsearch_url}"
+
+  aws_account_id = "${var.aws_prod_account_id}"
+
+  log_groups = ["${concat(module.production_nginx.json_log_groups, module.application_logs.log_groups)}"]
+}
