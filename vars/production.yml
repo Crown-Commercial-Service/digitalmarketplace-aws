@@ -1,7 +1,6 @@
 ---
 domain: "digitalmarketplace.service.gov.uk"
-instances: 3
-
+instances: 5
 
 # AWS
 
