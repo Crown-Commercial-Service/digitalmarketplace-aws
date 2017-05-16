@@ -1,4 +1,5 @@
 variable "aws_main_account_id" {}
+
 variable "admin_user_ips" {
   type = "list"
 }
@@ -25,6 +26,8 @@ variable "supplier_frontend_url" {}
 
 variable "elasticsearch_auth" {}
 variable "app_auth" {}
+
+variable "logs_elasticsearch_url" {}
 
 variable "mode" {
   default = "live"

@@ -94,3 +94,12 @@ module "application_logs" {
   environment = "preview"
   retention_in_days = "180"
 }
+
+module "log_streaming" {
+  source = "../../modules/log-streaming"
+
+  name = "preview-log-stream-lambda"
+  elasticsearch_url = "${var.logs_elasticsearch_url}"
+
+  log_groups = ["${concat(module.preview_nginx.json_log_groups, module.application_logs.log_groups)}"]
+}

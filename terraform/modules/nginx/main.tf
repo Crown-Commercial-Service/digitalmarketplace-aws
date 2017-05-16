@@ -1,5 +1,5 @@
 module "logs" {
-  source = "../logs"
+  source = "../log-group"
 
   name = "${var.name}"
   iam_role_id = "${aws_iam_role.nginx_role.id}"
@@ -7,7 +7,7 @@ module "logs" {
 }
 
 module "json_logs" {
-  source = "../logs"
+  source = "../log-group"
 
   name = "${var.name}-json"
   iam_role_id = "${aws_iam_role.nginx_role.id}"
@@ -16,7 +16,7 @@ module "json_logs" {
 
 
 module "error_logs" {
-  source = "../logs"
+  source = "../log-group"
 
   name = "${var.name}-error"
   iam_role_id = "${aws_iam_role.nginx_role.id}"
