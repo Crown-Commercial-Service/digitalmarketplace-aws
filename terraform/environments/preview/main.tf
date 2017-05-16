@@ -101,7 +101,5 @@ module "log_streaming" {
   name = "preview-log-stream-lambda"
   elasticsearch_url = "${var.logs_elasticsearch_url}"
 
-  aws_account_id = "${var.aws_dev_account_id}"
-
   log_groups = ["${concat(module.preview_nginx.json_log_groups, module.application_logs.log_groups)}"]
 }

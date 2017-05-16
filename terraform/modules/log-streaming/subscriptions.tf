@@ -2,13 +2,15 @@ data "aws_region" "current" {
   current = true
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_lambda_permission" "cloudwatch" {
   count = "${length(var.log_groups)}"
   statement_id = "cloudwatch-lambda-${element(var.log_groups, count.index)}"
   action = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.log_stream_lambda.arn}"
   principal = "logs.${data.aws_region.current.name}.amazonaws.com"
-  source_arn = "arn:aws:logs:${data.aws_region.current.name}:${var.aws_account_id}:log-group:${element(var.log_groups, count.index)}:*"
+  source_arn = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${element(var.log_groups, count.index)}:*"
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "elasticsearch-subscription" {
