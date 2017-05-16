@@ -239,7 +239,7 @@ class RDSPostgresClient(object):
             bcrypt.gensalt(4)
         ).decode('utf-8')
         self.cursor.execute(
-            "UPDATE users SET name = 'Test user', email_address = id || '-user@example.com', password = '{}'"
+            "UPDATE users SET name = 'Test user', email_address = id || '@user.marketplace.team', password = '{}'"
             .format(hashed_password)
         )
 
