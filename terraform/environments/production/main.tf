@@ -29,7 +29,7 @@ module "production_nginx" {
   min_instance_count = "2"
   max_instance_count = "2"
 
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
 
   log_retention_days = "3653"
 
