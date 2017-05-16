@@ -1,7 +1,7 @@
 data "archive_file" "lambda_zip" {
   type = "zip"
-  source_dir = "${path.module}/src"
-  output_path = "${path.module}/lambda.zip"
+  source_dir = "../../modules/log-streaming/src"
+  output_path = "../../modules/log-streaming/lambda.zip"
 }
 
 resource "aws_cloudwatch_log_group" "lambda_logs" {
@@ -59,7 +59,7 @@ EOF
 resource "aws_lambda_function" "log_stream_lambda" {
   function_name = "${var.name}"
   description = "Stream CloudWatch Logs to Elasticsearch"
-  filename = "${path.module}/lambda.zip"
+  filename = "../../modules/log-streaming/lambda.zip"
   source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
   role = "${aws_iam_role.lambda.arn}"
   handler = "main.handler"
