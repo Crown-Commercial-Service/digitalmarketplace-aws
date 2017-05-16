@@ -46,4 +46,4 @@ apply: check-env-vars init ## Run terraform apply
 .PHONY: upload-state
 upload-state: check-env-vars ## Upload the local state file to S3, use it carefully
 	. .envrc && \
-	aws s3 cp --region eu-west-1 --sse AES256 .terraform/terraform.tfstate s3://${S3_BUCKET}/${TERRAFORM_PROJECT}/terraform.tfstate
+	aws s3 cp --region eu-west-1 --sse AES256 ${STATE_FILE} s3://${S3_BUCKET}/${TERRAFORM_PROJECT}/terraform.tfstate
