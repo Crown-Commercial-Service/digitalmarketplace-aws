@@ -70,7 +70,6 @@ cd /home/ubuntu/provisioning && ansible-playbook -c local -i localhost, nginx_pl
     -e admin_user_ips='${join(",", var.admin_user_ips)}' \
     -e dev_user_ips='${join(",", var.dev_user_ips)}' \
     -e user_ips='${join(",", var.user_ips)}' \
-    -e log_group='${module.logs.log_group_name}' \
     -e json_log_group='${module.json_logs.log_group_name}' \
     -e error_log_group='${module.error_logs.log_group_name}' \
     -e g7_draft_documents_s3_url='${var.g7_draft_documents_s3_url}' \
