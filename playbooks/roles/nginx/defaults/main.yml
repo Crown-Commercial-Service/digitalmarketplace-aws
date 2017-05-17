@@ -1,13 +1,14 @@
 ---
 nginx_configs:
   live:
-    - www
     - api
     - assets
-    - healthcheck
-    - elasticsearch
     - digitalservicesstore
+    - elasticsearch
+    - healthcheck
+    - www
   maintenance:
+    - elasticsearch
     - healthcheck
     - maintenance
 
