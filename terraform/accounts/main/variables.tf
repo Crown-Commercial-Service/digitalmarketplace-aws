@@ -1,3 +1,4 @@
+variable "jenkins_ip" {}
 variable "dev_user_ips" {
   type = "list"
 }
