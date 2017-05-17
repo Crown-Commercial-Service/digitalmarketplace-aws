@@ -7,6 +7,9 @@ instances: 2
 root_domain: "digitalmarketplace.service.gov.uk"
 ssl_certificate_id: "arn:aws:acm:eu-west-1:050019655025:certificate/a0eb63fa-fdf8-4598-bae5-17d082966e0b"
 
+api:
+  memory: 1024m
+
 monitoring:
   email: "support+production-staging@digitalmarketplace.service.gov.uk"
 
