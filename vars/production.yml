@@ -24,6 +24,8 @@ database:
   snapshot_id: "production-2015-07-17t1204"
 
 api:
+  memory: 1024m
+
   instance_type: t2.medium
   min_instance_count: 3
   max_instance_count: 10
