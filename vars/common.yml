@@ -1,76 +1,19 @@
 ---
-aws_region: eu-west-1
-internal_root_domain: dmdev
-
-user_ips:
-  - 0.0.0.0/0
-
-dev_user_ips:
-  - 127.0.0.1/32
-
 api:
   subdomain: dm-api
   services:
     - digitalmarketplace_api_db
 
-  # AWS
-  instance_type: t2.micro
-  min_instance_count: 1
-  max_instance_count: 1
-
-
-search_api:
+search-api:
   subdomain: dm-search-api
 
-  # AWS
-  instance_type: t2.micro
-  min_instance_count: 1
-  max_instance_count: 2
-
-admin_frontend:
+admin-frontend:
   subdomain: dm
   path: /admin
 
-  # AWS
-  instance_type: t2.micro
-  min_instance_count: 1
-  max_instance_count: 2
-
-buyer_frontend:
+buyer-frontend:
   subdomain: dm
 
-  # AWS
-  instance_type: t2.micro
-  min_instance_count: 1
-  max_instance_count: 2
-
-supplier_frontend:
+supplier-frontend:
   subdomain: dm
   path: /suppliers
-
-  # AWS
-  instance_type: t2.micro
-  min_instance_count: 1
-  max_instance_count: 2
-
-database:
-  version: 9.5
-  port: 5432
-  user: "digitalmarketplace"
-  name: "digitalmarketplace_api"
-  instance_type: db.t2.micro
-  allocated_storage: 10
-
-elasticsearch:
-  port: 9200
-  instance_type: t2.micro
-  instance_count: 3
-  instance_image: ami-2999f65e
-
-nginx:
-  instance_type: t2.micro
-  instance_count: 2
-  instance_image: ami-683a661b
-
-kibana:
-  instance_type: m3.medium.elasticsearch

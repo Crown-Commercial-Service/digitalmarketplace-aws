@@ -2,52 +2,5 @@
 domain: "digitalmarketplace.service.gov.uk"
 instances: 5
 
-# AWS
-
-root_domain: "digitalmarketplace.service.gov.uk"
-ssl_certificate_id: "arn:aws:acm:eu-west-1:050019655025:certificate/a0eb63fa-fdf8-4598-bae5-17d082966e0b"
-
-monitoring:
-  email: "support+production-production@digitalmarketplace.service.gov.uk"
-
-vpc_id: vpc-70319115
-subnets:
-  - subnet-9a9713ed
-  - subnet-63b1683a
-  - subnet-ad0894c8
-
-database:
-  multi_az: "true"
-  backup_retention_period: "30"
-  slow_query_log_duration_ms: -1
-  instance_type: db.m3.medium
-  snapshot_id: "production-2015-07-17t1204"
-
 api:
   memory: 2GB
-
-  instance_type: t2.medium
-  min_instance_count: 3
-  max_instance_count: 10
-
-search_api:
-  min_instance_count: 3
-  max_instance_count: 5
-
-admin_frontend:
-  min_instance_count: 3
-  max_instance_count: 5
-
-buyer_frontend:
-  min_instance_count: 3
-  max_instance_count: 5
-
-supplier_frontend:
-  min_instance_count: 3
-  max_instance_count: 10
-
-elasticsearch:
-  instance_type: t2.medium
-
-nginx:
-  instance_type: t2.medium
