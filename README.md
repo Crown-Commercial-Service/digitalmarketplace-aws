@@ -1,7 +1,22 @@
 # Digital Marketplace AWS
 
-[Ansible](http://www.ansible.com/home) playbooks to create and provision the
-AWS infrastructure for Digital Marketplace applications.
+This repository contains configuration and utility tools we use for setting up our infrastructure
+and manage our release process.
+
+## Structure
+
+There are a few independent tools we're using that are configured and run from this repo:
+
+* [Terraform](https://www.terraform.io/) (modules and configuration files in `terraform/`) is used
+  to create and manage AWS resources (EC2 instances, ELBs, CloudWatch logs, S3 buckets etc.)
+* [packer](https://www.packer.io/) (configuration templates in `packer/`) is used to build AMIs
+  for servers we're running in AWS EC2 (like nginx and elasticsearch)
+* [Ansible](https://docs.ansible.com/ansible/index.html) (configuration and roles in `playbooks/`) is
+  used by packer to set up the software and configuration of the AMIs
+* `scripts` contains executable scripts we use to manage our PaaS environments
+* `dmaws` contains some helper python functions used by some of the scripts
+* `paas` contains PaaS manifest templates that are rendered by `make generate-manifest`
+* `vars` contains environment specific variables used in the PaaS manifest generation
 
 ## Setup
 
@@ -9,39 +24,9 @@ AWS infrastructure for Digital Marketplace applications.
 Install dependencies with [virtualenv](https://virtualenv.pypa.io/en/latest/)
 and [pip](https://pip.pypa.io/en/latest/installing.html).
 
-To install virtualenv and create a virtual environment see the
-[digitalmarketplace-admin-frontend](https://github.com/alphagov/digitalmarketplace-admin-frontend).
-
-Finally run the bootstrap script
 ```
-./scripts/bootstrap.sh
+make requirements
 ```
-
-### Set up AWS access credentials
-
-Ansible's AWS integration depends on [boto](https://github.com/boto/boto) which
-expects to find your AWS credentials in `~/.aws/credentials`, see [the boto docs](http://docs.pythonboto.org/en/latest/boto_config_tut.html#credentials).
-Locally you should only ever have development credentials.
-
-### Set up an SSH key pair
-
-Create an [EC2 key pair](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
-and save this file with the same name as the keypair in your `.ssh` directory.
-This will be used to provision EC2 instances after they've been created, for
-example the Elasticsearch instances.
-
-### Create user.yml file and set user-specific variables
-
-```
-cp user.yml.sample user.yml
-```
-
-Copy `user.yml.sample` to `user.yml` and replace `***` placeholders with
-actual variable values.
-
-`user.yml` is loaded by default and should set values for variables that
-don't have any defaults set in the playbook roles and environment files.
-It can also be used to overwrite default values for existing variables.
 
 ## Terraform
 
