@@ -37,7 +37,8 @@ resource "aws_iam_policy" "packer" {
       "Sid": "PackerSnapshotAccess",
       "Action": [
         "ec2:CreateSnapshot",
-        "ec2:DescribeSnapshots"
+        "ec2:DescribeSnapshots",
+        "ec2:DeleteSnapshot"
       ],
       "Effect": "Allow",
       "Resource": [
