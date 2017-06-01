@@ -10,15 +10,7 @@ resource "aws_iam_policy" "hostedgraphite" {
                 "cloudwatch:ListMetrics",
                 "cloudwatch:GetMetricStatistics",
                 "ec2:DescribeInstances",
-                "ec2:DescribeVolumes",
-                "rds:DescribeDBInstances",
-                "route53:ListHealthChecks",
-                "sqs:ListQueues",
-                "elasticache:DescribeCacheClusters",
-                "elasticloadbalancing:DescribeLoadBalancers",
-                "kinesis:ListStreams",
-                "redshift:DescribeClusters",
-                "cloudfront:ListDistributions"
+                "ec2:DescribeVolumes"
             ],
             "Resource": [ "*" ]
         },
@@ -26,15 +18,7 @@ resource "aws_iam_policy" "hostedgraphite" {
             "Sid": "PermissionsForTags",
             "Effect": "Allow",
             "Action": [
-                "elasticache:ListTagsForResource",
-                "elasticloadbalancing:DescribeTags",
-                "cloudfront:ListTagsForResource",
-                "route53:ListTagsForResource",
-                "kinesis:ListTagsForStream",
-                "rds:ListTagsForResource",
-                "lambda:ListFunctions",
-                "elasticmapreduce:ListClusters",
-                "iam:GetUser"
+                "elasticloadbalancing:DescribeTags"
             ],
             "Resource": [ "*" ]
         }
