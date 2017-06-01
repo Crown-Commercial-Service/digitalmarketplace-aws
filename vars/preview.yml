@@ -1,25 +1,5 @@
 ---
 domain: preview.marketplace.team
 
-# AWS
-
-root_domain: "development.digitalmarketplace.service.gov.uk"
-ssl_certificate_id: "arn:aws:iam::381494870249:server-certificate/nginx-preview-preview"
-
 api:
   memory: 2GB
-
-monitoring:
-  email: "support+development-preview@digitalmarketplace.service.gov.uk"
-
-database:
-  multi_az: "false"
-  backup_retention_period: "1"
-  slow_query_log_duration_ms: 1000
-  snapshot_id: "s2015-05-13t0953z"
-
-vpc_id: vpc-a29149c7
-subnets:
-  - subnet-bf8c5ce6
-  - subnet-916bfcf4
-  - subnet-82dc63f5
