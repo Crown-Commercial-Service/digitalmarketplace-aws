@@ -9,3 +9,7 @@ elasticsearch:
 .PHONY: nginx
 nginx:
 	$(call run_packer,nginx)
+
+.PHONY: clean
+clean:
+	../scripts/clean-old-ami.sh
