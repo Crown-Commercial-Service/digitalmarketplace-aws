@@ -29,7 +29,7 @@ test_unit: virtualenv
 
 .PHONY: requirements
 requirements: virtualenv ## Install requirements
-	${VIRTUALENV_ROOT}/bin/pip install -e .
+	${VIRTUALENV_ROOT}/bin/pip install -r requirements.txt
 
 .PHONY: virtualenv
 virtualenv: ${VIRTUALENV_ROOT}/activate ## Create virtualenv if it does not exist
