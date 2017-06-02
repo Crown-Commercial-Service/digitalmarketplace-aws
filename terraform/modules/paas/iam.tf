@@ -46,23 +46,33 @@ resource "aws_iam_user" "paas_metrics_collector" {
   name = "paas-metrics-collector"
 }
 
-resource "aws_iam_user_policy" "paas_metrics_collector_policy" {
+resource "aws_iam_user_policy" "grafana" {
   user = "${aws_iam_user.paas_metrics_collector.name}"
-  name = "PaaSMetricsCollectorPolicy"
+  name = "Grafana"
   policy = <<EOF
 {
-    "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "PermissionsForMetrics",
             "Effect": "Allow",
             "Action": [
-              "cloudwatch:PutMetricData"
+                "cloudwatch:ListMetrics",
+                "cloudwatch:GetMetricStatistics",
+                "ec2:DescribeInstances",
+                "ec2:DescribeVolumes"
             ],
-            "Resource": [
-                "*"
-            ]
+            "Resource": [ "*" ]
+        },
+        {
+            "Sid": "PermissionsForTags",
+            "Effect": "Allow",
+            "Action": [
+                "elasticloadbalancing:DescribeTags"
+            ],
+            "Resource": [ "*" ]
         }
-    ]
+    ],
+    "Version": "2012-10-17"
 }
 EOF
 }
