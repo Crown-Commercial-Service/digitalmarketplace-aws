@@ -12,4 +12,4 @@ nginx:
 
 .PHONY: clean
 clean:
-	../scripts/clean_old_ami.sh
+	../scripts/clean-old-ami.sh
