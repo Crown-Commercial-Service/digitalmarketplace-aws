@@ -46,9 +46,9 @@ resource "aws_iam_user" "paas_metrics_collector" {
   name = "paas-metrics-collector"
 }
 
-resource "aws_iam_user_policy" "hostedgraphite" {
+resource "aws_iam_user_policy" "grafana" {
   user = "${aws_iam_user.paas_metrics_collector.name}"
-  name = "Hostedgraphite"
+  name = "Grafana"
   policy = <<EOF
 {
     "Statement": [
