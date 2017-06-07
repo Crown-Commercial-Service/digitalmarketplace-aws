@@ -28,19 +28,6 @@ resource "aws_route53_record" "staging_ns" {
   ]
 }
 
-resource "aws_route53_record" "production_ns" {
-  zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
-  name = "production.marketplace.team"
-  type = "NS"
-  ttl = "3600"
-  records = [
-    "ns-553.awsdns-05.net",
-    "ns-1394.awsdns-46.org",
-    "ns-45.awsdns-05.com",
-    "ns-1915.awsdns-47.co.uk",
-  ]
-}
-
 resource "aws_route53_record" "ci_marketplace_team" {
   zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
   name = "ci.marketplace.team"
