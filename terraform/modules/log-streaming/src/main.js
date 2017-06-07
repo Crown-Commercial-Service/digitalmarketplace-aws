@@ -95,8 +95,16 @@ function buildSource(message) {
 
     var source = JSON.parse(jsonSubString);
 
-    ['time', 'remoteLogname', 'user'].forEach(function (key) {
+    ['time', 'user'].forEach(function (key) {
         delete source[key];
+    });
+
+    // Convert nested objects and arrays to strings to stop Kibana from rejecting records
+    // for missing nested keys mappings
+    Object.keys(source).forEach(function (key) {
+      if (typeof source[key] === 'object') {
+        source[key] = JSON.stringify(source[key]);
+      }
     });
 
     return source;
@@ -159,9 +167,6 @@ function post(body, callback) {
 }
 
 function buildRequest(endpoint, api_key, body) {
-    var datetime = (new Date()).toISOString().replace(/[:\-]|\.\d{3}/g, '');
-    var date = datetime.substr(0, 8);
-
     return {
         host: endpoint,
         method: 'POST',
