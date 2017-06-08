@@ -9,6 +9,7 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
   retention_in_days = 7
 }
 
+
 resource "aws_iam_role" "lambda" {
   name = "${var.name}"
   assume_role_policy = <<EOF
@@ -45,11 +46,6 @@ resource "aws_iam_role_policy" "lambda_logging" {
       "Resource": [
         "arn:aws:logs:*:*:*"
       ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": "es:ESHttpPost",
-      "Resource": "arn:aws:es:*:*:*"
     }
   ]
 }
@@ -70,6 +66,7 @@ resource "aws_lambda_function" "log_stream_lambda" {
   environment {
     variables = {
       ELASTICSEARCH_URL = "${var.elasticsearch_url}"
+      ELASTICSEARCH_API_KEY = "${var.elasticsearch_api_key}"
     }
   }
 }
