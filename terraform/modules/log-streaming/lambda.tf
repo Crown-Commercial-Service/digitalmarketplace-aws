@@ -61,7 +61,7 @@ resource "aws_lambda_function" "log_stream_lambda" {
   handler = "main.handler"
   runtime = "nodejs6.10"
   memory_size = 128
-  timeout = 5
+  timeout = 10
 
   environment {
     variables = {
