@@ -5,3 +5,5 @@ user.yml
 venv
 /tmp
 .envrc
+node_modules
+package-lock.json

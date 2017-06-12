@@ -17,6 +17,7 @@ There are a few independent tools we're using that are configured and run from t
 * `dmaws` contains some helper python functions used by some of the scripts
 * `paas` contains PaaS manifest templates that are rendered by `make generate-manifest`
 * `vars` contains environment specific variables used in the PaaS manifest generation
+* `kibana` contains a Makefile and dependencies list for managing Kibana configuration
 
 ## Setup
 
@@ -60,22 +61,17 @@ removed and the AutoScaling groups will no longer be able to scale.
 AMIs can be deleted from the EC2 console by deregestering the AMI and
 deleting the related EBS snapshot.
 
-## Deploying AWS Lambda functions
+## Managing Kibana configuration
 
-Lambda functions are created by the CloudFormation stack, but rerunning the stack won't updated
-the function code. Instead, functions can be updating using the `lambda-release` command:
+`kibana/Makefile` contains make steps to manage Kibana configs.
 
-```
-dmaws lambda-release preview cloudwatch_logs_lambda
-```
+`make dump STAGE=...` will download Kibana index (including mapping, saved searches, visualizations
+and dashboards) and store them in `kibana-export.json`.
 
-This will package function code from `lambdas/cloudwatch_logs`, upload the archive to S3 and update
-the function code in AWS Lambda.
+`make restore STAGE=...` uploads configuration from `kibana-export.json` to the target STAGE stack
+and replaces any settings that were there before.
 
-This command can also be used to upload the initial function code archive to S3 before running the
-function stack for the first time. In this case, updating the function code will fail, since the
-function doesn't exist yet, but an archive will be uploaded to S3 and CloudFormation will use it
-when creating the function stack.
+Both commands use credentials from terraform files, so they need `sops` profile to be active.
 
 ## SSHing into instances
 
