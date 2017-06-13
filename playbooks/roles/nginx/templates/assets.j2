@@ -11,7 +11,7 @@ server {
 
     set $documents_s3_url "{{ documents_s3_url }}";
     set $g7_draft_documents_s3_url "{{ g7_draft_documents_s3_url }}";
-    set $buyer_frontend_url "{{ buyer_frontend_url }}";
+    set $frontend_url "{{ frontend_url }}";
     set $agreements_s3_url "{{ agreements_s3_url }}";
     set $communications_s3_url "{{ communications_s3_url }}";
     set $submissions_s3_url "{{ submissions_s3_url }}";
@@ -68,10 +68,10 @@ server {
     location /404 {
         {{ proxy_headers () }}
         proxy_set_header Authorization "Basic {{ app_auth }}";
-        proxy_pass $buyer_frontend_url;
+        proxy_pass $frontend_url;
     }
 
     location /static {
-        proxy_pass $buyer_frontend_url;
+        proxy_pass $frontend_url;
     }
 }

@@ -36,9 +36,7 @@ variable "submissions_s3_url" {}
 
 variable "api_url" {}
 variable "search_api_url" {}
-variable "buyer_frontend_url" {}
-variable "admin_frontend_url" {}
-variable "supplier_frontend_url" {}
+variable "frontend_url" {}
 variable "elasticsearch_url" {}
 
 variable "elasticsearch_auth" {}
