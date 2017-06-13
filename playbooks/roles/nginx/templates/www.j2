@@ -20,7 +20,7 @@ server {
 
         proxy_pass $frontend_url;
     }
-    
+
     location /admin {
         {% for admin_ip in admin_user_ips.split(",") %}
         allow {{ admin_ip }};

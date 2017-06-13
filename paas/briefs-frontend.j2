@@ -1,0 +1,17 @@
+{% extends "_base.j2" %}
+
+{% block env %}
+
+      AWS_ACCESS_KEY_ID: {{ aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: {{ aws_secret_access_key }}
+
+      DM_DATA_API_AUTH_TOKEN: {{ api.auth_tokens[0] }}
+      DM_DATA_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
+
+      DM_MANDRILL_API_KEY: {{ shared_tokens.mandrill_key }}
+
+      PROXY_AUTH_CREDENTIALS: {{ proxy_auth_credentials }}
+
+      SECRET_KEY: {{ shared_tokens.password_key }}
+      SHARED_EMAIL_KEY: {{ shared_tokens.shared_email_key }}
+{% endblock %}
