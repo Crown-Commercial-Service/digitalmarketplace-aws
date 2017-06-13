@@ -17,3 +17,7 @@ buyer-frontend:
 supplier-frontend:
   subdomain: dm
   path: /suppliers
+
+briefs-frontend:
+  subdomain: dm-briefs
+  path: /buyer
