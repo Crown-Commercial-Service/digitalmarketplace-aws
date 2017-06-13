@@ -8,9 +8,7 @@ server {
     {% endfor %}
     deny all;
 
-    set $buyer_frontend_url "{{ buyer_frontend_url }}";
-    set $admin_frontend_url "{{ admin_frontend_url }}";
-    set $supplier_frontend_url "{{ supplier_frontend_url }}";
+    set $frontend_url "{{ frontend_url }}";
 
     location /robots.txt {
         alias {{ static_files_root }}/robots_www.txt;
@@ -20,9 +18,9 @@ server {
         {{ proxy_headers () }}
         proxy_set_header Authorization "Basic {{ app_auth }}";
 
-        proxy_pass $buyer_frontend_url;
+        proxy_pass $frontend_url;
     }
-
+    
     location /admin {
         {% for admin_ip in admin_user_ips.split(",") %}
         allow {{ admin_ip }};
@@ -32,13 +30,6 @@ server {
         {{ proxy_headers () }}
         proxy_set_header Authorization "Basic {{ app_auth }}";
 
-        proxy_pass $admin_frontend_url;
-    }
-
-    location ~ ^/suppliers(/|$) {
-        {{ proxy_headers () }}
-        proxy_set_header Authorization "Basic {{ app_auth }}";
-
-        proxy_pass $supplier_frontend_url;
+        proxy_pass $frontend_url;
     }
 }

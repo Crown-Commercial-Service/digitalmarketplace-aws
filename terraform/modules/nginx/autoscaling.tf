@@ -79,9 +79,7 @@ cd /home/ubuntu/provisioning && ansible-playbook -c local -i localhost, nginx_pl
     -e submissions_s3_url='${var.submissions_s3_url}' \
     -e api_url='${var.api_url}' \
     -e search_api_url='${var.search_api_url}' \
-    -e buyer_frontend_url='${var.buyer_frontend_url}' \
-    -e admin_frontend_url='${var.admin_frontend_url}' \
-    -e supplier_frontend_url='${var.supplier_frontend_url}' \
+    -e frontend_url='${var.frontend_url}' \
     -e elasticsearch_url='${var.elasticsearch_url}' \
     -e elasticsearch_auth='${var.elasticsearch_auth}' \
     -e app_auth='${var.app_auth}' \
