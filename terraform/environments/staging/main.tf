@@ -49,9 +49,7 @@ module "staging_nginx" {
 
   api_url = "${var.api_url}"
   search_api_url = "${var.search_api_url}"
-  buyer_frontend_url = "${var.buyer_frontend_url}"
-  admin_frontend_url = "${var.admin_frontend_url}"
-  supplier_frontend_url = "${var.supplier_frontend_url}"
+  frontend_url = "${var.frontend_url}"
   elasticsearch_url = "${module.staging_elasticsearch.elb_url}"
 
   elasticsearch_auth = "${var.elasticsearch_auth}"
