@@ -12,4 +12,7 @@ proxy_set_header X-Forwarded-Host "$http_host";
 
 proxy_set_header DM-Request-ID "";
 
+# drop headers returned by the app server that shouldn't be forwarded to the client
+proxy_hide_header "Strict-Transport-Security";
+
 {% endmacro %}
