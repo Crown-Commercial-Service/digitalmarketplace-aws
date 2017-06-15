@@ -20,4 +20,4 @@ supplier-frontend:
 
 briefs-frontend:
   subdomain: dm-briefs
-  path: /buyer
+  path: /buyers
