@@ -102,7 +102,7 @@ function buildSource(message) {
     // Convert nested objects and arrays to strings to stop Kibana from rejecting records
     // for missing nested keys mappings
     Object.keys(source).forEach(function (key) {
-      if (typeof source[key] === 'object') {
+      if (typeof source[key] === 'object' && source[key] !== null) {
         source[key] = JSON.stringify(source[key]);
       }
     });
