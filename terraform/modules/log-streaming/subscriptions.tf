@@ -35,7 +35,7 @@ resource "aws_cloudwatch_log_subscription_filter" "elasticsearch_subscription_ap
   count = "${length(var.application_log_groups)}"
   name = "elasticsearch-subscription-${element(var.application_log_groups, count.index)}"
   log_group_name = "${element(var.application_log_groups, count.index)}"
-  filter_pattern = "{ $.url != \"*/_status?ignore-dependencies\" }"
+  filter_pattern = "{ $.url NOT EXISTS || $.url != \"*/_status?ignore-dependencies\" }"
   destination_arn = "${aws_lambda_function.log_stream_lambda.arn}"
   depends_on = ["aws_lambda_permission.cloudwatch_application"]
 }
