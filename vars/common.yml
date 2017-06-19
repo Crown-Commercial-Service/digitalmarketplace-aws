@@ -19,5 +19,5 @@ supplier-frontend:
   path: /suppliers
 
 briefs-frontend:
-  subdomain: dm-briefs
+  subdomain: dm
   path: /buyers
