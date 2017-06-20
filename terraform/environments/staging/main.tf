@@ -100,5 +100,6 @@ module "log_streaming" {
   elasticsearch_url = "${var.logs_elasticsearch_url}"
   elasticsearch_api_key = "${var.logs_elasticsearch_api_key}"
 
-  log_groups = ["${concat(module.staging_nginx.json_log_groups, module.application_logs.log_groups)}"]
+  nginx_log_groups = ["${concat(module.staging_nginx.json_log_groups, module.application_logs.nginx_log_groups)}"]
+  application_log_groups = ["${module.application_logs.application_log_groups}"]
 }
