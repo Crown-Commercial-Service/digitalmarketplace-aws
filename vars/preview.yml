@@ -1,5 +1,6 @@
 ---
 domain: preview.marketplace.team
+instances: 3
 
 api:
   memory: 2GB
