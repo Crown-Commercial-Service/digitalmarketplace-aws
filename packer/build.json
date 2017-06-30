@@ -6,7 +6,7 @@
   "builders": [{
     "type": "amazon-ebs",
     "region": "{{ user `aws_region` }}",
-    "source_ami": "ami-971238f1",
+    "source_ami": "ami-6d48500b",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_name": "{{ user `name` }}-{{isotime | clean_ami_name}}",
@@ -17,7 +17,7 @@
     ],
     "tags": {
       "server-role": "{{ user `name` }}",
-      "source-ami": "ami-971238f1"
+      "source-ami": "ami-6d48500b"
     }
   }],
   "provisioners": [
