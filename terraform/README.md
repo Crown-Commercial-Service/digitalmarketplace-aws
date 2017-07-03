@@ -12,7 +12,7 @@
 
 Make sure you have at least v0.8 installed: https://www.terraform.io/downloads.html
 
-Download the zip file, extract it and copy the terraform executable to /usr/local/bin (or your preferred location).
+Download the zip file, extract it and copy the terraform executable to `/usr/local/bin` (or your preferred location).
 
 Check the install with running ```terraform -v```.
 
@@ -30,15 +30,15 @@ Follow the instructions outlined here: https://github.com/alphagov/aws-auth
 
 ### Direnv (optional)
 
-Install direnv (https://github.com/direnv/direnv) to automatically load environment variables from .envrc files
+Install direnv (https://github.com/direnv/direnv) to automatically load environment variables from `.envrc` files
 
 ## Initialise
 
 ### Set up AWS credentials for different environments
 
-Terraform can be used only with MFA therefore you have to set up your profiles both in ~/.aws/credentials and ~/.aws/config
+Terraform can be used only with MFA therefore you have to set up your profiles both in `~/.aws/credentials` and `~/.aws/config`
 
-Note: You can use direnv (https://github.com/direnv/direnv) to load the AWS_PROFILE value automatically for the root modules (aws-dm*/.envrc). Nonetheless the Terraform wrapper script and the Makefile is going to source the .envrc files automatically.
+Note: You can use direnv (https://github.com/direnv/direnv) to load the AWS_PROFILE value automatically for the root modules (`aws-dm*/.envrc`). Nonetheless the Terraform wrapper script and the Makefile is going to source the `.envrc` files automatically.
 
 ### Example
 
@@ -113,7 +113,7 @@ cd root/aws-dm
 
 ### Create an S3 bucket for storing the Terraform state files
 
-The bucket name should be: digitalmarketplace-terraform-state-<account>, where <account> is main/development/production. Make sure you turn on versioning.
+The bucket name should be: `digitalmarketplace-terraform-state-<account>`, where <account> is `main/development/production`. Make sure you turn on versioning.
 
 ### IAM groups / AWS users
 
