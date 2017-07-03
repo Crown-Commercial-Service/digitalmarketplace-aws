@@ -33,6 +33,11 @@ make requirements
 
 For Terraform setup and usage please check the separate ([README](terraform/README.md)).
 
+- [Terraform installation and setup](terraform/README.md#requirements) (requires MFA)
+- [Terraform usage](terraform/README.md#make-targets)
+- [Using Terraform in an new AWS environment](terraform/README.md#requirements-in-a-new-aws-environment)
+
+
 ## Creating AMIs with packer
 
 `elasticsearch` and `nginx` stacks require custom AMIs with preinstalled packages.
