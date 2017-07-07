@@ -107,4 +107,5 @@ module "log_streaming" {
 module "log_metrics" {
   source = "../../modules/log-metrics"
   environment = "staging"
+  app_names = ["${module.application_logs.app_names}"]
 }

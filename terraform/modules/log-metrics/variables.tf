@@ -1,5 +1,2 @@
 variable "environment" {}
-variable "app_names" {
-  type = "list"
-  default = ["buyer-frontend", "supplier-frontend", "admin-frontend", "api", "search-api", "briefs-frontend"]
-}
+variable "app_names" {}
