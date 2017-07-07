@@ -155,7 +155,7 @@ resource "aws_cloudwatch_log_metric_filter" "application-500s" {
 
 # Main nginx log buckets
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_0" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_0" {
   name  = "${var.environment}-nginx-request-times-0"
   pattern        = "{$$.requestTime >= 0 && $$.requestTime < 0.025 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -167,7 +167,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_0" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_1" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_1" {
   name  = "${var.environment}-nginx-request-times-1"
   pattern        = "{$$.requestTime >= 0.025 && $$.requestTime < 0.05 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -179,7 +179,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_1" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_2" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_2" {
   name  = "${var.environment}-nginx-request-times-2"
   pattern        = "{$$.requestTime >= 0.05 && $$.requestTime < 0.1 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -191,7 +191,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_2" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_3" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_3" {
   name  = "${var.environment}-nginx-request-times-3"
   pattern        = "{$$.requestTime >= 0.1 && $$.requestTime < 0.25 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -203,7 +203,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_3" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_4" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_4" {
   name  = "${var.environment}-nginx-request-times-4"
   pattern        = "{$$.requestTime >= 0.25 && $$.requestTime < 0.5 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -215,7 +215,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_4" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_5" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_5" {
   name  = "${var.environment}-nginx-request-times-5"
   pattern        = "{$$.requestTime >= 0.5 && $$.requestTime < 1 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -227,7 +227,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_5" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_6" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_6" {
   name  = "${var.environment}-nginx-request-times-6"
   pattern        = "{$$.requestTime >= 1 && $$.requestTime < 2.5 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -239,7 +239,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_6" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_7" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_7" {
   name  = "${var.environment}-nginx-request-times-7"
   pattern        = "{$$.requestTime >= 2.5 && $$.requestTime < 5 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -251,7 +251,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_7" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_8" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_8" {
   name  = "${var.environment}-nginx-request-times-8"
   pattern        = "{$$.requestTime >= 5 && $$.requestTime < 10 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
@@ -263,7 +263,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_8" {
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_9" {
+resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_nginx_9" {
   name  = "${var.environment}-nginx-request-times-9"
   pattern        = "{$$.requestTime >= 10 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.environment}-nginx-json"
