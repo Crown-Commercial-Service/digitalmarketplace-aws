@@ -274,3 +274,15 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_9" {
     value     = "1"
   }
 }
+
+resource "aws_cloudwatch_log_metric_filter" "main-nginx-500s" {
+  name  = "${var.environment}-nginx-500s"
+  pattern        = "{$$.status = 5*}"
+  log_group_name = "${var.environment}-nginx-json"
+
+  metric_transformation {
+    name  = "${var.environment}-nginx-500s"
+    namespace = "DM-500s"
+    value     = "1"
+  }
+}
