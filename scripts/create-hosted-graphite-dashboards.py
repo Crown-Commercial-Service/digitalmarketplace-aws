@@ -22,7 +22,7 @@ sys.path.insert(0, '.')  # noqa
 
 def generate_dashboards(api_key):
     endpoint = "https://api.hostedgraphite.com/api/v2/grafana/dashboards/"
-    path = "scripts/templates/grafana-dashboards/"
+    path = "../grafana/"
 
     for filename in os.listdir(path):
         with open(path + filename) as fp:
