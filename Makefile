@@ -98,6 +98,16 @@ check-db-migration-task: ## Get the status for the last db migration task
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	@cf curl /v3/apps/`cf app --guid ${APPLICATION_NAME}-db-migration`/tasks?order_by=-created_at | jq -r ".resources[0].state"
 
+.PHONY: create-db-snapshot-service
+create-db-snapshot-service: ## Create a db service from the latest db snapshot
+	$(eval export DB_GUID=$(shell cf service digitalmarketplace_api_db --guid))
+	$(eval export DB_PLAN=$(shell cf service digitalmarketplace_api_db | grep -i 'plan: ' | cut -d ' ' -f2))
+	cf create-service postgres ${DB_PLAN} digitalmarketplace_api_db_snapshot -c "{\"restore_from_latest_snapshot_of\": \"${DB_GUID}\"}"
+
+.PHONY: check-db-snapshot-service
+check-db-snapshot-service: ## Get the status for the sb snapshot service
+	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
+
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	cf logout
