@@ -189,52 +189,52 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_0.samplecount:sum, '0-0.025s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_0.samplecount:max, '0-0.025s')"
             },
             {
               "hide": false,
               "refId": "B",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_1.samplecount:sum, '0.025-0.05s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_1.samplecount:max, '0.025-0.05s')"
             },
             {
               "hide": false,
               "refId": "C",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_2.samplecount:sum, '0.05-0.1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_2.samplecount:max, '0.05-0.1s')"
             },
             {
               "hide": false,
               "refId": "D",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_3.samplecount:sum, '0.1-0.25s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_3.samplecount:max, '0.1-0.25s')"
             },
             {
               "hide": false,
               "refId": "E",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_4.samplecount:sum, '0.25-0.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_4.samplecount:max, '0.25-0.5s')"
             },
             {
               "hide": false,
               "refId": "F",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_5.samplecount:sum, '0.5-1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_5.samplecount:max, '0.5-1s')"
             },
             {
               "hide": false,
               "refId": "G",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_6.samplecount:sum, '1-2.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_6.samplecount:max, '1-2.5s')"
             },
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.samplecount:sum, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.samplecount:max, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.samplecount:sum, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.samplecount:max, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:sum, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:max, '>10s')"
             }
           ],
           "thresholds": [],
@@ -340,17 +340,17 @@
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.samplecount:sum, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.samplecount:max, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.samplecount:sum, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.samplecount:max, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:sum, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:max, '>10s')"
             }
           ],
           "thresholds": [],
