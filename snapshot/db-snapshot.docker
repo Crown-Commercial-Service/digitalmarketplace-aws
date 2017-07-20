@@ -1,0 +1,6 @@
+FROM python:3.6.1-slim
+
+COPY /create-db-dump.sh /tmp/create-db-dump.sh
+COPY /upload-dump-to-s3.py /tmp/upload-dump-to-s3.py
+
+CMD ["tail", "-f", "/dev/null"]

@@ -21,3 +21,8 @@ supplier-frontend:
 briefs-frontend:
   subdomain: dm
   path: /buyers
+
+db-snapshot:
+  subdomain: dm-db-snapshot
+  services:
+    - digitalmarketplace_api_db
