@@ -108,6 +108,24 @@ create-db-snapshot-service: ## Create a db service from the latest db snapshot
 check-db-snapshot-service: ## Get the status for the sb snapshot service
 	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
 
+.PHONY: deploy-db-snapshot
+deploy-db-snapshot: ## Deploys the db snapshot app
+	$(eval export APPLICATION_NAME=db-snapshot)
+	$(eval export S3_POST_URL_DATA=$(shell ./scripts/generate-s3-post-url-data.py))
+	cf push db-snapshot -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-snapshot --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
+	# cf stop db-snapshot
+	cf set-env db-snapshot S3_POST_URL_DATA ${S3_POST_URL_DATA}
+	cf run-task db-snapshot "/tmp/create-db-dump.sh" --name db-snapshot
+
+.PHONY: check-db-snapshot-task
+check-db-snapshot-task: ## Get the status for the last db snapshot task
+	@cf curl /v3/apps/`cf app --guid db-snapshot`/tasks?order_by=-created_at | jq -r ".resources[0].state"
+
+.PHONY: cleanup-db-snapshot
+cleanup-db-snapshot: ## Remove snapshot service and app
+	cf delete -f db-snapshot
+	cf delete-service -f digitalmarketplace_api_db_snapshot
+
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	cf logout
