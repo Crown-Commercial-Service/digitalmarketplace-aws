@@ -124,7 +124,6 @@ check-db-snapshot-task: ## Get the status for the last db snapshot task
 .PHONY: cleanup-db-snapshot
 cleanup-db-snapshot: ## Remove snapshot service and app
 	cf delete -f db-snapshot
-	cf delete-service -f digitalmarketplace_api_db_snapshot
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
