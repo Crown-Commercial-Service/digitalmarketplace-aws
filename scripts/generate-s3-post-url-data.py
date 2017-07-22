@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-This script will create a presigned url and fields for POSTING to an s3 bucket. This allows someone without permissions on the
-bucket to upload a file.
+This script will create a presigned url and fields for POSTING to an s3 bucket. This allows someone without permissions
+on the bucket to upload a file.
 
 This script must be run by an entity with the right permissions on the bucket.
 
@@ -23,9 +23,9 @@ def generate_s3_post_data(bucket):
     s3 = boto3.client('s3')
     filename = "{}.sql.gz.gpg".format(time.strftime("%Y%m%d-%H%M"))
 
-    fields = { "acl": "private" }
+    fields = {"acl": "private"}
     conditions = [
-        { "acl": "private" }
+        {"acl": "private"}
     ]
 
     post = s3.generate_presigned_post(

@@ -6,13 +6,14 @@ import json
 import requests
 from requests.exceptions import HTTPError
 
+
 def upload_dump_to_s3():
     s3_post_data_url = json.loads(os.environ['S3_POST_URL_DATA'])
     dump_file = '/tmp/dump.sql.gz.gpg'
 
     url = s3_post_data_url['url']
     fields = s3_post_data_url['fields']
-    files = { "file": open(dump_file, 'r') }
+    files = {"file": open(dump_file, 'r')}
 
     response = requests.post(url, data=fields, files=files)
 
