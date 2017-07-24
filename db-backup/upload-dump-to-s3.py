@@ -22,6 +22,9 @@ def upload_dump_to_s3():
     except HTTPError as e:
         print("Error uploading {} to {}: {}".format(dump_file, url, e.args[0]))
         sys.exit(1)
+    except Exception as e:
+        print("Error uploading: {}".format(e))
+        sys.exit(2)
     else:
         print('Successfully uploaded {} to {}'.format(dump_file, url))
 
