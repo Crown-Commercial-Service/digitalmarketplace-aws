@@ -108,22 +108,22 @@ create-db-snapshot-service: ## Create a db service from the latest db snapshot
 check-db-snapshot-service: ## Get the status for the sb snapshot service
 	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
 
-.PHONY: deploy-db-snapshot
-deploy-db-snapshot: ## Deploys the db snapshot app
-	$(eval export APPLICATION_NAME=db-snapshot)
+.PHONY: deploy-db-backup-app
+deploy-db-backup-app: ## Deploys the db backup app
+	$(eval export APPLICATION_NAME=db-backup)
 	$(eval export S3_POST_URL_DATA=$(shell ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups))
-	cf push db-snapshot -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-snapshot --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
-	cf set-env db-snapshot S3_POST_URL_DATA '${S3_POST_URL_DATA}'
-	cf restage db-snapshot
-	cf run-task db-snapshot "/tmp/create-db-dump.sh" --name db-snapshot -m 2G
+	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-backup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
+	cf set-env db-backup S3_POST_URL_DATA '${S3_POST_URL_DATA}'
+	cf restage db-backup
+	cf run-task db-backup "/tmp/create-db-dump.sh" --name db-backup -m 2G
 
-.PHONY: check-db-snapshot-task
-check-db-snapshot-task: ## Get the status for the last db snapshot task
-	@cf curl /v3/apps/`cf app --guid db-snapshot`/tasks?order_by=-created_at | jq -r ".resources[0].state"
+.PHONY: check-db-backup-task
+check-db-backup-task: ## Get the status for the last db backup task
+	@cf curl /v3/apps/`cf app --guid db-backup`/tasks?order_by=-created_at | jq -r ".resources[0].state"
 
-.PHONY: cleanup-db-snapshot
-cleanup-db-snapshot: ## Remove snapshot service and app
-	cf delete -f db-snapshot
+.PHONY: cleanup-db-backup
+cleanup-db-backup: ## Remove snapshot service and app
+	cf delete -f db-backup
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment

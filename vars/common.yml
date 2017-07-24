@@ -22,7 +22,7 @@ briefs-frontend:
   subdomain: dm
   path: /buyers
 
-db-snapshot:
-  subdomain: dm-db-snapshot
+db-backup:
+  subdomain: dm-db-backup
   services:
     - digitalmarketplace_api_db
