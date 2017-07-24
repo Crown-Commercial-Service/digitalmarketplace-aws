@@ -8,7 +8,7 @@ This script must be run by an entity with the right permissions on the bucket.
 The url will expire after 600 seconds.
 
 Usage:
-scripts/generate-s3-post-url-data.py <bucket>
+scripts/generate-s3-post-url-data.py <bucket> <filename>
 
 """
 
@@ -19,9 +19,8 @@ import boto3
 from docopt import docopt
 
 
-def generate_s3_post_data(bucket):
+def generate_s3_post_data(bucket, filename):
     s3 = boto3.client('s3')
-    filename = "{}.sql.gz.gpg".format(time.strftime("%Y%m%d-%H%M"))
 
     fields = {"acl": "private"}
     conditions = [
@@ -40,4 +39,6 @@ def generate_s3_post_data(bucket):
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
-    print(generate_s3_post_data(arguments['<bucket>']))
+    bucket = arguments['<bucket>']
+    filename = arguments['<filename>']
+    print(generate_s3_post_data(bucket, filename))
