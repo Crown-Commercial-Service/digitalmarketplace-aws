@@ -103,3 +103,9 @@ module "log_streaming" {
   nginx_log_groups = ["${concat(module.production_nginx.json_log_groups, module.application_logs.nginx_log_groups)}"]
   application_log_groups = ["${module.application_logs.application_log_groups}"]
 }
+
+module "log_metrics" {
+  source = "../../modules/log-metrics"
+  environment = "production"
+  app_names = ["${module.application_logs.app_names}"]
+}
