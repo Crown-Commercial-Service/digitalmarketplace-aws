@@ -105,7 +105,7 @@ create-db-snapshot-service: ## Create a db service from the latest db snapshot
 	cf create-service postgres ${DB_PLAN} digitalmarketplace_api_db_snapshot -c "{\"restore_from_latest_snapshot_of\": \"${DB_GUID}\"}"
 
 .PHONY: check-db-snapshot-service
-check-db-snapshot-service: ## Get the status for the sb snapshot service
+check-db-snapshot-service: ## Get the status for the db snapshot service
 	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
 
 .PHONY: deploy-db-backup-app
@@ -115,7 +115,7 @@ deploy-db-backup-app: ## Deploys the db backup app
 	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-backup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
 	cf set-env db-backup S3_POST_URL_DATA '${S3_POST_URL_DATA}'
 	cf restage db-backup
-	cf run-task db-backup "/tmp/create-db-dump.sh" --name db-backup -m 2G
+	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 2G
 
 .PHONY: check-db-backup-task
 check-db-backup-task: ## Get the status for the last db backup task
