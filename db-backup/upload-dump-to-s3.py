@@ -13,7 +13,7 @@ def upload_dump_to_s3():
 
     url = s3_post_url_data['url']
     fields = s3_post_url_data['fields']
-    files = {"file": open(dump_file, 'r')}
+    files = {"file": open(dump_file, 'rb')}
 
     response = requests.post(url, data=fields, files=files)
 
