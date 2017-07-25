@@ -114,6 +114,7 @@ deploy-db-backup-app: ## Deploys the db backup app
 	$(eval export S3_POST_URL_DATA=$(shell ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups ${STAGE}-$(shell date +"%Y%m%d%H%M").sql.gz.gpg))
 	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-backup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
 	cf set-env db-backup S3_POST_URL_DATA '${S3_POST_URL_DATA}'
+	cf set-env db-backup RECIPIENT 'Digital Marketplace DB backups'
 	cf restage db-backup
 	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 2G
 
