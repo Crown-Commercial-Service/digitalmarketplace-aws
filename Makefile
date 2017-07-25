@@ -115,6 +115,7 @@ deploy-db-backup-app: ## Deploys the db backup app
 	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-backup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
 	cf set-env db-backup S3_POST_URL_DATA '${S3_POST_URL_DATA}'
 	cf set-env db-backup RECIPIENT 'Digital Marketplace DB backups'
+	cf set-env db-backup PUBKEY "$$(cat ${DM_CREDENTIALS_REPO}/gpg/database-backups/public.key)"
 	cf restage db-backup
 	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 2G
 
