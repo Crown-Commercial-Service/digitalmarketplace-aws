@@ -109,9 +109,9 @@ check-db-snapshot-service: ## Get the status for the db snapshot service
 	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
 
 .PHONY: deploy-db-backup-app
-deploy-db-backup-app: ## Deploys the db backup app
+deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	$(eval export APPLICATION_NAME=db-backup)
-	$(eval export S3_POST_URL_DATA=$(shell ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups ${STAGE}-$(shell date +"%Y%m%d%H%M").sql.gz.gpg))
+	$(eval export S3_POST_URL_DATA=$(shell ${VIRTUALENV_ROOT}/bin/python ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups ${STAGE}-$(shell date +"%Y%m%d%H%M").sql.gz.gpg))
 	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-backup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
 	cf set-env db-backup S3_POST_URL_DATA '${S3_POST_URL_DATA}'
 	cf set-env db-backup RECIPIENT 'Digital Marketplace DB backups'
