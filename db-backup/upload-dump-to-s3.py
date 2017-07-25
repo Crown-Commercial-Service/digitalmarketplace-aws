@@ -9,7 +9,7 @@ from requests.exceptions import HTTPError
 
 def upload_dump_to_s3():
     s3_post_url_data = json.loads(os.environ['S3_POST_URL_DATA'])
-    dump_file = '/app/dump.sql.gz.gpg'
+    dump_file = "/app/{}".format(os.environ['DUMP_FILE_NAME'])
 
     url = s3_post_url_data['url']
     fields = s3_post_url_data['fields']
