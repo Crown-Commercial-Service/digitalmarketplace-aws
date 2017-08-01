@@ -136,8 +136,11 @@ paas-clean: ## Cleans up all files created for the PaaS deployment
 .PHONY: create-db-cleanup-service
 create-db-cleanup-service: ## Create a db service for cleaning up latest dump to use in other environments.
 	cf target -s preview
+	sleep 10
 	$(eval export DB_PLAN=$(shell cf service digitalmarketplace_api_db | grep -i 'plan: ' | cut -d ' ' -f2))
 	cf target -s db-cleanup
+	sleep 10
+	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
 	cf create-service postgres ${DB_PLAN} digitalmarketplace_db_cleanup
 
 .PHONY: check-db-cleanup-service
