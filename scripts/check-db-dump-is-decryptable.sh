@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 aws s3 cp s3://digitalmarketplace-database-backups/${DUMP_FILE_NAME} ./${DUMP_FILE_NAME}
 gpg2 --batch --import <($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/gpg/database-backups/secret.key.enc)

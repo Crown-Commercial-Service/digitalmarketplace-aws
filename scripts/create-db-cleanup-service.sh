@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 cf target -s preview
 DB_PLAN=$(cf service digitalmarketplace_api_db | grep -i 'plan: ' | cut -d ' ' -f2)
