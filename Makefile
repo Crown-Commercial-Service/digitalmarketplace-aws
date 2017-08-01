@@ -153,6 +153,12 @@ import-and-clean-db-dump: ## Connects to the db-cleanup service, imports the lat
 	 @[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
 	 ./scripts/import-and-clean-db-dump.sh
 
+.PHONE: cleanup-db-cleanup
+cleanup-db-cleanup: ## Delete app and service created in the db cleanup procedure
+	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	cf delete -f db-cleanup
+	cf delete-service -f digitalmarketplace_db_cleanup
+
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
