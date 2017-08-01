@@ -28,6 +28,6 @@ psql "${DB_URI}" < \
 gpg2 --list-secret-keys --with-colons --fingerprint | grep fpr | cut -c 13-52 | xargs -n1 gpg2 --batch --delete-secret-key
 rm "${LATEST_PROD_DUMP}"
 
-psql --variable bcrypt_password="'$(./scripts/generate-bcrypt-hashed-password.py Password1234 4)'" "${DB_URI}" < ./scripts/clean-db-dump.sql
+psql --variable bcrypt_password="'$(${VIRTUALENV_ROOT}/bin/python ./scripts/generate-bcrypt-hashed-password.py Password1234 4)'" "${DB_URI}" < ./scripts/clean-db-dump.sql
 
 kill -9 "${TUNNEL_PID}"

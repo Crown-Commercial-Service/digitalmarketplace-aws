@@ -149,7 +149,7 @@ deploy-db-cleanup-app: ## Deploys the db cleanup app
 	cf restage db-cleanup
 
 .PHONY: import-and-clean-db-dump
-import-and-clean-db-dump: ## Connects to the db-cleanup service, imports the latest dump and cleans it.
+import-and-clean-db-dump: virtualenv ## Connects to the db-cleanup service, imports the latest dump and cleans it.
 	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
 	./scripts/import-and-clean-db-dump.sh
 
