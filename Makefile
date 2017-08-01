@@ -133,6 +133,13 @@ cleanup-db-backup: ## Remove snapshot service and app
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	cf logout
 
+.PHONY: create-db-cleanup-service
+create-db-cleanup-service: ## Create a db service for cleaning up latest dump to use in other environments.
+	cf target -s preview
+	$(eval export DB_PLAN=$(shell cf service digitalmarketplace_api_db | grep -i 'plan: ' | cut -d ' ' -f2))
+	cf target -s db-cleanup
+	cf create-service postgres ${DB_PLAN} digitalmarketplace_db_cleanup
+
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
