@@ -151,6 +151,11 @@ deploy-db-cleanup-app: ## Deploys the db cleanup app
 	cf bind-service db-cleanup digitalmarketplace_db_cleanup
 	cf restage db-cleanup
 
+.PHONY: import-and-clean-db-dump
+import-and-clean-db-dump: ## Connects to the db-cleanup service, imports the latest dump and cleans it.
+	 @[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	 ./scripts/import-and-clean-db-dump.sh
+
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
