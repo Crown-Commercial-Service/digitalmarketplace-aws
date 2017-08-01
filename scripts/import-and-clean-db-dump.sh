@@ -3,7 +3,6 @@
 LATEST_PROD_DUMP=$(aws s3 ls digitalmarketplace-database-backups | grep production | sort -r | head -1 | awk '{print $4}')
 aws s3 cp s3://digitalmarketplace-database-backups/"${LATEST_PROD_DUMP}" ./"${LATEST_PROD_DUMP}"
 
-gpg2 --batch --import <($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/gpg/database-backups/secret.key.enc)
 
 SERVICE_DATA=$(cf curl /v3/apps/"$(cf app --guid db-cleanup)"/env | jq -r '.system_env_json.VCAP_SERVICES.postgres[0].credentials')
 DB_HOST=$(echo $SERVICE_DATA | jq -r '.host')
@@ -17,11 +16,14 @@ TUNNEL_PID="$!"
 
 sleep 10
 
+gpg2 --batch --import <($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/gpg/database-backups/secret.key.enc)
+
 psql "${DB_URI}" < \
   <(echo -n $($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/gpg/database-backups/secret-key-passphrase.txt.enc) | \
   gpg2 --batch --passphrase-fd 0 --pinentry-mode loopback --decrypt ./"${LATEST_PROD_DUMP}" | \
   gunzip)
 
+gpg2 --list-secret-keys --with-colons --fingerprint | grep fpr | cut -c 13-52 | xargs -n1 gpg2 --batch --delete-secret-key
 rm "${LATEST_PROD_DUMP}"
 
 psql --variable bcrypt_password="'$(./scripts/generate-bcrypt-hashed-password.py Password1234 4)'" "${DB_URI}" < ./scripts/clean-db-dump.sql
