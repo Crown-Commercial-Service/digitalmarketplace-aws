@@ -144,6 +144,13 @@ create-db-cleanup-service: ## Create a db service for cleaning up latest dump to
 check-db-cleanup-service: ## Get the status for the db cleanup service
 	@cf service digitalmarketplace_db_cleanup | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
 
+.PHONY: deploy-db-cleanup-app
+deploy-db-cleanup-app: ## Deploys the db cleanup app
+	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	cf push db-cleanup -o digitalmarketplace/db-cleanup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
+	cf bind-service db-cleanup digitalmarketplace_db_cleanup
+	cf restage db-cleanup
+
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
