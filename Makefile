@@ -140,6 +140,10 @@ create-db-cleanup-service: ## Create a db service for cleaning up latest dump to
 	cf target -s db-cleanup
 	cf create-service postgres ${DB_PLAN} digitalmarketplace_db_cleanup
 
+.PHONY: check-db-cleanup-service
+check-db-cleanup-service: ## Get the status for the db cleanup service
+	@cf service digitalmarketplace_db_cleanup | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
+
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
 	$(call check_space)
