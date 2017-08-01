@@ -150,8 +150,13 @@ deploy-db-cleanup-app: ## Deploys the db cleanup app
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: ## Connects to the db-cleanup service, imports the latest dump and cleans it.
-	 @[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
-	 ./scripts/import-and-clean-db-dump.sh
+	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	./scripts/import-and-clean-db-dump.sh
+
+.PHONY: migrate-cleaned-db-dump
+migrate-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
+	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	./scripts/migrate-cleaned-db-to-target-stage.sh
 
 .PHONE: cleanup-db-cleanup
 cleanup-db-cleanup: ## Delete app and service created in the db cleanup procedure
