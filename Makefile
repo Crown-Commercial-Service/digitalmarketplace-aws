@@ -106,7 +106,7 @@ create-db-snapshot-service: ## Create a db service from the latest db snapshot
 
 .PHONY: check-db-snapshot-service
 check-db-snapshot-service: ## Get the status for the db snapshot service
-	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
+	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | tr '[:lower:]' '[:upper:]'
 
 .PHONY: deploy-db-backup-app
 deploy-db-backup-app: virtualenv ## Deploys the db backup app
@@ -139,7 +139,7 @@ create-db-cleanup-service: ## Create a db service for cleaning up latest dump to
 
 .PHONY: check-db-cleanup-service
 check-db-cleanup-service: ## Get the status for the db cleanup service
-	@cf service digitalmarketplace_db_cleanup | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
+	@cf service digitalmarketplace_db_cleanup | grep -i 'status: ' | sed 's/^.*: //' | tr '[:lower:]' '[:upper:]'
 
 .PHONY: deploy-db-cleanup-app
 deploy-db-cleanup-app: ## Deploys the db cleanup app
