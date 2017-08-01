@@ -151,7 +151,7 @@ deploy-db-cleanup-app: ## Deploys the db cleanup app
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the db-cleanup service, imports the latest dump and cleans it.
 	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
-	./scripts/import-and-clean-db-dump.sh
+	VIRTUALENV_ROOT=${VIRTUALENV_ROOT} ./scripts/import-and-clean-db-dump.sh
 
 .PHONY: migrate-cleaned-db-dump
 migrate-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
