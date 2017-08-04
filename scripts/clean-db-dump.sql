@@ -98,4 +98,5 @@ SET declaration = (CASE
                        }'
                    END)::json
 WHERE declaration IS NOT NULL
-  AND declaration::varchar != 'null';
+  AND declaration::varchar != 'null'
+  AND declaration::varchar != '{}';
