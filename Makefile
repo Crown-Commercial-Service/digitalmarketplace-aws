@@ -143,24 +143,24 @@ check-db-cleanup-service: ## Get the status for the db cleanup service
 
 .PHONY: deploy-db-cleanup-app
 deploy-db-cleanup-app: ## Deploys the db cleanup app
-	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	PAAS_SPACE=db-cleanup $(call check_space)
 	cf push db-cleanup -o digitalmarketplace/db-cleanup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
 	cf bind-service db-cleanup digitalmarketplace_db_cleanup
 	cf restage db-cleanup
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the db-cleanup service, imports the latest dump and cleans it.
-	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	PAAS_SPACE=db-cleanup $(call check_space)
 	VIRTUALENV_ROOT=${VIRTUALENV_ROOT} ./scripts/import-and-clean-db-dump.sh
 
 .PHONY: migrate-cleaned-db-dump
 migrate-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
-	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	PAAS_SPACE=db-cleanup $(call check_space)
 	./scripts/migrate-cleaned-db-to-target-stage.sh
 
 .PHONE: cleanup-db-cleanup
 cleanup-db-cleanup: ## Delete app and service created in the db cleanup procedure
-	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "db-cleanup" ] || (echo "Error: This can only be run in the db-cleanup space" && exit 1)
+	PAAS_SPACE=db-cleanup $(call check_space)
 	cf delete -f db-cleanup
 	cf delete-service -f digitalmarketplace_db_cleanup
 
