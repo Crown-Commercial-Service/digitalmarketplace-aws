@@ -16,11 +16,7 @@ from docopt import docopt
 
 
 def hash_password(password, cost_factor):
-    hashed_password = bcrypt.hashpw(
-        bytes(password),
-        bcrypt.gensalt(cost_factor)
-    ).decode('utf-8')
-    return hashed_password
+    return bcrypt.hashpw(bytes(password), bcrypt.gensalt(cost_factor)).decode('utf-8')
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)

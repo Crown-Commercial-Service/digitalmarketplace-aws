@@ -84,19 +84,17 @@ FROM framework_agreements;
 -- Removes all personal data while keeping our app working as expected
 \echo 'Blank out declarations'
 UPDATE supplier_frameworks
-SET declaration = (CASE
-                       WHEN (declaration->'status') IS NULL
-                            OR (declaration->'nameOfOrganisation') IS NULL THEN '{}'
-                       ELSE '{
-                         "status": "' || (declaration->>'status') || '",
-                         "nameOfOrganisation": "' || replace((declaration->>'nameOfOrganisation'), '"', '') || '",
-                         "primaryContactEmail": "supplier-user@example.com",
-                         "organisationSize": "' || (ARRAY['micro',
-                                                          'small',
-                                                          'medium',
-                                                          'large'])[MOD(supplier_id, 4)+1] || '"
-                       }'
-                   END)::json
+SET declaration = (
+    CASE
+    WHEN (declaration->'status') IS NULL OR (declaration->'nameOfOrganisation') IS NULL
+    THEN '{}'
+    ELSE '{
+         "status": "' || (declaration->>'status') || '",
+         "nameOfOrganisation": "' || replace((declaration->>'nameOfOrganisation'), '"', '') || '",
+         "primaryContactEmail": "supplier-user@example.com",
+         "organisationSize": "' || (ARRAY['micro', 'small', 'medium', 'large'])[MOD(supplier_id, 4)+1] || '"
+         }'
+    END)::json
 WHERE declaration IS NOT NULL
   AND declaration::varchar != 'null'
   AND declaration::varchar != '{}';
