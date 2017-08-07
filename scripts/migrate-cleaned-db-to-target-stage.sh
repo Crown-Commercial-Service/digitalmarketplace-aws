@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail
 
 echo "Target stage is: ${TARGET_STAGE}"
 
@@ -25,7 +25,6 @@ if [ "${TARGET_STAGE}" == 'google-drive' ]; then
 elif [ "${TARGET_STAGE}" == 'preview' ] || [ "${TARGET_STAGE}" == 'staging' ]; then
   echo "Migrating cleaned dump to ${TARGET_STAGE} and uploading to Google Drive"
   cf target -s ${TARGET_STAGE}
-  sleep 30
   TARGET_SERVICE_DATA=$(cf curl /v3/apps/"$(cf app --guid api)"/env | jq -r '.system_env_json.VCAP_SERVICES.postgres[0].credentials')
   TARGET_DB_HOST=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.host')
   TARGET_DB_USERNAME=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.username')
