@@ -144,7 +144,7 @@ check-db-cleanup-service: ## Get the status for the db cleanup service
 .PHONY: deploy-db-cleanup-app
 deploy-db-cleanup-app: ## Deploys the db cleanup app
 	PAAS_SPACE=db-cleanup $(call check_space)
-	cf push db-cleanup -o digitalmarketplace/db-cleanup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
+	cf push db-cleanup -o alpine:latest --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
 	cf bind-service db-cleanup digitalmarketplace_db_cleanup
 	cf restage db-cleanup
 
