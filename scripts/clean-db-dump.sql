@@ -98,3 +98,9 @@ SET declaration = (
 WHERE declaration IS NOT NULL
   AND declaration::varchar != 'null'
   AND declaration::varchar != '{}';
+
+-- PaaS have an event trigger which invokes a function to reassign the owner of an object
+-- The function checks if the current user has a particular role. If that role doesn't exist
+-- in the database it causes an error. Removing the trigger prevents the function being executed.
+\echo 'Remove PaaS event trigger'
+DROP EVENT TRIGGER reassign_owned;
