@@ -37,6 +37,11 @@ virtualenv: ${VIRTUALENV_ROOT}/activate ## Create virtualenv if it does not exis
 ${VIRTUALENV_ROOT}/activate:
 	@[ -z "${VIRTUAL_ENV}" ] && [ ! -d venv ] && virtualenv venv || true
 
+.PHONY: db-cleanup
+db-cleanup: ## Set stage to db-cleanup
+	$(eval export STAGE=db-cleanup)
+	@true
+
 .PHONY: preview
 preview: ## Set stage to preview
 	$(eval export STAGE=preview)
@@ -135,25 +140,26 @@ paas-clean: ## Cleans up all files created for the PaaS deployment
 
 .PHONY: deploy-db-cleanup-app
 deploy-db-cleanup-app: ## Deploys the db cleanup app
-	PAAS_SPACE=db-cleanup $(call check_space)
-	cf push db-cleanup -o postgres:9.5-alpine --health-check-type none -i 1 -m 1G --no-start
+	$(call check_space)
+	cf push db-cleanup -o postgres:9.5-alpine --health-check-type none -i 1 -m 1G -k 10G --no-start
 	cf set-env db-cleanup POSTGRES_USER $(shell ${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_USER') &> /dev/null
 	cf set-env db-cleanup POSTGRES_PASSWORD $(shell ${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_PASSWORD') &> /dev/null
 	cf start db-cleanup
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the db-cleanup service, imports the latest dump and cleans it.
-	PAAS_SPACE=db-cleanup $(call check_space)
+	$(call check_space)
 	VIRTUALENV_ROOT=${VIRTUALENV_ROOT} ./scripts/import-and-clean-db-dump.sh
 
 .PHONY: migrate-cleaned-db-dump
 migrate-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
-	PAAS_SPACE=db-cleanup $(call check_space)
+	$(call check_space)
 	./scripts/migrate-cleaned-db-to-target-stage.sh
 
 .PHONE: cleanup-db-cleanup
 cleanup-db-cleanup: ## Delete app and service created in the db cleanup procedure
-	PAAS_SPACE=db-cleanup $(call check_space)
+	cf target -s db-cleanup
+	$(call check_space)
 	cf delete -f db-cleanup
 
 .PHONY: populate-paas-db
