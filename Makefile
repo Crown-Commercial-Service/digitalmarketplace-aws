@@ -151,10 +151,10 @@ import-and-clean-db-dump: virtualenv ## Connects to the db-cleanup service, impo
 	$(call check_space)
 	VIRTUALENV_ROOT=${VIRTUALENV_ROOT} ./scripts/import-and-clean-db-dump.sh
 
-.PHONY: migrate-cleaned-db-dump
-migrate-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
+.PHONY: apply-cleaned-db-dump
+apply-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
 	$(call check_space)
-	./scripts/migrate-cleaned-db-to-target.sh
+	./scripts/apply-cleaned-db-to-target.sh
 
 .PHONE: cleanup-db-cleanup
 cleanup-db-cleanup: ## Delete app and service created in the db cleanup procedure
