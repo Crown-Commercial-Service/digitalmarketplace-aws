@@ -3,18 +3,9 @@ set -euo pipefail
 
 echo "Target is: ${TARGET}"
 
-POSTGRES_USER=$($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_USER') &> /dev/null
-POSTGRES_PASSWORD=$($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_PASSWORD') &> /dev/null
-
-cf ssh db-cleanup -N -L 63306:localhost:5432 &
-CLEANUP_TUNNEL_PID="$!"
-sleep 10
-
 mkdir ./dumps
 LATEST_PROD_DUMP=$(aws s3 ls digitalmarketplace-database-backups | grep production | sort -r | head -1 | awk '{print $4}')
-pg_dump --no-acl --no-owner --clean postgres://"${POSTGRES_USER}":"${POSTGRES_PASSWORD}"@localhost:63306/"${POSTGRES_USER}" | gzip > ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}"
-
-kill -9 "${CLEANUP_TUNNEL_PID}"
+pg_dump --no-acl --no-owner --clean postgres://postgres:@localhost:63306/postgres | gzip > ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}"
 
 if [ "${TARGET}" == 'google-drive' ]; then
   echo 'Uploading cleaned dump to Google Drive'
@@ -26,15 +17,14 @@ elif [ "${TARGET}" == 'preview' ] || [ "${TARGET}" == 'staging' ]; then
   TARGET_DB_USERNAME=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.username')
   TARGET_DB_PASSWORD=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.password')
   TARGET_DB_NAME=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.name')
-  TARGET_DB_URI="postgres://${TARGET_DB_USERNAME}:${TARGET_DB_PASSWORD}@localhost:63306/${TARGET_DB_NAME}"
+  TARGET_DB_URI="postgres://${TARGET_DB_USERNAME}:${TARGET_DB_PASSWORD}@localhost:63307/${TARGET_DB_NAME}"
 
-  cf ssh api -N -L 63306:"${TARGET_DB_HOST}":5432 &
+  cf ssh api -N -L 63307:"${TARGET_DB_HOST}":5432 &
   TARGET_TUNNEL_PID="$!"
   sleep 10
 
   psql "${TARGET_DB_URI}" < <(gunzip --to-stdout ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}")
   kill -9 "${TARGET_TUNNEL_PID}"
-  cf target -s db-cleanup
 else
   echo 'Error: Unknown variable `TARGET`. Valid choices are `google-drive`, `preview`, `staging`'
   rm -fr ./dumps
