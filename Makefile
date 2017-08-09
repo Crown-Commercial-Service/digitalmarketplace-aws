@@ -133,20 +133,13 @@ cleanup-db-backup: ## Remove snapshot service and app
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	cf logout
 
-.PHONY: create-db-cleanup-service
-create-db-cleanup-service: ## Create a db service for cleaning up latest dump to use in other environments.
-	./scripts/create-db-cleanup-service.sh
-
-.PHONY: check-db-cleanup-service
-check-db-cleanup-service: ## Get the status for the db cleanup service
-	@cf service digitalmarketplace_db_cleanup | grep -i 'status: ' | sed 's/^.*: //' | tr '[:lower:]' '[:upper:]'
-
 .PHONY: deploy-db-cleanup-app
 deploy-db-cleanup-app: ## Deploys the db cleanup app
 	PAAS_SPACE=db-cleanup $(call check_space)
-	cf push db-cleanup -o alpine:latest --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
-	cf bind-service db-cleanup digitalmarketplace_db_cleanup
-	cf restage db-cleanup
+	cf push db-cleanup -o postgres:9.5-alpine --health-check-type none -i 1 -m 1G --no-start
+	cf set-env db-cleanup POSTGRES_USER $(shell ${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_USER') &> /dev/null
+	cf set-env db-cleanup POSTGRES_PASSWORD $(shell ${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_PASSWORD') &> /dev/null
+	cf start db-cleanup
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the db-cleanup service, imports the latest dump and cleans it.
@@ -162,7 +155,6 @@ migrate-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sy
 cleanup-db-cleanup: ## Delete app and service created in the db cleanup procedure
 	PAAS_SPACE=db-cleanup $(call check_space)
 	cf delete -f db-cleanup
-	cf delete-service -f digitalmarketplace_db_cleanup
 
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
