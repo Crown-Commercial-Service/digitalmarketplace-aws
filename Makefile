@@ -141,7 +141,7 @@ paas-clean: ## Cleans up all files created for the PaaS deployment
 .PHONY: deploy-db-cleanup-app
 deploy-db-cleanup-app: ## Deploys the db cleanup app
 	$(call check_space)
-	cf push db-cleanup -o postgres:9.5-alpine --health-check-type none -i 1 -m 1G -k 10G --no-start
+	cf push db-cleanup -o postgres:9.5-alpine --health-check-type none -i 1 -m 1G -k 2G --no-start
 	cf set-env db-cleanup POSTGRES_USER $(shell ${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_USER') &> /dev/null
 	cf set-env db-cleanup POSTGRES_PASSWORD $(shell ${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_PASSWORD') &> /dev/null
 	cf start db-cleanup
