@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Target stage is: ${TARGET_STAGE}"
+echo "Target is: ${TARGET}"
 
 POSTGRES_USER=$($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_USER') &> /dev/null
 POSTGRES_PASSWORD=$($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/db-cleanup/postgres-credentials.json | jq -r '.POSTGRES_PASSWORD') &> /dev/null
@@ -16,11 +16,11 @@ pg_dump --no-acl --no-owner --clean postgres://"${POSTGRES_USER}":"${POSTGRES_PA
 
 kill -9 "${CLEANUP_TUNNEL_PID}"
 
-if [ "${TARGET_STAGE}" == 'google-drive' ]; then
+if [ "${TARGET}" == 'google-drive' ]; then
   echo 'Uploading cleaned dump to Google Drive'
-elif [ "${TARGET_STAGE}" == 'preview' ] || [ "${TARGET_STAGE}" == 'staging' ]; then
-  echo "Migrating cleaned dump to ${TARGET_STAGE} and uploading to Google Drive"
-  cf target -s ${TARGET_STAGE}
+elif [ "${TARGET}" == 'preview' ] || [ "${TARGET}" == 'staging' ]; then
+  echo "Migrating cleaned dump to ${TARGET} and uploading to Google Drive"
+  cf target -s ${TARGET}
   TARGET_SERVICE_DATA=$(cf curl /v3/apps/"$(cf app --guid api)"/env | jq -r '.system_env_json.VCAP_SERVICES.postgres[0].credentials')
   TARGET_DB_HOST=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.host')
   TARGET_DB_USERNAME=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.username')
@@ -36,7 +36,7 @@ elif [ "${TARGET_STAGE}" == 'preview' ] || [ "${TARGET_STAGE}" == 'staging' ]; t
   kill -9 "${TARGET_TUNNEL_PID}"
   cf target -s db-cleanup
 else
-  echo 'Error: Unknown variable `TARGET_STAGE`. Valid choices are `google-drive`, `preview`, `staging`'
+  echo 'Error: Unknown variable `TARGET`. Valid choices are `google-drive`, `preview`, `staging`'
   rm -fr ./dumps
   exit 1
 fi
