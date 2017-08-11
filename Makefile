@@ -106,7 +106,7 @@ create-db-snapshot-service: ## Create a db service from the latest db snapshot
 
 .PHONY: check-db-snapshot-service
 check-db-snapshot-service: ## Get the status for the db snapshot service
-	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | awk '{print toupper($0)}'
+	@cf service digitalmarketplace_api_db_snapshot | grep -i 'status: ' | sed 's/^.*: //' | tr '[:lower:]' '[:upper:]'
 
 .PHONY: deploy-db-backup-app
 deploy-db-backup-app: virtualenv ## Deploys the db backup app
@@ -132,6 +132,23 @@ cleanup-db-backup: ## Remove snapshot service and app
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
 	cf logout
+
+.PHONY: run-postgres-container
+run-postgres-container: ## Runs a postgres container
+	docker run -d -p 63306:5432 postgres:9.5-alpine
+
+.PHONY: import-and-clean-db-dump
+import-and-clean-db-dump: virtualenv ## Connects to the postgres container, imports the latest dump and cleans it.
+	VIRTUALENV_ROOT=${VIRTUALENV_ROOT} ./scripts/import-and-clean-db-dump.sh
+
+.PHONY: apply-cleaned-db-dump
+apply-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
+	./scripts/apply-cleaned-db-to-target.sh
+
+.PHONY: cleanup-postgres-container
+cleanup-postgres-container: ## Stop and remove the docker container and its volume
+	docker ps | grep postgres:9.5-alpine | awk '{print $$1}' | xargs -n1 docker stop
+	docker ps -a | grep postgres:9.5-alpine | awk '{print $$1}' | xargs -n1 docker rm -v
 
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
