@@ -35,7 +35,7 @@ requirements: virtualenv ## Install requirements
 virtualenv: ${VIRTUALENV_ROOT}/activate ## Create virtualenv if it does not exist
 
 ${VIRTUALENV_ROOT}/activate:
-	@[ -z "${VIRTUAL_ENV}" ] && [ ! -d venv ] && virtualenv venv || true
+	@[ -z "${VIRTUAL_ENV}" ] && [ ! -d venv ] && virtualenv -p python3 venv || true
 
 .PHONY: preview
 preview: ## Set stage to preview
