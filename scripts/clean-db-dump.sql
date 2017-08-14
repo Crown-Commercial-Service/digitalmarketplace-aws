@@ -75,10 +75,21 @@ WHERE supplier_id IN
 DELETE
 FROM audit_events;
 
--- Remove framework agreements because they contain personal data and we don't rely on them
-\echo 'Delete framework agreements'
-DELETE
-FROM framework_agreements;
+-- Sanitise framework agreements because they contain personal data
+\echo 'Update framework agreements'
+UPDATE framework_agreements
+SET signed_agreement_details = ('{"signerName": "A. Nonymous",
+                                  "signerRole": "The Boss",
+                                  "uploaderUserId": ' || TEXT(signed_agreement_details->'uploaderUserId') || ',
+                                  "frameworkAgreementVersion": ' || TEXT(signed_agreement_details->'frameworkAgreementVersion') || '}'
+                               )::json,
+    signed_agreement_path = 'not/the/real/path.pdf',
+WHERE signed_agreement_details IS NOT NULL
+AND cast(signed_agreement_details AS TEXT) != 'null';
+
+UPDATE framework_agreements
+SET countersigned_agreement_path = 'not/the/real/path.pdf'
+WHERE countersigned_agreement_path IS NOT NULL;
 
 -- Overwrite declarations with the smallest possible valid entry
 -- Removes all personal data while keeping our app working as expected
