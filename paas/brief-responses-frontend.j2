@@ -1,0 +1,12 @@
+{% extends "_base.j2" %}
+
+{% block env %}
+      DM_DATA_API_AUTH_TOKEN: {{ api.auth_tokens[0] }}
+      DM_DATA_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
+
+      DM_MANDRILL_API_KEY: {{ shared_tokens.mandrill_key }}
+
+      SECRET_KEY: {{ shared_tokens.password_key }}
+
+      PROXY_AUTH_CREDENTIALS: {{ proxy_auth_credentials }}
+{% endblock %}

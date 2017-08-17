@@ -22,6 +22,10 @@ briefs-frontend:
   subdomain: dm
   path: /buyers
 
+brief-responses-frontend:
+  subdomain: dm
+  path: /suppliers/opportunities
+
 db-backup:
   subdomain: dm-db-backup
   services:
