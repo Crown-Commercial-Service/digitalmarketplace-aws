@@ -9,22 +9,29 @@ search-api:
 
 admin-frontend:
   subdomain: dm
-  path: /admin
+  paths:
+    - /admin
 
 buyer-frontend:
   subdomain: dm
+  paths:
+    - ''
+    - /buyers/direct-award
 
 supplier-frontend:
   subdomain: dm
-  path: /suppliers
+  paths:
+    - /suppliers
 
 briefs-frontend:
   subdomain: dm
-  path: /buyers
+  paths:
+    - /buyers
 
 brief-responses-frontend:
   subdomain: dm
-  path: /suppliers/opportunities
+  paths:
+   - /suppliers/opportunities
 
 db-backup:
   subdomain: dm-db-backup

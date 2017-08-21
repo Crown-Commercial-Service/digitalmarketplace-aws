@@ -3,12 +3,14 @@
 applications:
   - name: {{ app|replace('_', '-') }}-release
     routes:
-      - route: {{ subdomain }}-{{ environment }}.cloudapps.digital{{ path|default('') }}
+{% for path in (paths|default([''])) %}
+      - route: {{ subdomain }}-{{ environment }}.cloudapps.digital{{ path }}
+{% endfor %}
     instances: {{ instances|default(1) }}
     memory: {{ memory|default('512M') }}
     disk_quota: {{ disk_quota|default('1024M') }}
     health-check-type: http
-    health-check-http-endpoint: {{ path|default('') }}/_status?ignore-dependencies
+    health-check-http-endpoint: {{ (paths|default(['']))[0] }}/_status?ignore-dependencies
     env:
       DM_APP_NAME: {{ app }}
       DM_ENVIRONMENT: {{ environment }}
