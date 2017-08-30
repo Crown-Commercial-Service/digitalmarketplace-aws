@@ -7,6 +7,11 @@ api:
 search-api:
   subdomain: dm-search-api
 
+user-frontend:
+  subdomains: dm
+  paths:
+    - /user
+
 admin-frontend:
   subdomain: dm
   paths:
