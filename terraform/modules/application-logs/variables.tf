@@ -9,6 +9,7 @@ variable "app_names" {
     "api",
     "search-api",
     "briefs-frontend",
-    "brief-responses-frontend"
+    "brief-responses-frontend",
+    "user-frontend"
   ]
 }
