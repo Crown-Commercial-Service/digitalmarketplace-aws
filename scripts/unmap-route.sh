@@ -19,5 +19,4 @@ for ROUTE_URL in ${ROUTE_URLS}; do
   echo "Unmapping ${ROUTE_HOST}.cloudapps.digital/${ROUTE_PATH} from ${APPLICATION_NAME}"
 
   cf unmap-route "${APPLICATION_NAME}" cloudapps.digital --hostname "${ROUTE_HOST}" --path "${ROUTE_PATH}"
-  done
 done
