@@ -8,7 +8,7 @@ search-api:
   subdomain: dm-search-api
 
 user-frontend:
-  subdomains: dm
+  subdomain: dm
   paths:
     - /user
 
