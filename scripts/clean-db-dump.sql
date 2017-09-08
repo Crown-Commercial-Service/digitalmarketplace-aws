@@ -1,3 +1,5 @@
+\set ON_ERROR_STOP on
+
 \echo 'Update users'
 UPDATE users
 SET name = 'Test user',
