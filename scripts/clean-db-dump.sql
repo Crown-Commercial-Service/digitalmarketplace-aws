@@ -85,7 +85,7 @@ SET signed_agreement_details = ('{"signerName": "A. Nonymous",
                                   "uploaderUserId": ' || TEXT(signed_agreement_details->'uploaderUserId') || ',
                                   "frameworkAgreementVersion": ' || TEXT(signed_agreement_details->'frameworkAgreementVersion') || '}'
                                )::json,
-    signed_agreement_path = 'not/the/real/path.pdf',
+    signed_agreement_path = 'not/the/real/path.pdf'
 WHERE signed_agreement_details IS NOT NULL
 AND cast(signed_agreement_details AS TEXT) != 'null';
 
