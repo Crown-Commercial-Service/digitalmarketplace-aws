@@ -112,6 +112,59 @@ WHERE declaration IS NOT NULL
   AND declaration::varchar != 'null'
   AND declaration::varchar != '{}';
 
+-- Create some fake draft and submitted brief responses on closed briefs using eligible suppliers
+-- Ensuring essential requirements evidence length matches that of the brief essential requirements
+-- and nice to have requirements are representative of possible data given brief nice to have requirements
+INSERT INTO brief_responses (
+      data,
+      brief_id,
+      supplier_id,
+      created_at,
+      submitted_at
+)
+SELECT
+    -- Build a string that we convert to a json object for the 'data' column with varying numbers of evidence
+    (
+      '{' ||
+        '"essentialRequirements": [' ||
+          rtrim(repeat('{"evidence": "Some essential evidence."}, ', essential_requirements_len), ', ') ||
+        '], ' ||
+        CASE
+          -- If there are no nice to have requirements or if it's in in 1/3 of all drafts then don't add the key at all
+          WHEN nice_to_have_requirements_len::BOOL = FALSE OR (MOD(eligible_brief_supplier_pairings.supplier_id, 5) = 0 AND MOD(eligible_brief_supplier_pairings.supplier_id, 3) = 0) THEN ''
+          -- Otherwise all true
+          ELSE
+            '"niceToHaveRequirements": [' ||
+              rtrim(repeat('{"yesNo": true, "evidence": "Some nice to have evidence."}, ', nice_to_have_requirements_len), ', ') ||
+            '], '
+        END ||
+        '"availability": "09/09/17", ' ||
+        '"essentialRequirementsMet": true, ' ||
+        '"respondToEmailAddress": "example-email@gov.uk"' ||
+      '}'
+    )::JSON,
+    eligible_brief_supplier_pairings.brief_id,
+    eligible_brief_supplier_pairings.supplier_id,
+    now(),
+    CASE
+      WHEN MOD(eligible_brief_supplier_pairings.supplier_id, 5) = 0 THEN NULL
+      ELSE now()
+    END
+FROM (
+    SELECT DISTINCT ON (briefs.id)
+      briefs.id AS brief_id,
+      supplier_id as supplier_id,
+      json_array_length((data->>'essentialRequirements')::json) as essential_requirements_len,
+      json_array_length((data->>'niceToHaveRequirements')::json) as nice_to_have_requirements_len
+    FROM supplier_frameworks
+      LEFT JOIN frameworks ON supplier_frameworks.framework_id = frameworks.id
+      LEFT JOIN briefs ON briefs.framework_id = frameworks.id
+    WHERE declaration->>'status' = 'complete'
+      AND declaration->>'organisationSize' != ''
+      AND frameworks.slug = 'digital-outcomes-and-specialists-2'
+      AND briefs.published_at <= now() - '2 weeks 1 day'::interval
+    ) AS eligible_brief_supplier_pairings;
+
 -- PaaS have an event trigger which invokes a function to reassign the owner of an object
 -- The function checks if the current user has a particular role. If that role doesn't exist
 -- in the database it causes an error. Removing the trigger prevents the function being executed.
