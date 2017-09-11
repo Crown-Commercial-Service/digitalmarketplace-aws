@@ -112,6 +112,33 @@ WHERE declaration IS NOT NULL
   AND declaration::varchar != 'null'
   AND declaration::varchar != '{}';
 
+-- Create some fake draft and closed briefs using eligible suppliers
+INSERT INTO brief_responses (
+      data,
+      brief_id,
+      supplier_id,
+      created_at,
+      submitted_at
+)
+SELECT
+    '{"essentialRequirements": [{"evidence": "They have the correct number of hooves."}, {"evidence": "So shiny..."}, {"evidence": "All at least 50"}], "niceToHaveRequirements": [{"yesNo": false}, {"yesNo": true, "evidence": "No jump is too high."}, {"yesNo": true, "evidence": "NEIGH"}], "availability": "09/09/17", "essentialRequirementsMet": true, "respondToEmailAddress": "example-email@gov.uk"}'::json,
+    eligible_brief_supplier_pairings.brief_id,
+    eligible_brief_supplier_pairings.supplier_id,
+    now(),
+    now()
+FROM (
+    SELECT DISTINCT ON (briefs.id)
+      briefs.id AS brief_id,
+      supplier_id as supplier_id
+    FROM supplier_frameworks
+      LEFT JOIN frameworks ON supplier_frameworks.framework_id = frameworks.id
+      LEFT JOIN briefs ON briefs.framework_id = frameworks.id
+    WHERE declaration->>'status' = 'complete'
+      AND declaration->>'organisationSize' != ''
+      AND frameworks.slug = 'digital-outcomes-and-specialists-2'
+      AND briefs.published_at < now() - '2 weeks 1 day'::interval
+    ) AS eligible_brief_supplier_pairings;
+
 -- PaaS have an event trigger which invokes a function to reassign the owner of an object
 -- The function checks if the current user has a particular role. If that role doesn't exist
 -- in the database it causes an error. Removing the trigger prevents the function being executed.
