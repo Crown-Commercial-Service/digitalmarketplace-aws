@@ -4,7 +4,8 @@
 UPDATE users
 SET name = 'Test user',
     email_address = id || '@user.marketplace.team',
-    password = :bcrypt_password;
+    password = :bcrypt_password,
+    failed_login_count = 0;
 
 -- Remove data about currently ongoing framework applications
 \echo 'Delete draft services for open frameworks'
