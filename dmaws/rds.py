@@ -1,5 +1,4 @@
 import time
-from datetime import datetime
 
 import boto.rds
 import boto.ec2
