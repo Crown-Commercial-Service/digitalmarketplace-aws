@@ -11,10 +11,7 @@ Usage:
 scripts/generate-s3-post-url-data.py <bucket> <filename>
 
 """
-
-import sys
 import json
-import time
 import boto3
 from docopt import docopt
 

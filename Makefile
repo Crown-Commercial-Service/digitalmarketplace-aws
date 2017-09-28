@@ -17,14 +17,14 @@ help:
 
 
 .PHONY: test
-test: test_pep8 test_unit
+test: test-flake8 test-unit
 
-.PHONY: test_pep8
-test_pep8: virtualenv
-	${VIRTUALENV_ROOT}/bin/pep8 .
+.PHONY: test-flake8
+test-flake8: virtualenv
+	${VIRTUALENV_ROOT}/bin/flake8 .
 
-.PHONY: test_unit
-test_unit: virtualenv
+.PHONY: test-unit
+test-unit: virtualenv
 	${VIRTUALENV_ROOT}/bin/py.test ${PYTEST_ARGS}
 
 .PHONY: requirements
