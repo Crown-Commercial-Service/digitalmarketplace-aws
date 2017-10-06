@@ -71,6 +71,7 @@ function transform(payload) {
         ].join('.');
 
         var source = buildSource(logEvent.message);
+        source['instance_id'] = payload.logStream;
         source['@timestamp'] = new Date(1 * logEvent.timestamp).toISOString();
 
         var action = { "index": {} };
