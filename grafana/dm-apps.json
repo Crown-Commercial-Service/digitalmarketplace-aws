@@ -95,6 +95,11 @@
           },
           {
             "selected": false,
+            "text": "user-frontend",
+            "value": "user-frontend"
+          },
+          {
+            "selected": false,
             "text": "buyer-frontend",
             "value": "buyer-frontend"
           },
@@ -115,11 +120,16 @@
           },
           {
             "selected": false,
+            "text": "brief-responses-frontend",
+            "value": "brief-responses-frontend"
+          },
+          {
+            "selected": false,
             "text": "nginx",
             "value": "nginx"
           }
         ],
-        "query": "api,search-api,buyer-frontend,supplier-frontend,admin-frontend,briefs-frontend,nginx",
+        "query": "api,search-api,user-frontend,buyer-frontend,supplier-frontend,admin-frontend,briefs-frontend,brief-responses-frontend,nginx",
         "type": "custom"
       }
     ]
