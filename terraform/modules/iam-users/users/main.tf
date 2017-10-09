@@ -10,10 +10,6 @@ resource "aws_iam_user" "ben_vandersteen" {
   name = "benvandersteen"
 }
 
-resource "aws_iam_user" "caroline_green" {
-  name = "carolinegreen"
-}
-
 resource "aws_iam_user" "chris_wynne" {
   name = "chriswynne"
 }
@@ -44,10 +40,6 @@ resource "aws_iam_user" "louise_ryan" {
 
 resource "aws_iam_user" "murilo_dal_ri" {
   name = "murilodalri"
-}
-
-resource "aws_iam_user" "paul_craig" {
-  name = "paulcraig"
 }
 
 resource "aws_iam_user" "pea_tyczynska" {
