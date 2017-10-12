@@ -4,3 +4,9 @@ instances: 5
 
 api:
   memory: 2GB
+
+user-frontend:
+  instances: 2
+
+admin-frontend:
+  instances: 2
