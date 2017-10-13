@@ -10,7 +10,7 @@ There are a few independent tools we're using that are configured and run from t
 * [Terraform](https://www.terraform.io/) (modules and configuration files in `terraform/`) is used
   to create and manage AWS resources (EC2 instances, ELBs, CloudWatch logs, S3 buckets etc.)
 * [packer](https://www.packer.io/) (configuration templates in `packer/`) is used to build AMIs
-  for servers we're running in AWS EC2 (like nginx and elasticsearch)
+  for servers we're running in AWS EC2 (like nginx
 * [Ansible](https://docs.ansible.com/ansible/index.html) (configuration and roles in `playbooks/`) is
   used by packer to set up the software and configuration of the AMIs
 * `scripts` contains executable scripts we use to manage our PaaS environments
@@ -40,11 +40,11 @@ For Terraform setup and usage please check the separate ([README](terraform/READ
 
 ## Creating AMIs with packer
 
-`elasticsearch` and `nginx` stacks require custom AMIs with preinstalled packages.
+`nginx` stacks require custom AMIs with preinstalled packages.
 In order to create new versions of these AMIs you'll need to use the provided
 [packer](https://www.packer.io) templates. Running
 
-    `make {nginx|elasticsearch}`
+    `make nginx`
 
 will create a new AMI image using the AWS credentials from the default credentials file
 or the environment variables.
