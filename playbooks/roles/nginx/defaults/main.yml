@@ -4,11 +4,9 @@ nginx_configs:
     - api
     - assets
     - digitalservicesstore
-    - elasticsearch
     - healthcheck
     - www
   maintenance:
-    - elasticsearch
     - healthcheck
     - maintenance
 

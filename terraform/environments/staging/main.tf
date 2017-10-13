@@ -50,40 +50,10 @@ module "staging_nginx" {
   api_url = "${var.api_url}"
   search_api_url = "${var.search_api_url}"
   frontend_url = "${var.frontend_url}"
-  elasticsearch_url = "${module.staging_elasticsearch.elb_url}"
 
-  elasticsearch_auth = "${var.elasticsearch_auth}"
   app_auth = "${var.app_auth}"
 
   mode = "${var.mode}"
-}
-
-module "staging_elasticsearch" {
-  source = "../../modules/elasticsearch"
-
-  name = "staging-elasticsearch"
-  environment = "staging"
-
-  vpc_id = "vpc-70319115"
-  subnet_ids = [
-      "subnet-9a9713ed",
-      "subnet-63b1683a",
-      "subnet-ad0894c8"
-  ]
-
-  instance_count = "3"
-  min_instance_count = "3"
-  max_instance_count = "3"
-
-  instance_type = "t2.micro"
-
-  log_retention_days = "180"
-
-  ami_owner_account_id = "${var.aws_main_account_id}"
-
-  ssh_key_name = "${var.ssh_key_name}"
-
-  nginx_security_group_id = "${module.staging_nginx.instance_security_group_id}"
 }
 
 module "application_logs" {

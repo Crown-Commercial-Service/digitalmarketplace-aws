@@ -22,7 +22,6 @@ variable "api_url" {}
 variable "search_api_url" {}
 variable "frontend_url" {}
 
-variable "elasticsearch_auth" {}
 variable "app_auth" {}
 
 variable "logs_elasticsearch_url" {}

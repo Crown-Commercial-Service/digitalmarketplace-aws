@@ -50,40 +50,10 @@ module "preview_nginx" {
   api_url = "${var.api_url}"
   search_api_url = "${var.search_api_url}"
   frontend_url = "${var.frontend_url}"
-  elasticsearch_url = "${module.preview_elasticsearch.elb_url}"
 
-  elasticsearch_auth = "${var.elasticsearch_auth}"
   app_auth = "${var.app_auth}"
 
   mode = "${var.mode}"
-}
-
-module "preview_elasticsearch" {
-  source = "../../modules/elasticsearch"
-
-  name = "preview-elasticsearch"
-  environment = "preview"
-
-  vpc_id = "vpc-a29149c7"
-  subnet_ids = [
-      "subnet-bf8c5ce6",
-      "subnet-916bfcf4",
-      "subnet-82dc63f5"
-  ]
-
-  instance_count = "3"
-  min_instance_count = "3"
-  max_instance_count = "3"
-
-  instance_type = "t2.micro"
-
-  log_retention_days = "180"
-
-  ami_owner_account_id = "${var.aws_main_account_id}"
-
-  ssh_key_name = "${var.ssh_key_name}"
-
-  nginx_security_group_id = "${module.preview_nginx.instance_security_group_id}"
 }
 
 module "application_logs" {
