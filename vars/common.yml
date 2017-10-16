@@ -6,6 +6,8 @@ api:
 
 search-api:
   subdomain: dm-search-api
+  services:
+    - search_api_elasticsearch
 
 user-frontend:
   subdomain: dm
