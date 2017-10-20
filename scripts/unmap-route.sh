@@ -13,10 +13,12 @@ ROUTE_URLS=$(cf curl /v2/apps/${APP_GUID}/route_mappings | jq -r '.resources[].e
 for ROUTE_URL in ${ROUTE_URLS}; do
   ROUTE_DATA=$(cf curl ${ROUTE_URL} | jq '.entity')
 
+  ROUTE_DOMAIN=$(cf curl $(echo $ROUTE_DATA | jq -r '.domain_url') | jq -r '.entity.name')
+
   ROUTE_HOST=$(echo $ROUTE_DATA | jq -r '.host')
   ROUTE_PATH=$(echo $ROUTE_DATA | jq -r '.path')
 
-  echo "Unmapping ${ROUTE_HOST}.cloudapps.digital/${ROUTE_PATH} from ${APPLICATION_NAME}"
+  echo "Unmapping ${ROUTE_HOST}.${ROUTE_DOMAIN}/${ROUTE_PATH} from ${APPLICATION_NAME}"
 
-  cf unmap-route "${APPLICATION_NAME}" cloudapps.digital --hostname "${ROUTE_HOST}" --path "${ROUTE_PATH}"
+  cf unmap-route "${APPLICATION_NAME}" ${ROUTE_DOMAIN} --hostname "${ROUTE_HOST}" --path "${ROUTE_PATH}"
 done
