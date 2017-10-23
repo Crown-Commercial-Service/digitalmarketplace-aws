@@ -7,8 +7,6 @@ router:
     - api.{env}.marketplace.team
     - search-api.{env}.marketplace.team
     - assets.{env}.marketplace.team
-  services:
-    - router_cdn
 
 api:
   routes:
