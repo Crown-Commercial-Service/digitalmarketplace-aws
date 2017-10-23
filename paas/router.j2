@@ -1,0 +1,25 @@
+{% extends "_base.j2" %}
+
+{% block env %}
+
+      AWS_ACCESS_KEY_ID: {{ aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: {{ aws_secret_access_key }}
+
+      DM_ADMIN_USER_IPS: '{{ admin_user_ips|join(",") }}'
+      DM_DEV_USER_IPS: '{{ dev_user_ips|join(",") }}'
+      DM_USER_IPS: '{{ user_ips|join(",") }}'
+
+      DM_API_URL: 'https://dm-api-{{ environment }}.cloudapps.digital'
+      DM_SEARCH_API_URL: 'https://dm-search-api-{{ environment }}.cloudapps.digital'
+      DM_FRONTEND_URL: 'https://dm-{{ environment }}.cloudapps.digital'
+
+      DM_G7_DRAFT_DOCUMENTS_S3_URL: {{ g7_draft_documents_s3_url }}
+      DM_DOCUMENTS_S3_URL: {{ documents_s3_url }}
+      DM_AGREEMENTS_S3_URL: {{ agreements_s3_url }}
+      DM_COMMUNICATIONS_S3_URL: {{ communications_s3_url }}
+      DM_SUBMISSIONS_S3_URL: {{ submissions_s3_url }}
+
+      DM_APP_AUTH: '{{ app_auth }}'
+      DM_MODE: '{{ maintenance_mode }}'
+
+{% endblock %}

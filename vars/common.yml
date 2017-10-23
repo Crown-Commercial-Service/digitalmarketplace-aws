@@ -1,46 +1,52 @@
 ---
+maintenance_mode: live
+
+router:
+  routes:
+    - www.{env}.marketplace.team
+    - api.{env}.marketplace.team
+    - search-api.{env}.marketplace.team
+    - assets.{env}.marketplace.team
+  services:
+    - router_cdn
+
 api:
-  subdomain: dm-api
+  routes:
+    - dm-api-{env}.cloudapps.digital
   services:
     - digitalmarketplace_api_db
 
 search-api:
-  subdomain: dm-search-api
+  routes:
+    - dm-search-api-{env}.cloudapps.digital
   services:
     - search_api_elasticsearch
 
 user-frontend:
-  subdomain: dm
-  paths:
-    - /user
+  routes:
+    - dm-{env}.cloudapps.digital/user
 
 admin-frontend:
-  subdomain: dm
-  paths:
-    - /admin
+  routes:
+    - dm-{env}.cloudapps.digital/admin
 
 buyer-frontend:
-  subdomain: dm
-  paths:
-    - ''
-    - /buyers/direct-award
+  routes:
+    - dm-{env}.cloudapps.digital
+    - dm-{env}.cloudapps.digital/buyers/direct-award
 
 supplier-frontend:
-  subdomain: dm
-  paths:
-    - /suppliers
+  routes:
+    - dm-{env}.cloudapps.digital/suppliers
 
 briefs-frontend:
-  subdomain: dm
-  paths:
-    - /buyers
+  routes:
+    - dm-{env}.cloudapps.digital/buyers
 
 brief-responses-frontend:
-  subdomain: dm
-  paths:
-   - /suppliers/opportunities
+  routes:
+   - dm-{env}.cloudapps.digital/suppliers/opportunities
 
 db-backup:
-  subdomain: dm-db-backup
   services:
     - digitalmarketplace_api_db
