@@ -11,49 +11,19 @@ terraform {
   }
 }
 
-module "staging_nginx" {
-  source = "../../modules/nginx"
-
+module "staging_router" {
+  source = "../../modules/router"
   name = "staging-nginx"
-  environment = "staging"
+
   domain = "staging.marketplace.team"
-
-  vpc_id = "vpc-70319115"
-  subnet_ids = [
-      "subnet-9a9713ed",
-      "subnet-63b1683a",
-      "subnet-ad0894c8"
-  ]
-
-  instance_count = "2"
-  min_instance_count = "2"
-  max_instance_count = "2"
-
-  instance_type = "t2.micro"
 
   log_retention_days = "180"
 
-  ami_owner_account_id = "${var.aws_main_account_id}"
-
-  ssh_key_name = "${var.ssh_key_name}"
-
-  admin_user_ips = "${var.admin_user_ips}"
-  dev_user_ips = "${var.dev_user_ips}"
-  user_ips = "${var.user_ips}"
-
-  g7_draft_documents_s3_url = "${var.g7_draft_documents_s3_url}"
-  documents_s3_url = "${var.documents_s3_url}"
-  agreements_s3_url = "${var.agreements_s3_url}"
-  communications_s3_url = "${var.communications_s3_url}"
-  submissions_s3_url = "${var.submissions_s3_url}"
-
-  api_url = "${var.api_url}"
-  search_api_url = "${var.search_api_url}"
-  frontend_url = "${var.frontend_url}"
-
-  app_auth = "${var.app_auth}"
-
-  mode = "${var.mode}"
+  cname_domain = "d316z22457q6mz.cloudfront.net"
+  www_acme_challenge = "gAvnidL435OgRSEbsmaRao8t6h556S7pR579scyWidY"
+  api_acme_challenge = "PnHbLO52oob6u-vDm1oLuO6eYA6jhZNSPZHRAwkPQSk"
+  search_api_acme_challenge = "CBejAeUi-c-88fyngXwAd9Q45ivBiPqbXm4wnD9-7nY"
+  assets_acme_challenge = "qHoJDoj_Fckc061F_DZ7BhQRhMv4EV3BYZ9hKGoew84"
 }
 
 module "application_logs" {
@@ -70,7 +40,7 @@ module "log_streaming" {
   elasticsearch_url = "${var.logs_elasticsearch_url}"
   elasticsearch_api_key = "${var.logs_elasticsearch_api_key}"
 
-  nginx_log_groups = ["${concat(module.staging_nginx.json_log_groups, module.application_logs.nginx_log_groups)}"]
+  nginx_log_groups = ["${concat(module.staging_router.json_log_groups, module.application_logs.nginx_log_groups)}"]
   application_log_groups = ["${module.application_logs.application_log_groups}"]
 }
 
