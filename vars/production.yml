@@ -2,6 +2,14 @@
 domain: "digitalmarketplace.service.gov.uk"
 instances: 5
 
+router:
+  instances: 3
+  routes:
+    - www.digitalmarketplace.service.gov.uk
+    - api.digitalmarketplace.service.gov.uk
+    - search-api.digitalmarketplace.service.gov.uk
+    - assets.digitalmarketplace.service.gov.uk
+
 api:
   memory: 2GB
 
