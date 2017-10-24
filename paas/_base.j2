@@ -9,7 +9,7 @@ applications:
     instances: {{ instances|default(1) }}
     memory: {{ memory|default('512M') }}
     disk_quota: {{ disk_quota|default('1024M') }}
-{% if routes %}
+{% if routes|default([]) %}
     health-check-type: http
     health-check-http-endpoint: {{ routes[0].partition('/')[1:]|join("") }}/_status?ignore-dependencies
 {% endif %}
