@@ -2,17 +2,17 @@
 
 applications:
   - name: {{ app|replace('_', '-') }}-release
+{% if routes is defined %}
     routes:
-{% for route in routes|default([]) %}
+{% for route in routes %}
       - route: {{ route.format(env=environment) }}
 {% endfor %}
-    instances: {{ instances|default(1) }}
-    memory: {{ memory|default('512M') }}
-    disk_quota: {{ disk_quota|default('1024M') }}
-{% if routes|default([]) %}
     health-check-type: http
     health-check-http-endpoint: {{ routes[0].partition('/')[1:]|join("") }}/_status?ignore-dependencies
 {% endif %}
+    instances: {{ instances|default(1) }}
+    memory: {{ memory|default('512M') }}
+    disk_quota: {{ disk_quota|default('1024M') }}
     env:
       DM_APP_NAME: {{ app }}
       DM_ENVIRONMENT: {{ environment }}
