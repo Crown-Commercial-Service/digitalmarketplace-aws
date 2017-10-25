@@ -1,8 +1,6 @@
 import os
 import re
 import collections
-import subprocess
-from subprocess import CalledProcessError
 
 import six
 import yaml
@@ -11,91 +9,6 @@ from jinja2.runtime import StrictUndefined
 
 
 DEFAULT_TEMPLATES_PATH = 'cloudformation_templates/'
-
-
-def run_cmd(args, env=None, cwd=None, stdout=None, stderr=None,
-            logger=None, ignore_errors=False):
-    """Run an external process command.
-
-    :param args: a list of command arguments, including the command name
-    :param env: a dictionary of environment variables to add to the current
-                os.environ
-    :param cwd: a directory path to use as working directory when running
-                the command
-    :param stdout: sets the destination for command STDOUT. Set to ``None``
-                   to print the STDOUT or to ``subporcess.PIPE`` to capture
-                   STDOUT for ``run_cmd`` return value
-    :param stderr: sets the destination for command STDERR. Set to ``None``
-                   to print the STDERR or to ``subprocess.STDOUT`` to
-                   capture STDERR for return value when STDOUT is being
-                   captured
-    :param ignore_errors: if set to ``True`` will raise an exception if the
-                          command process exits with non-zero status code
-
-    :return: string containing captured stdout and stderr if stdout and stderr
-             parameters where set. Otherwise returns ``None`` by default
-
-    """
-    cmd_env = os.environ.copy()
-    cmd_env.update(env or {})
-    if logger:
-        logger("Running %s", args[0])
-    cmd = subprocess.Popen(args, env=cmd_env, cwd=cwd,
-                           stdout=stdout,
-                           stderr=stderr)
-    streamdata = cmd.communicate()[0]
-    if logger:
-        logger("%s completed with return code %s", args[0], cmd.returncode)
-    if cmd.returncode and not ignore_errors:
-        raise CalledProcessError(
-            cmd.returncode,
-            args,
-            output=streamdata
-        )
-
-    return streamdata
-
-
-def run_piped_cmds(cmds, env=None, cwd=None, stdout=None, stderr=None,
-                   logger=None, ignore_errors=False):
-    """Run multiple external process commands piped together
-
-    Commands are piped together via stdout -> stdin.
-
-    Example:
-        >>> cmds = [["ls"], ["grep", "foo"]]
-
-        is equivalent to the following in BASH
-
-        `ls | grep foo`
-    """
-    cmd_env = os.environ.copy()
-    cmd_env.update(env or {})
-    cmd_chain = " | ".join(args[0] for args in cmds)
-    if logger:
-        logger("Running %s", cmd_chain)
-    cmd = None
-    for i, args in enumerate(cmds):
-        cmd_stdin = cmd.stdout if cmd else None
-        cmd_stdout = subprocess.PIPE if i < len(cmds) - 1 else stdout
-
-        cmd = subprocess.Popen(
-            args, env=cmd_env, cwd=cwd,
-            stdin=cmd_stdin,
-            stdout=cmd_stdout,
-            stderr=stderr)
-
-    streamdata = cmd.communicate()[0]
-    if logger:
-        logger("%s completed with return code %s", cmd_chain, cmd.returncode)
-    if cmd.returncode and not ignore_errors:
-        raise CalledProcessError(
-            cmd.returncode,
-            cmds[-1],
-            output=streamdata
-        )
-
-    return streamdata
 
 
 def safe_path_join(basedir, path):

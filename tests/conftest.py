@@ -1,36 +1,7 @@
 import pytest
 import mock
 
-from dmaws.utils import run_cmd as run_cmd_orig
 from dmaws.utils import mkdir_p as mkdir_p_orig
-
-
-@pytest.fixture()
-def run_cmd(request):
-    run_cmd_wrap = mock.patch('dmaws.utils.run_cmd',
-                              wraps=run_cmd_orig)
-    request.addfinalizer(run_cmd_wrap.stop)
-
-    return run_cmd_wrap.start()
-
-
-@pytest.fixture(autouse=True)
-def subprocess(request, os_environ):
-    patch = mock.patch('dmaws.utils.subprocess')
-    request.addfinalizer(patch.stop)
-
-    subprocess = patch.start()
-    subprocess.Popen.return_value.returncode = 0
-
-    return subprocess
-
-
-@pytest.fixture()
-def os_environ(request):
-    env_patch = mock.patch('os.environ', {})
-    request.addfinalizer(env_patch.stop)
-
-    return env_patch.start()
 
 
 @pytest.fixture()
