@@ -13,7 +13,7 @@ terraform {
 
 module "staging_router" {
   source = "../../modules/router"
-  name = "staging-nginx"
+  name = "staging-router"
 
   domain = "staging.marketplace.team"
 
@@ -48,4 +48,5 @@ module "log_metrics" {
   source = "../../modules/log-metrics"
   environment = "staging"
   app_names = ["${module.application_logs.app_names}"]
+  router_log_group_name = "${element(module.staging_router.json_log_groups, 0)}"
 }

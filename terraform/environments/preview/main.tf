@@ -13,7 +13,7 @@ terraform {
 
 module "preview_router" {
   source = "../../modules/router"
-  name = "preview-nginx"
+  name = "preview-router"
 
   domain = "preview.marketplace.team"
 
@@ -48,4 +48,5 @@ module "log_metrics" {
   source = "../../modules/log-metrics"
   environment = "preview"
   app_names = ["${module.application_logs.app_names}"]
+  router_log_group_name = "${element(module.preview_router.json_log_groups, 0)}"
 }

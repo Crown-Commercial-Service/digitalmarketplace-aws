@@ -13,7 +13,7 @@ terraform {
 
 module "production_router" {
   source = "../../modules/router"
-  name = "production-nginx"
+  name = "production-router"
 
   domain = "digitalmarketplace.service.gov.uk"
 
@@ -48,4 +48,5 @@ module "log_metrics" {
   source = "../../modules/log-metrics"
   environment = "production"
   app_names = ["${module.application_logs.app_names}"]
+  router_log_group_name = "${element(module.production_router.json_log_groups, 0)}"
 }
