@@ -2,5 +2,5 @@
 flake8==2.6.2
 flake8-putty==0.4.0
 mock==1.0.1
-pytest==2.9.1
+pytest==3.2.3
 requests-mock==0.6.0
