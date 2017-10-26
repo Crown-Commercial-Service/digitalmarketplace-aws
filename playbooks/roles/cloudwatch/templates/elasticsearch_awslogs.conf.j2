@@ -1,8 +1,0 @@
-[general]
-state_file = /var/awslogs/state/agent-state
-
-[elasticsearch-log]
-file = /var/log/elasticsearch/{{ elasticsearch_name }}.log
-log_group_name = {{ log_group }}
-log_stream_name = {hostname}
-datetime_format = %Y-%m-%d %H:%M:%S
