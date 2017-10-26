@@ -7,10 +7,21 @@
   "sharedCrosshair": false,
   "hideControls": false,
   "time": {
-    "from": "now-24h",
-    "to": "now"
+    "to": "now",
+    "from": "now-24h"
   },
   "timepicker": {
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ],
     "refresh_intervals": [
       "5s",
       "10s",
@@ -22,115 +33,103 @@
       "1h",
       "2h",
       "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
     ]
   },
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "current": {
-          "tags": [],
-          "text": "production",
-          "value": "production"
-        },
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
         "multi": false,
+        "hide": 0,
         "name": "environment",
+        "allValue": null,
+        "label": null,
+        "current": {
+          "text": "production",
+          "value": "production",
+          "tags": []
+        },
+        "query": "preview,staging,production",
+        "type": "custom",
         "options": [
           {
-            "selected": false,
             "text": "preview",
+            "selected": false,
             "value": "preview"
           },
           {
-            "selected": false,
             "text": "staging",
+            "selected": false,
             "value": "staging"
           },
           {
-            "selected": true,
             "text": "production",
+            "selected": true,
             "value": "production"
           }
         ],
-        "query": "preview,staging,production",
-        "type": "custom"
+        "includeAll": false
       },
       {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "tags": [],
-          "text": "api",
-          "value": "api"
-        },
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
         "multi": false,
+        "hide": 0,
         "name": "app",
+        "allValue": null,
+        "label": null,
+        "current": {
+          "text": "api",
+          "value": "api",
+          "tags": []
+        },
+        "query": "api,search-api,user-frontend,buyer-frontend,supplier-frontend,admin-frontend,briefs-frontend,brief-responses-frontend,router",
+        "type": "custom",
         "options": [
           {
-            "selected": true,
             "text": "api",
-            "value": "api"
+            "value": "api",
+            "selected": true
           },
           {
-            "selected": false,
             "text": "search-api",
-            "value": "search-api"
+            "value": "search-api",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "user-frontend",
-            "value": "user-frontend"
+            "value": "user-frontend",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "buyer-frontend",
-            "value": "buyer-frontend"
+            "value": "buyer-frontend",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "supplier-frontend",
-            "value": "supplier-frontend"
+            "value": "supplier-frontend",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "admin-frontend",
-            "value": "admin-frontend"
+            "value": "admin-frontend",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "briefs-frontend",
-            "value": "briefs-frontend"
+            "value": "briefs-frontend",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "brief-responses-frontend",
-            "value": "brief-responses-frontend"
+            "value": "brief-responses-frontend",
+            "selected": false
           },
           {
-            "selected": false,
-            "text": "nginx",
-            "value": "nginx"
+            "text": "router",
+            "value": "router",
+            "selected": false
           }
         ],
-        "query": "api,search-api,user-frontend,buyer-frontend,supplier-frontend,admin-frontend,briefs-frontend,brief-responses-frontend,nginx",
-        "type": "custom"
+        "includeAll": false
       }
     ]
   },
@@ -139,61 +138,23 @@
   },
   "refresh": "5m",
   "schemaVersion": 13,
-  "version": 13,
+  "version": 2,
   "links": [],
   "gnetId": null,
+  "alertPanelMap": {},
   "rows": [
     {
       "title": "Dashboard Row",
       "panels": [
         {
-          "aliasColors": {
-            "0-0.025s": "#3F6833",
-            "0.025-0.05s": "#629E51",
-            "0.05-0.1s": "#7EB26D",
-            "0.1-0.25s": "#F2C96D",
-            "0.25-0.5s": "#EAB839",
-            "0.5-1s": "#EF843C",
-            "1-2.5s": "#C15C17",
-            "2.5-5s": "#E24D42",
-            "5-10s": "#890F02",
-            ">10s": "#58140C"
-          },
           "bars": true,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 1,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "hideEmpty": false,
-            "hideZero": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": true,
-            "values": true
-          },
-          "lines": false,
-          "linewidth": 1,
+          "timeFrom": null,
           "links": [],
+          "thresholds": [],
           "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
           "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "0-0.1s",
-              "yaxis": 1
-            }
-          ],
-          "span": 12,
-          "stack": true,
+          "id": 1,
+          "linewidth": 1,
           "steppedLine": false,
           "targets": [
             {
@@ -247,43 +208,82 @@
               "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:max, '>10s')"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
+          "fill": 1,
+          "span": 12,
           "title": "Request counts grouped by time - $environment $app",
           "tooltip": {
-            "msResolution": false,
-            "shared": false,
             "sort": 0,
-            "value_type": "individual"
+            "shared": false,
+            "value_type": "individual",
+            "msResolution": false
           },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
+          "legend": {
+            "rightSide": true,
+            "total": true,
+            "min": false,
+            "max": false,
             "show": true,
-            "values": [
-              "current"
-            ]
+            "current": false,
+            "hideEmpty": false,
+            "values": true,
+            "alignAsTable": true,
+            "avg": false,
+            "hideZero": false
           },
           "yaxes": [
             {
-              "format": "short",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "short",
               "min": "0",
-              "show": true
+              "label": null
             },
             {
-              "format": "percent",
-              "label": null,
               "logBase": 1,
+              "show": false,
               "max": null,
+              "format": "percent",
               "min": null,
-              "show": false
+              "label": null
             }
-          ]
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [
+              "current"
+            ],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [
+            {
+              "alias": "0-0.1s",
+              "yaxis": 1
+            }
+          ],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": true,
+          "timeShift": null,
+          "aliasColors": {
+            "2.5-5s": "#E24D42",
+            "0.5-1s": "#EF843C",
+            "0.1-0.25s": "#F2C96D",
+            "0-0.025s": "#3F6833",
+            "0.025-0.05s": "#629E51",
+            "0.05-0.1s": "#7EB26D",
+            "1-2.5s": "#C15C17",
+            "0.25-0.5s": "#EAB839",
+            "5-10s": "#890F02",
+            ">10s": "#58140C"
+          },
+          "lines": false,
+          "points": false,
+          "datasource": null,
+          "pointradius": 5
         }
       ],
       "showTitle": false,
@@ -298,53 +298,14 @@
       "title": "Dashboard Row",
       "panels": [
         {
-          "aliasColors": {
-            "0-0.025s": "#3F6833",
-            "0.025-0.05s": "#629E51",
-            "0.05-0.1s": "#7EB26D",
-            "0.1-0.25s": "#EAB839",
-            "0.25-0.5s": "#E0752D",
-            "0.5-1s": "#BF1B00",
-            "1-2.5s": "#890F02",
-            "2.5-5s": "#E24D42",
-            "5-10s": "#890F02",
-            ">10s": "#58140C"
-          },
           "bars": true,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 7,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "hideEmpty": false,
-            "hideZero": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": true,
-            "values": true
-          },
-          "lines": false,
-          "linewidth": 1,
+          "timeFrom": null,
           "links": [],
+          "thresholds": [],
           "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
           "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "0-0.1s",
-              "yaxis": 1
-            }
-          ],
-          "span": 12,
-          "stack": true,
+          "id": 7,
+          "linewidth": 1,
           "steppedLine": false,
           "targets": [
             {
@@ -363,43 +324,82 @@
               "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:max, '>10s')"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
+          "fill": 1,
+          "span": 12,
           "title": "Slow requests count (>2.5s) - $environment $app",
           "tooltip": {
-            "msResolution": false,
-            "shared": false,
             "sort": 0,
-            "value_type": "individual"
+            "shared": false,
+            "value_type": "individual",
+            "msResolution": false
           },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
+          "legend": {
+            "rightSide": true,
+            "total": true,
+            "min": false,
+            "max": false,
             "show": true,
-            "values": [
-              "current"
-            ]
+            "current": false,
+            "hideEmpty": false,
+            "values": true,
+            "alignAsTable": true,
+            "avg": false,
+            "hideZero": false
           },
           "yaxes": [
             {
-              "format": "short",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "short",
               "min": "0",
-              "show": true
+              "label": null
             },
             {
-              "format": "percent",
-              "label": null,
               "logBase": 1,
+              "show": false,
               "max": null,
+              "format": "percent",
               "min": null,
-              "show": false
+              "label": null
             }
-          ]
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [
+              "current"
+            ],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [
+            {
+              "alias": "0-0.1s",
+              "yaxis": 1
+            }
+          ],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": true,
+          "timeShift": null,
+          "aliasColors": {
+            "2.5-5s": "#E24D42",
+            "0.5-1s": "#BF1B00",
+            "0.1-0.25s": "#EAB839",
+            "0-0.025s": "#3F6833",
+            "0.025-0.05s": "#629E51",
+            "0.05-0.1s": "#7EB26D",
+            "1-2.5s": "#890F02",
+            "0.25-0.5s": "#E0752D",
+            "5-10s": "#890F02",
+            ">10s": "#58140C"
+          },
+          "lines": false,
+          "points": false,
+          "datasource": null,
+          "pointradius": 5
         }
       ],
       "showTitle": false,
@@ -414,33 +414,14 @@
       "title": "Dashboard Row",
       "panels": [
         {
-          "aliasColors": {},
           "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 8,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
+          "timeFrom": null,
           "links": [],
+          "thresholds": [],
           "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
+          "id": 8,
+          "linewidth": 1,
           "steppedLine": false,
           "targets": [
             {
@@ -448,41 +429,60 @@
               "target": "cloudwatch.application_500s.$environment.$app.500s.samplecount"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
+          "fill": 1,
+          "span": 12,
           "title": "5xx response count - $environment $app",
           "tooltip": {
-            "msResolution": false,
-            "shared": true,
             "sort": 0,
-            "value_type": "individual"
+            "shared": true,
+            "value_type": "individual",
+            "msResolution": false
           },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
+          "legend": {
+            "total": false,
             "show": true,
-            "values": []
+            "max": false,
+            "min": false,
+            "current": false,
+            "values": false,
+            "avg": false
           },
           "yaxes": [
             {
-              "format": "none",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "none",
               "min": "0",
-              "show": true
+              "label": null
             },
             {
-              "format": "short",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "short",
               "min": null,
-              "show": true
+              "label": null
             }
-          ]
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": false,
+          "timeShift": null,
+          "aliasColors": {},
+          "lines": true,
+          "points": false,
+          "datasource": null,
+          "pointradius": 5
         }
       ],
       "showTitle": false,
@@ -497,33 +497,14 @@
       "title": "Dashboard Row",
       "panels": [
         {
-          "aliasColors": {},
           "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 9,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
+          "timeFrom": null,
           "links": [],
+          "thresholds": [],
           "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 4,
-          "stack": false,
+          "id": 9,
+          "linewidth": 1,
           "steppedLine": false,
           "targets": [
             {
@@ -531,70 +512,70 @@
               "target": "gauges.$environment.$app.*.memoryBytes"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
+          "fill": 1,
+          "span": 4,
           "title": "Memory usage - $environment $app",
           "tooltip": {
-            "msResolution": false,
-            "shared": true,
             "sort": 0,
-            "value_type": "individual"
+            "shared": true,
+            "value_type": "individual",
+            "msResolution": false
           },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
+          "legend": {
+            "total": false,
             "show": true,
-            "values": []
+            "max": false,
+            "min": false,
+            "current": false,
+            "values": false,
+            "avg": false
           },
           "yaxes": [
             {
-              "format": "decbytes",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "decbytes",
               "min": null,
-              "show": true
+              "label": null
             },
             {
-              "format": "short",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "short",
               "min": null,
-              "show": true
+              "label": null
             }
-          ]
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": false,
+          "timeShift": null,
+          "aliasColors": {},
+          "lines": true,
+          "points": false,
+          "datasource": null,
+          "pointradius": 5
         },
         {
-          "aliasColors": {},
           "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 10,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
+          "timeFrom": null,
           "links": [],
+          "thresholds": [],
           "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 4,
-          "stack": false,
+          "id": 10,
+          "linewidth": 1,
           "steppedLine": false,
           "targets": [
             {
@@ -602,70 +583,70 @@
               "target": "gauges.$environment.$app.*.cpu"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
+          "fill": 1,
+          "span": 4,
           "title": "CPU usage - $environment $app",
           "tooltip": {
-            "msResolution": false,
-            "shared": true,
             "sort": 0,
-            "value_type": "individual"
+            "shared": true,
+            "value_type": "individual",
+            "msResolution": false
           },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
+          "legend": {
+            "total": false,
             "show": true,
-            "values": []
+            "max": false,
+            "min": false,
+            "current": false,
+            "values": false,
+            "avg": false
           },
           "yaxes": [
             {
-              "format": "percent",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "percent",
               "min": null,
-              "show": true
+              "label": null
             },
             {
-              "format": "short",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "short",
               "min": null,
-              "show": true
+              "label": null
             }
-          ]
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": false,
+          "timeShift": null,
+          "aliasColors": {},
+          "lines": true,
+          "points": false,
+          "datasource": null,
+          "pointradius": 5
         },
         {
-          "aliasColors": {},
           "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 11,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
+          "timeFrom": null,
           "links": [],
+          "thresholds": [],
           "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 4,
-          "stack": false,
+          "id": 11,
+          "linewidth": 1,
           "steppedLine": false,
           "targets": [
             {
@@ -673,41 +654,60 @@
               "target": "gauges.$environment.$app.*.diskBytes"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
+          "fill": 1,
+          "span": 4,
           "title": "Disk usage - $environment $app",
           "tooltip": {
-            "msResolution": false,
-            "shared": true,
             "sort": 0,
-            "value_type": "individual"
+            "shared": true,
+            "value_type": "individual",
+            "msResolution": false
           },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
+          "legend": {
+            "total": false,
             "show": true,
-            "values": []
+            "max": false,
+            "min": false,
+            "current": false,
+            "values": false,
+            "avg": false
           },
           "yaxes": [
             {
-              "format": "decbytes",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "decbytes",
               "min": null,
-              "show": true
+              "label": null
             },
             {
-              "format": "short",
-              "label": null,
               "logBase": 1,
+              "show": true,
               "max": null,
+              "format": "short",
               "min": null,
-              "show": true
+              "label": null
             }
-          ]
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": false,
+          "timeShift": null,
+          "aliasColors": {},
+          "lines": true,
+          "points": false,
+          "datasource": null,
+          "pointradius": 5
         }
       ],
       "showTitle": false,
