@@ -281,7 +281,7 @@ resource "aws_cloudwatch_log_metric_filter" "router-500s" {
   log_group_name = "${var.router_log_group_name}"
 
   metric_transformation {
-    name  = "${var.environment}-router-500s"
+    name  = "${var.environment}-router-nginx-500s"
     namespace = "DM-500s"
     value     = "1"
   }
