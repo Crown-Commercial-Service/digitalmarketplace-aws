@@ -1,7 +1,3 @@
-resource "aws_iam_user" "alexey_bezhan" {
-  name = "alexey.bezhan"
-}
-
 resource "aws_iam_user" "andrew_chong" {
   name = "andrewchong"
 }
