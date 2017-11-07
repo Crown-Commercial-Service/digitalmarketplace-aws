@@ -26,7 +26,3 @@ variable "app_auth" {}
 
 variable "logs_elasticsearch_url" {}
 variable "logs_elasticsearch_api_key" {}
-
-variable "mode" {
-  default = "live"
-}
