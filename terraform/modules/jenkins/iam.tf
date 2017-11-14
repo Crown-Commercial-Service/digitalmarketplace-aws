@@ -21,7 +21,7 @@ EOF
 
 resource "aws_iam_instance_profile" "jenkins" {
   name = "jenkins-ci-InstanceProfile-AOFDQ580SQSK"
-  roles = ["${aws_iam_role.jenkins.id}"]
+  role = "${aws_iam_role.jenkins.id}"
 }
 
 resource "aws_iam_role_policy" "jenkins" {
