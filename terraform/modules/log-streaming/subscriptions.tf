@@ -17,7 +17,7 @@ resource "aws_cloudwatch_log_subscription_filter" "elasticsearch_subscription_ng
   count = "${length(var.nginx_log_groups)}"
   name = "elasticsearch-subscription-${element(var.nginx_log_groups, count.index)}"
   log_group_name = "${element(var.nginx_log_groups, count.index)}"
-  filter_pattern = "{ $.request != \"*/_status?ignore-dependencies *\" }"
+  filter_pattern = "{ $.request != \"*/_status?ignore-dependencies *\" && $.status != 429 }"
   destination_arn = "${aws_lambda_function.log_stream_lambda.arn}"
   depends_on = ["aws_lambda_permission.cloudwatch_nginx"]
 }
