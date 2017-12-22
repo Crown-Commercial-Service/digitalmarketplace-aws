@@ -72,7 +72,20 @@ function transform(payload) {
 
         var source = buildSource(logEvent.message);
         source['instance_id'] = payload.logStream;
-        source['@timestamp'] = new Date(1 * logEvent.timestamp).toISOString();
+
+        if ("epochTime" in source && !isNaN(parseFloat(source.epochTime)) && isFinite(source.epochTime)
+            && Math.floor(Math.floor(source.epochTime) * 1000) === timestamp.getTime()) {
+            // iff epochTime is present and numeric AND ALSO represents a time "in the same second" as timestamp (i.e.
+            // timestamp could be considered a second-floored representation of epochTime) we replace timestamp with
+            // epochTime in an attempt to rescue precision for applications (*cough* nginx) which aren't able to output
+            // fractional seconds in their ISO timestamps.
+            //
+            // note how this comparison will also ignore epochTime if timestamp already appears to have fractional
+            // second information.
+            timestamp = new Date(source.epochTime * 1000);
+        }
+
+        source['@timestamp'] = timestamp.toISOString();
 
         var action = { "index": {} };
         action.index._index = indexName;
