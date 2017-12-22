@@ -1,5 +1,5 @@
 {
-  "title": "DM Overview",
+  "title": "DM Overview with 429s",
   "tags": [],
   "style": "dark",
   "timezone": "browser",
@@ -46,7 +46,7 @@
         "current": {
           "text": "production",
           "selected": false,
-          "value": "production"
+          "value": "production",
         },
         "query": "preview,staging,production",
         "type": "custom",
@@ -74,9 +74,9 @@
   "annotations": {
     "list": []
   },
-  "refresh": "5m",
+  "refresh": "5s",
   "schemaVersion": 13,
-  "version": 2,
+  "version": 0,
   "links": [],
   "gnetId": null,
   "alertPanelMap": {},
@@ -98,56 +98,56 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_0.samplecount:max, '0-0.025s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_0.sum:sum, '0-0.025s')"
             },
             {
               "hide": false,
               "refId": "B",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_1.samplecount:max, '0.025-0.05s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_1.sum:sum, '0.025-0.05s')"
             },
             {
               "hide": false,
               "refId": "C",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_2.samplecount:max, '0.05-0.1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_2.sum:sum, '0.05-0.1s')"
             },
             {
               "hide": false,
               "refId": "D",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_3.samplecount:max, '0.1-0.25s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_3.sum:sum, '0.1-0.25s')"
             },
             {
               "hide": false,
               "refId": "E",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_4.samplecount:max, '0.25-0.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_4.sum:sum, '0.25-0.5s')"
             },
             {
               "hide": false,
               "refId": "F",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_5.samplecount:max, '0.5-1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_5.sum:sum, '0.5-1s')"
             },
             {
               "hide": false,
               "refId": "G",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_6.samplecount:max, '1-2.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_6.sum:sum, '1-2.5s')"
             },
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_7.samplecount:max, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_7.sum:sum, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_8.samplecount:max, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_8.sum:sum, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_9.samplecount:max, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_9.sum:sum, '>10s')"
             }
           ],
           "fill": 1,
-          "span": 6,
+          "span": 4,
           "title": "Request counts grouped by time - $environment router",
           "tooltip": {
             "sort": 0,
@@ -237,56 +237,56 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_0.samplecount:max, '0-0.025s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_0.sum:sum, '0-0.025s')"
             },
             {
               "hide": false,
               "refId": "B",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_1.samplecount:max, '0.025-0.05s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_1.sum:sum, '0.025-0.05s')"
             },
             {
               "hide": false,
               "refId": "C",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_2.samplecount:max, '0.05-0.1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_2.sum:sum, '0.05-0.1s')"
             },
             {
               "hide": false,
               "refId": "D",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_3.samplecount:max, '0.1-0.25s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_3.sum:sum, '0.1-0.25s')"
             },
             {
               "hide": false,
               "refId": "E",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_4.samplecount:max, '0.25-0.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_4.sum:sum, '0.25-0.5s')"
             },
             {
               "hide": false,
               "refId": "F",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_5.samplecount:max, '0.5-1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_5.sum:sum, '0.5-1s')"
             },
             {
               "hide": false,
               "refId": "G",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_6.samplecount:max, '1-2.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_6.sum:sum, '1-2.5s')"
             },
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_7.samplecount:max, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_7.sum:sum, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_8.samplecount:max, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_8.sum:sum, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_9.samplecount:max, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_9.sum:sum, '>10s')"
             }
           ],
           "fill": 1,
-          "span": 6,
+          "span": 4,
           "title": "Request counts grouped by time - $environment api",
           "tooltip": {
             "sort": 0,
@@ -361,6 +361,77 @@
           "points": false,
           "datasource": null,
           "pointradius": 5
+        },
+        {
+          "bars": false,
+          "timeFrom": null,
+          "links": [],
+          "thresholds": [],
+          "nullPointMode": "null as zero",
+          "renderer": "flot",
+          "id": 8,
+          "linewidth": 1,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "cloudwatch.application_500s.$environment.router.500s.sum:sum"
+            }
+          ],
+          "fill": 1,
+          "span": 4,
+          "title": "5xx response count - $environment router",
+          "tooltip": {
+            "sort": 0,
+            "shared": true,
+            "value_type": "individual",
+            "msResolution": false
+          },
+          "legend": {
+            "total": false,
+            "show": true,
+            "max": false,
+            "min": false,
+            "current": false,
+            "values": false,
+            "avg": false
+          },
+          "yaxes": [
+            {
+              "logBase": 1,
+              "show": true,
+              "max": null,
+              "format": "short",
+              "min": "0",
+              "label": null
+            },
+            {
+              "logBase": 1,
+              "show": true,
+              "max": null,
+              "format": "short",
+              "min": null,
+              "label": null
+            }
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": false,
+          "timeShift": null,
+          "aliasColors": {},
+          "lines": true,
+          "points": false,
+          "datasource": null,
+          "pointradius": 5
         }
       ],
       "showTitle": false,
@@ -388,17 +459,17 @@
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_7.samplecount:max, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_7.sum:sum, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_8.samplecount:max, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_8.sum:sum, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_9.samplecount:max, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.router.request_time_bucket_9.sum:sum, '>10s')"
             }
           ],
           "fill": 1,
@@ -492,17 +563,17 @@
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_7.samplecount:max, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_7.sum:sum, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_8.samplecount:max, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_8.sum:sum, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_9.samplecount:max, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.api.request_time_bucket_9.sum:sum, '>10s')"
             }
           ],
           "fill": 1,
@@ -589,18 +660,18 @@
           "thresholds": [],
           "nullPointMode": "null as zero",
           "renderer": "flot",
-          "id": 8,
+          "id": 12,
           "linewidth": 1,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "cloudwatch.application_500s.$environment.router.500s.samplecount"
+              "target": "cloudwatch.router_429s.$environment.router.429s.sum:sum"
             }
           ],
           "fill": 1,
           "span": 4,
-          "title": "5xx response count - $environment router",
+          "title": "429 (rate limited) responses - $environment router",
           "tooltip": {
             "sort": 0,
             "shared": true,
@@ -656,7 +727,7 @@
       ],
       "showTitle": false,
       "titleSize": "h6",
-      "height": 248,
+      "height": 252,
       "repeat": null,
       "repeatRowId": null,
       "repeatIteration": null,
