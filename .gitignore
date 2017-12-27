@@ -2,7 +2,7 @@
 *.egg-info
 *.pyc
 user.yml
-venv
+venv*
 /tmp
 .envrc
 node_modules
