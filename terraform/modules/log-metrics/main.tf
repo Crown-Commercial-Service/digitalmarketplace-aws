@@ -284,7 +284,6 @@ resource "aws_cloudwatch_log_metric_filter" "router-500s" {
     name  = "${var.environment}-router-nginx-500s"
     namespace = "DM-500s"
     value     = "1"
-    default_value = "0"
   }
 }
 
@@ -297,6 +296,5 @@ resource "aws_cloudwatch_log_metric_filter" "router-429s" {
     name  = "${var.environment}-router-nginx-429s"
     namespace = "DM-429s"
     value     = "1"
-    default_value = "0"
   }
 }
