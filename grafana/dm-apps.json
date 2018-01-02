@@ -1,5 +1,5 @@
 {
-  "title": "DM Apps",
+  "title": "DM Apps - sum",
   "tags": [],
   "style": "dark",
   "timezone": "browser",
@@ -85,48 +85,48 @@
         "options": [
           {
             "text": "api",
-            "value": "api",
-            "selected": true
+            "selected": true,
+            "value": "api"
           },
           {
             "text": "search-api",
-            "value": "search-api",
-            "selected": false
+            "selected": false,
+            "value": "search-api"
           },
           {
             "text": "user-frontend",
-            "value": "user-frontend",
-            "selected": false
+            "selected": false,
+            "value": "user-frontend"
           },
           {
             "text": "buyer-frontend",
-            "value": "buyer-frontend",
-            "selected": false
+            "selected": false,
+            "value": "buyer-frontend"
           },
           {
             "text": "supplier-frontend",
-            "value": "supplier-frontend",
-            "selected": false
+            "selected": false,
+            "value": "supplier-frontend"
           },
           {
             "text": "admin-frontend",
-            "value": "admin-frontend",
-            "selected": false
+            "selected": false,
+            "value": "admin-frontend"
           },
           {
             "text": "briefs-frontend",
-            "value": "briefs-frontend",
-            "selected": false
+            "selected": false,
+            "value": "briefs-frontend"
           },
           {
             "text": "brief-responses-frontend",
-            "value": "brief-responses-frontend",
-            "selected": false
+            "selected": false,
+            "value": "brief-responses-frontend"
           },
           {
             "text": "router",
-            "value": "router",
-            "selected": false
+            "selected": false,
+            "value": "router"
           }
         ],
         "includeAll": false
@@ -138,7 +138,7 @@
   },
   "refresh": "5m",
   "schemaVersion": 13,
-  "version": 2,
+  "version": 0,
   "links": [],
   "gnetId": null,
   "alertPanelMap": {},
@@ -160,52 +160,52 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_0.samplecount:max, '0-0.025s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_0.sum:max, '0-0.025s')"
             },
             {
               "hide": false,
               "refId": "B",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_1.samplecount:max, '0.025-0.05s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_1.sum:max, '0.025-0.05s')"
             },
             {
               "hide": false,
               "refId": "C",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_2.samplecount:max, '0.05-0.1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_2.sum:max, '0.05-0.1s')"
             },
             {
               "hide": false,
               "refId": "D",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_3.samplecount:max, '0.1-0.25s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_3.sum:max, '0.1-0.25s')"
             },
             {
               "hide": false,
               "refId": "E",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_4.samplecount:max, '0.25-0.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_4.sum:max, '0.25-0.5s')"
             },
             {
               "hide": false,
               "refId": "F",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_5.samplecount:max, '0.5-1s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_5.sum:max, '0.5-1s')"
             },
             {
               "hide": false,
               "refId": "G",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_6.samplecount:max, '1-2.5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_6.sum:max, '1-2.5s')"
             },
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.samplecount:max, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.sum:max, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.samplecount:max, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.sum:max, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:max, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.sum:max, '>10s')"
             }
           ],
           "fill": 1,
@@ -311,17 +311,17 @@
             {
               "hide": false,
               "refId": "H",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.samplecount:max, '2.5-5s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_7.sum:max, '2.5-5s')"
             },
             {
               "hide": false,
               "refId": "I",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.samplecount:max, '5-10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_8.sum:max, '5-10s')"
             },
             {
               "hide": false,
               "refId": "J",
-              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.samplecount:max, '>10s')"
+              "target": "alias(cloudwatch.request_time_buckets.$environment.$app.request_time_bucket_9.sum:max, '>10s')"
             }
           ],
           "fill": 1,
