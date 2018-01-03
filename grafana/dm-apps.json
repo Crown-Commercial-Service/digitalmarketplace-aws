@@ -426,7 +426,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "cloudwatch.application_500s.$environment.$app.500s.samplecount"
+              "target": "cloudwatch.application_500s.$environment.$app.500s.sum:max"
             }
           ],
           "fill": 1,
