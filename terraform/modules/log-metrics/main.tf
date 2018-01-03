@@ -286,3 +286,15 @@ resource "aws_cloudwatch_log_metric_filter" "router-500s" {
     value     = "1"
   }
 }
+
+resource "aws_cloudwatch_log_metric_filter" "router-429s" {
+  name  = "${var.environment}-router-429s"
+  pattern        = "{$$.status = 429}"
+  log_group_name = "${var.router_log_group_name}"
+
+  metric_transformation {
+    name  = "${var.environment}-router-nginx-429s"
+    namespace = "DM-429s"
+    value     = "1"
+  }
+}
