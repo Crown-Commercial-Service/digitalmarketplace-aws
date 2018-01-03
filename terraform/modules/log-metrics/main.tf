@@ -11,6 +11,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_0" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-0"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -25,6 +26,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_1" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-1"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -39,6 +41,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_2" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-2"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -53,6 +56,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_3" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-3"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -67,6 +71,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_4" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-4"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -81,6 +86,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_5" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-5"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -95,6 +101,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_6" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-6"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -109,6 +116,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_7" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-7"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -123,6 +131,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_8" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-8"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -137,6 +146,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_9" {
     name  = "${var.environment}-${var.app_names[count.index]}-request-times-9"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -150,6 +160,7 @@ resource "aws_cloudwatch_log_metric_filter" "application-500s" {
     name  = "${var.environment}-${element(var.app_names, count.index)}-nginx-500s"
     namespace = "DM-500s"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -164,6 +175,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_0" {
     name  = "${var.environment}-router-request-times-0"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -176,6 +188,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_1" {
     name  = "${var.environment}-router-request-times-1"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -188,6 +201,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_2" {
     name  = "${var.environment}-router-request-times-2"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -200,6 +214,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_3" {
     name  = "${var.environment}-router-request-times-3"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -212,6 +227,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_4" {
     name  = "${var.environment}-router-request-times-4"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -224,6 +240,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_5" {
     name  = "${var.environment}-router-request-times-5"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -236,6 +253,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_6" {
     name  = "${var.environment}-router-request-times-6"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -248,6 +266,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_7" {
     name  = "${var.environment}-router-request-times-7"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -260,6 +279,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_8" {
     name  = "${var.environment}-router-request-times-8"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -272,6 +292,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_9" {
     name  = "${var.environment}-router-request-times-9"
     namespace = "DM-RequestTimeBuckets"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -284,6 +305,7 @@ resource "aws_cloudwatch_log_metric_filter" "router-500s" {
     name  = "${var.environment}-router-nginx-500s"
     namespace = "DM-500s"
     value     = "1"
+    default_value = "0"
   }
 }
 
@@ -296,5 +318,6 @@ resource "aws_cloudwatch_log_metric_filter" "router-429s" {
     name  = "${var.environment}-router-nginx-429s"
     namespace = "DM-429s"
     value     = "1"
+    default_value = "0"
   }
 }
