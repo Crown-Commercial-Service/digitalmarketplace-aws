@@ -3,7 +3,7 @@ set -euo pipefail
 
 echo "Target is: ${TARGET}"
 
-mkdir ./dumps
+mkdir -p ./dumps
 LATEST_PROD_DUMP=$(aws s3 ls digitalmarketplace-database-backups | grep production | sort -r | head -1 | awk '{print $4}')
 pg_dump --no-acl --no-owner --clean postgres://postgres:@localhost:63306/postgres | gzip > ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}"
 
