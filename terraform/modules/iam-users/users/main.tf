@@ -6,12 +6,20 @@ resource "aws_iam_user" "ben_vandersteen" {
   name = "benvandersteen"
 }
 
+resource "aws_iam_user" "brendan_barber" {
+  name = "brendanbutler"
+}
+
 resource "aws_iam_user" "chris_wynne" {
   name = "chriswynne"
 }
 
 resource "aws_iam_user" "david_mcdonald" {
   name = "davidmcdonald"
+}
+
+resource "aws_iam_user" "dilwoar_hussain" {
+  name = "dilwoarhussain"
 }
 
 resource "aws_iam_user" "george_lund" {
