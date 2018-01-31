@@ -121,18 +121,13 @@ For more information check the Makefile contents.
 
 ## Run bare Terraform commands
 
-You have to use the terraform wrapper script to run terraform commands directly:
+Generally you won't need to run bare Terraform commands as our ```Makefile``` should cover most needed scenarios. However, if you do then you should use the terraform wrapper script to run them directly. The terraform wrapper script takes care of loading your ```.envrc``` and running ```aws-auth```.
+
+For example, if you wanted to run ```terraform output``` against preview you can do so:
 
 ```
-cd root/aws-dm
-./../../terraform-wrapper output
-```
-
-This command would have the same effect:
-
-```
-cd root/aws-dm
-. .envrc && aws-auth terraform output
+cd environments/preview
+../../terraform-wrapper output
 ```
 
 ## Requirements in a new AWS environment
