@@ -27,7 +27,7 @@ make requirements
 
 ## Terraform
 
-For Terraform setup and usage please check the separate ([README](terraform/README.md)).
+For Terraform setup, including non python dependencies and usage please check the separate ([README](terraform/README.md)).
 
 - [Terraform installation and setup](terraform/README.md#requirements) (requires MFA)
 - [Terraform usage](terraform/README.md#make-targets)

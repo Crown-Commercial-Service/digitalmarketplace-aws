@@ -21,6 +21,9 @@ All projects are then able to import and use the functionality they require from
 
 ## Requirements
 
+You will need to install the following manually (they are not installed as part of any other process such as
+`make requirements` or `pip`).
+
 ### Install Terraform
 
 Make sure you have Terraform installed: https://www.terraform.io/downloads.html
