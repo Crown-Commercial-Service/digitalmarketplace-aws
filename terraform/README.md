@@ -1,10 +1,23 @@
 # Terraform modules for Digital Marketplace
 
-## Root modules
+## Projects and modules
 
- * **aws-dm**: digitalmarketplace AWS account
- * **aws-dm-dev**: digitalmarketplace-development AWS account
- * **aws-dm-prod**: digitalmarketplace-production AWS account
+The following projects each define and control the state of a section of our infrastructure.
+
+ * **accounts/development**: The digitalmarketplace-development AWS account
+ * **accounts/main**: The digitalmarketplace AWS account
+ * **accounts/production**: The digitalmarketplace-production AWS account
+ * **environments/preview**
+ * **environments/staging**
+ * **environments/production**
+
+Account projects apply to the AWS account as a whole, so should only contain resources that are created once per
+account (eg root Route53 hosted zones, IAM users).
+
+Environment projects apply to individual environments and should contain resources that should be created for each
+environment (eg application logs and S3 buckets).
+
+All projects are then able to import and use the functionality they require from our folder of shared modules.
 
 ## Requirements
 
@@ -54,16 +67,16 @@ aws_secret_access_key=FYd4t...
 File: ~/.aws/config
 
 ```
-[profile dm-main-account-infrastructure]
+[profile dm-main-account-infrastructure-preview]
 source_profile=dm-andras
 mfa_serial=arn:aws:iam::<main account id>:mfa/<your username>
 role_arn = arn:aws:iam::<main account id>:role/infrastructure
 ```
 
-File: root/aws-dm/.envrc
+File: environments/preview/.envrc
 
 ```
-export AWS_PROFILE=dm-main-account-infrastructure
+export AWS_PROFILE=dm-main-account-infrastructure-preview
 ```
 
 ### Terraform remote state
