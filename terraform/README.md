@@ -46,7 +46,7 @@ Please follow the instructions here: https://stedolan.github.io/jq/download/
 
 Follow the instructions outlined here: https://github.com/alphagov/aws-auth
 
-### Direnv (optional)
+### Direnv
 
 Install direnv (https://github.com/direnv/direnv) to automatically load environment variables from `.envrc` files
 
@@ -56,7 +56,7 @@ Install direnv (https://github.com/direnv/direnv) to automatically load environm
 
 Terraform can be used only with MFA therefore you have to set up your profiles both in `~/.aws/credentials` and `~/.aws/config`
 
-Note: You can use direnv (https://github.com/direnv/direnv) to load the AWS_PROFILE value automatically for the root modules (`aws-dm*/.envrc`). Nonetheless the Terraform wrapper script and the Makefile is going to source the `.envrc` files automatically.
+You will need to set up ```.envrc``` files for each project you wish to use which export the related ```AWS_PROFILE``` value for that project. Direnv (https://github.com/direnv/direnv) will load these automatically when using the Terraform wrapper script and Makefiles.
 
 ### Example
 
@@ -93,6 +93,14 @@ The remote state files are stored on S3 and the initialisation is automatic when
 Follow the set up guide outlined here: https://github.gds/gds/digitalmarketplace-credentials/blob/master/README.md
 
 The Makefile will look for the credentials repository at the directory defined in the DM_CREDENTIALS_REPO environment variable.
+
+You may like to add this to your `~/.bash_profile` or `.envrc` file for easy access.
+
+Example file: ~/.bash_profile
+
+```
+export DM_CREDENTIALS_REPO=/absolute/path/to/digital/marketplace/credentials/repo
+```
 
 ## Make targets
 
