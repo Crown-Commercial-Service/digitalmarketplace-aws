@@ -134,7 +134,7 @@ cd environments/preview
 
 ### Create an S3 bucket for storing the Terraform state files
 
-The bucket name should be: `digitalmarketplace-terraform-state-<account>`, where <account> is `main/development/production`. Make sure you turn on versioning.
+The bucket name should be: `digitalmarketplace-terraform-state-<account>`, where `<account>` is `main/development/production`. Make sure you turn on versioning.
 
 ### IAM groups / AWS users
 
