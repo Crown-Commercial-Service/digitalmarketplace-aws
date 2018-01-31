@@ -58,6 +58,9 @@ Terraform can be used only with MFA therefore you have to set up your profiles b
 
 You will need to set up ```.envrc``` files for each project you wish to use which export the related ```AWS_PROFILE``` value for that project. Direnv (https://github.com/direnv/direnv) will load these automatically when using the Terraform wrapper script and Makefiles.
 
+You can find all the AWS profiles required in the [AWS accounts section](https://alphagov.github.io/digitalmarketplace-manual/aws-accounts.html#available-roles) of the Digital Marketplace manual.
+
+
 ### Example
 
 File: ~/.aws/credentials
@@ -72,16 +75,16 @@ aws_secret_access_key=FYd4t...
 File: ~/.aws/config
 
 ```
-[profile dm-main-account-infrastructure-preview]
-source_profile=dm-andras
-mfa_serial=arn:aws:iam::<main account id>:mfa/<your username>
-role_arn = arn:aws:iam::<main account id>:role/infrastructure
+[profile development-infrastructure]
+source_profile=default
+mfa_serial=arn:aws:iam::<main account id>:mfa/<IAM username>
+role_arn=arn:aws:iam::<digitalmarketplace-development account id>:role/infrastructure
 ```
 
 File: environments/preview/.envrc
 
 ```
-export AWS_PROFILE=dm-main-account-infrastructure-preview
+export AWS_PROFILE=development-infrastructure
 ```
 
 ### Terraform remote state
