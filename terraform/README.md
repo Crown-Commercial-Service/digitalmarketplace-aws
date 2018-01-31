@@ -1,4 +1,4 @@
-# Terraform modules for Digital Marketplace
+# Terraform for the Digital Marketplace
 
 ## Projects and modules
 
@@ -130,7 +130,7 @@ cd environments/preview
 ../../terraform-wrapper output
 ```
 
-## Requirements in a new AWS environment
+## Requirements in a clean or completely new AWS environment
 
 ### Create an S3 bucket for storing the Terraform state files
 
