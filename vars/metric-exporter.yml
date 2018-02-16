@@ -5,6 +5,7 @@
 API_ENDPOINT: https://api.cloud.service.gov.uk
 DEBUG: false
 METRIC_TEMPLATE: {{.Space}}.{{.App}}.{{.Instance}}.{{.Metric}}
+METRIC_WHITELIST: cpu,diskBytes,memoryBytes
 SKIP_SSL_VALIDATION: false
 UPDATE_FREQUENCY: 60
 STATSD_ENDPOINT: statsd_endpoint_to_be_replaced
