@@ -9,7 +9,7 @@ There are a few independent tools we're using that are configured and run from t
 
 * [Terraform](https://www.terraform.io/) (modules and configuration files in `terraform/`) is used
   to create and manage AWS resources (DNS records, CloudWatch logs, S3 buckets etc.)
-* `scripts` contains executable scripts we use to manage our PaaS environments
+* `scripts` contains executable scripts we use to manage our PaaS environments and Hosted Graphite
 * `dmaws` contains some helper python functions used by some of the scripts
 * `paas` contains PaaS manifest templates that are rendered by `make generate-manifest`
 * `vars` contains environment specific variables used in the PaaS manifest generation
