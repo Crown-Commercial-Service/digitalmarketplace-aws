@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Description:
-    Sets up alerts for missing logs for our applications using the Hosted Graphite alerting API
+    Sets up alerts for our applications using the Hosted Graphite alerting API
 
     https://www.hostedgraphite.com/docs/alerting/alerting_api.html
 
@@ -21,16 +21,56 @@ import json
 import requests
 from docopt import docopt
 
+ALERTS = [
+    {
+        "name": "Production Router 500s",
+        "metric": "cloudwatch.application_500s.production.router.500s.sum",
+        "alert_criteria": {
+            "type": "above",
+            "above_value": 0
+        },
+        "notification_channels": ["Notify DM 2ndline"],  # Hardcoded name, channel had been set up manually already
+        "notification_type": ["every", 60],
+        "info": "500s have occured"
+    },
+    {
+        "name": "Production Router 429s",
+        "metric": "cloudwatch.router_429s.production.router.429s.sum",
+        "alert_criteria": {
+            "type": "above",
+            "above_value": 0
+        },
+        "notification_channels": ["Notify DM 2ndline"],
+        "notification_type": ["every", 60],
+        "info": """429s responses being returned from the production router. Check CloudWatch for the IP address to make
+sure this is a crawler rather than a legitimate request"""
+    },
+    {
+        "name": "Production Router slow requests (10+ seconds)",
+        "metric": "cloudwatch.request_time_buckets.production.router.request_time_bucket_9.sum",
+        "alert_criteria": {
+            "type": "above",
+            "above_value": 5
+        },
+        "notification_channels": ["Notify DM 2ndline"],
+        "notification_type": ["every", 60],
+        "info": "5+ requests taking 10+ seconds from the production router in the last minute"
+    },
+    {
+        "name": "Production Router slow requests (5-10 seconds)",
+        "metric": "cloudwatch.request_time_buckets.production.router.request_time_bucket_8.sum",
+        "alert_criteria": {
+            "type": "above",
+            "above_value": 5
+        },
+        "notification_channels": ["Notify DM 2ndline"],
+        "notification_type": ["every", 60],
+        "info": "5+ requests taking 5-10 seconds from the production router in the last minute"
+    },
+]
 
-# No staging alert as we have a limit on how many alerts we can have and this will cover both the first step of our
-# pipeline and also production
-ENVIRONMENTS = ["preview", "production"]
 
-APPS = ["api", "search-api", "admin-frontend", "buyer-frontend", "briefs-frontend", "brief-responses-frontend",
-        "router", "supplier-frontend", "user-frontend"]
-
-
-def get_alert_json(environment, app):
+def get_missing_logs_alert_json(environment, app):
     """
     For a given environment and application, return the JSON required to set up an alert that will trigger if either
     no nginx log event metrics or no application log event metrics are received for 10 minutes.
@@ -80,16 +120,30 @@ have inconsistencies. See HG alerting API for details""".format(app)
     return data
 
 
-def generate_alerts(api_key):
-    endpoint = "https://api.hostedgraphite.com/v2/alerts/"
+def create_missing_logs_alerts(api_key):
+    # No staging alert as we have a limit on how many alerts we can have and this will cover both the first step of our
+    # pipeline and also production
+    ENVIRONMENTS = ["preview", "production"]
+    APPS = ["api", "search-api", "admin-frontend", "buyer-frontend", "briefs-frontend", "brief-responses-frontend",
+            "router", "supplier-frontend", "user-frontend"]
+
     for environment in ENVIRONMENTS:
         for app in APPS:
             print("Creating missing logs alert for {} {}".format(environment, app))
-            alert = get_alert_json(environment, app)
-            resp = requests.post(endpoint, auth=(api_key, ''), data=json.dumps(alert))
-            resp.raise_for_status()
+            create_alert(api_key, get_missing_logs_alert_json(environment, app))
+
+
+def create_alert(api_key, alert):
+    endpoint = "https://api.hostedgraphite.com/v2/alerts/"
+    resp = requests.post(endpoint, auth=(api_key, ''), data=json.dumps(alert))
+    resp.raise_for_status()
 
 
 if __name__ == "__main__":
-    arguments = docopt(__doc__)
-    generate_alerts(arguments['<hosted_graphite_api_key>'])
+    api_key = docopt(__doc__)["<hosted_graphite_api_key>"]
+
+    for alert in ALERTS:
+        print("Creating alert for {}".format(alert["name"]))
+        create_alert(api_key, alert)
+
+    create_missing_logs_alerts(api_key)
