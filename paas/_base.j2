@@ -12,7 +12,7 @@ applications:
 {% endif %}
     instances: {{ instances|default(1) }}
     memory: {{ memory|default('512M') }}
-    disk_quota: {{ disk_quota|default('1024M') }}
+    disk_quota: {{ disk_quota|default('2G') }}
     env:
       DM_APP_NAME: {{ app }}
       DM_ENVIRONMENT: {{ environment }}
