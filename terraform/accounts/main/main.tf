@@ -1,5 +1,6 @@
 provider "aws" {
   region = "eu-west-1"
+  version = "1.9.0"
 }
 
 terraform {
@@ -48,4 +49,7 @@ module "jenkins" {
   source = "../../modules/jenkins"
   aws_main_account_id = "${var.aws_main_account_id}"
   aws_sub_account_ids = "${var.aws_sub_account_ids}"
+  jenkins_security_group_ids = "${var.jenkins_security_group_ids}"
+  jenkins_2_key_name = "${var.jenkins_2_key_name}"
+  jenkins_2_public_key = "${var.jenkins_2_public_key}"
 }
