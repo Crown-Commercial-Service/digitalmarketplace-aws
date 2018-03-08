@@ -18,12 +18,12 @@ in (with args; {
       pkgs.aws-auth
       pkgs.sops
       (pkgs.terraform.overrideAttrs (oldAttrs: rec {
-        name = "terraform-0.11.1";
+        name = "terraform-0.11.3";
         src = pkgs.fetchFromGitHub {
           owner  = "hashicorp";
           repo   = "terraform";
-          rev    = "v0.11.1";
-          sha256 = "04qyhlif3b3kjs3m6c3mx45sgr5r13x55aic638zzlrhbpmqiih1";
+          rev    = "v0.11.3";
+          sha256 = "0637x7jcm62pdnivmh4rggly6dmlvdh3jpsd1z4vba15gbm203nz";
         };
       }))
       pkgs.libyaml
