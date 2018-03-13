@@ -25,10 +25,17 @@ WHERE framework_id IN
      WHERE status='open');
 
 -- Remove data related to open DOS procurements
--- (We can't tell if a procurement is ongoing, so delete all brief responses)
+-- (Delete all brief responses except those with 'awarded' status, where the procurement has ended)
 \echo 'Delete brief responses'
 DELETE
-FROM brief_responses;
+FROM brief_responses
+WHERE awarded_at IS NOT NULL;
+
+-- Sanitise personal data in awarded brief responses
+\echo 'Update brief responses'
+UPDATE brief_responses
+SET data = data::jsonb || '{"respondToEmailAddress": "cleaned-example-email@gov.uk"}'::jsonb
+WHERE data::TEXT != '{}';
 
 \echo 'Delete draft briefs'
 \echo '  > Delete draft brief users'
