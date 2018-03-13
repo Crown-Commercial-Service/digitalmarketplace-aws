@@ -37,13 +37,3 @@ resource "aws_route53_record" "ci_marketplace_team" {
     "${var.jenkins_ip}"
   ]
 }
-
-resource "aws_route53_record" "ci2_marketplace_team" {
-  zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
-  name = "ci2.marketplace.team"
-  type = "A"
-  ttl = "300"
-  records = [
-    "${module.jenkins.jenkins_2_elastic_ip}"
-  ]
-}
