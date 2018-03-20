@@ -40,6 +40,7 @@ resource "aws_iam_policy" "iam_manage_account" {
       "Action": [
         "iam:ChangePassword",
         "iam:EnableMFADevice",
+        "iam:DeactivateMFADevice",
         "iam:ResyncMFADevice",
         "iam:GetUser",
         "iam:ListMFADevices"
@@ -49,7 +50,8 @@ resource "aws_iam_policy" "iam_manage_account" {
     {
       "Effect": "Allow",
       "Action": [
-        "iam:CreateVirtualMFADevice"
+        "iam:CreateVirtualMFADevice",
+        "iam:DeleteVirtualMFADevice"
       ],
       "Resource": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:mfa/$${aws:username}"
     },
