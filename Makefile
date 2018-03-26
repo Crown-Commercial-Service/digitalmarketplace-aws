@@ -72,6 +72,7 @@ paas-login: ## Log in to PaaS
 deploy-app: ## Deploys the app to PaaS
 	$(call check_space)
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
 	cf push -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
 
 	# TODO restore scaling before route switch once we have autoscaling set up
