@@ -24,7 +24,7 @@ def safe_path_join(basedir, path):
 
 def read_yaml_file(path):
     with open(path) as f:
-        return yaml.load(f) or {}
+        return yaml.safe_load(f) or {}
 
 
 def load_file(path):
