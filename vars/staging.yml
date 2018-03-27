@@ -1,6 +1,15 @@
 ---
 domain: staging.marketplace.team
-instances: 2
+instances: 5
+
+router:
+  instances: 3
 
 api:
   memory: 2GB
+
+user-frontend:
+  instances: 2
+
+admin-frontend:
+  instances: 2
