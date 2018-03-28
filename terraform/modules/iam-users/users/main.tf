@@ -30,10 +30,6 @@ resource "aws_iam_user" "kat_stevens" {
   name = "katstevens"
 }
 
-resource "aws_iam_user" "kevin_keenoy" {
-  name = "kevkeenoy"
-}
-
 resource "aws_iam_user" "laurence_berry" {
   name = "laurenceberry"
 }
