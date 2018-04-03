@@ -73,7 +73,7 @@ sure this is a crawler rather than a legitimate request"""
 def get_missing_logs_alert_json(environment, app):
     """
     For a given environment and application, return the JSON required to set up an alert that will trigger if either
-    no nginx log event metrics or no application log event metrics are received for 10 minutes.
+    no nginx log event metrics or no application log event metrics are received for 15 minutes.
 
     We use an OR statement for either nginx or application logs so we can save on the number of alerts we are using. A
     developer seeing this alert will need to manually diagnose if it is just one or both of the log types that have
@@ -88,13 +88,16 @@ def get_missing_logs_alert_json(environment, app):
     and will display the graph of the last metric that breached the alert threshold. So for example, if the alert is
     a && b, and a breaches the threshold, then a few minutes later b breaches it’s threshold, the alert notification
     will show the metric graph for b`
+
+    Time period for alerting missing logs is set to 15 minutes. The smoke tests run every 5 minutes, this allows
+    some wiggle room to avoid false positives arising from a delay in shipping the metrics from Cloudwatch.
     """
     data = {
         "name": "{} {} missing logs".format(environment, app),
         "metric": "cloudwatch.incoming_log_events.{}.{}.nginx_logs.sum".format(environment, app),
         "alert_criteria": {
             "type": "missing",
-            "time_period": 10,  # 10 minutes chosen as smoke tests should be triggering logs every 5 minutes
+            "time_period": 15,
         },
         "notification_channels": ["Notify DM 2ndline"],  # Hardcoded name, channel had been set up manually already
         "notification_type": ["every", 60],
@@ -111,7 +114,7 @@ have inconsistencies. See HG alerting API for details""".format(app)
                 "b": {
                     "metric": "cloudwatch.incoming_log_events.{}.{}.application_logs.sum".format(environment, app),
                     "type": "missing",
-                    "time_period": 10,
+                    "time_period": 15,
                 }
             },
             "expression": "a || b",
