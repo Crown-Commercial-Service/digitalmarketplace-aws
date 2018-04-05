@@ -28,8 +28,12 @@ test-unit: virtualenv
 	${VIRTUALENV_ROOT}/bin/py.test ${PYTEST_ARGS}
 
 .PHONY: requirements
-requirements: virtualenv ## Install requirements
+requirements: virtualenv requirements.txt
 	${VIRTUALENV_ROOT}/bin/pip install -r requirements.txt
+
+.PHONY: requirements-dev
+requirements-dev: virtualenv requirements-dev.txt
+	${VIRTUALENV_ROOT}/bin/pip install -r requirements-dev.txt
 
 .PHONY: virtualenv
 virtualenv: ${VIRTUALENV_ROOT}/activate ## Create virtualenv if it does not exist
