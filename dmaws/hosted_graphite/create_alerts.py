@@ -104,23 +104,26 @@ have inconsistencies. See HG alerting API for details""".format(app)
     return data
 
 
-def create_missing_logs_alerts(api_key):
-    # No staging alert as we have a limit on how many alerts we can have and this will cover both the first step of our
-    # pipeline and also production
-    ENVIRONMENTS = ["preview", "production"]
-    APPS = ["api", "search-api", "admin-frontend", "buyer-frontend", "briefs-frontend", "brief-responses-frontend",
-            "router", "supplier-frontend", "user-frontend"]
-
-    for environment in ENVIRONMENTS:
-        for app in APPS:
-            print("Creating missing logs alert for {} {}".format(environment, app))
-            create_alert(api_key, get_missing_logs_alert_json(environment, app))
-
-
 def create_alert(api_key, alert):
     endpoint = "https://api.hostedgraphite.com/v2/alerts/"
     resp = requests.post(endpoint, auth=(api_key, ''), data=json.dumps(alert))
     resp.raise_for_status()
+
+
+# No staging alert as we have a limit on how many alerts we can have and this will cover both the first step of our
+# pipeline and also production
+ALERT_ENVIRONMENTS = ["preview", "production"]
+ALERT_APPS = [
+    "api", "search-api", "admin-frontend", "buyer-frontend", "briefs-frontend", "brief-responses-frontend",
+    "router", "supplier-frontend", "user-frontend"
+]
+
+
+def create_missing_logs_alerts(api_key):
+    for environment in ALERT_ENVIRONMENTS:
+        for app in ALERT_APPS:
+            print("Creating missing logs alert for {} {}".format(environment, app))
+            create_alert(api_key, get_missing_logs_alert_json(environment, app))
 
 
 def create_alerts(api_key):

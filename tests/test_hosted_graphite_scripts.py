@@ -3,7 +3,10 @@ import pytest
 import requests
 import requests_mock
 
-from dmaws.hosted_graphite.create_alerts import create_alert, create_alerts, ALERTS
+from dmaws.hosted_graphite.create_alerts import (
+    create_alert, create_alerts, ALERTS, ALERT_APPS, ALERT_ENVIRONMENTS,
+    get_missing_logs_alert_json, create_missing_logs_alerts
+)
 
 
 @pytest.yield_fixture
@@ -53,16 +56,61 @@ def test_create_alert_raises_for_status_on_error(rmock):
     assert str(exc.value) == '500 Server Error: None for url: https://api.hostedgraphite.com/v2/alerts/'
 
 
-def test_get_missing_logs_alert_json_has_additional_criteria_for_frontend_and_api_apps():
-    pass
+def test_get_missing_logs_alert_json_has_additional_criteria_for_non_router_apps():
+    assert get_missing_logs_alert_json('preview', 'api') == {
+        "name": "preview api missing logs",
+        "metric": "cloudwatch.incoming_log_events.preview.api.nginx_logs.sum",
+        "alert_criteria": {
+            "type": "missing",
+            "time_period": 15,
+        },
+        "notification_channels": ["Notify DM 2ndline"],
+        "notification_type": ["every", 60],
+        "info": """No incoming log events metrics for the last 10 minutes for the api app. This could be either the \
+application logs or the nginx logs or both. This could indicate either a problem with metric shipping to Hosted \
+Graphite or that the logs are not being created.\nDO NOT MANUALLY EDIT - Set up through Hosted Graphite API so GUI may \
+have inconsistencies. See HG alerting API for details""",
+        "additional_criteria": {
+            "b": {
+                "metric": "cloudwatch.incoming_log_events.preview.api.application_logs.sum",
+                "type": "missing",
+                "time_period": 15,
+            }
+        },
+        "expression": "a || b",
+
+    }
 
 
 def test_get_missing_logs_alert_json_does_not_have_additional_criteria_for_router_app():
-    pass
+    assert get_missing_logs_alert_json('preview', 'router') == {
+        "name": "preview router missing logs",
+        "metric": "cloudwatch.incoming_log_events.preview.router.nginx_logs.sum",
+        "alert_criteria": {
+            "type": "missing",
+            "time_period": 15,
+        },
+        "notification_channels": ["Notify DM 2ndline"],
+        "notification_type": ["every", 60],
+        "info": """No incoming log events metrics for the last 10 minutes for the router app. This could be either the \
+application logs or the nginx logs or both. This could indicate either a problem with metric shipping to Hosted \
+Graphite or that the logs are not being created.\nDO NOT MANUALLY EDIT - Set up through Hosted Graphite API so GUI may \
+have inconsistencies. See HG alerting API for details"""
+    }
 
 
-def test_create_missing_logs_alerts_creates_alerts():
-    pass
+@mock.patch('dmaws.hosted_graphite.create_alerts.get_missing_logs_alert_json')
+@mock.patch('dmaws.hosted_graphite.create_alerts.create_alert')
+def test_create_missing_logs_alerts_creates_alerts_for_each_environment_and_app(create_alert, get_missing_logs_json):
+    get_missing_logs_json.return_value = {'foo': 'bar'}
+    create_missing_logs_alerts('api_key')
+
+    assert create_alert.call_args_list == [
+        mock.call('api_key', get_missing_logs_json.return_value)
+    ]*len(ALERT_APPS)*len(ALERT_ENVIRONMENTS)
+    assert get_missing_logs_json.call_args_list == [
+        mock.call(env, app) for env in ALERT_ENVIRONMENTS for app in ALERT_APPS
+    ]
 
 
 def test_generate_dashboards():
