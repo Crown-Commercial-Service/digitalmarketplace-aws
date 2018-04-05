@@ -1,3 +1,4 @@
+import builtins
 import mock
 import pytest
 import requests
@@ -7,6 +8,7 @@ from dmaws.hosted_graphite.create_alerts import (
     create_alert, create_alerts, ALERTS, ALERT_APPS, ALERT_ENVIRONMENTS,
     get_missing_logs_alert_json, create_missing_logs_alerts
 )
+from dmaws.hosted_graphite.create_dashboards import generate_dashboards
 
 
 @pytest.yield_fixture
@@ -107,11 +109,36 @@ def test_create_missing_logs_alerts_creates_alerts_for_each_environment_and_app(
 
     assert create_alert.call_args_list == [
         mock.call('api_key', get_missing_logs_json.return_value)
-    ]*len(ALERT_APPS)*len(ALERT_ENVIRONMENTS)
+    ] * len(ALERT_APPS) * len(ALERT_ENVIRONMENTS)
     assert get_missing_logs_json.call_args_list == [
         mock.call(env, app) for env in ALERT_ENVIRONMENTS for app in ALERT_APPS
     ]
 
 
-def test_generate_dashboards():
-    pass
+@mock.patch('dmaws.hosted_graphite.create_dashboards.get_grafana_dashboard_folder')
+def test_generate_dashboards_calls_hosted_graphite_api(get_grafana_dashboard_folder, rmock):
+    get_grafana_dashboard_folder.return_value = '/tmp'
+    rmock.request(
+        "PUT", "https://api.hostedgraphite.com/api/v2/grafana/dashboards/",
+        json={"id": 1}, status_code=201
+    )
+
+    with mock.patch.object(builtins, 'open', mock.mock_open(read_data='{"foo": "bar"}')):
+        generate_dashboards('api_key')
+
+    assert rmock.last_request.json() == {"foo": "bar"}
+
+
+@mock.patch('dmaws.hosted_graphite.create_dashboards.get_grafana_dashboard_folder')
+def test_generate_dashboards_raises_for_status_on_error(get_grafana_dashboard_folder, rmock):
+    get_grafana_dashboard_folder.return_value = '/tmp'
+    rmock.request(
+        "PUT", 'https://api.hostedgraphite.com/api/v2/grafana/dashboards/',
+        status_code=500,
+    )
+
+    with pytest.raises(requests.exceptions.HTTPError) as exc:
+        with mock.patch.object(builtins, 'open', mock.mock_open(read_data='{"foo": "bar"}')):
+            generate_dashboards('api_key')
+
+    assert str(exc.value) == '500 Server Error: None for url: https://api.hostedgraphite.com/api/v2/grafana/dashboards/'
