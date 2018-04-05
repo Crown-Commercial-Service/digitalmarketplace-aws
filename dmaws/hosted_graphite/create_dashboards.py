@@ -1,9 +1,6 @@
 import os
-import sys
 
 import requests
-
-sys.path.insert(0, '.')  # noqa
 
 
 def get_grafana_dashboard_folder():

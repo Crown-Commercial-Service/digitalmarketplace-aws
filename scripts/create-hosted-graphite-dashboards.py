@@ -22,7 +22,12 @@ Usage:
 Example:
     scripts/create-hosted-graphite-dashboards.py apikey
 """
+import sys
+
 import docopt
+
+sys.path.insert(0, '.')
+
 from dmaws.hosted_graphite.create_dashboards import generate_dashboards
 
 if __name__ == "__main__":

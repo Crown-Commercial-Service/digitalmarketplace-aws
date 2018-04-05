@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import requests
 
@@ -82,7 +83,7 @@ def get_missing_logs_alert_json(environment, app):
         },
         "notification_channels": ["Notify DM 2ndline"],  # Hardcoded name, channel had been set up manually already
         "notification_type": ["every", 60],
-        "info": """No incoming log events metrics for the last 10 minutes for the {} app. This could be either the \
+        "info": """No incoming log events metrics for the last 15 minutes for the {} app. This could be either the \
 application logs or the nginx logs or both. This could indicate either a problem with metric shipping to Hosted \
 Graphite or that the logs are not being created.\nDO NOT MANUALLY EDIT - Set up through Hosted Graphite API so GUI may \
 have inconsistencies. See HG alerting API for details""".format(app)
@@ -120,6 +121,7 @@ ALERT_APPS = [
 
 
 def create_missing_logs_alerts(api_key):
+    # TODO: Log any 409 failures (alert already present) and continue with next alert
     for environment in ALERT_ENVIRONMENTS:
         for app in ALERT_APPS:
             print("Creating missing logs alert for {} {}".format(environment, app))
@@ -127,6 +129,7 @@ def create_missing_logs_alerts(api_key):
 
 
 def create_alerts(api_key):
+    # TODO: Log any 409 failures (alert already present) and continue with next alert
     for alert in ALERTS:
         print("Creating alert for {}".format(alert["name"]))
         create_alert(api_key, alert)

@@ -16,7 +16,12 @@ Usage:
 Example:
     scripts/create-hosted-graphite-alerts.py apikey
 """
+import sys
+
 from docopt import docopt
+
+sys.path.insert(0, '.')
+
 from dmaws.hosted_graphite.create_alerts import create_alerts, create_missing_logs_alerts
 
 

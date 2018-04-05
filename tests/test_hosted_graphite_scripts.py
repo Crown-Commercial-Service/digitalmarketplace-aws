@@ -1,4 +1,7 @@
-import builtins
+try:
+    import __builtin__ as builtins
+except ImportError:
+    import builtins
 import mock
 import pytest
 import requests
@@ -68,7 +71,7 @@ def test_get_missing_logs_alert_json_has_additional_criteria_for_non_router_apps
         },
         "notification_channels": ["Notify DM 2ndline"],
         "notification_type": ["every", 60],
-        "info": """No incoming log events metrics for the last 10 minutes for the api app. This could be either the \
+        "info": """No incoming log events metrics for the last 15 minutes for the api app. This could be either the \
 application logs or the nginx logs or both. This could indicate either a problem with metric shipping to Hosted \
 Graphite or that the logs are not being created.\nDO NOT MANUALLY EDIT - Set up through Hosted Graphite API so GUI may \
 have inconsistencies. See HG alerting API for details""",
@@ -94,7 +97,7 @@ def test_get_missing_logs_alert_json_does_not_have_additional_criteria_for_route
         },
         "notification_channels": ["Notify DM 2ndline"],
         "notification_type": ["every", 60],
-        "info": """No incoming log events metrics for the last 10 minutes for the router app. This could be either the \
+        "info": """No incoming log events metrics for the last 15 minutes for the router app. This could be either the \
 application logs or the nginx logs or both. This could indicate either a problem with metric shipping to Hosted \
 Graphite or that the logs are not being created.\nDO NOT MANUALLY EDIT - Set up through Hosted Graphite API so GUI may \
 have inconsistencies. See HG alerting API for details"""
