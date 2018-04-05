@@ -28,6 +28,16 @@ from dmaws.hosted_graphite.create_alerts import create_alerts, create_missing_lo
 if __name__ == "__main__":
     api_key = docopt(__doc__)["<hosted_graphite_api_key>"]
 
+    # 500, 429 and slow request alerts
     create_alerts(api_key)
 
-    create_missing_logs_alerts(api_key)
+    # Missing log alerts.
+    # No staging alert as we have a limit on how many alerts we can have and this will cover both the first step of our
+    # pipeline and also production
+    environments = ["preview", "production"]
+    apps = [
+        "api", "search-api", "admin-frontend", "buyer-frontend", "briefs-frontend", "brief-responses-frontend",
+        "router", "supplier-frontend", "user-frontend"
+    ]
+
+    create_missing_logs_alerts(api_key, environments, apps)

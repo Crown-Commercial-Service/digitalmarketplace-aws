@@ -71,8 +71,8 @@ def get_missing_logs_alert_json(environment, app):
     a && b, and a breaches the threshold, then a few minutes later b breaches it’s threshold, the alert notification
     will show the metric graph for b`
 
-    Time period for alerting missing logs is set to 15 minutes. The smoke tests run every 5 minutes, this allows
-    some wiggle room to avoid false positives arising from a delay in shipping the metrics from Cloudwatch.
+    Time period for alerting missing logs is set to 15 minutes. This allows some wiggle room to avoid false positives
+    arising from a delay in shipping the metrics from Cloudwatch (the smoke tests run every 5 minutes).
     """
     data = {
         "name": "{} {} missing logs".format(environment, app),
@@ -111,19 +111,10 @@ def create_alert(api_key, alert):
     resp.raise_for_status()
 
 
-# No staging alert as we have a limit on how many alerts we can have and this will cover both the first step of our
-# pipeline and also production
-ALERT_ENVIRONMENTS = ["preview", "production"]
-ALERT_APPS = [
-    "api", "search-api", "admin-frontend", "buyer-frontend", "briefs-frontend", "brief-responses-frontend",
-    "router", "supplier-frontend", "user-frontend"
-]
-
-
-def create_missing_logs_alerts(api_key):
+def create_missing_logs_alerts(api_key, environments, apps):
     # TODO: Log any 409 failures (alert already present) and continue with next alert
-    for environment in ALERT_ENVIRONMENTS:
-        for app in ALERT_APPS:
+    for environment in environments:
+        for app in apps:
             print("Creating missing logs alert for {} {}".format(environment, app))
             create_alert(api_key, get_missing_logs_alert_json(environment, app))
 

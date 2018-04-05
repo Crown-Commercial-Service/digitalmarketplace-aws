@@ -8,7 +8,7 @@ import requests
 import requests_mock
 
 from dmaws.hosted_graphite.create_alerts import (
-    create_alert, create_alerts, ALERTS, ALERT_APPS, ALERT_ENVIRONMENTS,
+    create_alert, create_alerts, ALERTS,
     get_missing_logs_alert_json, create_missing_logs_alerts
 )
 from dmaws.hosted_graphite.create_dashboards import generate_dashboards
@@ -34,19 +34,9 @@ def test_create_alert_posts_to_hosted_graphite_api(rmock):
         json={"id": 1}, status_code=201
     )
 
-    create_alert('api_key', ALERTS[0])
+    create_alert('api_key', {'foo': 'bar'})
 
-    assert rmock.last_request.json() == {
-        "name": "Production Router 500s",
-        "metric": "cloudwatch.application_500s.production.router.500s.sum",
-        "alert_criteria": {
-            "type": "above",
-            "above_value": 0
-        },
-        "notification_channels": ["Notify DM 2ndline"],
-        "notification_type": ["every", 60],
-        "info": "500s have occured"
-    }
+    assert rmock.last_request.json() == {'foo': 'bar'}
 
 
 def test_create_alert_raises_for_status_on_error(rmock):
@@ -56,7 +46,7 @@ def test_create_alert_raises_for_status_on_error(rmock):
     )
 
     with pytest.raises(requests.exceptions.HTTPError) as exc:
-        create_alert('api_key', ALERTS[0])
+        create_alert('api_key', {'foo': 'bar'})
 
     assert str(exc.value) == '500 Server Error: None for url: https://api.hostedgraphite.com/v2/alerts/'
 
@@ -108,13 +98,16 @@ have inconsistencies. See HG alerting API for details"""
 @mock.patch('dmaws.hosted_graphite.create_alerts.create_alert')
 def test_create_missing_logs_alerts_creates_alerts_for_each_environment_and_app(create_alert, get_missing_logs_json):
     get_missing_logs_json.return_value = {'foo': 'bar'}
-    create_missing_logs_alerts('api_key')
+    create_missing_logs_alerts('api_key', ['preview', 'production'], ['api', 'buyer-frontend'])
 
     assert create_alert.call_args_list == [
         mock.call('api_key', get_missing_logs_json.return_value)
-    ] * len(ALERT_APPS) * len(ALERT_ENVIRONMENTS)
+    ] * 4
     assert get_missing_logs_json.call_args_list == [
-        mock.call(env, app) for env in ALERT_ENVIRONMENTS for app in ALERT_APPS
+        mock.call('preview', 'api'),
+        mock.call('preview', 'buyer-frontend'),
+        mock.call('production', 'api'),
+        mock.call('production', 'buyer-frontend'),
     ]
 
 
