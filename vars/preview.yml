@@ -1,5 +1,6 @@
 ---
 domain: preview.marketplace.team
+maintenance_mode: live
 
 api:
   memory: 2GB
