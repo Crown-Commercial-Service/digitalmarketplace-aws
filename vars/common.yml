@@ -1,6 +1,4 @@
 ---
-maintenance_mode: live
-
 router:
   routes:
     - www.{env}.marketplace.team
