@@ -1,6 +1,6 @@
 ---
 domain: staging.marketplace.team
-maintenance_mode: maintenance
+maintenance_mode: live
 instances: 5
 
 router:
