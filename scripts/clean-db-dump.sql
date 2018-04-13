@@ -80,6 +80,26 @@ WHERE supplier_id IN
     (SELECT supplier_id
      FROM dangling_suppliers);
 
+-- Overwrite supplier contact details
+UPDATE
+  contact_information
+SET
+  (
+    contact_name,
+    phone_number,
+    email,
+    address1,
+    city,
+    postcode
+  ) = (
+    'Supplier #' || supplier_id::TEXT || ' Contact',
+    '555' || supplier_id::TEXT,
+    'simulate-delivered@notifications.service.gov.uk',
+    'Supplier #' || supplier_id :: TEXT || ' Contact Address 1',
+    'Supplier #' || supplier_id :: TEXT || ' Contact City',
+    'AA11 1AA'
+);
+
 -- Remove audit events because we don't use them
 \echo 'Delete audit events'
 DELETE
