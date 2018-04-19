@@ -2,9 +2,17 @@ language: python
 python:
   - "2.7"
   - "3.6"
+env:
+  - TERRAFORM_VERSION=0.11.7 TERRAFORM_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+install:
+  - wget ${TERRAFORM_DOWNLOAD_URL}
+  - tar -xzf elasticsearch-${TERRAFORM_VERSION}.tar.gz
+  - ./elasticsearch-${TERRAFORM_VERSION}/bin/elasticsearch > /dev/null &
+  - make requirements-dev
 install:
   - pip install --no-use-wheel -r requirements-dev.txt
 script:
+  - make terraformat
   - make test
 notifications:
   email: false

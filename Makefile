@@ -19,6 +19,10 @@ help:
 .PHONY: test
 test: test-flake8 test-unit
 
+.PHONY: terraformat
+terraformat:
+	./scripts/check-terraform-formatting.sh
+
 .PHONY: test-flake8
 test-flake8: virtualenv
 	${VIRTUALENV_ROOT}/bin/flake8 .
