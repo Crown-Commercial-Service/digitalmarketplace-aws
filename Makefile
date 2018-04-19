@@ -23,6 +23,10 @@ test: test-flake8 test-unit
 terraformat:
 	./scripts/check-terraform-formatting.sh
 
+.PHONY: terraformat-apply
+terraformat-apply:
+	terraform fmt -list=true -diff=true -write=true terraform
+
 .PHONY: test-flake8
 test-flake8: virtualenv
 	${VIRTUALENV_ROOT}/bin/flake8 .
