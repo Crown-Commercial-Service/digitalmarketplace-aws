@@ -29,7 +29,7 @@ WHERE framework_id IN
 \echo 'Delete brief responses'
 DELETE
 FROM brief_responses
-WHERE awarded_at IS NOT NULL;
+WHERE awarded_at IS NULL;
 
 -- Sanitise personal data in awarded brief responses
 \echo 'Update brief responses'
