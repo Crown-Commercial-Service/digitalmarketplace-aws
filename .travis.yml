@@ -3,13 +3,11 @@ python:
   - "2.7"
   - "3.6"
 env:
-  - TERRAFORM_VERSION=0.11.7 TERRAFORM_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+  - TERRAFORM_VERSION=0.11.7 TERRAFORM_FILE_NAME=terraform_${TERRAFORM_VERSION}_linux_amd64.zip TERRAFORM_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${TERRAFORM_FILE_NAME}
 install:
   - wget ${TERRAFORM_DOWNLOAD_URL}
-  - tar -xzf elasticsearch-${TERRAFORM_VERSION}.tar.gz
-  - ./elasticsearch-${TERRAFORM_VERSION}/bin/elasticsearch > /dev/null &
-  - make requirements-dev
-install:
+  - unzip -o ${TERRAFORM_FILE_NAME} -d /tmp
+  - export PATH=/tmp:${PATH}
   - pip install --no-use-wheel -r requirements-dev.txt
 script:
   - make terraformat
