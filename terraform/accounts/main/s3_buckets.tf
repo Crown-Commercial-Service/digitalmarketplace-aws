@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "database_backups_s3_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 }

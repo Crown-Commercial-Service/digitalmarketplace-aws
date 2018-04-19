@@ -1,5 +1,6 @@
 resource "aws_iam_role" "jenkins" {
   name = "jenkins-ci-IAMRole-1FIPDG9DE2CWJ"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -27,6 +28,7 @@ resource "aws_iam_instance_profile" "jenkins" {
 resource "aws_iam_role_policy" "jenkins" {
   name = "Jenkins"
   role = "${aws_iam_role.jenkins.id}"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",

@@ -1,5 +1,6 @@
 resource "aws_iam_policy" "infrastructure" {
   name = "infrastructure"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -36,6 +37,7 @@ EOF
 
 resource "aws_iam_role" "infrastructure" {
   name = "infrastructure"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -53,6 +55,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "infrastructure_infrastructure" {
-  role = "${aws_iam_role.infrastructure.id}"
+  role       = "${aws_iam_role.infrastructure.id}"
   policy_arn = "${aws_iam_policy.infrastructure.arn}"
 }

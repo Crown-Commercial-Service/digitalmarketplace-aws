@@ -1,5 +1,6 @@
 resource "aws_iam_policy" "packer" {
   name = "Packer"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -94,6 +95,7 @@ EOF
 
 resource "aws_iam_role" "packer" {
   name = "packer"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -111,11 +113,11 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "packer_ip_restriced" {
-  role = "${aws_iam_role.packer.name}"
+  role       = "${aws_iam_role.packer.name}"
   policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "packer_packer" {
-  role = "${aws_iam_role.packer.id}"
+  role       = "${aws_iam_role.packer.id}"
   policy_arn = "${aws_iam_policy.packer.arn}"
 }

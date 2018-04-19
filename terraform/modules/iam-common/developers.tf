@@ -1,5 +1,6 @@
 resource "aws_iam_policy" "developer" {
   name = "Developer"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",

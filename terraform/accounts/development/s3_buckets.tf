@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "dev_uploads_s3_bucket" {
   bucket = "digitalmarketplace-dev-uploads"
   acl    = "private"
+
   policy = <<POLICY
 {
   "Version": "2012-10-17",

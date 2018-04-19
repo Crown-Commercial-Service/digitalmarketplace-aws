@@ -4,9 +4,10 @@ resource "aws_route53_zone" "marketplace_team" {
 
 resource "aws_route53_record" "preview_ns" {
   zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
-  name = "preview.marketplace.team"
-  type = "NS"
-  ttl = "3600"
+  name    = "preview.marketplace.team"
+  type    = "NS"
+  ttl     = "3600"
+
   records = [
     "ns-389.awsdns-48.com",
     "ns-2018.awsdns-60.co.uk",
@@ -17,9 +18,10 @@ resource "aws_route53_record" "preview_ns" {
 
 resource "aws_route53_record" "staging_ns" {
   zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
-  name = "staging.marketplace.team"
-  type = "NS"
-  ttl = "3600"
+  name    = "staging.marketplace.team"
+  type    = "NS"
+  ttl     = "3600"
+
   records = [
     "ns-175.awsdns-21.com",
     "ns-781.awsdns-33.net",
@@ -30,10 +32,11 @@ resource "aws_route53_record" "staging_ns" {
 
 resource "aws_route53_record" "ci_marketplace_team" {
   zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
-  name = "ci.marketplace.team"
-  type = "A"
-  ttl = "300"
+  name    = "ci.marketplace.team"
+  type    = "A"
+  ttl     = "300"
+
   records = [
-    "${var.jenkins_ip}"
+    "${var.jenkins_ip}",
   ]
 }

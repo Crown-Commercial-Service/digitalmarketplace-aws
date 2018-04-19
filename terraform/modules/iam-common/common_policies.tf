@@ -1,6 +1,7 @@
 resource "aws_iam_policy" "ip_restricted_access" {
-  name = "IPRestrictedAccess"
+  name        = "IPRestrictedAccess"
   description = "Require requests to come from one of the Office IPs or admin servers (e.g. Jenkins)"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -23,6 +24,7 @@ EOF
 
 resource "aws_iam_policy" "iam_manage_account" {
   name = "IAMManageAccount"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
