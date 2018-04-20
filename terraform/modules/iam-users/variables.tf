@@ -1,12 +1,15 @@
 variable "admins" {
   type = "list"
 }
+
 variable "developers" {
   type = "list"
 }
+
 variable "prod_developers" {
   type = "list"
 }
+
 variable "dev_s3_only_users" {
   type = "list"
 }

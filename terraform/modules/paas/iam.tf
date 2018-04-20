@@ -5,6 +5,7 @@ resource "aws_iam_user" "paas_app" {
 resource "aws_iam_user_policy" "paas_app_policy" {
   user = "${aws_iam_user.paas_app.name}"
   name = "PaaSAppPolicy"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -49,6 +50,7 @@ resource "aws_iam_user" "paas_metrics_collector" {
 resource "aws_iam_user_policy" "grafana" {
   user = "${aws_iam_user.paas_metrics_collector.name}"
   name = "Grafana"
+
   policy = <<EOF
 {
     "Statement": [

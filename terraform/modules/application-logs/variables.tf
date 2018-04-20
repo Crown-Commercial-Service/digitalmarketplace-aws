@@ -1,7 +1,9 @@
 variable "environment" {}
 variable "retention_in_days" {}
+
 variable "app_names" {
   type = "list"
+
   default = [
     "buyer-frontend",
     "supplier-frontend",
@@ -10,6 +12,6 @@ variable "app_names" {
     "search-api",
     "briefs-frontend",
     "brief-responses-frontend",
-    "user-frontend"
+    "user-frontend",
   ]
 }

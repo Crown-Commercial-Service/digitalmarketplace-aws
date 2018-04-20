@@ -1,5 +1,6 @@
 variable "name" {}
 variable "domain" {}
+
 variable "cname_domain" {
   default = ""
 }

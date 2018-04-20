@@ -3,8 +3,9 @@ resource "aws_iam_group" "developers" {
 }
 
 resource "aws_iam_group_policy" "developers" {
-  name = "Developers"
+  name  = "Developers"
   group = "${aws_iam_group.developers.name}"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -36,19 +37,19 @@ EOF
 }
 
 resource "aws_iam_group_policy_attachment" "developers_ip_restriced" {
-  group = "${aws_iam_group.developers.name}"
+  group      = "${aws_iam_group.developers.name}"
   policy_arn = "${var.ip_restricted_access_policy_arn}"
 }
 
 resource "aws_iam_group_membership" "developers" {
-  name = "developers"
-  users = ["${var.developers}"]
-  group = "${aws_iam_group.developers.name}"
+  name       = "developers"
+  users      = ["${var.developers}"]
+  group      = "${aws_iam_group.developers.name}"
   depends_on = ["module.users"]
 }
 
 resource "aws_iam_group_policy_attachment" "developers_iam_manage_account" {
-  group = "${aws_iam_group.developers.name}"
+  group      = "${aws_iam_group.developers.name}"
   policy_arn = "${var.iam_manage_account_policy_arn}"
 }
 
@@ -57,8 +58,9 @@ resource "aws_iam_group" "prod_developers" {
 }
 
 resource "aws_iam_group_policy" "switch_to_prod_developer" {
-  name = "SwitchToProdDeveloper"
+  name  = "SwitchToProdDeveloper"
   group = "${aws_iam_group.prod_developers.name}"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -76,9 +78,9 @@ EOF
 }
 
 resource "aws_iam_group_membership" "prod_developers" {
-  name = "prod_developers"
-  users = ["${var.prod_developers}"]
-  group = "${aws_iam_group.prod_developers.name}"
+  name       = "prod_developers"
+  users      = ["${var.prod_developers}"]
+  group      = "${aws_iam_group.prod_developers.name}"
   depends_on = ["module.users"]
 }
 
@@ -87,24 +89,25 @@ resource "aws_iam_group" "dev_s3_only" {
 }
 
 resource "aws_iam_group_policy_attachment" "dev_s3_only" {
-  group = "${aws_iam_group.dev_s3_only.name}"
+  group      = "${aws_iam_group.dev_s3_only.name}"
   policy_arn = "${var.ip_restricted_access_policy_arn}"
 }
 
 resource "aws_iam_group_membership" "dev_s3_only" {
-  name = "dev_s3_only"
-  users = ["${var.dev_s3_only_users}"]
-  group = "${aws_iam_group.dev_s3_only.name}"
+  name       = "dev_s3_only"
+  users      = ["${var.dev_s3_only_users}"]
+  group      = "${aws_iam_group.dev_s3_only.name}"
   depends_on = ["module.users"]
 }
 
 resource "aws_iam_group_policy_attachment" "dev_s3_only_iam_manage_account" {
-  group = "${aws_iam_group.dev_s3_only.name}"
+  group      = "${aws_iam_group.dev_s3_only.name}"
   policy_arn = "${var.iam_manage_account_policy_arn}"
 }
 
 resource "aws_iam_policy" "dev_uploads_s3_access" {
   name = "devUploadsS3Access"
+
   policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -129,11 +132,11 @@ POLICY
 }
 
 resource "aws_iam_group_policy_attachment" "developers_dev_uploads_s3" {
-  group = "${aws_iam_group.developers.name}"
+  group      = "${aws_iam_group.developers.name}"
   policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
 }
 
 resource "aws_iam_group_policy_attachment" "dev_s3_only_dev_uploads_s3" {
-  group = "${aws_iam_group.dev_s3_only.name}"
+  group      = "${aws_iam_group.dev_s3_only.name}"
   policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
 }

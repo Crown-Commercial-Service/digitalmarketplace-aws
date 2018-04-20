@@ -1,59 +1,59 @@
 resource "aws_iam_user" "andrew_chong" {
-  name = "andrewchong"
+  name          = "andrewchong"
   force_destroy = true
 }
 
 resource "aws_iam_user" "ben_vandersteen" {
-  name = "benvandersteen"
+  name          = "benvandersteen"
   force_destroy = true
 }
 
 resource "aws_iam_user" "brendan_barber" {
-  name = "brendanbutler"
+  name          = "brendanbutler"
   force_destroy = true
 }
 
 resource "aws_iam_user" "chris_wynne" {
-  name = "chriswynne"
+  name          = "chriswynne"
   force_destroy = true
 }
 
 resource "aws_iam_user" "dilwoar_hussain" {
-  name = "dilwoarhussain"
+  name          = "dilwoarhussain"
   force_destroy = true
 }
 
 resource "aws_iam_user" "george_lund" {
-  name = "georgelund"
+  name          = "georgelund"
   force_destroy = true
 }
 
 resource "aws_iam_user" "kat_stevens" {
-  name = "katstevens"
+  name          = "katstevens"
   force_destroy = true
 }
 
 resource "aws_iam_user" "laurence_berry" {
-  name = "laurenceberry"
+  name          = "laurenceberry"
   force_destroy = true
 }
 
 resource "aws_iam_user" "louise_ryan" {
-  name = "louiseryan"
+  name          = "louiseryan"
   force_destroy = true
 }
 
 resource "aws_iam_user" "pea_tyczynska" {
-  name = "peatyczynska"
+  name          = "peatyczynska"
   force_destroy = true
 }
 
 resource "aws_iam_user" "robert_scott" {
-  name = "robertscott"
+  name          = "robertscott"
   force_destroy = true
 }
 
 resource "aws_iam_user" "samuel_williams" {
-  name = "samuelwilliams"
+  name          = "samuelwilliams"
   force_destroy = true
 }
