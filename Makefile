@@ -21,11 +21,11 @@ test: test-flake8 test-unit
 
 .PHONY: terraformat
 terraformat:
-	./scripts/check-terraform-formatting.sh
-
-.PHONY: terraformat-apply
-terraformat-apply:
 	terraform fmt -list=true -diff=true -write=true terraform
+
+.PHONY: terraformatest
+terraformatest:
+	./scripts/check-terraform-formatting.sh
 
 .PHONY: test-flake8
 test-flake8: virtualenv
