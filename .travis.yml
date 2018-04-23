@@ -10,7 +10,7 @@ install:
   - export PATH=/tmp:${PATH}
   - pip install --no-use-wheel -r requirements-dev.txt
 script:
-  - make terraformat
+  - make terraformatest
   - make test
 notifications:
   email: false
