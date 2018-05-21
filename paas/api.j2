@@ -7,6 +7,8 @@
 
       DM_API_AUTH_TOKENS: {{ api.auth_tokens|join(':') }}
 
+      DM_API_CALLBACK_AUTH_TOKENS: {{ api.callback_auth_tokens|join(':') }}
+
       DM_SEARCH_API_AUTH_TOKEN: {{ search_api.auth_tokens[0] }}
       DM_SEARCH_API_URL: https://dm-search-api-{{ environment }}.cloudapps.digital
 {% endblock %}
