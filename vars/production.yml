@@ -13,7 +13,7 @@ router:
 
 api:
   memory: 2GB
-  instances: 15
+  instances: 10
 
 user-frontend:
   instances: 2
