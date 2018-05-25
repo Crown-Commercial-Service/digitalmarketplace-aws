@@ -85,6 +85,21 @@ resource "aws_iam_role_policy" "jenkins" {
         "s3:PutObject"
       ],
       "Resource": "arn:aws:s3:::digitalmarketplace-database-backups/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": "arn:aws:s3:::digitalmarketplace-submissions-production-production"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::digitalmarketplace-submissions-production-production/*"
     }
   ]
 }
