@@ -34,7 +34,7 @@ WHERE awarded_at IS NULL;
 -- Sanitise personal data in awarded brief responses
 \echo 'Update brief responses'
 UPDATE brief_responses
-SET data = data::jsonb || '{"respondToEmailAddress": "cleaned-example-email@gov.uk"}'::jsonb
+SET data = data::jsonb || '{"respondToEmailAddress": "cleaned-example-email@example.gov.uk"}'::jsonb
 WHERE data::TEXT != '{}';
 
 \echo 'Delete draft briefs'
@@ -168,7 +168,7 @@ SELECT
         END ||
         '"availability": "09/09/17", ' ||
         '"essentialRequirementsMet": true, ' ||
-        '"respondToEmailAddress": "example-email@gov.uk"' ||
+        '"respondToEmailAddress": "example-email@example.gov.uk"' ||
       '}'
     )::JSON,
     eligible_brief_supplier_pairings.brief_id,
