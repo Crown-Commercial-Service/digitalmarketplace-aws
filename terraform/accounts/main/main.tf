@@ -49,10 +49,10 @@ module "sops_credentials" {
 }
 
 module "jenkins" {
-  source              = "../../modules/jenkins"
-  aws_main_account_id = "${var.aws_main_account_id}"
-  aws_sub_account_ids = "${var.aws_sub_account_ids}"
+  source                     = "../../modules/jenkins"
+  aws_main_account_id        = "${var.aws_main_account_id}"
+  aws_sub_account_ids        = "${var.aws_sub_account_ids}"
   jenkins_security_group_ids = "${var.jenkins_security_group_ids}"
-  jenkins_2_key_name = "${var.jenkins_2_key_name}"
-  jenkins_2_public_key = "${var.jenkins_2_public_key}"
+  jenkins_2_key_name         = "${var.jenkins_2_key_name}"
+  jenkins_2_public_key       = "${var.jenkins_2_public_key}"
 }

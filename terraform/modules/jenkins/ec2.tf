@@ -3,20 +3,19 @@ provider "aws" {
 }
 
 resource "aws_instance" "jenkins2" {
-  ami           = "ami-785db401"
-  instance_type = "t2.large"
-  iam_instance_profile = "${aws_iam_instance_profile.jenkins.name}"
-  key_name = "${aws_key_pair.jenkins2_2.key_name}"
+  ami                    = "ami-785db401"
+  instance_type          = "t2.large"
+  iam_instance_profile   = "${aws_iam_instance_profile.jenkins.name}"
+  key_name               = "${aws_key_pair.jenkins2_2.key_name}"
   vpc_security_group_ids = "${var.jenkins_security_group_ids}"
 
   tags {
     Name = "Jenkins2"
   }
-
 }
 
 resource "aws_eip" "jenkins2" {
-  vpc      = true
+  vpc = true
 }
 
 resource "aws_eip_association" "jenkins2_eip_assoc" {
@@ -30,9 +29,9 @@ resource "aws_key_pair" "jenkins2_2" {
 }
 
 resource "aws_ebs_volume" "jenkins2_volume" {
-    availability_zone = "${aws_instance.jenkins2.availability_zone}"
-    type = "gp2"
-    size = 100
+  availability_zone = "${aws_instance.jenkins2.availability_zone}"
+  type              = "gp2"
+  size              = 100
 }
 
 resource "aws_volume_attachment" "jenkins2_ebs_att" {
