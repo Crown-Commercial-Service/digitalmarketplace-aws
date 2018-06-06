@@ -7,6 +7,7 @@ The following projects each define and control the state of a section of our inf
  * **accounts/development**: The digitalmarketplace-development AWS account
  * **accounts/main**: The digitalmarketplace AWS account
  * **accounts/production**: The digitalmarketplace-production AWS account
+ * **accounts/backups**: The digitalmarketplace-backups AWS account
  * **environments/preview**
  * **environments/staging**
  * **environments/production**
