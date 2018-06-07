@@ -92,7 +92,12 @@ resource "aws_iam_role_policy" "jenkins" {
         "s3:ListBucket",
         "s3:GetBucketLocation"
       ],
-      "Resource": "arn:aws:s3:::digitalmarketplace-submissions-production-production"
+      "Resource": [
+        "arn:aws:s3:::digitalmarketplace-submissions-production-production",
+        "arn:aws:s3:::digitalmarketplace-documents-production-production",
+        "arn:aws:s3:::digitalmarketplace-documents-staging-staging",
+        "arn:aws:s3:::digitalmarketplace-documents-preview-preview"
+      ]
     },
     {
       "Effect": "Allow",
@@ -109,8 +114,12 @@ resource "aws_iam_role_policy" "jenkins" {
             "s3:PutObjectAcl"
         ],
         "Resource": [
+          "arn:aws:s3:::digitalmarketplace-agreements-production-production/*",
           "arn:aws:s3:::digitalmarketplace-communications-production-production/*",
-          "arn:aws:s3:::digitalmarketplace-communications-preview-preview/*"
+          "arn:aws:s3:::digitalmarketplace-communications-preview-preview/*",
+          "arn:aws:s3:::digitalmarketplace-documents-production-production/*",
+          "arn:aws:s3:::digitalmarketplace-documents-staging-staging/*",
+          "arn:aws:s3:::digitalmarketplace-documents-preview-preview/*"
         ]
     }
   ]
