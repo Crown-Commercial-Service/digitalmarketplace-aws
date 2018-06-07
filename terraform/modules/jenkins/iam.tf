@@ -100,6 +100,18 @@ resource "aws_iam_role_policy" "jenkins" {
         "s3:GetObject"
       ],
       "Resource": "arn:aws:s3:::digitalmarketplace-submissions-production-production/*"
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:PutObjectAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::digitalmarketplace-communications-production-production/*",
+          "arn:aws:s3:::digitalmarketplace-communications-preview-preview/*"
+        ]
     }
   ]
 }
