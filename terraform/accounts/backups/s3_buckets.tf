@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "database_backups_s3_bucket" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Principal": {"AWS": "arn:aws:iam::${var.aws_prod_account_id}:role/infrastructure"},
+      "Principal": {"AWS": "arn:aws:iam::${var.aws_backups_account_id}:role/backups"},
       "Effect": "Allow",
       "Action": [
         "s3:ListBucket",
@@ -28,7 +28,7 @@ resource "aws_s3_bucket" "database_backups_s3_bucket" {
       "Resource": "arn:aws:s3:::digitalmarketplace-database-backups"
     },
     {
-      "Principal": {"AWS": "arn:aws:iam::${var.aws_prod_account_id}:role/infrastructure"},
+      "Principal": {"AWS": "arn:aws:iam::${var.aws_backups_account_id}:role/backups"},
       "Effect": "Allow",
       "Action": [
         "s3:GetObject"
