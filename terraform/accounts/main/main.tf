@@ -22,6 +22,7 @@ module "iam_common" {
 module "iam_users" {
   source                          = "../../modules/iam-users"
   admins                          = "${var.admins}"
+  backups                         = "${var.admins}"                                                // Add admins to backups group, gives 2nd line access to backups
   developers                      = "${var.developers}"
   dev_s3_only_users               = "${var.dev_s3_only_users}"
   prod_developers                 = "${var.prod_developers}"
@@ -32,6 +33,7 @@ module "iam_users" {
   admin_policy_arn                = "${module.iam_common.aws_iam_policy_admin_arn}"
   developer_policy_arn            = "${module.iam_common.aws_iam_policy_developer_arn}"
   aws_dev_account_id              = "${var.aws_dev_account_id}"
+  aws_backups_account_id          = "${var.aws_backups_account_id}"
   aws_prod_account_id             = "${var.aws_prod_account_id}"
 }
 
