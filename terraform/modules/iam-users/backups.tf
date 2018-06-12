@@ -36,6 +36,3 @@ resource "aws_iam_group_membership" "backups" {
   group      = "${aws_iam_group.backups.name}"
   depends_on = ["module.users"]
 }
-
-
-
