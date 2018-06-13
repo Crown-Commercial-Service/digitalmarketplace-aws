@@ -3,6 +3,10 @@ provider "aws" {
   version = "1.9.0"
 }
 
+resource "aws_iam_account_alias" "alias" {
+  account_alias = "digitalmarketplace"
+}
+
 terraform {
   backend "s3" {
     bucket  = "digitalmarketplace-terraform-state-main"
@@ -22,6 +26,7 @@ module "iam_common" {
 module "iam_users" {
   source                          = "../../modules/iam-users"
   admins                          = "${var.admins}"
+  backups                         = "${var.prod_infrastructure_users}"                             // Add prod_infrastructure_users to backups group, gives 2nd line access to backups
   developers                      = "${var.developers}"
   dev_s3_only_users               = "${var.dev_s3_only_users}"
   prod_developers                 = "${var.prod_developers}"
@@ -32,6 +37,7 @@ module "iam_users" {
   admin_policy_arn                = "${module.iam_common.aws_iam_policy_admin_arn}"
   developer_policy_arn            = "${module.iam_common.aws_iam_policy_developer_arn}"
   aws_dev_account_id              = "${var.aws_dev_account_id}"
+  aws_backups_account_id          = "${var.aws_backups_account_id}"
   aws_prod_account_id             = "${var.aws_prod_account_id}"
 }
 
@@ -52,4 +58,15 @@ module "jenkins" {
   source              = "../../modules/jenkins"
   aws_main_account_id = "${var.aws_main_account_id}"
   aws_sub_account_ids = "${var.aws_sub_account_ids}"
+}
+
+resource "aws_route53_record" "ci2_marketplace_team" {
+  zone_id = "ZWYYZXX20MA4S"
+  name    = "ci2.marketplace.team"
+  type    = "A"
+  ttl     = "300"
+
+  records = [
+    "52.211.70.248",
+  ]
 }
