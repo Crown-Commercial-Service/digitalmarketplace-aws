@@ -3,6 +3,6 @@ variable "trail_name" {
 }
 
 variable "retention_in_days" {
-  default     = 730
+  default     = 731
   description = "Days to keep CloudTrail log events in CloudWatch"
 }
