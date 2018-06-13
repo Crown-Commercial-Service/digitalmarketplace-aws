@@ -26,7 +26,7 @@ module "iam_common" {
 module "iam_users" {
   source                          = "../../modules/iam-users"
   admins                          = "${var.admins}"
-  backups                         = "${var.admins}"                                                // Add admins to backups group, gives 2nd line access to backups
+  backups                         = "${var.prod_infrastructure_users}"                             // Add prod_infrastructure_users to backups group, gives 2nd line access to backups
   developers                      = "${var.developers}"
   dev_s3_only_users               = "${var.dev_s3_only_users}"
   prod_developers                 = "${var.prod_developers}"
@@ -58,4 +58,15 @@ module "jenkins" {
   source              = "../../modules/jenkins"
   aws_main_account_id = "${var.aws_main_account_id}"
   aws_sub_account_ids = "${var.aws_sub_account_ids}"
+}
+
+resource "aws_route53_record" "ci2_marketplace_team" {
+  zone_id = "ZWYYZXX20MA4S"
+  name    = "ci2.marketplace.team"
+  type    = "A"
+  ttl     = "300"
+
+  records = [
+    "52.211.70.248",
+  ]
 }
