@@ -132,7 +132,7 @@ deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	cf set-env db-backup RECIPIENT 'Digital Marketplace DB backups'
 	cf set-env db-backup PUBKEY "$$(cat ${DM_CREDENTIALS_REPO}/gpg/database-backups/public.key)"
 	cf restage db-backup
-	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 2G
+	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 2G -k 2G
 
 .PHONY: check-db-backup-task
 check-db-backup-task: ## Get the status for the last db backup task
