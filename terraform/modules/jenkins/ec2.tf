@@ -24,8 +24,8 @@ resource "aws_eip_association" "jenkins2_eip_assoc" {
 }
 
 resource "aws_key_pair" "jenkins2_2" {
-  key_name   = "${var.jenkins_2_key_name}"
-  public_key = "${var.jenkins_2_public_key}"
+  key_name   = "${var.ssh_key_name}"
+  public_key = "${var.jenkins_public_key}"  # injected by Makefile-common
 }
 
 resource "aws_ebs_volume" "jenkins2_volume" {
