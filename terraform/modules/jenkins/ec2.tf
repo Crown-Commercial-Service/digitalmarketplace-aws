@@ -6,7 +6,7 @@ resource "aws_instance" "jenkins2" {
   ami                    = "ami-785db401"
   instance_type          = "t2.large"
   iam_instance_profile   = "${aws_iam_instance_profile.jenkins.name}"
-  key_name               = "${aws_key_pair.jenkins2_2.key_name}"
+  key_name               = "${aws_key_pair.jenkins.key_name}"
   vpc_security_group_ids = "${var.jenkins_security_group_ids}"
 
   tags {
@@ -23,7 +23,7 @@ resource "aws_eip_association" "jenkins2_eip_assoc" {
   allocation_id = "${aws_eip.jenkins2.id}"
 }
 
-resource "aws_key_pair" "jenkins2_2" {
+resource "aws_key_pair" "jenkins" {
   key_name   = "${var.ssh_key_name}"
   public_key = "${var.jenkins_public_key}"  # injected by Makefile-common
 }
