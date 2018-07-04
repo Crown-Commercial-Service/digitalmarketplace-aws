@@ -15,7 +15,6 @@ in (with args; {
       pythonPackages.virtualenv
       pkgs.nodejs
       pkgs.jq
-      pkgs.aws-auth
       pkgs.sops
       (pkgs.terraform.overrideAttrs (oldAttrs: rec {
         name = "terraform-0.11.7";
@@ -28,6 +27,7 @@ in (with args; {
       }))
       pkgs.libyaml
       pkgs.cloudfoundry-cli
+      ((import ./aws-auth.nix) (with pkgs; { inherit stdenv fetchFromGitHub makeWrapper jq awscli openssl; }))
     ] ++ pkgs.stdenv.lib.optionals forDev ([
       ] ++ pkgs.stdenv.lib.optionals pkgs.stdenv.isDarwin [
       ]
