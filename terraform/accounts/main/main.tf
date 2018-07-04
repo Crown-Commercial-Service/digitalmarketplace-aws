@@ -61,14 +61,3 @@ module "jenkins" {
   jenkins_security_group_ids = "${var.jenkins_security_group_ids}"
   jenkins_public_key       = "${var.jenkins_public_key}"
 }
-
-resource "aws_route53_record" "ci2_marketplace_team" {
-  zone_id = "ZWYYZXX20MA4S"
-  name    = "ci2.marketplace.team"
-  type    = "A"
-  ttl     = "300"
-
-  records = [
-    "52.211.70.248",
-  ]
-}
