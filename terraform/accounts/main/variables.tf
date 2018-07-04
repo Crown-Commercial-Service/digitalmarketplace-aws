@@ -4,6 +4,7 @@ variable "jenkins_security_group_ids" {
   type = "list"
 }
 
+variable "ssh_key_name" {}
 variable "jenkins_public_key" {}
 
 variable "dev_user_ips" {

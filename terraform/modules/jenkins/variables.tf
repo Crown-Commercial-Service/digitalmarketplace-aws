@@ -8,4 +8,5 @@ variable "jenkins_security_group_ids" {
   type = "list"
 }
 
+variable "jenkins_public_key_name" {}
 variable "jenkins_public_key" {}
