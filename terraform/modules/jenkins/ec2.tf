@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "jenkins2" {
-  ami                    = "ami-785db401"
+  ami                    = "ami-2a7d75c0"
   instance_type          = "t2.large"
   iam_instance_profile   = "${aws_iam_instance_profile.jenkins.name}"
   key_name               = "${aws_key_pair.jenkins.key_name}"
