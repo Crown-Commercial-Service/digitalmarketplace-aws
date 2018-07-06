@@ -55,18 +55,10 @@ module "sops_credentials" {
 }
 
 module "jenkins" {
-  source              = "../../modules/jenkins"
-  aws_main_account_id = "${var.aws_main_account_id}"
-  aws_sub_account_ids = "${var.aws_sub_account_ids}"
-}
-
-resource "aws_route53_record" "ci2_marketplace_team" {
-  zone_id = "ZWYYZXX20MA4S"
-  name    = "ci2.marketplace.team"
-  type    = "A"
-  ttl     = "300"
-
-  records = [
-    "52.211.70.248",
-  ]
+  source                     = "../../modules/jenkins"
+  aws_main_account_id        = "${var.aws_main_account_id}"
+  aws_sub_account_ids        = "${var.aws_sub_account_ids}"
+  jenkins_security_group_ids = "${var.jenkins_security_group_ids}"
+  jenkins_public_key_name    = "${var.ssh_key_name}"               # confusingly-named variable in terraform/common.json
+  jenkins_public_key         = "${var.jenkins_public_key}"
 }
