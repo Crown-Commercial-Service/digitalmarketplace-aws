@@ -4,7 +4,7 @@ import requests
 
 
 def get_grafana_dashboard_folder():
-    return os.path.join(os.path.dirname(__file__), "../grafana/")
+    return os.path.join(os.path.dirname(__file__), "../../grafana/")
 
 
 def generate_dashboards(api_key):

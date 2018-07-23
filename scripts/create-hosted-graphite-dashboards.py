@@ -24,7 +24,7 @@ Example:
 """
 import sys
 
-import docopt
+from docopt import docopt
 
 sys.path.insert(0, '.')
 

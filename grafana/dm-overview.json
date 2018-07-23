@@ -46,7 +46,8 @@
         "current": {
           "text": "production",
           "selected": false,
-          "value": "production"
+          "value": "production",
+          "tags": []
         },
         "query": "preview,staging,production",
         "type": "custom",
@@ -76,7 +77,7 @@
   },
   "refresh": "5m",
   "schemaVersion": 13,
-  "version": 3,
+  "version": 1,
   "links": [],
   "gnetId": null,
   "alertPanelMap": {},
@@ -682,7 +683,7 @@
             }
           ],
           "fill": 1,
-          "span": 6,
+          "span": 4,
           "title": "Memory usage per app- $environment",
           "tooltip": {
             "sort": 0,
@@ -753,7 +754,7 @@
             }
           ],
           "fill": 1,
-          "span": 6,
+          "span": 4,
           "title": "5xx response count - $environment router",
           "tooltip": {
             "sort": 0,
@@ -804,13 +805,92 @@
           "aliasColors": {},
           "lines": true,
           "points": false,
-          "datasource": null,
+          "datasource": "hostedgraphite",
           "pointradius": 5
+        },
+        {
+          "bars": false,
+          "timeFrom": null,
+          "links": [],
+          "thresholds": [],
+          "nullPointMode": "connected",
+          "renderer": "flot",
+          "id": 13,
+          "linewidth": 1,
+          "steppedLine": false,
+          "targets": [
+            {
+              "hide": false,
+              "refId": "A",
+              "target": "sumSeries(cloudwatch.apiclient_retries.$environment.*.retries.sum:sum)"
+            }
+          ],
+          "fill": 1,
+          "span": 4,
+          "title": "APIClient retries - $environment",
+          "tooltip": {
+            "sort": 0,
+            "shared": false,
+            "value_type": "individual",
+            "msResolution": false
+          },
+          "legend": {
+            "rightSide": false,
+            "total": false,
+            "sideWidth": null,
+            "min": false,
+            "max": false,
+            "show": true,
+            "current": true,
+            "hideEmpty": false,
+            "values": true,
+            "alignAsTable": false,
+            "avg": false,
+            "hideZero": false
+          },
+          "yaxes": [
+            {
+              "logBase": 1,
+              "show": true,
+              "max": null,
+              "format": "short",
+              "min": "0",
+              "label": ""
+            },
+            {
+              "logBase": 1,
+              "show": false,
+              "max": null,
+              "format": "short",
+              "min": null,
+              "label": null
+            }
+          ],
+          "xaxis": {
+            "show": true,
+            "values": [
+              "min"
+            ],
+            "mode": "time",
+            "name": null
+          },
+          "seriesOverrides": [],
+          "percentage": false,
+          "type": "graph",
+          "error": false,
+          "editable": true,
+          "stack": false,
+          "timeShift": null,
+          "aliasColors": {},
+          "lines": true,
+          "points": false,
+          "datasource": "hostedgraphite",
+          "pointradius": 1
         }
       ],
       "showTitle": false,
       "titleSize": "h6",
-      "height": 250,
+      "height": 263,
       "repeat": null,
       "repeatRowId": null,
       "repeatIteration": null,
