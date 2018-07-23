@@ -321,3 +321,20 @@ resource "aws_cloudwatch_log_metric_filter" "router-429s" {
     default_value = "0"
   }
 }
+
+# App specific metrics for apiclient retries
+
+resource "aws_cloudwatch_log_metric_filter" "apiclient-retries" {
+  count = "${length(var.app_names)}"
+  name  = "${var.environment}-${var.app_names[count.index]}-apiclient-retries"
+
+  pattern        = "{$$.name = urllib3.util.retry}"
+  log_group_name = "${var.environment}-${var.app_names[count.index]}-application"
+
+  metric_transformation {
+    name          = "${var.environment}-${var.app_names[count.index]}-apiclient-retries"
+    namespace     = "DM-APIClient-Retries"
+    value         = "1"
+    default_value = "0"
+  }
+}
