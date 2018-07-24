@@ -822,7 +822,7 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "sumSeries(cloudwatch.apiclient_retries.$environment.*.retries.sum:sum)"
+              "target": "sumSeries(cloudwatch.apiclient_retries.$environment.*.retries.sum:max)"
             }
           ],
           "fill": 1,
@@ -896,5 +896,6 @@
       "repeatIteration": null,
       "collapse": false
     }
-  ]
+  ],
+  "editMode": false
 }
