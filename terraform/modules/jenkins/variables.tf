@@ -4,7 +4,7 @@ variable "aws_sub_account_ids" {
   type = "list"
 }
 
-variable "jenkins_security_group_ids" {
+variable "dev_user_ips" {
   type = "list"
 }
 
