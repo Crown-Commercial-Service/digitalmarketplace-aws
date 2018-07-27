@@ -12,7 +12,7 @@ ALERTS = [
             "above_value": 0
         },
         "notification_channels": ["Notify DM 2ndline"],  # Hardcoded name, channel had been set up manually already
-        "notification_type": ["every", 60],
+        "notification_type": "state_change",
         "info": "500s have occured"
     },
     {
