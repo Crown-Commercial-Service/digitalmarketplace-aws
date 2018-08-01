@@ -7,7 +7,7 @@ resource "aws_instance" "jenkins3" {
   instance_type          = "t2.large"
   iam_instance_profile   = "${aws_iam_instance_profile.jenkins.name}"
   key_name               = "${aws_key_pair.jenkins.key_name}"
-  vpc_security_group_ids = ["${aws_security_group.jenkins_security_group.id}"]
+  vpc_security_group_ids = ["${aws_security_group.jenkins_instance_security_group.id}"]
 
   tags {
     Name = "Jenkins3"

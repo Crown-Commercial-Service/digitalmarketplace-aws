@@ -45,9 +45,10 @@ resource "aws_route53_record" "ci3_marketplace_team" {
   zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
   name    = "ci3.marketplace.team"
   type    = "A"
-  ttl     = "300"
 
-  records = [
-    "${module.jenkins.jenkins_3_elastic_ip}",
-  ]
+  alias {
+    name                   = "${module.jenkins.jenkins_elb_dns_name}"
+    zone_id                = "${module.jenkins.jenkins_elb_zone_id}"
+    evaluate_target_health = true
+  }
 }

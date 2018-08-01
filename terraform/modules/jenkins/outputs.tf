@@ -1,3 +1,7 @@
-output "jenkins_3_elastic_ip" {
-  value = "${aws_eip.jenkins3.public_ip}"
+output "jenkins_elb_dns_name" {
+  value = "${aws_elb.jenkins_elb.dns_name}"
+}
+
+output "jenkins_elb_zone_id" {
+  value = "${aws_elb.jenkins_elb.zone_id}"
 }
