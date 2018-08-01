@@ -55,10 +55,10 @@ module "sops_credentials" {
 }
 
 module "jenkins" {
-  source                     = "../../modules/jenkins"
-  aws_main_account_id        = "${var.aws_main_account_id}"
-  aws_sub_account_ids        = "${var.aws_sub_account_ids}"
-  jenkins_security_group_ids = "${var.jenkins_security_group_ids}"
-  jenkins_public_key_name    = "${var.ssh_key_name}"               # confusingly-named variable in terraform/common.json
-  jenkins_public_key         = "${var.jenkins_public_key}"
+  source                  = "../../modules/jenkins"
+  aws_main_account_id     = "${var.aws_main_account_id}"
+  aws_sub_account_ids     = "${var.aws_sub_account_ids}"
+  dev_user_ips            = "${var.dev_user_ips}"
+  jenkins_public_key_name = "${var.ssh_key_name}"        # confusingly-named variable in terraform/common.json
+  jenkins_public_key      = "${var.jenkins_public_key}"
 }
