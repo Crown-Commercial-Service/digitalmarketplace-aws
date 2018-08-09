@@ -51,3 +51,9 @@ module "log_metrics" {
   app_names             = ["${module.application_logs.app_names}"]
   router_log_group_name = "${element(module.preview_router.json_log_groups, 0)}"
 }
+
+module "antivirus-sns" {
+  source = "../../modules/antivirus-sns"
+  environment = "preview"
+  account_id = "${var.aws_dev_account_id}"
+}
