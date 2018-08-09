@@ -51,3 +51,15 @@ module "log_metrics" {
   app_names             = ["${module.application_logs.app_names}"]
   router_log_group_name = "${element(module.staging_router.json_log_groups, 0)}"
 }
+
+module "antivirus-sns" {
+  source      = "../../modules/antivirus-sns"
+  environment = "staging"
+  account_id  = "${var.aws_prod_account_id}"
+
+  bucket_ids = [
+    "${aws_s3_bucket.agreements_bucket.id}",
+    "${aws_s3_bucket.communications_bucket.id}",
+    "${aws_s3_bucket.documents_bucket.id}",
+  ]
+}

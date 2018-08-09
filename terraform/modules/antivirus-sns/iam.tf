@@ -1,5 +1,6 @@
 resource "aws_iam_role" "sns_success_feedback" {
-  name = "sns_success_feedback"
+  name = "sns_success_feedback_${var.environment}"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -22,7 +23,8 @@ resource "aws_iam_role_policy_attachment" "sns_success_feedback_sns_feedback" {
 }
 
 resource "aws_iam_role" "sns_failure_feedback" {
-  name = "sns_failure_feedback"
+  name = "sns_failure_feedback_${var.environment}"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -46,6 +48,7 @@ resource "aws_iam_role_policy_attachment" "sns_failure_feedback_sns_feedback" {
 
 resource "aws_iam_policy" "sns_feedback" {
   name = "sns_feedback"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -68,7 +71,7 @@ resource "aws_iam_policy" "sns_feedback" {
 EOF
 }
 
-data "aws_iam_policy_document" "s3_file_upload_notification_policy" {
+data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
   policy_id = "__default_policy_ID"
 
   statement {
@@ -83,11 +86,11 @@ data "aws_iam_policy_document" "s3_file_upload_notification_policy" {
       "SNS:GetTopicAttributes",
       "SNS:Receive",
       "SNS:AddPermission",
-      "SNS:Subscribe"
+      "SNS:Subscribe",
     ]
 
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "AWS:SourceOwner"
 
       values = [
@@ -98,12 +101,12 @@ data "aws_iam_policy_document" "s3_file_upload_notification_policy" {
     effect = "Allow"
 
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["*"]
     }
 
     resources = [
-      "${aws_sns_topic.s3_file_upload_notification.arn}"
+      "${aws_sns_topic.s3_file_upload_notification.arn}",
     ]
   }
 
@@ -112,24 +115,54 @@ data "aws_iam_policy_document" "s3_file_upload_notification_policy" {
 
     actions = [
       "SNS:Subscribe",
-      "SNS:Receive"
+      "SNS:Receive",
     ]
 
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "SNS:Protocol"
+
       values = [
-        "https"
+        "https",
       ]
     }
 
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["*"]
     }
 
     resources = [
-      "${aws_sns_topic.s3_file_upload_notification.arn}"
+      "${aws_sns_topic.s3_file_upload_notification.arn}",
+    ]
+  }
+
+  statement {
+    sid = "s3_bucket_notification_sns_permission"
+
+    actions = [
+      "SNS:Publish",
+    ]
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = [
+          "arn:aws:s3:::${var.bucket_ids[0]}",
+          "arn:aws:s3:::${var.bucket_ids[1]}",
+          "arn:aws:s3:::${var.bucket_ids[2]}"
+      ]
+    }
+
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      "${aws_sns_topic.s3_file_upload_notification.arn}",
     ]
   }
 }

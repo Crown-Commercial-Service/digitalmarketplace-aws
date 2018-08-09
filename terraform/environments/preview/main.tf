@@ -53,7 +53,13 @@ module "log_metrics" {
 }
 
 module "antivirus-sns" {
-  source = "../../modules/antivirus-sns"
+  source      = "../../modules/antivirus-sns"
   environment = "preview"
-  account_id = "${var.aws_dev_account_id}"
+  account_id  = "${var.aws_dev_account_id}"
+
+  bucket_ids = [
+    "${aws_s3_bucket.agreements_bucket.id}",
+    "${aws_s3_bucket.communications_bucket.id}",
+    "${aws_s3_bucket.documents_bucket.id}",
+  ]
 }
