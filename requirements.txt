@@ -4,6 +4,6 @@ PyYAML==3.11
 six==1.10.0
 awscli==1.15.67
 requests==2.14.2
-boto3==1.4.4
+boto3==1.4.5
 docopt==0.6.2
 bcrypt==3.1.3
