@@ -30,9 +30,9 @@ resource "aws_route53_record" "staging_ns" {
   ]
 }
 
-resource "aws_route53_record" "ci3_marketplace_team" {
+resource "aws_route53_record" "ci_marketplace_team" {
   zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
-  name    = "ci3.marketplace.team"
+  name    = "ci.marketplace.team"
   type    = "A"
 
   alias {
