@@ -3,14 +3,14 @@ provider "aws" {
 }
 
 resource "aws_instance" "jenkins3" {
-  ami                    = "ami-2a7d75c0"
-  instance_type          = "t2.large"
-  iam_instance_profile   = "${aws_iam_instance_profile.jenkins.name}"
+  ami                    = "${var.ami_id}"
+  instance_type          = "${var.instance_type}"
+  iam_instance_profile   = "${var.jenkins_instance_profile}"
   key_name               = "${aws_key_pair.jenkins.key_name}"
   vpc_security_group_ids = ["${aws_security_group.jenkins_instance_security_group.id}"]
 
   tags {
-    Name = "Jenkins3"
+    Name = "${var.name}"
   }
 }
 

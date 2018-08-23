@@ -1,12 +1,14 @@
-variable "aws_main_account_id" {}
-
-variable "aws_sub_account_ids" {
-  type = "list"
-}
-
 variable "dev_user_ips" {
   type = "list"
 }
 
 variable "jenkins_public_key_name" {}
 variable "jenkins_public_key" {}
+
+variable "name" {}
+variable "jenkins_wildcard_elb_cert_arn" {}
+variable "jenkins_instance_profile" {}
+variable "ami_id" {}
+variable "instance_type" {}
+variable "dns_zone_id" {}
+variable "dns_name" {}
