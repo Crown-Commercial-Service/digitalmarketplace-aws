@@ -34,17 +34,6 @@ resource "aws_route53_record" "ci_marketplace_team" {
   zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
   name    = "ci.marketplace.team"
   type    = "A"
-  ttl     = "300"
-
-  records = [
-    "${var.jenkins_ip}",
-  ]
-}
-
-resource "aws_route53_record" "ci3_marketplace_team" {
-  zone_id = "${aws_route53_zone.marketplace_team.zone_id}"
-  name    = "ci3.marketplace.team"
-  type    = "A"
 
   alias {
     name                   = "${module.jenkins.jenkins_elb_dns_name}"
