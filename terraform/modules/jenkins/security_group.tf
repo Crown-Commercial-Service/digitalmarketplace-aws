@@ -1,7 +1,7 @@
 # Jenkins ELB security group/rules
 
 resource "aws_security_group" "jenkins_elb_security_group" {
-  name        = "jenkins_elb_security_group"
+  name        = "${var.name}_elb_security_group"
   description = "Security group for Jenkins ELB"
 }
 
@@ -20,7 +20,7 @@ resource "aws_security_group_rule" "jenkins_elb_allow_https_from_whitelisted_ips
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = ["${var.dev_user_ips}", "${aws_eip.jenkins3.public_ip}/32"]
+  cidr_blocks       = ["${var.dev_user_ips}", "${aws_eip.jenkins.public_ip}/32"]
 }
 
 resource "aws_security_group_rule" "jenkins_elb_allow_http_to_jenkins_instance" {
@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "jenkins_elb_allow_ssh_to_jenkins_instance" {
 # Jenkins Instance security groups/rules
 
 resource "aws_security_group" "jenkins_instance_security_group" {
-  name        = "jenkins_instance_security_group"
+  name        = "${var.name}_instance_security_group"
   description = "Security group for Jenkins Instance"
 }
 

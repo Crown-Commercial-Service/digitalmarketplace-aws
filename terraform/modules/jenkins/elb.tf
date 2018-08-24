@@ -1,7 +1,7 @@
 resource "aws_elb" "jenkins_elb" {
-  name            = "Jenkins-ELB"
-  subnets         = ["${aws_instance.jenkins3.subnet_id}"]
-  instances       = ["${aws_instance.jenkins3.id}"]
+  name            = "${var.name}-ELB"
+  subnets         = ["${aws_instance.jenkins.subnet_id}"]
+  instances       = ["${aws_instance.jenkins.id}"]
   security_groups = ["${aws_security_group.jenkins_elb_security_group.id}"]
 
   listener {
@@ -9,7 +9,7 @@ resource "aws_elb" "jenkins_elb" {
     instance_protocol  = "http"
     lb_port            = 443
     lb_protocol        = "https"
-    ssl_certificate_id = "${aws_acm_certificate.jenkins_wildcard_elb_certificate.arn}"
+    ssl_certificate_id = "${var.jenkins_wildcard_elb_cert_arn}"
   }
 
   listener {
@@ -28,37 +28,6 @@ resource "aws_elb" "jenkins_elb" {
   }
 
   tags {
-    Name = "Jenkins ELB"
+    Name = "${var.name} ELB"
   }
-}
-
-data "aws_route53_zone" "marketplace_team" {
-  name         = "marketplace.team"
-  private_zone = false
-}
-
-resource "aws_acm_certificate" "jenkins_wildcard_elb_certificate" {
-  domain_name       = "*.marketplace.team"
-  validation_method = "DNS"
-
-  tags {
-    Name = "Jenkins ELB certificate"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_route53_record" "jenkins_wildcard_elb_cert_validation" {
-  name    = "${aws_acm_certificate.jenkins_wildcard_elb_certificate.domain_validation_options.0.resource_record_name}"
-  type    = "${aws_acm_certificate.jenkins_wildcard_elb_certificate.domain_validation_options.0.resource_record_type}"
-  zone_id = "${data.aws_route53_zone.marketplace_team.id}"
-  records = ["${aws_acm_certificate.jenkins_wildcard_elb_certificate.domain_validation_options.0.resource_record_value}"]
-  ttl     = 60
-}
-
-resource "aws_acm_certificate_validation" "jenkins_wildcard_elb_certificate" {
-  certificate_arn         = "${aws_acm_certificate.jenkins_wildcard_elb_certificate.arn}"
-  validation_record_fqdns = ["${aws_route53_record.jenkins_wildcard_elb_cert_validation.fqdn}"]
 }
