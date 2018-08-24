@@ -2,7 +2,7 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-resource "aws_instance" "jenkins3" {
+resource "aws_instance" "jenkins" {
   ami                    = "${var.ami_id}"
   instance_type          = "${var.instance_type}"
   iam_instance_profile   = "${var.jenkins_instance_profile}"
@@ -14,13 +14,13 @@ resource "aws_instance" "jenkins3" {
   }
 }
 
-resource "aws_eip" "jenkins3" {
+resource "aws_eip" "jenkins" {
   vpc = true
 }
 
-resource "aws_eip_association" "jenkins3_eip_assoc" {
-  instance_id   = "${aws_instance.jenkins3.id}"
-  allocation_id = "${aws_eip.jenkins3.id}"
+resource "aws_eip_association" "jenkins_eip_assoc" {
+  instance_id   = "${aws_instance.jenkins.id}"
+  allocation_id = "${aws_eip.jenkins.id}"
 }
 
 resource "aws_key_pair" "jenkins" {
@@ -28,14 +28,14 @@ resource "aws_key_pair" "jenkins" {
   public_key = "${var.jenkins_public_key}"      # injected by Makefile-common
 }
 
-resource "aws_ebs_volume" "jenkins3_volume" {
-  availability_zone = "${aws_instance.jenkins3.availability_zone}"
+resource "aws_ebs_volume" "jenkins_volume" {
+  availability_zone = "${aws_instance.jenkins.availability_zone}"
   type              = "gp2"
   size              = 100
 }
 
-resource "aws_volume_attachment" "jenkins3_ebs_att" {
+resource "aws_volume_attachment" "jenkins_ebs_att" {
   device_name = "/dev/xvdf"
-  volume_id   = "${aws_ebs_volume.jenkins3_volume.id}"
-  instance_id = "${aws_instance.jenkins3.id}"
+  volume_id   = "${aws_ebs_volume.jenkins_volume.id}"
+  instance_id = "${aws_instance.jenkins.id}"
 }

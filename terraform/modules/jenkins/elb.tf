@@ -1,7 +1,7 @@
 resource "aws_elb" "jenkins_elb" {
   name            = "${var.name}-ELB"
-  subnets         = ["${aws_instance.jenkins3.subnet_id}"]
-  instances       = ["${aws_instance.jenkins3.id}"]
+  subnets         = ["${aws_instance.jenkins.subnet_id}"]
+  instances       = ["${aws_instance.jenkins.id}"]
   security_groups = ["${aws_security_group.jenkins_elb_security_group.id}"]
 
   listener {
