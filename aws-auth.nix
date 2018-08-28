@@ -17,7 +17,8 @@ stdenv.mkDerivation rec {
   installPhase = ''
     install -D $src/aws-auth.sh $out/bin/aws-auth
     wrapProgram $out/bin/aws-auth \
-      --prefix PATH : ${stdenv.lib.makeBinPath [ awscli jq openssl ]}
+      --prefix PATH : ${stdenv.lib.makeBinPath [ awscli jq openssl ]} \
+      --unset PYTHONPATH
   '';
 
   meta = {
