@@ -43,7 +43,10 @@ resource "aws_iam_policy" "backups_policy" {
         "s3:ListBucket",
         "s3:GetBucketLocation"
       ],
-      "Resource": "arn:aws:s3:::digitalmarketplace-database-backups",
+      "Resource": [
+        "arn:aws:s3:::digitalmarketplace-database-backups",
+        "arn:aws:s3:::digitalmarketplace-cross-region-database-backups"
+      ],
       "Condition": {
         "Bool": {
           "aws:MultiFactorAuthPresent": true
@@ -55,7 +58,10 @@ resource "aws_iam_policy" "backups_policy" {
       "Action": [
         "s3:GetObject"
       ],
-      "Resource": "arn:aws:s3:::digitalmarketplace-database-backups/*",
+      "Resource": [
+        "arn:aws:s3:::digitalmarketplace-database-backups/*",
+        "arn:aws:s3:::digitalmarketplace-cross-region-database-backups/*"
+      ],
       "Condition": {
         "Bool": {
           "aws:MultiFactorAuthPresent": true
