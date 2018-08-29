@@ -100,4 +100,17 @@ resource "aws_s3_bucket" "database_backups_s3_bucket" {
   ]
 }
 POLICY
+
+  replication_configuration {
+    role = "${aws_iam_role.replication_role.arn}"
+
+    rules {
+      prefix = "*"
+      status = "Enabled"
+
+      destination {
+        bucket = "${aws_s3_bucket.cross_region_database_backups_s3_bucket.arn}"
+      }
+    }
+  }
 }
