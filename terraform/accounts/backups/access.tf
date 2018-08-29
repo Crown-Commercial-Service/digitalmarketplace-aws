@@ -1,3 +1,4 @@
+# Backups role, policy and role-policy attachment
 resource "aws_iam_role" "backups_role" {
   name = "backups"
 
@@ -27,8 +28,19 @@ resource "aws_iam_policy" "backups_policy" {
     {
       "Effect": "Allow",
       "Action": [
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "arn:aws:s3:::*",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": true
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "s3:ListBucket",
-        "s3:ListAllMyBuckets",
         "s3:GetBucketLocation"
       ],
       "Resource": "arn:aws:s3:::digitalmarketplace-database-backups",
