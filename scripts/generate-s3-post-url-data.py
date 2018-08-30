@@ -19,9 +19,9 @@ from docopt import docopt
 def generate_s3_post_data(bucket, filename):
     s3 = boto3.client('s3')
 
-    fields = {"acl": "bucket-owner-read"}
+    fields = {"acl": "private"}
     conditions = [
-        {"acl": "bucket-owner-read"}
+        {"acl": "private"}
     ]
 
     post = s3.generate_presigned_post(

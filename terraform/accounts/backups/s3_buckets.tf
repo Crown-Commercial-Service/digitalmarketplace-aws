@@ -105,6 +105,7 @@ POLICY
     role = "${aws_iam_role.replication_role.arn}"
 
     rules {
+      id     = "cross-region-backups-replication"
       prefix = "*"
       status = "Enabled"
 
