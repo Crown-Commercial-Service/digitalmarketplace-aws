@@ -106,7 +106,7 @@ POLICY
 
     rules {
       id     = "cross-region-backups-replication"
-      prefix = "*"
+      prefix = ""
       status = "Enabled"
 
       destination {
