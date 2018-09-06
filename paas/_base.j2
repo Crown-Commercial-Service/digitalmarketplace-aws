@@ -2,29 +2,42 @@
 
 applications:
   - name: {{ app|replace('_', '-') }}-release
-{% if routes is defined %}
+
+    {% block routes %}
+    {% if routes is defined %}
     routes:
-{% for route in routes %}
+      {% for route in routes %}
       - route: {{ route.format(env=environment) }}
-{% endfor %}
+      {% endfor %}
+    {% endif %}
+    {% endblock %}
+
+    {% block health_check %}
+    {% if routes is defined %}
     health-check-type: http
     health-check-http-endpoint: {{ routes[0].partition('/')[1:]|join("") }}/_status?ignore-dependencies
-{% endif %}
+    {% endif %}
+    {% endblock %}
+
     instances: {{ instances|default(1) }}
     memory: {{ memory|default('512M') }}
     disk_quota: {{ disk_quota|default('2G') }}
+    {% block extra %}
+    {% endblock %}
+
     env:
       DM_APP_NAME: {{ app }}
       DM_ENVIRONMENT: {{ environment }}
       DM_METRICS_NAMESPACE: {{ environment }}-{{ environment }}/{{ app }}
 
       DM_LOG_PATH: ''
+
       {% block env %}
       {% endblock %}
 
-    {% if services|default([])|length > 0 -%}
+    {% if services|default([])|length > 0 %}
     services:
-      {% for service in services -%}
+      {% for service in services %}
         - {{ service }}
-      {% endfor -%}
+      {% endfor %}
     {% endif %}

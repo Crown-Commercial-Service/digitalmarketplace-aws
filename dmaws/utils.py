@@ -103,6 +103,7 @@ class LazyTemplateMapping(object):
 def template_string(string, variables, templates_path=None):
     jinja_env = jinja2.Environment(
         trim_blocks=True,
+        lstrip_blocks=True,
         undefined=StrictUndefined,
         loader=jinja2.FileSystemLoader(
             templates_path or DEFAULT_TEMPLATES_PATH

@@ -1,7 +1,6 @@
 {% extends "_base.j2" %}
 
 {% block env %}
-
       AWS_ACCESS_KEY_ID: {{ aws_access_key_id }}
       AWS_SECRET_ACCESS_KEY: {{ aws_secret_access_key }}
 
@@ -21,5 +20,4 @@
 
       DM_APP_AUTH: '{{ app_auth }}'
       DM_MODE: '{{ maintenance_mode }}'
-
 {% endblock %}
