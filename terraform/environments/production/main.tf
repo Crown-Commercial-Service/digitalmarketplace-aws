@@ -51,3 +51,17 @@ module "log_metrics" {
   app_names             = ["${module.application_logs.app_names}"]
   router_log_group_name = "${element(module.production_router.json_log_groups, 0)}"
 }
+
+module "antivirus-sns" {
+  source                   = "../../modules/antivirus-sns"
+  environment              = "production"
+  account_id               = "${var.aws_prod_account_id}"
+  antivirus_api_host       = "${var.antivirus_api_host}"
+  antivirus_api_basic_auth = "${var.antivirus_api_basic_auth}"
+
+  bucket_ids = [
+    "${aws_s3_bucket.agreements_bucket.id}",
+    "${aws_s3_bucket.communications_bucket.id}",
+    "${aws_s3_bucket.documents_bucket.id}",
+  ]
+}

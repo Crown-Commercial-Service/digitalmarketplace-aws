@@ -1,4 +1,5 @@
 variable "aws_main_account_id" {}
+variable "aws_prod_account_id" {}
 
 variable "admin_user_ips" {
   type = "list"
@@ -23,6 +24,8 @@ variable "submissions_s3_url" {}
 variable "api_url" {}
 variable "search_api_url" {}
 variable "frontend_url" {}
+variable "antivirus_api_host" {}
+variable "antivirus_api_basic_auth" {}
 
 variable "app_auth" {}
 
