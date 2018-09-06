@@ -13,5 +13,6 @@ variable "app_names" {
     "briefs-frontend",
     "brief-responses-frontend",
     "user-frontend",
+    "antivirus-api",
   ]
 }
