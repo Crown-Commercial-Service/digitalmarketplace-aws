@@ -22,8 +22,9 @@ All projects are then able to import and use the functionality they require from
 
 ## Requirements
 
-You will need to install the following manually (they are not installed as part of any other process such as
-`make requirements` or `pip`).
+Unless you're using the Nix environment (https://alphagov.github.io/digitalmarketplace-manual/nix.html) (in which they
+are all included), you will need to install the following manually (they are not installed as part of other process
+such as `make requirements` or `pip`).
 
 ### Install Terraform
 
