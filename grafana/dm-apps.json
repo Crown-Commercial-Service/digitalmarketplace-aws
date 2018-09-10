@@ -80,13 +80,18 @@
           "value": "api",
           "tags": []
         },
-        "query": "api,search-api,user-frontend,buyer-frontend,supplier-frontend,admin-frontend,briefs-frontend,brief-responses-frontend,router",
+        "query": "api,antivirus-api,search-api,user-frontend,buyer-frontend,supplier-frontend,admin-frontend,briefs-frontend,brief-responses-frontend,router",
         "type": "custom",
         "options": [
           {
             "text": "api",
             "selected": true,
             "value": "api"
+          },
+          {
+            "text": "antivirus-api",
+            "selected": true,
+            "value": "antivirus-api"
           },
           {
             "text": "search-api",
