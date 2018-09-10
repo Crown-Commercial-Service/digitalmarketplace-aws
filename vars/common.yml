@@ -18,6 +18,10 @@ search-api:
   services:
     - search_api_elasticsearch
 
+antivirus-api:
+  routes:
+    - dm-antivirus-api-{env}.cloudapps.digital
+
 user-frontend:
   routes:
     - dm-{env}.cloudapps.digital/user

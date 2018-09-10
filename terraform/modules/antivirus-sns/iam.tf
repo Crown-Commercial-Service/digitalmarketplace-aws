@@ -47,7 +47,7 @@ resource "aws_iam_role_policy_attachment" "sns_failure_feedback_sns_feedback" {
 }
 
 resource "aws_iam_policy" "sns_feedback" {
-  name = "sns_feedback"
+  name = "sns_feedback_${var.environment}"
 
   policy = <<EOF
 {
