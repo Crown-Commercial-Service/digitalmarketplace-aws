@@ -19,3 +19,6 @@ user-frontend:
 
 admin-frontend:
   instances: 2
+
+antivirus-api-frontend:
+  instances: 2
