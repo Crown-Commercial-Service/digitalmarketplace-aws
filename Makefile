@@ -71,7 +71,8 @@ generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${DM_CREDENTIALS_REPO},,$(error Must specify DM_CREDENTIALS_REPO))
 	@${DM_CREDENTIALS_REPO}/sops-wrapper -v > /dev/null # Avoid asking for MFA twice (when mandatory)
 	@${VIRTUALENV_ROOT}/bin/python scripts/generate-paas-manifest.py ${STAGE} ${APPLICATION_NAME} \
-		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/${STAGE}.yaml)
+		-f <(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/vars/${STAGE}.yaml) \
+		${ARGS}
 
 .PHONY: paas-login
 paas-login: ## Log in to PaaS
@@ -126,10 +127,7 @@ deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	$(eval export APPLICATION_NAME=db-backup)
 	$(eval export DUMP_FILE_NAME=${STAGE}-$(shell date +"%Y%m%d%H%M").sql.gz.gpg)
 	$(eval export S3_POST_URL_DATA=$(shell ${VIRTUALENV_ROOT}/bin/python ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups ${DUMP_FILE_NAME}))
-	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/db-backup --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
-	cf set-env db-backup DUMP_FILE_NAME '${DUMP_FILE_NAME}'
-	cf set-env db-backup S3_POST_URL_DATA '${S3_POST_URL_DATA}'
-	cf set-env db-backup RECIPIENT 'Digital Marketplace DB backups'
+	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest ARGS="-v DUMP_FILE_NAME -v S3_POST_URL_DATA") -o digitalmarketplace/db-backup
 	cf set-env db-backup PUBKEY "$$(cat ${DM_CREDENTIALS_REPO}/gpg/database-backups/public.key)"
 	cf restage db-backup
 	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 2G -k 2G

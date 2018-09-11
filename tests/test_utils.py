@@ -1,11 +1,13 @@
 import mock
 import pytest
 
-from dmaws.utils import safe_path_join
-from dmaws.utils import dict_from_path, merge_dicts
-from dmaws.utils import DEFAULT_TEMPLATES_PATH
-from dmaws.utils import template, template_string, LazyTemplateMapping
-from dmaws.utils import mkdir_p
+from dmaws.utils import (
+    DEFAULT_TEMPLATES_PATH,
+    dict_from_path, merge_dicts,
+    safe_path_join,
+    template, template_string, LazyTemplateMapping, UndefinedError,
+    mkdir_p,
+)
 
 
 class TestSafePathJoin(object):
@@ -92,7 +94,7 @@ class TestTemplateString(object):
         )
 
     def test_missing_variable(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(UndefinedError):
             assert template_string("{{ var }} string", {}) == "a string"
 
     def test_template_loader(self):

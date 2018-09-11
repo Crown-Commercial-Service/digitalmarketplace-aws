@@ -34,6 +34,7 @@ def generate_s3_post_data(bucket, filename):
 
     return json.dumps(post)
 
+
 if __name__ == "__main__":
     arguments = docopt(__doc__)
     bucket = arguments['<bucket>']

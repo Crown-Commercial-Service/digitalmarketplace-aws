@@ -48,5 +48,7 @@ brief-responses-frontend:
    - dm-{env}.cloudapps.digital/suppliers/opportunities
 
 db-backup:
+  instances: 1
+  memory: 128M
   services:
     - digitalmarketplace_api_db

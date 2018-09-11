@@ -5,6 +5,7 @@ import collections
 import six
 import yaml
 import jinja2
+from jinja2.exceptions import TemplateSyntaxError, UndefinedError  # noqa
 from jinja2.runtime import StrictUndefined
 
 
@@ -101,23 +102,30 @@ class LazyTemplateMapping(object):
 
 
 def template_string(string, variables, templates_path=None):
+    """Perform template substitution.
+
+    Args:
+        string: the template
+        variables: a dict of variables that the template can use
+
+    Raises:
+        TemplateSyntaxError: there is an issue with the template syntax.
+        UndefinedError: the template could not find the value for a variable.
+    """
     jinja_env = jinja2.Environment(
         trim_blocks=True,
+        lstrip_blocks=True,
         undefined=StrictUndefined,
         loader=jinja2.FileSystemLoader(
             templates_path or DEFAULT_TEMPLATES_PATH
         )
     )
 
-    try:
-        template = jinja_env.from_string(string)
-    except jinja2.exceptions.TemplateSyntaxError as e:
-        raise ValueError(u"Template error: {}".format(e))
+    # can raise TemplateSyntaxError
+    template = jinja_env.from_string(string)
 
-    try:
-        return template.render(variables)
-    except jinja2.exceptions.UndefinedError as e:
-        raise ValueError(u"Variable {} in '{}'".format(e, string))
+    # can raise UndefinedError
+    return template.render(variables)
 
 
 def param_to_env(name):
