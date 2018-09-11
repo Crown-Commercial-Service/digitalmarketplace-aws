@@ -28,5 +28,6 @@ def upload_dump_to_s3():
     else:
         print('Successfully uploaded {} to {}'.format(dump_file, url))
 
+
 if __name__ == "__main__":
     upload_dump_to_s3()

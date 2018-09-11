@@ -8,5 +8,3 @@ exclude = venv*,__pycache__,node_modules,bower_components
 ignore = D203,W503,E402
 max-complexity = 12
 max-line-length = 120
-putty-ignore =
-    **/__init__.py : +F401
