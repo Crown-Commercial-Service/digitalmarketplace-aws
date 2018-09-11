@@ -8,8 +8,25 @@ import click
 
 sys.path.insert(0, '.')  # noqa
 
-from dmaws.utils import load_file, template_string, merge_dicts
+from dmaws.utils import load_file, template_string, merge_dicts, UndefinedError
 from dmaws.variables import load_variables
+
+
+def get_variables_from_command_line_or_environment(vars):
+    cli_vars = []
+    for v in vars:
+        # get (option, value) tuple from `--var` flag
+        v = tuple(v.split("=", maxsplit=1))
+
+        # if they didn't specify on the command line, check the envvars
+        if len(v) == 1:
+            v = (v[0], os.getenv(v[0]))
+            if v[1] is None:
+                raise KeyError(v[0])
+
+        cli_vars.append(v)
+
+    return dict(cli_vars)
 
 
 @click.command()
@@ -32,22 +49,27 @@ def paas_manifest(environment, app, vars_file, var, out_file):
         'app': app.replace('_', '-')
     })
 
-    template_content = load_file('paas/{}.j2'.format(app))
+    template_file = f"paas/{app}.j2"
+    template_content = load_file(template_file)
 
     variables = merge_dicts(variables, variables[app])
 
-    cli_vars = []
-    for v in var:
-        v = tuple(v.split("=", maxsplit=1))
-        if len(v) == 1:
-            v = (v[0], os.getenv(v[0]))
-            if v[1] is None:
-                continue
-        cli_vars.append(v)
+    try:
+        variables = merge_dicts(variables, get_variables_from_command_line_or_environment(var))
+    except KeyError as e:
+        sys.exit(
+            f"""Error: Command line variable "--var '{e.args[0]}'" was not set by the flag"""
+            """ and was not found in environment variables. Please check your environment is correctly configured."""
+        )
 
-    variables = merge_dicts(variables, dict(cli_vars))
-
-    manifest_content = template_string(template_content, variables, templates_path='paas/')
+    try:
+        manifest_content = template_string(template_content, variables, templates_path='paas/')
+    except UndefinedError as e:
+        # the UndefinedError.message is usually something like "'VAR' is undefined"
+        sys.exit(
+            f"""Error: The template '{template_file}' thinks that the variable {e.message}."""
+            """ Please check you have included all of the var files and command line vars that you need."""
+        )
 
     if out_file is not None:
         with open(out_file, 'w') as f:
