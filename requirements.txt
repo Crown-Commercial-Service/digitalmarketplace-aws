@@ -1,5 +1,5 @@
 click==6.6
-Jinja2==2.8
+Jinja2==2.10
 PyYAML==3.11
 six==1.10.0
 awscli==1.15.67
