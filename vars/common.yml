@@ -19,6 +19,7 @@ search-api:
     - search_api_elasticsearch
 
 antivirus-api:
+  memory: 2G
   routes:
     - dm-antivirus-api-{env}.cloudapps.digital
 
