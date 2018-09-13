@@ -19,6 +19,7 @@ variable "g7_draft_documents_s3_url" {}
 variable "documents_s3_url" {}
 variable "agreements_s3_url" {}
 variable "communications_s3_url" {}
+variable "reports_s3_url" {}
 variable "submissions_s3_url" {}
 
 variable "api_url" {}
