@@ -82,6 +82,18 @@ resource "aws_route53_record" "search_api" {
   ]
 }
 
+resource "aws_route53_record" "antivirus_api" {
+  count   = "${length(var.cname_domain) == 0 ? 0 : 1}"
+  zone_id = "${aws_route53_zone.root.zone_id}"
+  name    = "antivirus-api.${var.domain}"
+  type    = "CNAME"
+  ttl     = "600"
+
+  records = [
+    "${var.cname_domain}",
+  ]
+}
+
 resource "aws_route53_record" "assets" {
   count   = "${length(var.cname_domain) == 0 ? 0 : 1}"
   zone_id = "${aws_route53_zone.root.zone_id}"
