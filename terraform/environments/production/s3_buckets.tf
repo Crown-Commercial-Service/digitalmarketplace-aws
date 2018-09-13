@@ -58,6 +58,53 @@ resource "aws_s3_bucket" "agreements_bucket" {
   policy = "${data.aws_iam_policy_document.agreements_bucket_policy_document.json}"
 }
 
+# Reports - devs: read write list jenkins: read write list
+
+data "aws_iam_policy_document" "reports_bucket_policy_document" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = [
+        "arn:aws:iam::${var.aws_prod_account_id}:role/developers",
+        "arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ",
+      ]
+
+      type = "AWS"
+    }
+
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:GetBucketLocation",
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-reports-production-production/*",
+      "arn:aws:s3:::digitalmarketplace-reports-production-production",
+    ]
+  }
+}
+
+resource "aws_s3_bucket" "reports_bucket" {
+  bucket = "digitalmarketplace-reports-production-production"
+  acl    = "private"
+
+  versioning {
+    enabled    = true
+    mfa_delete = true
+  }
+
+  logging {
+    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_prefix = "digitalmarketplace-reports-production-production/"
+  }
+
+  policy = "${data.aws_iam_policy_document.reports_bucket_policy_document.json}"
+}
+
 # Communications jenkins: read write
 
 data "aws_iam_policy_document" "communications_bucket_policy_document" {
