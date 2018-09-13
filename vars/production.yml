@@ -9,6 +9,7 @@ router:
     - www.digitalmarketplace.service.gov.uk
     - api.digitalmarketplace.service.gov.uk
     - search-api.digitalmarketplace.service.gov.uk
+    - antivirus-api.digitalmarketplace.service.gov.uk
     - assets.digitalmarketplace.service.gov.uk
 
 api:

@@ -4,6 +4,7 @@ router:
     - www.{env}.marketplace.team
     - api.{env}.marketplace.team
     - search-api.{env}.marketplace.team
+    - antivirus-api.{env}.marketplace.team
     - assets.{env}.marketplace.team
 
 api:
