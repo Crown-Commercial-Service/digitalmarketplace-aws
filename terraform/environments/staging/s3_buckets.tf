@@ -27,6 +27,22 @@ resource "aws_s3_bucket" "agreements_bucket" {
   }
 }
 
+# Reports
+
+resource "aws_s3_bucket" "reports_bucket" {
+  bucket = "digitalmarketplace-reports-staging-staging"
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  logging {
+    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_prefix = "digitalmarketplace-reports-staging-staging/"
+  }
+}
+
 # Communications
 
 resource "aws_s3_bucket" "communications_bucket" {
