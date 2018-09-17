@@ -64,7 +64,8 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
         "arn:aws:iam::${var.aws_dev_account_id}:role/developers",
         "arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ",
       ]
-      type        = "AWS"
+
+      type = "AWS"
     }
 
     actions = [
