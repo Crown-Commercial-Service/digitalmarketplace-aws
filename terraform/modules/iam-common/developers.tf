@@ -66,3 +66,42 @@ resource "aws_iam_policy" "developer" {
 }
 EOF
 }
+
+resource "aws_iam_role" "developers" {
+  name = "developers"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${var.aws_main_account_id}:root"
+      },
+      "Action": "sts:AssumeRole",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "developers_developer" {
+  role       = "${aws_iam_role.developers.id}"
+  policy_arn = "${aws_iam_policy.developer.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "developers_ip_restriced" {
+  role       = "${aws_iam_role.developers.name}"
+  policy_arn = "${aws_iam_policy.ip_restricted_access.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "developers_iam_manage_account" {
+  role       = "${aws_iam_role.developers.name}"
+  policy_arn = "${aws_iam_policy.iam_manage_account.arn}"
+}
