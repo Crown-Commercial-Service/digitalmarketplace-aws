@@ -70,7 +70,7 @@ function transform(payload) {
             ('0' + timestamp.getUTCDate()).slice(-2)          // day
         ].join('.');
 
-        var source = buildSource(logEvent.message);
+        var source = buildSource(logEvent.message, payload.logGroup);
         source['instance_id'] = payload.logStream;
 
         if ("epochTime" in source && !isNaN(parseFloat(source.epochTime)) && isFinite(source.epochTime)
@@ -101,7 +101,7 @@ function transform(payload) {
 }
 
 
-function buildSource(message) {
+function buildSource(message, logGroup) {
     var jsonSubString = extractJson(message);
     if (jsonSubString === null) {
         return {};
@@ -112,6 +112,14 @@ function buildSource(message) {
     ['time', 'user'].forEach(function (key) {
         delete source[key];
     });
+
+    // If this is a SNS feedback log `status` will be set to 'SUCCESS' or 'FAILURE' which Kibana will reject due to a
+    // `number_format_exception` (it expects `status` to be a number rather than a string). We can transform it to the
+    // http code from the delivery report, and move the existing value to a different key.
+    if (logGroup.startsWith('sns')) {
+      source['sns_feedback_status'] = source['status']
+      source['status'] = source['delivery']['statusCode']
+    }
 
     // Convert nested objects and arrays to strings to stop Kibana from rejecting records
     // for missing nested keys mappings
