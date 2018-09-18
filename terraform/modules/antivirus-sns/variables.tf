@@ -7,3 +7,6 @@ variable "bucket_ids" {
 
 variable "antivirus_api_host" {}
 variable "antivirus_api_basic_auth" {}
+
+variable "retention_in_days" {}
+variable "log_stream_lambda_arn" {}
