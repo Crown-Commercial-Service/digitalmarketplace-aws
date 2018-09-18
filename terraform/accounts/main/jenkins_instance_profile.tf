@@ -121,6 +121,8 @@ resource "aws_iam_role_policy" "jenkins" {
           "arn:aws:s3:::digitalmarketplace-documents-production-production/*",
           "arn:aws:s3:::digitalmarketplace-documents-staging-staging/*",
           "arn:aws:s3:::digitalmarketplace-documents-preview-preview/*",
+          "arn:aws:s3:::digitalmarketplace-reports-preview-preview/*",
+          "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*",
           "arn:aws:s3:::digitalmarketplace-reports-production-production/*"
         ]
     }
