@@ -9,11 +9,11 @@ resource "aws_sns_topic" "s3_file_upload_notification" {
   "http": {
     "defaultHealthyRetryPolicy": {
       "minDelayTarget": 1,
-      "maxDelayTarget": 3,
+      "maxDelayTarget": 3599,
       "numRetries": 5,
       "numMaxDelayRetries": 0,
       "numNoDelayRetries": 1,
-      "numMinDelayRetries": 1,
+      "numMinDelayRetries": 0,
       "backoffFunction": "linear"
     },
     "disableSubscriptionOverrides": true
