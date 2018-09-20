@@ -58,6 +58,8 @@ module "antivirus-sns" {
   account_id               = "${var.aws_prod_account_id}"
   antivirus_api_host       = "${var.antivirus_api_host}"
   antivirus_api_basic_auth = "${var.antivirus_api_basic_auth}"
+  retention_in_days        = "3653"
+  log_stream_lambda_arn    = "${module.log_streaming.log_stream_lambda_arn}"
 
   bucket_ids = [
     "${aws_s3_bucket.agreements_bucket.id}",
