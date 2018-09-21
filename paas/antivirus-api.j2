@@ -10,7 +10,7 @@
 
       DM_NOTIFY_API_KEY: {{ notify_api_key }}
 
-      {% if antivirus_api.developer_virus_alert_email is defined -%}
+      {% if antivirus_api.developer_virus_alert_email is defined %}
       DM_DEVELOPER_VIRUS_ALERT_EMAIL: {{ antivirus_api.developer_virus_alert_email }}
-      {%- endif %}
+      {% endif %}
 {% endblock %}
