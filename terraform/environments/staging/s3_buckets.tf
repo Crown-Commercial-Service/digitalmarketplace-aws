@@ -27,7 +27,34 @@ resource "aws_s3_bucket" "agreements_bucket" {
   }
 }
 
-# Reports
+# Reports - jenkins: read write list
+
+data "aws_iam_policy_document" "reports_bucket_policy_document" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = [
+        "arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ",
+      ]
+
+      type = "AWS"
+    }
+
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:GetBucketLocation",
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-reports-staging-staging",
+    ]
+  }
+}
 
 resource "aws_s3_bucket" "reports_bucket" {
   bucket = "digitalmarketplace-reports-staging-staging"
@@ -41,6 +68,8 @@ resource "aws_s3_bucket" "reports_bucket" {
     target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
     target_prefix = "digitalmarketplace-reports-staging-staging/"
   }
+
+  policy = "${data.aws_iam_policy_document.reports_bucket_policy_document.json}"
 }
 
 # Communications
