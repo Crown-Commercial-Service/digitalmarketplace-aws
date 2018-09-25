@@ -27,7 +27,7 @@ resource "aws_s3_bucket" "agreements_bucket" {
   }
 }
 
-# Reports - jenkins/developers: read write list
+# Reports - jenkins: read write list
 
 data "aws_iam_policy_document" "reports_bucket_policy_document" {
   statement {
@@ -35,7 +35,6 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
 
     principals {
       identifiers = [
-        "arn:aws:iam::${var.aws_dev_account_id}:role/developers",
         "arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ",
       ]
 
