@@ -155,7 +155,7 @@ resource "aws_iam_policy" "replication_policy" {
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::digitalmarketplace-submissions-production-production/*"
-    },
+    }
   ]
 }
 POLICY

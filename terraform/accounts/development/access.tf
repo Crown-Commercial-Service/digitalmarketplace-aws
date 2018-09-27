@@ -46,6 +46,14 @@ resource "aws_iam_policy" "replication_policy" {
     },
     {
       "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-documents-preview-preview/*"
+    },
+    {
+      "Action": [
         "s3:GetReplicationConfiguration",
         "s3:ListBucket"
       ],
@@ -59,6 +67,14 @@ resource "aws_iam_policy" "replication_policy" {
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::digitalmarketplace-agreements-preview-preview/*"
+    },
+    {
+      "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-agreements-preview-preview/*"
     },
     {
       "Action": [
@@ -78,6 +94,14 @@ resource "aws_iam_policy" "replication_policy" {
     },
     {
       "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-communications-preview-preview/*"
+    },
+    {
+      "Action": [
         "s3:GetReplicationConfiguration",
         "s3:ListBucket"
       ],
@@ -92,6 +116,14 @@ resource "aws_iam_policy" "replication_policy" {
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::digitalmarketplace-submissions-preview-preview/*"
     },
+    {
+      "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-submissions-preview-preview/*"
+    }
   ]
 }
 POLICY
