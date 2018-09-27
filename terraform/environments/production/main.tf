@@ -3,6 +3,12 @@ provider "aws" {
   version = "1.9.0"
 }
 
+provider "aws" {
+  alias   = "london"
+  region  = "eu-west-2"
+  version = "1.9.0"
+}
+
 terraform {
   backend "s3" {
     bucket  = "digitalmarketplace-terraform-state-production"
