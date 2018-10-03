@@ -13,8 +13,8 @@ check-env-vars: ## Check mandatory environment variables
 
 .PHONY: init
 init:: ## Run init
-	. .envrc && aws-auth terraform get
-	. .envrc && aws-auth terraform init
+	aws-auth terraform get
+	aws-auth terraform init
 
 define run_terraform
 	@set -e ;\
@@ -22,9 +22,9 @@ define run_terraform
 	PRIVATE_KEY_FILE=$$(mktemp) ;\
 	trap 'rm $$PRIVATE_KEY_FILE' EXIT ;\
 	${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/aws-keys/ci.pem.enc > $$PRIVATE_KEY_FILE ;\
-	. .envrc && aws-auth terraform ${1} \
-		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json) \
-		-var-file=<(. .envrc && aws-auth sops -d ${DM_CREDENTIALS_REPO}/terraform/common.json) \
+	aws-auth terraform ${1} \
+		-var-file=<(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json) \
+		-var-file=<(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/terraform/common.json) \
 		-var jenkins_public_key="$$(ssh-keygen -y -f $$PRIVATE_KEY_FILE)" \
 		${2}
 endef
@@ -46,10 +46,9 @@ plan-resource: check-env-vars init ## Run terraform plan with a specific resourc
 
 .PHONY: apply
 apply: check-env-vars init ## Run terraform apply
-	. .envrc && aws-auth terraform apply terraform.plan
+	aws-auth terraform apply terraform.plan
 	rm -f terraform.plan
 
 .PHONY: upload-state
 upload-state: check-env-vars ## Upload the local state file to S3, use it carefully
-	. .envrc && \
 	aws s3 cp --region eu-west-1 --sse AES256 ${STATE_FILE} s3://${S3_BUCKET}/${TERRAFORM_PROJECT}/terraform.tfstate
