@@ -51,19 +51,15 @@ Please follow the instructions here: https://stedolan.github.io/jq/download/
 
 Follow the instructions outlined here: https://github.com/alphagov/aws-auth
 
-### Direnv
-
-Install direnv (https://github.com/direnv/direnv) to automatically load environment variables from `.envrc` files
-
 ## Initialise
 
 ### Set up AWS credentials for different environments
 
 Terraform can be used only with MFA therefore you have to set up your profiles both in `~/.aws/credentials` and `~/.aws/config`
 
-You will need to set up ```.envrc``` files for each project you wish to use which export the related ```AWS_PROFILE``` value for that project. Direnv (https://github.com/direnv/direnv) will load these automatically when using the Terraform wrapper script and Makefiles.
+Before running a terraform command you need to set the `AWS_PROFILE` environment variable. This needs to be set to a profile that has permissions to complete the tasks included in the command.
 
-You can find all the AWS profiles required in the [AWS accounts section](https://alphagov.github.io/digitalmarketplace-manual/aws-accounts.html#available-roles) of the Digital Marketplace manual.
+You can find details of the AWS profiles in the [AWS accounts section](https://alphagov.github.io/digitalmarketplace-manual/aws-accounts.html#available-roles) of the Digital Marketplace manual.
 
 
 ### Example
@@ -86,11 +82,15 @@ mfa_serial=arn:aws:iam::<main account id>:mfa/<IAM username>
 role_arn=arn:aws:iam::<digitalmarketplace-development account id>:role/infrastructure
 ```
 
-File: environments/preview/.envrc
+Command:
 
 ```
-export AWS_PROFILE=development-infrastructure
+AWS_PROFILE=development-infrastructure aws-auth terraform init
+# Shortcut commands defined in Makefile-common
+AWS_PROFILE=development-infrastructure make plan
+AWS_PROFILE=development-infrastructure make apply
 ```
+
 
 ### Terraform remote state
 
@@ -102,7 +102,7 @@ Follow the set up guide outlined here: https://github.gds/gds/digitalmarketplace
 
 The Makefile will look for the credentials repository at the directory defined in the DM_CREDENTIALS_REPO environment variable.
 
-You may like to add this to your `~/.bash_profile` or `.envrc` file for easy access.
+You may like to add this to your `~/.bash_profile` for easy access.
 
 Example file: ~/.bash_profile
 
@@ -129,14 +129,22 @@ For more information check the Makefile contents.
 
 ## Run bare Terraform commands
 
-Generally you won't need to run bare Terraform commands as our ```Makefile``` should cover most needed scenarios. However, if you do then you should use the terraform wrapper script to run them directly. The terraform wrapper script takes care of loading your ```.envrc``` and running ```aws-auth```.
+Generally you won't need to run bare Terraform commands as our ```Makefile``` should cover most scenarios. However, if you do then you should use ```aws-auth``` in conjunction with the ```AWS_PROFILE``` environment to supply AWS with the correct credentials.
 
 For example, if you wanted to run ```terraform output``` against preview you can do so:
 
 ```
-cd environments/preview
-../../terraform-wrapper output
+AWS_PROFILE=development-infrastructure aws-auth terraform output
 ```
+
+Or, if you're exclusively working on ```preview``` for a while:
+
+```
+export AWS_PROFILE=development-infrastructure
+aws-auth terraform output
+```
+
+That way all your commands will run against preview until you change the environment variable.
 
 ## Requirements in a clean or completely new AWS environment
 
