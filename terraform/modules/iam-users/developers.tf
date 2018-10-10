@@ -18,18 +18,6 @@ resource "aws_iam_group_policy" "developers" {
       "Resource": [
         "arn:aws:iam::${var.aws_dev_account_id}:role/developers"
       ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sts:AssumeRole"
-      ],
-      "Resource": "arn:aws:iam::*:role/packer",
-      "Condition": {
-        "Bool": {
-          "aws:MultiFactorAuthPresent": true
-        }
-      }
     }
   ]
 }

@@ -45,13 +45,6 @@ resource "aws_iam_role_policy" "jenkins" {
       "Action": [
         "sts:AssumeRole"
       ],
-      "Resource": "arn:aws:iam::${var.aws_main_account_id}:role/packer"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sts:AssumeRole"
-      ],
       "Resource": "arn:aws:iam::${var.aws_main_account_id}:role/sops-credentials-access"
     },
     {
