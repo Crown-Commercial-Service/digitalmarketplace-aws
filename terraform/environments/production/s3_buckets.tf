@@ -56,6 +56,20 @@ resource "aws_s3_bucket" "agreements_bucket" {
   }
 
   policy = "${data.aws_iam_policy_document.agreements_bucket_policy_document.json}"
+
+  replication_configuration {
+    role = "${aws_iam_role.replication_role.arn}"
+
+    rules {
+      id     = "cross-region-agreements-replication"
+      prefix = ""
+      status = "Enabled"
+
+      destination {
+        bucket = "${aws_s3_bucket.cross_region_agreements_s3_bucket.arn}"
+      }
+    }
+  }
 }
 
 # Reports - devs: read write list jenkins: read write list
@@ -143,6 +157,20 @@ resource "aws_s3_bucket" "communications_bucket" {
   }
 
   policy = "${data.aws_iam_policy_document.communications_bucket_policy_document.json}"
+
+  replication_configuration {
+    role = "${aws_iam_role.replication_role.arn}"
+
+    rules {
+      id     = "cross-region-communications-replication"
+      prefix = ""
+      status = "Enabled"
+
+      destination {
+        bucket = "${aws_s3_bucket.cross_region_communications_s3_bucket.arn}"
+      }
+    }
+  }
 }
 
 # Documents - jenkins: read write list
@@ -186,6 +214,20 @@ resource "aws_s3_bucket" "documents_bucket" {
   }
 
   policy = "${data.aws_iam_policy_document.documents_bucket_policy_document.json}"
+
+  replication_configuration {
+    role = "${aws_iam_role.replication_role.arn}"
+
+    rules {
+      id     = "cross-region-documents-replication"
+      prefix = ""
+      status = "Enabled"
+
+      destination {
+        bucket = "${aws_s3_bucket.cross_region_documents_s3_bucket.arn}"
+      }
+    }
+  }
 }
 
 # G7-draft-documents
@@ -242,4 +284,18 @@ resource "aws_s3_bucket" "submissions_bucket" {
   }
 
   policy = "${data.aws_iam_policy_document.submissions_bucket_policy_document.json}"
+
+  replication_configuration {
+    role = "${aws_iam_role.replication_role.arn}"
+
+    rules {
+      id     = "cross-region-submissions-replication"
+      prefix = ""
+      status = "Enabled"
+
+      destination {
+        bucket = "${aws_s3_bucket.cross_region_submissions_s3_bucket.arn}"
+      }
+    }
+  }
 }
