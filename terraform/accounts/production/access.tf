@@ -114,7 +114,7 @@ resource "aws_iam_policy" "replication_policy" {
         "s3:ReplicateDelete"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-documents-production-production/*"
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-documents-production/*"
     },
     {
       "Action": [
@@ -138,7 +138,7 @@ resource "aws_iam_policy" "replication_policy" {
         "s3:ReplicateDelete"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-agreements-production-production/*"
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-agreements-production/*"
     },
     {
       "Action": [
@@ -162,7 +162,7 @@ resource "aws_iam_policy" "replication_policy" {
         "s3:ReplicateDelete"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-communications-production-production/*"
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-communications-production/*"
     },
     {
       "Action": [
@@ -186,7 +186,7 @@ resource "aws_iam_policy" "replication_policy" {
         "s3:ReplicateDelete"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-submissions-production-production/*"
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-submissions-production/*"
     }
   ]
 }
