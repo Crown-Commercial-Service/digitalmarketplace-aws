@@ -132,7 +132,7 @@ SET declaration = (
     THEN '{}'
     ELSE '{
          "status": "' || (declaration->>'status') || '",
-         "primaryContactEmail": "supplier-user@example.com",
+         "primaryContactEmail": "supplier-user@example.com"
          }'
     END)::json
 WHERE declaration IS NOT NULL
