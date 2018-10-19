@@ -128,13 +128,11 @@ WHERE countersigned_agreement_path IS NOT NULL;
 UPDATE supplier_frameworks
 SET declaration = (
     CASE
-    WHEN (declaration->'status') IS NULL OR (declaration->'nameOfOrganisation') IS NULL
+    WHEN (declaration->'status') IS NULL
     THEN '{}'
     ELSE '{
          "status": "' || (declaration->>'status') || '",
-         "nameOfOrganisation": "' || replace((declaration->>'nameOfOrganisation'), '"', '') || '",
          "primaryContactEmail": "supplier-user@example.com",
-         "organisationSize": "' || (ARRAY['micro', 'small', 'medium', 'large'])[MOD(supplier_id, 4)+1] || '"
          }'
     END)::json
 WHERE declaration IS NOT NULL
@@ -189,8 +187,7 @@ FROM (
       LEFT JOIN frameworks ON supplier_frameworks.framework_id = frameworks.id
       LEFT JOIN briefs ON briefs.framework_id = frameworks.id
     WHERE declaration->>'status' = 'complete'
-      AND declaration->>'organisationSize' != ''
-      AND frameworks.slug = 'digital-outcomes-and-specialists-2'
+      AND frameworks.slug LIKE 'digital-outcomes-and-specialists-_'
       AND briefs.published_at <= now() - '2 weeks 1 day'::interval
     ) AS eligible_brief_supplier_pairings;
 
