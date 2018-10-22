@@ -11,7 +11,26 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
 # TODO remove these hard-coded definitions in favour of using the terraform/modules/s3-document-bucket module after the
 # tf v0.12 upgrade. We need to contitionally include the principals block
 
-# Agreements
+# Agreements - jenkins: listversions
+
+data "aws_iam_policy_document" "agreements_bucket_policy_document" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      type        = "AWS"
+    }
+
+    actions = [
+      "s3:ListBucketVersions",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-agreements-staging-staging",
+    ]
+  }
+}
 
 resource "aws_s3_bucket" "agreements_bucket" {
   bucket = "digitalmarketplace-agreements-staging-staging"
@@ -25,6 +44,8 @@ resource "aws_s3_bucket" "agreements_bucket" {
     target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
     target_prefix = "digitalmarketplace-agreements-staging-staging/"
   }
+
+  policy = "${data.aws_iam_policy_document.agreements_bucket_policy_document.json}"
 }
 
 # Reports - jenkins: read write list
@@ -72,7 +93,26 @@ resource "aws_s3_bucket" "reports_bucket" {
   policy = "${data.aws_iam_policy_document.reports_bucket_policy_document.json}"
 }
 
-# Communications
+# Communications - jenkins: listversions
+
+data "aws_iam_policy_document" "communications_bucket_policy_document" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      type        = "AWS"
+    }
+
+    actions = [
+      "s3:ListBucketVersions",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-communications-staging-staging",
+    ]
+  }
+}
 
 resource "aws_s3_bucket" "communications_bucket" {
   bucket = "digitalmarketplace-communications-staging-staging"
@@ -86,9 +126,11 @@ resource "aws_s3_bucket" "communications_bucket" {
     target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
     target_prefix = "digitalmarketplace-communications-staging-staging/"
   }
+
+  policy = "${data.aws_iam_policy_document.communications_bucket_policy_document.json}"
 }
 
-# Documents - jenkins: read write list
+# Documents - jenkins: read write list listversions
 
 data "aws_iam_policy_document" "documents_bucket_policy_document" {
   statement {
@@ -105,6 +147,7 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
       "s3:PutObjectAcl",
       "s3:GetBucketLocation",
       "s3:ListBucket",
+      "s3:ListBucketVersions",
     ]
 
     resources = [
@@ -146,7 +189,26 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   }
 }
 
-# Submissions
+# Submissions - jenkins: listversions
+
+data "aws_iam_policy_document" "submissions_bucket_policy_document" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      type        = "AWS"
+    }
+
+    actions = [
+      "s3:ListBucketVersions",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-submissions-staging-staging",
+    ]
+  }
+}
 
 resource "aws_s3_bucket" "submissions_bucket" {
   bucket = "digitalmarketplace-submissions-staging-staging"
@@ -160,4 +222,6 @@ resource "aws_s3_bucket" "submissions_bucket" {
     target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
     target_prefix = "digitalmarketplace-submissions-staging-staging/"
   }
+
+  policy = "${data.aws_iam_policy_document.submissions_bucket_policy_document.json}"
 }

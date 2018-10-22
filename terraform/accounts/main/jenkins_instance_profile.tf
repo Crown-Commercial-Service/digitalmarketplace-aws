@@ -118,6 +118,26 @@ resource "aws_iam_role_policy" "jenkins" {
           "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*",
           "arn:aws:s3:::digitalmarketplace-reports-production-production/*"
         ]
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:ListBucketVersions"
+        ],
+        "Resource": [
+          "arn:aws:s3:::digitalmarketplace-agreements-production-production",
+          "arn:aws:s3:::digitalmarketplace-agreements-staging-staging",
+          "arn:aws:s3:::digitalmarketplace-agreements-preview-preview",
+          "arn:aws:s3:::digitalmarketplace-submissions-production-production",
+          "arn:aws:s3:::digitalmarketplace-submissions-staging-staging",
+          "arn:aws:s3:::digitalmarketplace-submissions-preview-preview",
+          "arn:aws:s3:::digitalmarketplace-communications-production-production",
+          "arn:aws:s3:::digitalmarketplace-communications-staging-staging",
+          "arn:aws:s3:::digitalmarketplace-communications-preview-preview",
+          "arn:aws:s3:::digitalmarketplace-documents-production-production",
+          "arn:aws:s3:::digitalmarketplace-documents-staging-staging",
+          "arn:aws:s3:::digitalmarketplace-documents-preview-preview"
+        ]
     }
   ]
 }
