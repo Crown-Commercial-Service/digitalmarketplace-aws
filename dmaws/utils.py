@@ -1,5 +1,4 @@
 import os
-import re
 import collections
 
 import yaml
@@ -9,17 +8,6 @@ from jinja2.runtime import StrictUndefined
 
 
 DEFAULT_TEMPLATES_PATH = 'cloudformation_templates/'
-
-
-def safe_path_join(basedir, path):
-    path = os.path.join(basedir, path)
-    abs_path = os.path.abspath(path)
-    abs_basedir = os.path.abspath(basedir)
-
-    if not abs_path.startswith(abs_basedir):
-        raise ValueError('Path outside base directory %s' % abs_basedir)
-
-    return path
 
 
 def read_yaml_file(path):
@@ -112,12 +100,6 @@ def template_string(string, variables, templates_path=None):
 
     # can raise UndefinedError
     return template.render(variables)
-
-
-def param_to_env(name):
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
-    return s2.upper().replace('ENV_VAR_', '')
 
 
 def mkdir_p(path):

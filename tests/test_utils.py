@@ -4,33 +4,9 @@ import pytest
 from dmaws.utils import (
     DEFAULT_TEMPLATES_PATH,
     merge_dicts,
-    safe_path_join,
     template, template_string, LazyTemplateMapping, UndefinedError,
     mkdir_p,
 )
-
-
-class TestSafePathJoin(object):
-    def test_simple_subpath(self):
-        assert safe_path_join('', 'app/static') == 'app/static'
-
-    def test_relative_basedir_subpath(self):
-        assert safe_path_join('./', 'app/static') == './app/static'
-
-    def test_relative_basedir_relative_subpath(self):
-        assert safe_path_join('./', './app/static') == '././app/static'
-
-    def test_relative_basedir_parent_subpath(self):
-        with pytest.raises(ValueError):
-            safe_path_join('./', '../../app/static')
-
-    def test_relative_basedir_root_subpath(self):
-        with pytest.raises(ValueError):
-            safe_path_join('./', '/app/static')
-
-    def test_relative_basedir_root_subdir_subpath(self):
-        with pytest.raises(ValueError):
-            safe_path_join('./', '/../../app/static')
 
 
 class TestMergeDicts(object):
