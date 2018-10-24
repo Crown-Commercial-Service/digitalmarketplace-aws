@@ -3,50 +3,10 @@ import pytest
 
 from dmaws.utils import (
     DEFAULT_TEMPLATES_PATH,
-    dict_from_path, merge_dicts,
-    safe_path_join,
+    merge_dicts,
     template, template_string, LazyTemplateMapping, UndefinedError,
     mkdir_p,
 )
-
-
-class TestSafePathJoin(object):
-    def test_simple_subpath(self):
-        assert safe_path_join('', 'app/static') == 'app/static'
-
-    def test_relative_basedir_subpath(self):
-        assert safe_path_join('./', 'app/static') == './app/static'
-
-    def test_relative_basedir_relative_subpath(self):
-        assert safe_path_join('./', './app/static') == '././app/static'
-
-    def test_relative_basedir_parent_subpath(self):
-        with pytest.raises(ValueError):
-            safe_path_join('./', '../../app/static')
-
-    def test_relative_basedir_root_subpath(self):
-        with pytest.raises(ValueError):
-            safe_path_join('./', '/app/static')
-
-    def test_relative_basedir_root_subdir_subpath(self):
-        with pytest.raises(ValueError):
-            safe_path_join('./', '/../../app/static')
-
-
-class TestDictFromPath(object):
-    def test_simple_string(self):
-        assert dict_from_path("key", 1) == {"key": 1}
-
-    def test_dotted_pair_string(self):
-        assert dict_from_path("nested.key", 1) == {"nested": {"key": 1}}
-
-    def test_digits_are_treated_as_strings(self):
-        assert dict_from_path("0.key", 1) == {"0": {"key": 1}}
-
-    def test_nested_string(self):
-        assert dict_from_path("very.nested.key", 1) == {
-            "very": {"nested": {"key": 1}}
-        }
 
 
 class TestMergeDicts(object):

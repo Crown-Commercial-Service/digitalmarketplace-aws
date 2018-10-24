@@ -1,8 +1,6 @@
 import os
-import re
 import collections
 
-import six
 import yaml
 import jinja2
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError  # noqa
@@ -10,17 +8,6 @@ from jinja2.runtime import StrictUndefined
 
 
 DEFAULT_TEMPLATES_PATH = 'cloudformation_templates/'
-
-
-def safe_path_join(basedir, path):
-    path = os.path.join(basedir, path)
-    abs_path = os.path.abspath(path)
-    abs_basedir = os.path.abspath(basedir)
-
-    if not abs_path.startswith(abs_basedir):
-        raise ValueError('Path outside base directory %s' % abs_basedir)
-
-    return path
 
 
 def read_yaml_file(path):
@@ -31,19 +18,6 @@ def read_yaml_file(path):
 def load_file(path):
     with open(path) as f:
         return f.read()
-
-
-def dict_from_path(path, value):
-    result = {}
-    if isinstance(path, six.string_types):
-        path = path.split('.')
-
-    if not path:
-        return value
-
-    result[path[0]] = dict_from_path(path[1:], value)
-
-    return result
 
 
 def merge_dicts(a, b):
@@ -126,12 +100,6 @@ def template_string(string, variables, templates_path=None):
 
     # can raise UndefinedError
     return template.render(variables)
-
-
-def param_to_env(name):
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
-    return s2.upper().replace('ENV_VAR_', '')
 
 
 def mkdir_p(path):
