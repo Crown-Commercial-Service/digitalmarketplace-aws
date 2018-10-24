@@ -2,7 +2,6 @@ import os
 import re
 import collections
 
-import six
 import yaml
 import jinja2
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError  # noqa
@@ -31,19 +30,6 @@ def read_yaml_file(path):
 def load_file(path):
     with open(path) as f:
         return f.read()
-
-
-def dict_from_path(path, value):
-    result = {}
-    if isinstance(path, six.string_types):
-        path = path.split('.')
-
-    if not path:
-        return value
-
-    result[path[0]] = dict_from_path(path[1:], value)
-
-    return result
 
 
 def merge_dicts(a, b):
