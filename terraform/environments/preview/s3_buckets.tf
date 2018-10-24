@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
 # TODO remove these hard-coded definitions in favour of using the terraform/modules/s3-document-bucket module after the
 # tf v0.12 upgrade. We need to contitionally include the principals block
 
-# Agreements - devs: read write list
+# Agreements - devs: read write list, jenkins: listversions
 
 data "aws_iam_policy_document" "agreements_bucket_policy_document" {
   statement {
@@ -32,6 +32,23 @@ data "aws_iam_policy_document" "agreements_bucket_policy_document" {
 
     resources = [
       "arn:aws:s3:::digitalmarketplace-agreements-preview-preview/*",
+      "arn:aws:s3:::digitalmarketplace-agreements-preview-preview",
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      type        = "AWS"
+    }
+
+    actions = [
+      "s3:ListBucketVersions",
+    ]
+
+    resources = [
       "arn:aws:s3:::digitalmarketplace-agreements-preview-preview",
     ]
   }
@@ -113,7 +130,7 @@ resource "aws_s3_bucket" "reports_bucket" {
   policy = "${data.aws_iam_policy_document.reports_bucket_policy_document.json}"
 }
 
-# Communications jenkins: read write
+# Communications jenkins: read write listversions
 
 data "aws_iam_policy_document" "communications_bucket_policy_document" {
   statement {
@@ -128,6 +145,7 @@ data "aws_iam_policy_document" "communications_bucket_policy_document" {
       "s3:GetObject",
       "s3:PutObject",
       "s3:PutObjectAcl",
+      "s3:ListBucketVersions",
     ]
 
     resources = [
@@ -167,7 +185,7 @@ resource "aws_s3_bucket" "communications_bucket" {
   }
 }
 
-# Documents - jenkins: read write list
+# Documents - jenkins: read write list listversions
 
 data "aws_iam_policy_document" "documents_bucket_policy_document" {
   statement {
@@ -184,6 +202,7 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
       "s3:PutObjectAcl",
       "s3:GetBucketLocation",
       "s3:ListBucket",
+      "s3:ListBucketVersions",
     ]
 
     resources = [
@@ -239,7 +258,26 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   }
 }
 
-# Submissions
+# Submissions - jenkins: listversions
+
+data "aws_iam_policy_document" "submissions_bucket_policy_document" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      type        = "AWS"
+    }
+
+    actions = [
+      "s3:ListBucketVersions",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-submissions-preview-preview",
+    ]
+  }
+}
 
 resource "aws_s3_bucket" "submissions_bucket" {
   bucket = "digitalmarketplace-submissions-preview-preview"
@@ -267,4 +305,6 @@ resource "aws_s3_bucket" "submissions_bucket" {
       }
     }
   }
+
+  policy = "${data.aws_iam_policy_document.submissions_bucket_policy_document.json}"
 }
