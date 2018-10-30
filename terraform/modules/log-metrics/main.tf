@@ -322,6 +322,35 @@ resource "aws_cloudwatch_log_metric_filter" "router-429s" {
   }
 }
 
+# The following two log metric filters both output to the same log metric: SNS considers 4xx responses "successes" so
+# we have to extract logs from both the "success" and "failure" log groups to catch all cases we'd consider fails
+
+resource "aws_cloudwatch_log_metric_filter" "dropped-antivirus-sns-final-retry" {
+  name           = "${var.environment}-dropped-antivirus-sns-final-retry"
+  pattern        = "{$$.delivery.attempts = ${var.antivirus_sns_topic_num_retries} }"
+  log_group_name = "${var.antivirus_sns_failure_log_group_name}"
+
+  metric_transformation {
+    name          = "${var.environment}-dropped-antivirus-sns"
+    namespace     = "DM-SNS"
+    value         = "1"
+    default_value = "0"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "dropped-antivirus-sns-4xx" {
+  name           = "${var.environment}-dropped-antivirus-sns-4xx"
+  pattern        = "{$$.delivery.statusCode >= 400}"
+  log_group_name = "${var.antivirus_sns_success_log_group_name}"
+
+  metric_transformation {
+    name          = "${var.environment}-dropped-antivirus-sns"
+    namespace     = "DM-SNS"
+    value         = "1"
+    default_value = "0"
+  }
+}
+
 # App specific metrics for apiclient retries
 
 resource "aws_cloudwatch_log_metric_filter" "apiclient-retries" {
