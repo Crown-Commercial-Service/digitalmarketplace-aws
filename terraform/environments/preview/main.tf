@@ -52,10 +52,13 @@ module "log_streaming" {
 }
 
 module "log_metrics" {
-  source                = "../../modules/log-metrics"
-  environment           = "preview"
-  app_names             = ["${module.application_logs.app_names}"]
-  router_log_group_name = "${element(module.preview_router.json_log_groups, 0)}"
+  source                               = "../../modules/log-metrics"
+  environment                          = "preview"
+  app_names                            = ["${module.application_logs.app_names}"]
+  router_log_group_name                = "${element(module.preview_router.json_log_groups, 0)}"
+  antivirus_sns_failure_log_group_name = "${module.antivirus-sns.failure_log_group_name}"
+  antivirus_sns_success_log_group_name = "${module.antivirus-sns.success_log_group_name}"
+  antivirus_sns_topic_num_retries      = "${module.antivirus-sns.topic_num_retries}"
 }
 
 module "antivirus-sns" {

@@ -10,7 +10,7 @@ resource "aws_sns_topic" "s3_file_upload_notification" {
     "defaultHealthyRetryPolicy": {
       "minDelayTarget": 1,
       "maxDelayTarget": 2399,
-      "numRetries": 5,
+      "numRetries": ${var.topic_num_retries},
       "numMaxDelayRetries": 0,
       "numNoDelayRetries": 1,
       "numMinDelayRetries": 0,
