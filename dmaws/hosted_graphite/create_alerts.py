@@ -9,45 +9,56 @@ ALERTS = [
         "metric": "cloudwatch.application_500s.production.router.500s.sum",
         "alert_criteria": {
             "type": "above",
-            "above_value": 0
+            "above_value": 0,
         },
         "notification_channels": ["Notify DM 2ndline"],  # Hardcoded name, channel had been set up manually already
         "notification_type": "state_change",
-        "info": "500s have occured"
+        "info": "500s have occured",
     },
     {
         "name": "Production Router 429s",
         "metric": "cloudwatch.router_429s.production.router.429s.sum",
         "alert_criteria": {
             "type": "above",
-            "above_value": 0
+            "above_value": 0,
         },
         "notification_channels": ["Notify DM 2ndline"],
         "notification_type": ["every", 60],
         "info": """429s responses being returned from the production router. Check CloudWatch for the IP address to make
-sure this is a crawler rather than a legitimate request"""
+sure this is a crawler rather than a legitimate request""",
     },
     {
         "name": "Production Router slow requests (10+ seconds)",
         "metric": "cloudwatch.request_time_buckets.production.router.request_time_bucket_9.sum",
         "alert_criteria": {
             "type": "above",
-            "above_value": 5
+            "above_value": 5,
         },
         "notification_channels": ["Notify DM 2ndline"],
         "notification_type": ["every", 60],
-        "info": "5+ requests taking 10+ seconds from the production router in the last minute"
+        "info": "5+ requests taking 10+ seconds from the production router in the last minute",
     },
     {
         "name": "Production Router slow requests (5-10 seconds)",
         "metric": "cloudwatch.request_time_buckets.production.router.request_time_bucket_8.sum",
         "alert_criteria": {
             "type": "above",
-            "above_value": 5
+            "above_value": 5,
         },
         "notification_channels": ["Notify DM 2ndline"],
         "notification_type": ["every", 60],
-        "info": "5+ requests taking 5-10 seconds from the production router in the last minute"
+        "info": "5+ requests taking 5-10 seconds from the production router in the last minute",
+    },
+    {
+        "name": "Production antivirus 'dropped' SNS messages",
+        "metric": "cloudwatch.antivirus.sns.production.dropped-sns.sum",
+        "alert_criteria": {
+            "type": "above",
+            "above_value": 0,
+        },
+        "notification_channels": ["Notify DM 2ndline"],
+        "notification_type": ["every", 60],
+        "info": "A 'file uploaded' notification that SNS has given up trying to send to the production antivirus API",
     },
 ]
 
