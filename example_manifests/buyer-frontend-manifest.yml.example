@@ -1,0 +1,42 @@
+# Example of a PaaS manifest for the Buyer FE app on Preview, based on the paas/buyer-frontend.j2 template.
+# The other frontend apps have similar manifests, but with their own env vars and routes.
+# Generated with:
+#    make generate-manifest APPLICATION_NAME=buyer-frontend STAGE=preview DM_CREDENTIALS_REPO=/path/to/creds
+---
+
+applications:
+  - name: buyer-frontend-release
+
+    routes:
+      - route: dm-preview.cloudapps.digital
+      - route: dm-preview.cloudapps.digital/buyers/direct-award
+
+    health-check-type: http
+    health-check-http-endpoint: /_status?ignore-dependencies
+
+    instances: 1
+    memory: 512M
+    disk_quota: 2G
+
+    env:
+      DM_APP_NAME: buyer-frontend
+      DM_ENVIRONMENT: preview
+      DM_METRICS_NAMESPACE: preview-preview/buyer-frontend
+
+      DM_LOG_PATH: ''
+
+      AWS_ACCESS_KEY_ID: ExampleAWSAccessKeyID
+      AWS_SECRET_ACCESS_KEY: ExampleAWSSecretAccessKey
+
+      DM_DATA_API_AUTH_TOKEN: ExampleAPIAuthToken
+      DM_DATA_API_URL: https://dm-api-preview.cloudapps.digital
+
+      DM_MANDRILL_API_KEY: ExampleMandrillAPIKey
+
+      DM_SEARCH_API_AUTH_TOKEN: ExampleSearchApiAuthToken
+      DM_SEARCH_API_URL: https://dm-search-api-preview.cloudapps.digital
+
+      PROXY_AUTH_CREDENTIALS: ExampleProxyAuthCredentials
+
+      SECRET_KEY: ExampleFlaskSecretKey
+      SHARED_EMAIL_KEY: ExampleEmailKey

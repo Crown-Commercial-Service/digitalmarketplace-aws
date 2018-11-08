@@ -1,0 +1,37 @@
+# Example of a PaaS manifest for the API app on Preview, based on the paas/api.j2 template.
+# Generated with:
+#    make generate-manifest APPLICATION_NAME=api STAGE=preview DM_CREDENTIALS_REPO=/path/to/creds
+---
+
+applications:
+  - name: api-release
+
+    routes:
+      - route: dm-api-preview.cloudapps.digital
+
+    health-check-type: http
+    health-check-http-endpoint: /_status?ignore-dependencies
+
+    instances: 1
+    memory: 2GB
+    disk_quota: 2G
+
+    env:
+      DM_APP_NAME: api
+      DM_ENVIRONMENT: preview
+      DM_METRICS_NAMESPACE: preview-preview/api
+
+      DM_LOG_PATH: ''
+
+      AWS_ACCESS_KEY_ID: ExampleAWSAccessKeyID
+      AWS_SECRET_ACCESS_KEY: ExampleAWSSecretAccessKey
+
+      DM_API_AUTH_TOKENS: ExampleApiAuthToken:ExampleJenkinsAuthToken:ExampleDeveloperAuthToken
+
+      DM_API_CALLBACK_AUTH_TOKENS: ExampleNotifyApiCallbackToken
+
+      DM_SEARCH_API_AUTH_TOKEN: ExampleSearchApiAuthToken
+      DM_SEARCH_API_URL: https://dm-search-api-preview.cloudapps.digital
+
+    services:
+        - digitalmarketplace_api_db

@@ -1,0 +1,34 @@
+# Example of a PaaS manifest for the Search API app on Preview, based on the paas/search-api.j2 template.
+# When migrating to a new Elasticsearch service, add in the DM_ELASTICSEARCH_SERVICE_NAME as an extra env var.
+# Generated with:
+#    make generate-manifest APPLICATION_NAME=search-api STAGE=preview DM_CREDENTIALS_REPO=/path/to/creds
+---
+
+applications:
+  - name: search-api-release
+
+    routes:
+      - route: dm-search-api-preview.cloudapps.digital
+
+    health-check-type: http
+    health-check-http-endpoint: /_status?ignore-dependencies
+
+    instances: 1
+    memory: 512M
+    disk_quota: 2G
+
+    env:
+      DM_APP_NAME: search-api
+      DM_ENVIRONMENT: preview
+      DM_METRICS_NAMESPACE: preview-preview/search-api
+      DM_ELASTICSEARCH_SERVICE_NAME: search_api_elasticsearch   # This env var is added manually during migrations
+
+      DM_LOG_PATH: ''
+
+      AWS_ACCESS_KEY_ID: ExampleAWSAccessKeyID
+      AWS_SECRET_ACCESS_KEY: ExampleAWSSecretAccessKey
+
+      DM_SEARCH_API_AUTH_TOKENS: ExampleApiAuthToken:ExampleJenkinsAuthToken:ExampleDeveloperAuthToken
+
+    services:
+      - search_api_elasticsearch

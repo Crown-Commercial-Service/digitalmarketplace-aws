@@ -1,0 +1,51 @@
+# Example of a PaaS manifest for the Router app on Preview, based on the paas/router.j2 template.
+# DM_MODE mode can be either 'live' or 'maintenance'.
+# Generated with:
+#    make generate-manifest APPLICATION_NAME=router STAGE=preview DM_CREDENTIALS_REPO=/path/to/creds
+---
+
+applications:
+  - name: router-release
+
+    routes:
+      - route: www.preview.marketplace.team
+      - route: api.preview.marketplace.team
+      - route: search-api.preview.marketplace.team
+      - route: antivirus-api.preview.marketplace.team
+      - route: assets.preview.marketplace.team
+
+    health-check-type: http
+    health-check-http-endpoint: /_status?ignore-dependencies
+
+    instances: 1
+    memory: 512M
+    disk_quota: 2G
+
+    env:
+      DM_APP_NAME: router
+      DM_ENVIRONMENT: preview
+      DM_METRICS_NAMESPACE: preview-preview/router
+
+      DM_LOG_PATH: ''
+
+      AWS_ACCESS_KEY_ID: ExampleAWSAccessKeyID
+      AWS_SECRET_ACCESS_KEY: ExampleAWSSecretAccessKey
+
+      DM_ADMIN_USER_IPS: 'List/of/IPs'
+      DM_DEV_USER_IPS: 'List/of/IPs'
+      DM_USER_IPS: 'List/of/IPs'
+
+      DM_API_URL: 'https://dm-api-preview.cloudapps.digital'
+      DM_SEARCH_API_URL: 'https://dm-search-api-preview.cloudapps.digital'
+      DM_ANTIVIRUS_API_URL: 'https://dm-antivirus-api-preview.cloudapps.digital'
+      DM_FRONTEND_URL: 'https://dm-preview.cloudapps.digital'
+
+      DM_G7_DRAFT_DOCUMENTS_S3_URL: https://example-bucket1.s3.amazonaws.com
+      DM_DOCUMENTS_S3_URL: https://example-bucket2.s3.amazonaws.com
+      DM_AGREEMENTS_S3_URL: https://example-bucket3.s3.amazonaws.com
+      DM_COMMUNICATIONS_S3_URL: https://example-bucket4.s3.amazonaws.com
+      DM_REPORTS_S3_URL: https://example-bucket5.s3.amazonaws.com
+      DM_SUBMISSIONS_S3_URL: https://example-bucket6.s3.amazonaws.com
+
+      DM_APP_AUTH: 'ExampleBasicAuthToken'
+      DM_MODE: 'live'
