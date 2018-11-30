@@ -4,6 +4,12 @@ resource "aws_elb" "jenkins_elb" {
   instances       = ["${aws_instance.jenkins.id}"]
   security_groups = ["${aws_security_group.jenkins_elb_security_group.id}"]
 
+  access_logs {
+    bucket   = "${aws_s3_bucket.jenkins_logs_bucket.bucket}"
+    interval = 60
+    enabled  = true
+  }
+
   listener {
     instance_port      = 80
     instance_protocol  = "http"
