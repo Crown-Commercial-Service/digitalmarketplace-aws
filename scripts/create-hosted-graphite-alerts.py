@@ -36,8 +36,16 @@ if __name__ == "__main__":
     # pipeline and also production
     environments = ["preview", "production"]
     apps = [
-        "api", "search-api", "admin-frontend", "buyer-frontend", "briefs-frontend", "brief-responses-frontend",
-        "router", "supplier-frontend", "user-frontend"
+        "router",
+        "api",
+        "antivirus-api",
+        "search-api",
+        "admin-frontend",
+        "brief-responses-frontend",
+        "briefs-frontend",
+        "buyer-frontend",
+        "supplier-frontend",
+        "user-frontend",
     ]
 
     create_missing_logs_alerts(api_key, environments, apps)
