@@ -7,3 +7,4 @@ venv*
 .envrc
 node_modules
 package-lock.json
+local.nix
