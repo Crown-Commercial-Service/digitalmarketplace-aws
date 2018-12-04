@@ -4,7 +4,7 @@ let
   args = rec {
     pkgs = import <nixpkgs> {};
     pythonPackages = pkgs.python36Packages;
-    forDev = false;
+    forDev = true;
     localOverridesPath = ./local.nix;
   } // argsOuter;
 in (with args; {
