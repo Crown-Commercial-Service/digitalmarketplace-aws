@@ -143,3 +143,25 @@ resource "aws_iam_role_policy" "jenkins" {
 }
 EOF
 }
+
+data "aws_iam_policy_document" "cloudwatch-policy" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogStreams",
+    ]
+
+    resources = [
+      "arn:aws:logs:eu-west-1:398263320410:*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "jenkins-cloudwatch" {
+  name = "JenkinsCloudWatchLogs"
+  role = "${aws_iam_role.jenkins.id}"
+
+  policy = "${data.aws_iam_policy_document.cloudwatch-policy.json}"
+}
