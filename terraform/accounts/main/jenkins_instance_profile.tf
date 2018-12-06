@@ -154,7 +154,7 @@ data "aws_iam_policy_document" "cloudwatch-policy" {
     ]
 
     resources = [
-      "arn:aws:logs:eu-west-1:*:*",
+      "arn:aws:logs:eu-west-1:398263320410:*",
     ]
   }
 }
