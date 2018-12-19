@@ -86,7 +86,13 @@ deploy-app: ## Deploys the app to PaaS
 	$(call check_space)
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
-	cf push -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
+	cf push --no-start -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
+
+	@echo "Waiting to ensure new app's assigned service credentials have taken effect..."
+	sleep 60
+
+	@echo "Starting app..."
+	cf start ${APPLICATION_NAME}-release
 
 	# TODO restore scaling before route switch once we have autoscaling set up
 	# TODO for now, we're using the instance counts set in the manifest
