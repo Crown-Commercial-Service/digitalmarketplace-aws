@@ -52,7 +52,7 @@ module "log_streaming" {
 }
 
 module "log_metrics" {
-  source                               = "../../modules/log-metrics"
+  source                               = "../../modules/logging/log-metric-filters"
   environment                          = "preview"
   app_names                            = ["${module.application_logs.app_names}"]
   router_log_group_name                = "${element(module.preview_router.json_log_groups, 0)}"
