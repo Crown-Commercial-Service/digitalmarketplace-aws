@@ -40,6 +40,8 @@ buyer-frontend:
 supplier-frontend:
   routes:
     - dm-{env}.cloudapps.digital/suppliers
+  services:
+    - digitalmarketplace-apps-paas-prometheus-exporter
 
 briefs-frontend:
   routes:
