@@ -1,10 +1,3 @@
-module "gds-audit-cloudtrail" {
-  source               = "../../modules/cloudtrail/cloudtrail"
-  trail_name           = "digitalmarketplace-gds-audit-cloudtrail"
-  s3_bucket_name       = "gds-audit-cloudtrails"                   // This is currently the name of the RE bucket being used to log GDS sub accounts
-  s3_bucket_key_prefix = "${var.aws_dev_account_id}"               // As per RE guidelines this should be the id of the account exporting the CloudTrail trail log files
-}
-
 module "cloudtrail-bucket" {
   source         = "../../modules/cloudtrail/cloudtrail-bucket"
   s3_bucket_name = "digitalmarketplaces-dev-account-cloudtrail-bucket"

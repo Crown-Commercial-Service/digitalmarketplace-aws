@@ -23,14 +23,14 @@ It is also possible (but not required) to export these log files into CloudWatch
 
 #### Exporting to someone elses S3 Bucket
 
-GDS policy requires that we set up a CloudTrail 'trail' directed to a bucket owned by RE called `gds-audit-cloudtrails` logging [global service events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-global-service-events) and any [data events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-and-data-events-with-cloudtrail.html#logging-data-events) considered relevant by the development team setting up the account. We can do this by passing arguments to the `cloudtrail` module which will enable an AWS CloudTrail 'trail' and put the log files it creates into the AWS S3 'bucket' we specify (using the `bucket_name` argument)
+It is possible to export our cloudtrails to existing buckets. We can do this by passing arguments to the `cloudtrail` module which will enable an AWS CloudTrail 'trail' and put the log files it creates into the AWS S3 'bucket' we specify (using the `bucket_name` argument)
 
 ```
 module "cloudtrail" {
   source              = "../../modules/cloudtrail/cloudtrail"
-  trail_name = "digitalmarketplace-gds-audit-cloudtrail" // Can be any name
-  bucket_name = "gds-audit-cloudtrails" // This is currently the name of the bucket being used
-  s3_bucket_key_prefix = "${var.account_id}" // As per RE guidelines this should be the id of the account exporting the CloudTrail trail log files
+  trail_name = "trail-to-be-put-in-someone-elses-bucket" // Can be any name
+  bucket_name = "some-other-bucket"
+  s3_bucket_key_prefix = "folder-name-for-cloudtrail-from-${var.account_id}"
 }
 ```
 
