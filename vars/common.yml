@@ -47,7 +47,7 @@ briefs-frontend:
 
 brief-responses-frontend:
   routes:
-   - dm-{env}.cloudapps.digital/suppliers/opportunities
+    - dm-{env}.cloudapps.digital/suppliers/opportunities
 
 db-backup:
   instances: 1
