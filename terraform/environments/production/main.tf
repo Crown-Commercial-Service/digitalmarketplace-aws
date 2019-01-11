@@ -34,7 +34,7 @@ module "production_router" {
 }
 
 module "application_logs" {
-  source = "../../modules/application-logs"
+  source = "../../modules/log-groups"
 
   environment       = "production"
   retention_in_days = "3653"

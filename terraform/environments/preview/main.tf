@@ -34,7 +34,7 @@ module "preview_router" {
 }
 
 module "application_logs" {
-  source = "../../modules/application-logs"
+  source = "../../modules/log-groups"
 
   environment       = "preview"
   retention_in_days = "180"
