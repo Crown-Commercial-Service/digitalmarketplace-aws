@@ -28,7 +28,7 @@ module "staging_router" {
 }
 
 module "application_logs" {
-  source = "../../modules/application-logs"
+  source = "../../modules/log-groups"
 
   environment       = "staging"
   retention_in_days = "180"
