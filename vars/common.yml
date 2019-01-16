@@ -48,6 +48,9 @@ briefs-frontend:
 brief-responses-frontend:
   routes:
     - dm-{env}.cloudapps.digital/suppliers/opportunities
+    - dm-{env}.cloudapps.digital/suppliers/opportunities/metrics
+  services:
+    - digitalmarketplace_prometheus
 
 db-backup:
   instances: 1
