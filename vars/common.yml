@@ -48,7 +48,7 @@ briefs-frontend:
 brief-responses-frontend:
   routes:
     - dm-{env}.cloudapps.digital/suppliers/opportunities
-    - dm-{env}.cloudapps.digital/suppliers/opportunities/metrics
+    - dm-{env}.cloudapps.digital/suppliers/opportunities/_metrics
   services:
     - digitalmarketplace_prometheus
 
