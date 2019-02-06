@@ -109,14 +109,18 @@ FROM audit_events;
 -- Sanitise framework agreements because they contain personal data
 \echo 'Update framework agreements'
 UPDATE framework_agreements
-SET signed_agreement_details = ('{"signerName": "A. Nonymous",
-                                  "signerRole": "The Boss",
-                                  "uploaderUserId": ' || TEXT(signed_agreement_details->'uploaderUserId') || ',
-                                  "frameworkAgreementVersion": ' || TEXT(signed_agreement_details->'frameworkAgreementVersion') || '}'
-                               )::json,
+SET
+    signed_agreement_details = json_build_object(
+        'signerName', 'A. Nonymous',
+        'signerRole', 'The Boss',
+        'uploaderUserId', signed_agreement_details->'uploaderUserId',
+        'frameworkAgreementVersion', signed_agreement_details->'frameworkAgreementVersion'
+    ),
     signed_agreement_path = 'not/the/real/path.pdf'
-WHERE signed_agreement_details IS NOT NULL
-AND cast(signed_agreement_details AS TEXT) != 'null';
+WHERE
+        signed_agreement_details IS NOT NULL
+    AND
+        json_typeof(signed_agreement_details) != 'null';
 
 UPDATE framework_agreements
 SET countersigned_agreement_path = 'not/the/real/path.pdf'
@@ -126,18 +130,19 @@ WHERE countersigned_agreement_path IS NOT NULL;
 -- Removes all personal data while keeping our app working as expected
 \echo 'Blank out declarations'
 UPDATE supplier_frameworks
-SET declaration = (
-    CASE
-    WHEN (declaration->'status') IS NULL
-    THEN '{}'
-    ELSE '{
-         "status": "' || (declaration->>'status') || '",
-         "primaryContactEmail": "supplier-user@example.com"
-         }'
-    END)::json
+SET
+    declaration = CASE WHEN (declaration->'status') IS NULL  -- i.e. key does not exist
+        THEN
+            '{}'::json
+        ELSE
+            json_build_object(
+                'status', (declaration->'status'),
+                'primaryContactEmail', 'supplier-user@example.com'
+            )
+    END
 WHERE declaration IS NOT NULL
-  AND declaration::varchar != 'null'
-  AND declaration::varchar != '{}';
+  AND json_typeof(declaration) != 'null'
+  AND declaration::text != '{}';
 
 -- Create some fake draft and submitted brief responses on closed briefs using eligible suppliers
 -- Ensuring essential requirements evidence length matches that of the brief essential requirements
@@ -150,31 +155,29 @@ INSERT INTO brief_responses (
       submitted_at
 )
 SELECT
-    -- Build a string that we convert to a json object for the 'data' column with varying numbers of evidence
-    (
-      '{' ||
-        '"essentialRequirements": [' ||
-          rtrim(repeat('{"evidence": "Some essential evidence."}, ', essential_requirements_len), ', ') ||
-        '], ' ||
-        CASE
-          -- If there are no nice to have requirements or if it's in in 1/3 of all drafts then don't add the key at all
-          WHEN nice_to_have_requirements_len::BOOL = FALSE OR (MOD(eligible_brief_supplier_pairings.supplier_id, 5) = 0 AND MOD(eligible_brief_supplier_pairings.supplier_id, 3) = 0) THEN ''
-          -- Otherwise all true
-          ELSE
-            '"niceToHaveRequirements": [' ||
-              rtrim(repeat('{"yesNo": true, "evidence": "Some nice to have evidence."}, ', nice_to_have_requirements_len), ', ') ||
-            '], '
-        END ||
-        '"availability": "09/09/17", ' ||
-        '"essentialRequirementsMet": true, ' ||
-        '"respondToEmailAddress": "example-email@example.gov.uk"' ||
-      '}'
-    )::JSON,
+    -- create 'data' column with varying numbers of evidence
+    json_strip_nulls(json_build_object(
+        'essentialRequirements', array_fill('{"evidence": "Some essential evidence."}'::json, ARRAY[essential_requirements_len]),
+        'niceToHaveRequirements', CASE
+            WHEN  -- If there are no nice to have requirements or if it's in in 1/15 of all drafts then don't add the key at all
+                    nice_to_have_requirements_len::BOOL = FALSE
+                OR (
+                    MOD(eligible_brief_supplier_pairings.supplier_id, 3) = 0 AND MOD(eligible_brief_supplier_pairings.supplier_id, 5) = 0
+                )
+            THEN
+                null  -- entry should be stripped out by json_strip_nulls
+            ELSE  -- Otherwise all true
+                array_fill('{"yesNo": true, "evidence": "Some nice to have evidence."}'::json, ARRAY[nice_to_have_requirements_len])
+        END,
+        'availability', '09/09/17',
+        'essentialRequirementsMet', true,
+        'respondToEmailAddress', 'example-email@example.gov.uk'
+    )),
     eligible_brief_supplier_pairings.brief_id,
     eligible_brief_supplier_pairings.supplier_id,
     now(),
-    CASE
-      WHEN MOD(eligible_brief_supplier_pairings.supplier_id, 5) = 0 THEN NULL
+    CASE WHEN MOD(eligible_brief_supplier_pairings.supplier_id, 5) = 0
+      THEN NULL
       ELSE now()
     END
 FROM (
@@ -189,7 +192,7 @@ FROM (
     WHERE declaration->>'status' = 'complete'
       AND frameworks.slug LIKE 'digital-outcomes-and-specialists-_'
       AND briefs.published_at <= now() - '2 weeks 1 day'::interval
-    ) AS eligible_brief_supplier_pairings;
+) AS eligible_brief_supplier_pairings;
 
 -- PaaS have an event trigger which invokes a function to reassign the owner of an object
 -- The function checks if the current user has a particular role. If that role doesn't exist
