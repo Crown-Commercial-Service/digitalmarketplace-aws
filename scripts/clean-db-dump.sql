@@ -147,6 +147,7 @@ WHERE declaration IS NOT NULL
 -- Create some fake draft and submitted brief responses on closed briefs using eligible suppliers
 -- Ensuring essential requirements evidence length matches that of the brief essential requirements
 -- and nice to have requirements are representative of possible data given brief nice to have requirements
+\echo 'Generate fake brief_responses'
 INSERT INTO brief_responses (
       data,
       brief_id,
