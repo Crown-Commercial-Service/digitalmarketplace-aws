@@ -126,7 +126,7 @@ UPDATE framework_agreements
 SET countersigned_agreement_path = 'not/the/real/path.pdf'
 WHERE countersigned_agreement_path IS NOT NULL;
 
--- Overwrite declarations with the smallest possible valid entry
+-- Overwrite declarations with a small but hopefully valid entry
 -- Removes all personal data while keeping our app working as expected
 \echo 'Blank out declarations'
 UPDATE supplier_frameworks
@@ -135,12 +135,97 @@ SET
         THEN
             '{}'::json
         ELSE
-            json_build_object(
+            json_strip_nulls(json_build_object(
                 'status', (declaration->'status'),
-                'primaryContactEmail', 'supplier-user@example.com'
-            )
+                'primaryContactEmail', CASE WHEN declaration->'primaryContactEmail' IS NOT NULL THEN
+                    format('%s-supplier-user@example.com', substring(id_hash from 0 for 8))
+                END,
+                'primaryContact', CASE WHEN declaration->'primaryContact' IS NOT NULL THEN
+                    format('Jo %s. %s. Supplier', substring(id_hash_ualpha from 8 for 1), substring(id_hash_ualpha from 9 for 1))
+                END,
+                'contactEmailContractNotice', CASE WHEN declaration->'contactEmailContractNotice' IS NOT NULL THEN
+                    format('%s-supplier-contract@example.com', substring(id_hash from 0 for 8))
+                END,
+                'contactNameContractNotice', CASE WHEN declaration->'contactNameContractNotice' IS NOT NULL THEN
+                    format('Jo %s. %s. Supplier Esq.', substring(id_hash_ualpha from 8 for 1), substring(id_hash_ualpha from 9 for 1))
+                END,
+                'nameOfOrganisation', CASE WHEN declaration->'nameOfOrganisation' IS NOT NULL THEN
+                    format('%s Ltd.', substring(id_hash_ualpha from 10 for 8))
+                END,
+                'companyRegistrationNumber', CASE WHEN declaration->'companyRegistrationNumber' IS NOT NULL THEN
+                    substring(id_hash from 18 for (substring(id_hash_digits from 19 for 1)::integer + 2))
+                END,
+                'dunsNumber', CASE WHEN declaration->'dunsNumber' IS NOT NULL THEN
+                    substring(id_hash_digits from 23 for 9)
+                END,
+                'registeredVATNumber', CASE WHEN declaration->'registeredVATNumber' IS NOT NULL THEN
+                    substring(id_hash_digits from 14 for 9)
+                END,
+                'tradingNames', CASE WHEN declaration->'tradingNames' IS NOT NULL THEN
+                    format('%s & Co.', substring(id_hash_ualpha from 10 for 8))
+                END,
+                'currentRegisteredCountry', CASE WHEN declaration->'currentRegisteredCountry' IS NOT NULL THEN
+                    initcap(format('%sland', substring(id_hash_ualpha from 26 for 6)))
+                END,
+                -- from g-cloud 9 & before
+                'registeredAddressBuilding', CASE WHEN declaration->'registeredAddressBuilding' IS NOT NULL THEN
+                    initcap(format('%s house', substring(id_hash_ualpha from 14 for 6)))
+                END,
+                'registeredAddressTown', CASE WHEN declaration->'registeredAddressTown' IS NOT NULL THEN
+                    initcap(format('%sville', substring(id_hash_ualpha from 11 for 5)))
+                END,
+                'registeredAddressPostcode', CASE WHEN declaration->'registeredAddressPostcode' IS NOT NULL THEN
+                    upper(translate(substring(id_hash from 11 for 7), '01', '  '))
+                END,
+                -- from g-cloud 7
+                'SQ1-1a', CASE WHEN declaration->'SQ1-1a' IS NOT NULL THEN
+                    format('%s Ltd.', substring(id_hash_ualpha from 10 for 8))
+                END,
+                'SQ1-1e', CASE WHEN declaration->'SQ1-1e' IS NOT NULL THEN
+                    substring(id_hash from 18 for (substring(id_hash_digits from 19 for 1)::integer + 2))
+                END,
+                'SQ1-1d-ii', CASE WHEN declaration->'SQ1-1d-ii' IS NOT NULL THEN
+                    initcap(format('%sland', substring(id_hash_ualpha from 26 for 6)))
+                END,
+                -- injected into declaration from supplier contact details at award time
+                'supplierDunsNumber', CASE WHEN declaration->'supplierDunsNumber' IS NOT NULL THEN
+                    substring(id_hash_digits from 23 for 9)
+                END,
+                'supplierRegisteredBuilding', CASE WHEN declaration->'supplierRegisteredBuilding' IS NOT NULL THEN
+                    initcap(format('%s house', substring(id_hash_ualpha from 14 for 6)))
+                END,
+                'supplierRegisteredCountry', CASE WHEN declaration->'supplierRegisteredCountry' IS NOT NULL THEN
+                    format('country:%s', substring(id_hash_ualpha from 4 for 2))
+                END,
+                'supplierRegisteredName', CASE WHEN declaration->'supplierRegisteredName' IS NOT NULL THEN
+                    format('%s Ltd.', substring(id_hash_ualpha from 10 for 8))
+                END,
+                'supplierRegisteredPostcode', CASE WHEN declaration->'supplierRegisteredPostcode' IS NOT NULL THEN
+                    upper(translate(substring(id_hash from 11 for 7), '01', '  '))
+                END,
+                'supplierRegisteredTown', CASE WHEN declaration->'supplierRegisteredTown' IS NOT NULL THEN
+                    initcap(format('%sville', substring(id_hash_ualpha from 11 for 5)))
+                END,
+                'supplierTradingName', CASE WHEN declaration->'supplierTradingName' IS NOT NULL THEN
+                    format('%s & Co.', substring(id_hash_ualpha from 10 for 8))
+                END,
+                'supplierVatNumber', CASE WHEN declaration->'supplierVatNumber' IS NOT NULL THEN
+                    substring(id_hash_digits from 14 for 9)
+                END
+            ))
     END
-WHERE declaration IS NOT NULL
+FROM (
+    -- join against a subquery based on same table to allow us to calculate md5 only once
+    SELECT
+        supplier_id,
+        framework_id,
+        md5(supplier_id::text || '|' || framework_id::text) AS id_hash,
+        upper(translate(md5(supplier_id::text || '|' || framework_id::text), '0123456789', 'IOUYGHJKLM')) AS id_hash_ualpha,
+        translate(md5(supplier_id::text || '|' || framework_id::text), 'abcdef', '987654') AS id_hash_digits
+    FROM supplier_frameworks
+) AS annotation
+WHERE supplier_frameworks.supplier_id = annotation.supplier_id AND supplier_frameworks.framework_id = annotation.framework_id
+  AND declaration IS NOT NULL
   AND json_typeof(declaration) != 'null'
   AND declaration::text != '{}';
 
