@@ -22,7 +22,6 @@
 
       DM_APP_AUTH: '{{ app_auth }}'
       DM_MODE: '{{ maintenance_mode }}'
-      {% if rate_limiting_enabled %}
-      DM_RATE_LIMITING_ENABLED: true
-      {% endif %}
+      DM_RATE_LIMITING_ENABLED: '{{ rate_limiting_enabled }}'
+
 {% endblock %}

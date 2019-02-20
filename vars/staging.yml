@@ -7,4 +7,4 @@ api:
   memory: 2GB
 
 router:
-  rate_limiting_enabled: true
+  rate_limiting_enabled: enabled
