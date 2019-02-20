@@ -5,6 +5,7 @@ instances: 5
 
 router:
   instances: 3
+  rate_limiting_enabled: true
   routes:
     - www.digitalmarketplace.service.gov.uk
     - api.digitalmarketplace.service.gov.uk
