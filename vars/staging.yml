@@ -5,3 +5,6 @@ instances: 2
 
 api:
   memory: 2GB
+
+router:
+  rate_limiting_enabled: true
