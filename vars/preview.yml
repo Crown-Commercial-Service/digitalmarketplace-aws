@@ -7,4 +7,4 @@ api:
 
 router:
   instances: 3
-  rate_limiting_enabled: false
+  rate_limiting_enabled: disabled
