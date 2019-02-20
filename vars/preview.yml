@@ -6,5 +6,5 @@ api:
   memory: 2GB
 
 router:
-  instances: 3
-  rate_limiting_enabled: disabled
+  instances: 2
+  rate_limiting_enabled: enabled
