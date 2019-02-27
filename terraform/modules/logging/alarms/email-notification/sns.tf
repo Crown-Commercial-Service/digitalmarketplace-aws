@@ -1,6 +1,6 @@
 // Create topic
 resource "aws_sns_topic" "alarm_email_topic" {
-  name = "${var.environment}-alarm-email"
+  name = "${var.name}-alarm-email"
 }
 
 // Policy enforcing

@@ -17,4 +17,5 @@ resource "aws_cloudwatch_metric_alarm" "status_code_alarm" {
 
   // Email slack
   alarm_actions = ["${var.alarm_email_topic_arn}"]
+  ok_actions    = ["${var.alarm_recovery_email_topic_arn}"]
 }
