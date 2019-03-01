@@ -86,7 +86,15 @@ deploy-app: ## Deploys the app to PaaS
 	$(call check_space)
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
+	$(if ${STAGE},,$(error Must specify STAGE))
 	cf push --no-start -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
+
+	# the order of operations performed here (including inside add-application-network-policies.sh)
+	# is carefully designed to make it impossible for an app to get to the point of being started
+	# with any required network policies not being in place, even if the "other" app (the other "party"
+	# in the policy) is simultaneously going through the release process and having its names & routes
+	# similarly juggled around. consider this carefully if making any changes to this.
+	./scripts/add-application-network-policies.sh ./vars/${STAGE}.yml ./vars/common.yml ${APPLICATION_NAME} "-release"
 
 	@echo "Waiting to ensure new app's assigned service credentials have taken effect..."
 	sleep 60
