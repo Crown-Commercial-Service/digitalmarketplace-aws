@@ -144,7 +144,7 @@ resource "aws_iam_role_policy" "jenkins" {
 EOF
 }
 
-data "aws_iam_policy_document" "cloudwatch-policy" {
+data "aws_iam_policy_document" "cloudwatch-logs-policy" {
   statement {
     actions = [
       "logs:CreateLogGroup",
@@ -159,9 +159,28 @@ data "aws_iam_policy_document" "cloudwatch-policy" {
   }
 }
 
-resource "aws_iam_role_policy" "jenkins-cloudwatch" {
+resource "aws_iam_role_policy" "jenkins-cloudwatch-logs" {
   name = "JenkinsCloudWatchLogs"
   role = "${aws_iam_role.jenkins.id}"
 
-  policy = "${data.aws_iam_policy_document.cloudwatch-policy.json}"
+  policy = "${data.aws_iam_policy_document.cloudwatch-logs-policy.json}"
+}
+
+data "aws_iam_policy_document" "cloudwatch-metrics-policy" {
+  statement {
+    actions = [
+      "cloudwatch:PutMetricData",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "jenkins-cloudwatch-metrics" {
+  name = "JenkinsCloudWatchMetrics"
+  role = "${aws_iam_role.jenkins.id}"
+
+  policy = "${data.aws_iam_policy_document.cloudwatch-metrics-policy.json}"
 }
