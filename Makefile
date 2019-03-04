@@ -81,6 +81,14 @@ paas-login: ## Log in to PaaS
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
 	@cf login -a "${PAAS_API}" -u ${PAAS_USERNAME} -p "${PAAS_PASSWORD}" -o "${PAAS_ORG}" -s "${PAAS_SPACE}"
 
+.PHONY: add-all-app-network-policies
+add-all-app-network-policies: ## attempts to (re-)add all known PaaS "network policies" suitable for a particular $STAGE
+	$(call check_space)
+	$(if ${STAGE},,$(error Must specify STAGE))
+	for APPLICATION_NAME in $$(yq -rs '.[0] * .[1] | to_entries | .[] | select(.value | has("egress_to_applications"))? | .key' ./vars/common.yml ./vars/${STAGE}.yml) ; do \
+		./scripts/add-application-network-policies.sh ./vars/$${STAGE}.yml ./vars/common.yml $${APPLICATION_NAME} ; \
+	done
+
 .PHONY: deploy-app
 deploy-app: ## Deploys the app to PaaS
 	$(call check_space)
