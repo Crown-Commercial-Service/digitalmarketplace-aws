@@ -1,33 +1,47 @@
+data "aws_iam_policy_document" "dev_uploads_s3_bucket_policy_document" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = "arn:aws:iam::${var.aws_main_account_id}:root"
+      type        = "AWS"
+    }
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-dev-uploads",
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    principals {
+      identifiers = "arn:aws:iam::${var.aws_main_account_id}:root"
+      type        = "AWS"
+    }
+
+    actions = [
+      "s3:DeleteObject",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:GetObjectAcl",
+      "s3:PutObjectAcl",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-dev-uploads/*",
+    ]
+  }
+}
+
 resource "aws_s3_bucket" "dev_uploads_s3_bucket" {
   bucket = "digitalmarketplace-dev-uploads"
   acl    = "private"
 
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Principal": {"AWS": "arn:aws:iam::${var.aws_main_account_id}:root"},
-      "Action": [
-        "s3:ListBucket",
-        "s3:GetBucketLocation"
-      ],
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads"
-    },
-    {
-      "Principal": {"AWS": "arn:aws:iam::${var.aws_main_account_id}:root"},
-      "Action": [
-        "s3:DeleteObject",
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:GetObjectAcl",
-        "s3:PutObjectAcl"
-      ],
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads/*"
-    }
-  ]
-}
-POLICY
+  policy = "${data.aws_iam_policy_document.dev_uploads_s3_bucket_policy_document.json}"
 }
