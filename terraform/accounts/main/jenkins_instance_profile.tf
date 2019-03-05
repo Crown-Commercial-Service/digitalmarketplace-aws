@@ -87,6 +87,7 @@ resource "aws_iam_role_policy" "jenkins" {
         "s3:GetBucketLocation"
       ],
       "Resource": [
+        "arn:aws:s3:::digitalmarketplace-cleaned-db-dumps",
         "arn:aws:s3:::digitalmarketplace-submissions-production-production",
         "arn:aws:s3:::digitalmarketplace-documents-production-production",
         "arn:aws:s3:::digitalmarketplace-documents-staging-staging",
@@ -108,6 +109,7 @@ resource "aws_iam_role_policy" "jenkins" {
             "s3:PutObjectAcl"
         ],
         "Resource": [
+          "arn:aws:s3:::digitalmarketplace-cleaned-db-dumps/*",
           "arn:aws:s3:::digitalmarketplace-agreements-production-production/*",
           "arn:aws:s3:::digitalmarketplace-communications-production-production/*",
           "arn:aws:s3:::digitalmarketplace-communications-preview-preview/*",
