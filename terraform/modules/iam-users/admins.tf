@@ -14,7 +14,7 @@ resource "aws_iam_group_policy_attachment" "admins_ip_restriced" {
 
 resource "aws_iam_group_policy_attachment" "admins_dev_uploads_s3" {
   group      = "${aws_iam_group.admins.name}"
-  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+  policy_arn = "${aws_iam_policy.dev_s3_access.arn}"
 }
 
 resource "aws_iam_group_membership" "admins" {

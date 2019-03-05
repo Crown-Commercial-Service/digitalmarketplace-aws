@@ -93,7 +93,7 @@ resource "aws_iam_group_policy_attachment" "dev_s3_only_iam_manage_account" {
   policy_arn = "${var.iam_manage_account_policy_arn}"
 }
 
-resource "aws_iam_policy" "dev_uploads_s3_access" {
+resource "aws_iam_policy" "dev_s3_access" {
   name = "devUploadsS3Access"
 
   policy = <<POLICY
@@ -105,14 +105,19 @@ resource "aws_iam_policy" "dev_uploads_s3_access" {
         "s3:*"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads"
-    },
-    {
+      "Resource": [
+        "arn:aws:s3:::digitalmarketplace-dev-uploads",
+        "arn:aws:s3:::digitalmarketplace-cleaned-db-dumps"
+      ]
+    }, {
       "Action": [
         "s3:*"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::digitalmarketplace-dev-uploads/*"
+      "Resource": [
+        "arn:aws:s3:::digitalmarketplace-dev-uploads/*",
+        "arn:aws:s3:::digitalmarketplace-cleaned-db-dumps/*"
+      ]
     }
   ]
 }
@@ -121,10 +126,10 @@ POLICY
 
 resource "aws_iam_group_policy_attachment" "developers_dev_uploads_s3" {
   group      = "${aws_iam_group.developers.name}"
-  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+  policy_arn = "${aws_iam_policy.dev_s3_access.arn}"
 }
 
 resource "aws_iam_group_policy_attachment" "dev_s3_only_dev_uploads_s3" {
   group      = "${aws_iam_group.dev_s3_only.name}"
-  policy_arn = "${aws_iam_policy.dev_uploads_s3_access.arn}"
+  policy_arn = "${aws_iam_policy.dev_s3_access.arn}"
 }
