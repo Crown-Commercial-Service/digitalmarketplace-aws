@@ -97,8 +97,15 @@ deploy-app: ## Deploys the app to PaaS
 	$(if ${STAGE},,$(error Must specify STAGE))
 	cf push --no-start -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
 
+	# apps that communicate with each other over the "internal" private network (*.apps.internal) need
+	# to have their explicitly "allowed" communication paths added as "network policies". these must be
+	# added before the app is started otherwise it will not be able to access those other apps, or those
+	# other apps won't be able to access *it*. the policies end up being associated with the app's guid
+	# rather than app name, so these need to be re-created for new apps we create, but the policies
+	# should follow the app's renaming at the end of the release process.
+	#
 	# the order of operations performed here (including inside add-application-network-policies.sh)
-	# is carefully designed to make it impossible for an app to get to the point of being started
+	# is carefully designed to make it hopefully-impossible for an app to get to the point of being started
 	# with any required network policies not being in place, even if the "other" app (the other "party"
 	# in the policy) is simultaneously going through the release process and having its names & routes
 	# similarly juggled around. consider this carefully if making any changes to this.
