@@ -22,14 +22,18 @@ export APPLICATION_SUFFIX=$4
 
 for EGRESS_APPLICATION_NAME in $(yq -rs '.[0] * .[1] | .[env.APPLICATION_NAME]?.egress_to_applications?[]?' "$BASE_YAML" "$VARS_YAML") ; do
     echo "Adding policy for access from ${APPLICATION_NAME}${APPLICATION_SUFFIX} to $EGRESS_APPLICATION_NAME-release..."
-    cf add-network-policy ${APPLICATION_NAME}${APPLICATION_SUFFIX} --destination-app $EGRESS_APPLICATION_NAME-release --protocol tcp --port 8080 || echo "...but that's probably fine."
+    cf add-network-policy ${APPLICATION_NAME}${APPLICATION_SUFFIX} --destination-app $EGRESS_APPLICATION_NAME-release --protocol tcp --port 8080 \
+        || echo "...but that's probably fine because $EGRESS_APPLICATION_NAME may not be in a release process."
     echo "Adding policy for access from ${APPLICATION_NAME}${APPLICATION_SUFFIX} to $EGRESS_APPLICATION_NAME..."
-    cf add-network-policy ${APPLICATION_NAME}${APPLICATION_SUFFIX} --destination-app $EGRESS_APPLICATION_NAME --protocol tcp --port 8080 || echo "...but that's probably fine."
+    cf add-network-policy ${APPLICATION_NAME}${APPLICATION_SUFFIX} --destination-app $EGRESS_APPLICATION_NAME --protocol tcp --port 8080 \
+        || echo "...but that's possibly fine because $EGRESS_APPLICATION_NAME could be in the midst of renaming apps as part of its release process."
 done
 
 for INGRESS_APPLICATION_NAME in $(yq -rs '.[0] * .[1] | to_entries | .[] | select(.value.egress_to_applications? | any(. == env.APPLICATION_NAME))? | .key' "$BASE_YAML" "$VARS_YAML") ; do
     echo "Adding policy for access from $INGRESS_APPLICATION_NAME-release to ${APPLICATION_NAME}${APPLICATION_SUFFIX}..."
-    cf add-network-policy $INGRESS_APPLICATION_NAME-release --destination-app ${APPLICATION_NAME}${APPLICATION_SUFFIX} --protocol tcp --port 8080 || echo "...but that's probably fine."
+    cf add-network-policy $INGRESS_APPLICATION_NAME-release --destination-app ${APPLICATION_NAME}${APPLICATION_SUFFIX} --protocol tcp --port 8080 \
+        || echo "...but that's probably fine because $INGRESS_APPLICATION_NAME may not be in a release process."
     echo "Adding policy for access from $INGRESS_APPLICATION_NAME to ${APPLICATION_NAME}${APPLICATION_SUFFIX}..."
-    cf add-network-policy $INGRESS_APPLICATION_NAME --destination-app ${APPLICATION_NAME}${APPLICATION_SUFFIX} --protocol tcp --port 8080 || echo "...but that's probably fine."
+    cf add-network-policy $INGRESS_APPLICATION_NAME --destination-app ${APPLICATION_NAME}${APPLICATION_SUFFIX} --protocol tcp --port 8080 \
+        || echo "...but that's possibly fine because $INGRESS_APPLICATION_NAME could be in the midst of renaming apps as part of its release process."
 done
