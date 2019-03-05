@@ -81,12 +81,35 @@ paas-login: ## Log in to PaaS
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
 	@cf login -a "${PAAS_API}" -u ${PAAS_USERNAME} -p "${PAAS_PASSWORD}" -o "${PAAS_ORG}" -s "${PAAS_SPACE}"
 
+.PHONY: add-all-app-network-policies
+add-all-app-network-policies: ## attempts to (re-)add all known PaaS "network policies" suitable for a particular $STAGE
+	$(call check_space)
+	$(if ${STAGE},,$(error Must specify STAGE))
+	for APPLICATION_NAME in $$(yq -rs '.[0] * .[1] | to_entries | .[] | select(.value | has("egress_to_applications"))? | .key' ./vars/common.yml ./vars/${STAGE}.yml) ; do \
+		./scripts/add-application-network-policies.sh ./vars/$${STAGE}.yml ./vars/common.yml $${APPLICATION_NAME} ; \
+	done
+
 .PHONY: deploy-app
 deploy-app: ## Deploys the app to PaaS
 	$(call check_space)
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
+	$(if ${STAGE},,$(error Must specify STAGE))
 	cf push --no-start -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
+
+	# apps that communicate with each other over the "internal" private network (*.apps.internal) need
+	# to have their explicitly "allowed" communication paths added as "network policies". these must be
+	# added before the app is started otherwise it will not be able to access those other apps, or those
+	# other apps won't be able to access *it*. the policies end up being associated with the app's guid
+	# rather than app name, so these need to be re-created for new apps we create, but the policies
+	# should follow the app's renaming at the end of the release process.
+	#
+	# the order of operations performed here (including inside add-application-network-policies.sh)
+	# is carefully designed to make it hopefully-impossible for an app to get to the point of being started
+	# with any required network policies not being in place, even if the "other" app (the other "party"
+	# in the policy) is simultaneously going through the release process and having its names & routes
+	# similarly juggled around. consider this carefully if making any changes to this.
+	./scripts/add-application-network-policies.sh ./vars/${STAGE}.yml ./vars/common.yml ${APPLICATION_NAME} "-release"
 
 	@echo "Waiting to ensure new app's assigned service credentials have taken effect..."
 	sleep 60
