@@ -7,7 +7,7 @@ mkdir -p ./dumps
 LATEST_PROD_DUMP=$(aws s3 ls digitalmarketplace-database-backups | grep production | sort -r | head -1 | awk '{print $4}')
 pg_dump --no-acl --no-owner --clean postgres://postgres:@localhost:63306/postgres | gzip > ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}"
 
-if [ "${TARGET}" == 'google-drive' ]; then
+if [ "${TARGET}" == 's3' ]; then
   echo 'Uploading cleaned dump to Google Drive'
 elif [ "${TARGET}" == 'preview' ] || [ "${TARGET}" == 'staging' ]; then
   echo "Migrating cleaned dump to ${TARGET} and uploading to Google Drive"
@@ -26,11 +26,11 @@ elif [ "${TARGET}" == 'preview' ] || [ "${TARGET}" == 'staging' ]; then
   psql "${TARGET_DB_URI}" < <(gunzip --to-stdout ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}")
   kill -9 "${TARGET_TUNNEL_PID}"
 else
-  echo 'Error: Unknown variable `TARGET`. Valid choices are `google-drive`, `preview`, `staging`'
+  echo 'Error: Unknown variable `TARGET`. Valid choices are `s3`, `preview`, `staging`'
   rm -fr ./dumps
   exit 1
 fi
 
-/usr/local/bin/gdrive --config "/var/lib/jenkins/.gdrive" sync upload --delete-extraneous ./dumps "${GDRIVE_EXPORTDATA_FOLDER_ID}"
+aws s3 sync --delete ./dumps s3://digitalmarketplace-cleaned-db-dumps
 
 rm -fr ./dumps
