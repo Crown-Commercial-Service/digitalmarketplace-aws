@@ -5,11 +5,7 @@
       AWS_SECRET_ACCESS_KEY: {{ aws_secret_access_key }}
 
       DM_DATA_API_AUTH_TOKEN: {{ api.auth_tokens[0] }}
-  {% if environment == "preview" %}
-      DM_DATA_API_URL: http://dm-api-{{ environment }}.apps.internal:8080
-  {% else %}
       DM_DATA_API_URL: https://dm-api-{{ environment }}.cloudapps.digital
-  {% endif %}
 
       DM_NOTIFY_API_KEY: {{ notify_api_key }}
 

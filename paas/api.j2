@@ -9,9 +9,5 @@
       DM_API_CALLBACK_AUTH_TOKENS: {{ api.callback_auth_tokens|join(':') }}
 
       DM_SEARCH_API_AUTH_TOKEN: {{ search_api.auth_tokens[0] }}
-  {% if environment == "preview" %}
-      DM_SEARCH_API_URL: http://dm-search-api-{{ environment }}.apps.internal:8080
-  {% else %}
       DM_SEARCH_API_URL: https://dm-search-api-{{ environment }}.cloudapps.digital
-  {% endif %}
 {% endblock %}
