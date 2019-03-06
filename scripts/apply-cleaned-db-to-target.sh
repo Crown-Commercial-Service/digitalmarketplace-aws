@@ -8,7 +8,7 @@ LATEST_PROD_DUMP=$(aws s3 ls digitalmarketplace-database-backups | grep producti
 pg_dump --no-acl --no-owner --clean postgres://postgres:@localhost:63306/postgres | gzip > ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}"
 
 if [ "${TARGET}" == 's3' ]; then
-  echo 'Uploading cleaned dump to Google Drive'
+  echo 'Uploading cleaned dump to S3'
 elif [ "${TARGET}" == 'preview' ] || [ "${TARGET}" == 'staging' ]; then
   echo "Migrating cleaned dump to ${TARGET} and uploading to Google Drive"
   cf target -s ${TARGET}

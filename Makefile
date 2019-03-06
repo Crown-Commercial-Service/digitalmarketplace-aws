@@ -183,7 +183,7 @@ import-and-clean-db-dump: virtualenv ## Connects to the postgres container, impo
 	VIRTUALENV_ROOT=${VIRTUALENV_ROOT} ./scripts/import-and-clean-db-dump.sh
 
 .PHONY: apply-cleaned-db-dump
-apply-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with google drive.
+apply-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync with s3.
 	./scripts/apply-cleaned-db-to-target.sh
 
 .PHONY: cleanup-postgres-container
