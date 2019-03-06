@@ -140,6 +140,15 @@ resource "aws_iam_role_policy" "jenkins" {
           "arn:aws:s3:::digitalmarketplace-documents-staging-staging",
           "arn:aws:s3:::digitalmarketplace-documents-preview-preview"
         ]
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::digitalmarketplace-cleaned-db-dumps/*"
+        ]
     }
   ]
 }
