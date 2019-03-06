@@ -31,6 +31,6 @@ else
   exit 1
 fi
 
-aws s3 sync --delete ./dumps s3://digitalmarketplace-cleaned-db-dumps
+aws s3 sync --delete --acl bucket-owner-full-control ./dumps s3://digitalmarketplace-cleaned-db-dumps
 
 rm -fr ./dumps
