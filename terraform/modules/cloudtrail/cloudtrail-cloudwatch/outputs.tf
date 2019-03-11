@@ -3,5 +3,5 @@ output "cloud_watch_logs_group_arn" {
 }
 
 output "cloud_watch_logs_role_arn" {
-  value = "${aws_iam_role.cloud_watch_logs_role.arn}"
+  value = "${aws_iam_role.cloudtrail_to_cloudwatch_role.arn}"
 }
