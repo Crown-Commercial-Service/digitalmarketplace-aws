@@ -66,3 +66,9 @@ module "jenkins" {
   dns_zone_id                   = "${aws_route53_zone.marketplace_team.zone_id}"
   dns_name                      = "ci.marketplace.team"
 }
+
+module "csw_inspector_role" {
+  source                = "git::https://github.com/alphagov/csw-client-role.git?ref=v1.0"
+  csw_agent_account_id  = "${var.csw_agent_account_id}"
+  csw_target_account_id = "${var.aws_main_account_id}"
+}
