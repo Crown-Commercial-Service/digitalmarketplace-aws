@@ -13,6 +13,12 @@ resource "aws_iam_account_alias" "alias" {
   account_alias = "digitalmarketplace-backups"
 }
 
+module "csw_inspector_role" {
+  source                = "git::https://github.com/alphagov/csw-client-role.git?ref=v1.0"
+  csw_agent_account_id  = "${var.csw_agent_account_id}"
+  csw_target_account_id = "${var.aws_backups_account_id}"
+}
+
 terraform {
   backend "s3" {
     bucket  = "digitalmarketplace-terraform-state-backups"
