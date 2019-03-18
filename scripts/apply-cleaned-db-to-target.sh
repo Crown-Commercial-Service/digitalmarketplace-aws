@@ -4,13 +4,12 @@ set -euo pipefail
 echo "Target is: ${TARGET}"
 
 mkdir -p ./dumps
-LATEST_PROD_DUMP=$(aws s3 ls digitalmarketplace-database-backups | grep production | sort -r | head -1 | awk '{print $4}')
-pg_dump --no-acl --no-owner --clean postgres://postgres:@localhost:63306/postgres | gzip > ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}"
+pg_dump --no-acl --no-owner --clean postgres://postgres:@localhost:63306/postgres | gzip > cleaned-db-dump.sql.gz
 
 if [ "${TARGET}" == 's3' ]; then
   echo 'Uploading cleaned dump to S3'
 elif [ "${TARGET}" == 'preview' ] || [ "${TARGET}" == 'staging' ]; then
-  echo "Migrating cleaned dump to ${TARGET} and uploading to Google Drive"
+  echo "Migrating cleaned dump to ${TARGET} and uploading to S3 bucket"
   cf target -s ${TARGET}
   TARGET_SERVICE_DATA=$(cf curl /v3/apps/"$(cf app --guid api)"/env | jq -r '.system_env_json.VCAP_SERVICES.postgres[0].credentials')
   TARGET_DB_HOST=$(echo "${TARGET_SERVICE_DATA}" | jq -r '.host')
@@ -23,14 +22,14 @@ elif [ "${TARGET}" == 'preview' ] || [ "${TARGET}" == 'staging' ]; then
   TARGET_TUNNEL_PID="$!"
   sleep 10
 
-  psql "${TARGET_DB_URI}" < <(gunzip --to-stdout ./dumps/cleaned-"${LATEST_PROD_DUMP%.*}")
+  psql "${TARGET_DB_URI}" < <(gunzip --to-stdout cleaned-db-dump.sql.gz)
   kill -9 "${TARGET_TUNNEL_PID}"
 else
   echo 'Error: Unknown variable `TARGET`. Valid choices are `s3`, `preview`, `staging`'
-  rm -fr ./dumps
+  rm -fr ./cleaned-db-dump.sql.gz
   exit 1
 fi
 
-aws s3 sync --delete --acl bucket-owner-full-control ./dumps s3://digitalmarketplace-cleaned-db-dumps
+aws s3 cp --acl bucket-owner-full-control ./cleaned-db-dump.sql.gz s3://digitalmarketplace-cleaned-db-dumps
 
-rm -fr ./dumps
+rm -fr ./cleaned-db-dump.sql.gz
