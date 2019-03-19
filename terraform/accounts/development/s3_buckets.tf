@@ -91,5 +91,9 @@ resource "aws_s3_bucket" "cleaned_db_dumps_s3_bucket" {
   bucket = "digitalmarketplace-cleaned-db-dumps"
   acl    = "private"
 
+  versioning {
+    enabled = true
+  }
+
   policy = "${data.aws_iam_policy_document.cleaned_db_dumps_s3_bucket_policy_document.json}"
 }
