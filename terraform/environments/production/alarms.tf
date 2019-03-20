@@ -53,3 +53,10 @@ module "router_429_alarm" {
   alarm_email_topic_arn          = "${module.alarm_email_sns.email_topic_arn}"
   alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
 }
+
+module "dropped_av_sns_alarm" {
+  source                         = "../../modules/logging/alarms/dropped-av-sns"
+  environment                    = "production"
+  alarm_email_topic_arn          = "${module.alarm_email_sns.email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
+}
