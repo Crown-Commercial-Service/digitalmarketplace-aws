@@ -39,6 +39,7 @@ module "missing_logs_alarms" {
   environment           = "preview"
   app_names             = ["buyer-frontend", "api", "something else", "etc..."]
   alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
 }
 ```
 
@@ -54,6 +55,7 @@ module "slow_requests_alarms" {
   environment           = "preview"
   app_name              = "router"
   alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
 }
 ```
 
@@ -69,5 +71,6 @@ module "router_500_alarm" {
   environment           = "preview"
   status_code           = "500"
   alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
 }
 ```
