@@ -322,8 +322,9 @@ resource "aws_cloudwatch_log_metric_filter" "router-429s" {
   }
 }
 
-# The following two log metric filters both output to the same log metric: SNS considers 4xx responses "successes" so
-# we have to extract logs from both the "success" and "failure" log groups to catch all cases we'd consider fails
+# The following two log metric filters output to the same metric (${var.environment}-dropped-antivirus-sns):
+# Because we have separate log streams 'Failure to connect to the AV API' and 'The AV API successfully returned a response'
+# we have to filter the "success" log group for responses >= 400 and the "failure" log group for anything
 
 resource "aws_cloudwatch_log_metric_filter" "dropped-antivirus-sns-final-retry" {
   name           = "${var.environment}-dropped-antivirus-sns-final-retry"
