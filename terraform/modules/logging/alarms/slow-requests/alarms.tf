@@ -37,6 +37,9 @@ resource "aws_cloudwatch_metric_alarm" "slow_requests_gt_10_alarm" {
   comparison_operator = "GreaterThanOrEqualToThreshold"
   threshold           = "5"
 
+  // If there is no data then do not alarm
+  treat_missing_data = "notBreaching"
+
   // Email slack
   alarm_actions = ["${var.alarm_email_topic_arn}"]
   ok_actions    = ["${var.alarm_recovery_email_topic_arn}"]
