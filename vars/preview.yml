@@ -4,6 +4,7 @@ maintenance_mode: live
 
 api:
   routes:
+    - dm-api-{env}.cloudapps.digital/_metrics
     - dm-api-{env}.apps.internal
   memory: 2GB
   egress_to_applications:
@@ -11,10 +12,12 @@ api:
 
 search-api:
   routes:
+    - dm-search-api-{env}.cloudapps.digital/_metrics
     - dm-search-api-{env}.apps.internal
 
 antivirus-api:
   routes:
+    - dm-antivirus-api-{env}.cloudapps.digital/_metrics
     - dm-antivirus-api-{env}.apps.internal
 
 router:
