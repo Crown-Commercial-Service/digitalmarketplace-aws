@@ -28,7 +28,6 @@ resource "aws_cloudwatch_metric_alarm" "missing_logs_alarm" {
   treat_missing_data = "breaching"
 
   // Email slack on error and recovery
-  insufficient_data_actions = []
-  alarm_actions             = ["${var.alarm_email_topic_arn}"]
-  ok_actions                = ["${var.alarm_recovery_email_topic_arn}"]
+  alarm_actions = ["${var.alarm_email_topic_arn}"]
+  ok_actions    = ["${var.alarm_recovery_email_topic_arn}"]
 }

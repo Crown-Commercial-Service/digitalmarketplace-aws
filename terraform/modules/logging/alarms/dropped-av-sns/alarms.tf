@@ -1,10 +1,10 @@
-resource "aws_cloudwatch_metric_alarm" "status_code_alarm" {
-  alarm_name        = "${var.environment}-${var.status_code}s"
-  alarm_description = "Alerts on ${var.status_code} on the ${var.environment} router."
+resource "aws_cloudwatch_metric_alarm" "dropped_antivirus_sns_alarm" {
+  alarm_name        = "${var.environment}-dropped-antivirus-sns"
+  alarm_description = "Alarms on failure to inform the ${var.environment} AV API that a file has uploaded and needs to be scanned."
 
   // Metric
-  namespace   = "DM-${var.status_code}s"
-  metric_name = "${var.environment}-router-nginx-${var.status_code}s"
+  namespace   = "DM-SNS"
+  metric_name = "${var.environment}-dropped-antivirus-sns"
 
   // For for every 60 seconds
   evaluation_periods = "1"

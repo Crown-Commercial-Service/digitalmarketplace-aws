@@ -39,6 +39,7 @@ module "missing_logs_alarms" {
   environment           = "preview"
   app_names             = ["buyer-frontend", "api", "something else", "etc..."]
   alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
 }
 ```
 
@@ -54,6 +55,7 @@ module "slow_requests_alarms" {
   environment           = "preview"
   app_name              = "router"
   alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
 }
 ```
 
@@ -69,5 +71,21 @@ module "router_500_alarm" {
   environment           = "preview"
   status_code           = "500"
   alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
+}
+```
+
+### dropped-av-sns
+
+This module creates a single alarm that is triggered on an entry in the ${var.environment}-dropped-antivirus-sns metric.
+
+It relies on the [`${var.environment}-dropped-antivirus-sns` metrics](https://github.com/alphagov/digitalmarketplace-aws/blob/2df2d21ea8c8bd0da78a37c7f6ce3d71889d00e2/terraform/modules/logging/log-metric-filters/main.tf#L325).
+
+```
+module "dropped_av_sns_alarm" {
+  source                = "../../modules/logging/alarms/dropped-av-sns"
+  environment           = "preview"
+  alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
+  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
 }
 ```
