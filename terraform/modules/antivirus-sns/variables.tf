@@ -1,7 +1,7 @@
 variable "account_id" {}
 variable "environment" {}
 
-variable "bucket_ids" {
+variable "bucket_arns" {
   type = "list"
 }
 
