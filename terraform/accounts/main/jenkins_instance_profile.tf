@@ -49,6 +49,20 @@ resource "aws_iam_role_policy" "jenkins" {
     },
     {
       "Action": [
+        "codecommit:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:codecommit:eu-west-1:398263320410:*"
+    },
+    {
+      "Action": [
+        "codecommit:DeleteRepository"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:codecommit:eu-west-1:398263320410:*"
+    },
+    {
+      "Action": [
         "s3:ListBucket",
         "s3:GetBucketLocation"
       ],
