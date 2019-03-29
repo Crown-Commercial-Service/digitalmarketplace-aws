@@ -70,9 +70,9 @@ module "antivirus-sns" {
   retention_in_days        = "3653"
   log_stream_lambda_arn    = "${module.log_streaming.log_stream_lambda_arn}"
 
-  bucket_ids = [
-    "${aws_s3_bucket.agreements_bucket.id}",
-    "${aws_s3_bucket.communications_bucket.id}",
-    "${aws_s3_bucket.documents_bucket.id}",
+  bucket_arns = [
+    "${aws_s3_bucket.agreements_bucket.arn}",
+    "${aws_s3_bucket.communications_bucket.arn}",
+    "${aws_s3_bucket.documents_bucket.arn}",
   ]
 }

@@ -148,11 +148,7 @@ data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
 
-      values = [
-        "arn:aws:s3:::${var.bucket_ids[0]}",
-        "arn:aws:s3:::${var.bucket_ids[1]}",
-        "arn:aws:s3:::${var.bucket_ids[2]}",
-      ]
+      values = ["${var.bucket_arns}"]
     }
 
     effect = "Allow"
