@@ -10,12 +10,14 @@ router:
 api:
   routes:
     - dm-api-{env}.cloudapps.digital
+    - dm-api-{env}.cloudapps.digital/_metrics
   services:
     - digitalmarketplace_api_db
 
 search-api:
   routes:
     - dm-search-api-{env}.cloudapps.digital
+    - dm-search-api-{env}.cloudapps.digital/_metrics
   services:
     - search_api_elasticsearch
 
@@ -23,6 +25,7 @@ antivirus-api:
   memory: 2G
   routes:
     - dm-antivirus-api-{env}.cloudapps.digital
+    - dm-antivirus-api-{env}.cloudapps.digital/_metrics
 
 user-frontend:
   routes:
