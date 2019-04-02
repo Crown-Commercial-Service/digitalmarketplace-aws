@@ -39,4 +39,5 @@ resource "aws_codecommit_repository" "codecommit_backup_repos" {
 
   repository_name = "${var.alphagov_git_repositories[count.index]}"
   description     = "Backup CodeCommit repo for github.com/alphagov/${var.alphagov_git_repositories[count.index]}"
+  default_branch  = "master"
 }
