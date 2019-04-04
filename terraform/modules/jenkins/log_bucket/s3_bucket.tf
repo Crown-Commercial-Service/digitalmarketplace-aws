@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "jenkins_logs_bucket" {
-  bucket        = "${var.name}-${var.dns_name}-logs-bucket"
+  bucket        = "${var.name}"
   force_destroy = true
 
   # The id 156460612806 is the ELB account (eu-west-1)
@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "jenkins_logs_bucket" {
                 ]
             },
             "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::${var.name}-${var.dns_name}-logs-bucket/*",
+            "Resource": "arn:aws:s3:::${var.name}/*",
             "Condition": {
                 "StringEquals": {
                     "s3:x-amz-acl": "bucket-owner-full-control"
