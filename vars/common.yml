@@ -36,11 +36,13 @@ admin-frontend:
     - dm-{env}.cloudapps.digital/admin
 
 buyer-frontend:
+  memory: 700M
   routes:
     - dm-{env}.cloudapps.digital
     - dm-{env}.cloudapps.digital/buyers/direct-award
 
 supplier-frontend:
+  memory: 700M
   routes:
     - dm-{env}.cloudapps.digital/suppliers
 
