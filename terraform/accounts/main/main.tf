@@ -53,8 +53,13 @@ module "sops_credentials" {
   aws_account_ids = "${concat(list(var.aws_main_account_id), var.aws_sub_account_ids)}"
 }
 
+module "jenkins_elb_log_bucket" {
+  source = "../../modules/jenkins/log_bucket"
+  name   = "jenkins-ci.marketplace.team-logs-bucket"
+}
+
 module "jenkins" {
-  source                        = "../../modules/jenkins"
+  source                        = "../../modules/jenkins/jenkins"
   name                          = "jenkins"
   dev_user_ips                  = "${var.dev_user_ips}"
   jenkins_public_key_name       = "${var.ssh_key_name}"                                         # confusingly-named variable in terraform/common.json
@@ -65,6 +70,7 @@ module "jenkins" {
   instance_type                 = "t2.large"
   dns_zone_id                   = "${aws_route53_zone.marketplace_team.zone_id}"
   dns_name                      = "ci.marketplace.team"
+  log_bucket_name               = "${module.jenkins_elb_log_bucket.bucket_id}"
 }
 
 module "csw_inspector_role" {

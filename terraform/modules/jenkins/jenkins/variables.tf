@@ -12,3 +12,4 @@ variable "ami_id" {}
 variable "instance_type" {}
 variable "dns_zone_id" {}
 variable "dns_name" {}
+variable "log_bucket_name" {}

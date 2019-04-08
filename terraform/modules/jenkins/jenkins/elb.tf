@@ -5,7 +5,7 @@ resource "aws_elb" "jenkins_elb" {
   security_groups = ["${aws_security_group.jenkins_elb_security_group.id}"]
 
   access_logs {
-    bucket   = "${aws_s3_bucket.jenkins_logs_bucket.bucket}"
+    bucket   = "${var.log_bucket_name}"
     interval = 60
     enabled  = true
   }
