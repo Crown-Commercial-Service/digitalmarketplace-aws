@@ -3,8 +3,8 @@ resource "aws_iam_user" "ben_vandersteen" {
   force_destroy = true
 }
 
-resource "aws_iam_user" "jonathan_kerr" {
-  name          = "jonathankerr"
+resource "aws_iam_user" "argyris_galamatis" {
+  name          = "argyrisgalamatis"
   force_destroy = true
 }
 
