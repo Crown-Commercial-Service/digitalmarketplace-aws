@@ -13,6 +13,7 @@ api:
     - dm-api-{env}.cloudapps.digital/_metrics
   services:
     - digitalmarketplace_api_db
+    - digitalmarketplace_prometheus
 
 search-api:
   routes:
@@ -20,12 +21,15 @@ search-api:
     - dm-search-api-{env}.cloudapps.digital/_metrics
   services:
     - search_api_elasticsearch
+    - digitalmarketplace_prometheus
 
 antivirus-api:
   memory: 2G
   routes:
     - dm-antivirus-api-{env}.cloudapps.digital
     - dm-antivirus-api-{env}.cloudapps.digital/_metrics
+  services:
+    - digitalmarketplace_prometheus
 
 user-frontend:
   routes:
