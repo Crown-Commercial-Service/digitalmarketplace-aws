@@ -20,7 +20,6 @@ applications:
     env:
       DM_APP_NAME: search-api
       DM_ENVIRONMENT: preview
-      DM_METRICS_NAMESPACE: preview-preview/search-api
       DM_ELASTICSEARCH_SERVICE_NAME: search_api_elasticsearch   # This env var is added manually during migrations
 
       DM_LOG_PATH: ''
