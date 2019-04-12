@@ -21,7 +21,6 @@ applications:
     env:
       DM_APP_NAME: buyer-frontend
       DM_ENVIRONMENT: preview
-      DM_METRICS_NAMESPACE: preview-preview/buyer-frontend
 
       DM_LOG_PATH: ''
 

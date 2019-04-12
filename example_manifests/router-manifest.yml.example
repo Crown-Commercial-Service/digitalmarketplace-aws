@@ -24,7 +24,6 @@ applications:
     env:
       DM_APP_NAME: router
       DM_ENVIRONMENT: preview
-      DM_METRICS_NAMESPACE: preview-preview/router
 
       DM_LOG_PATH: ''
 
