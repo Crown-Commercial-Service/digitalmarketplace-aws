@@ -95,7 +95,7 @@ deploy-app: ## Deploys the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
-	cf push --no-start -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
+	cf push --no-start --no-route -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
 
 	# apps that communicate with each other over the "internal" private network (*.apps.internal) need
 	# to have their explicitly "allowed" communication paths added as "network policies". these must be
@@ -121,6 +121,9 @@ deploy-app: ## Deploys the app to PaaS
 	# TODO for now, we're using the instance counts set in the manifest
 	# cf scale -i $$(cf curl /v2/apps/$$(cf app --guid ${APPLICATION_NAME}-rollback) | jq -r ".entity.instances" 2>/dev/null || echo "1") ${APPLICATION_NAME}
 
+	# Create the route for the release app
+	./scripts/map-route.sh ${APPLICATION_NAME}-release <(make -s -C ${CURDIR} generate-manifest)
+	# Delete the route for the old app
 	@if cf app ${APPLICATION_NAME} >/dev/null; then ./scripts/unmap-route.sh ${APPLICATION_NAME}; fi
 
 	@echo "Waiting for previous app version to process existing requests..."
