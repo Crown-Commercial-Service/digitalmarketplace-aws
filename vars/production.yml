@@ -24,3 +24,6 @@ admin-frontend:
 
 antivirus-api:
   instances: 2
+
+supplier-frontend:
+  instances: 7
