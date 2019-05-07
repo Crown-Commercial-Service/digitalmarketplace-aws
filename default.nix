@@ -13,16 +13,17 @@ in (with args; {
     shortName = "dm-aws";
     buildInputs = [
       pythonPackages.python
+      pkgs.glibcLocales
       pkgs.nodejs
       pkgs.jq
       pkgs.sops
       (pkgs.terraform.overrideAttrs (oldAttrs: rec {
-        name = "terraform-0.11.7";
+        name = "terraform-0.11.13";
         src = pkgs.fetchFromGitHub {
           owner  = "hashicorp";
           repo   = "terraform";
-          rev    = "v0.11.7";
-          sha256 = "0q5gl8yn1f8fas1v68lz081k88gbmlk7f2xqlwqmh01qpqjxd42q";
+          rev    = "v0.11.13";
+          sha256 = "014d2ibmbp5yc1802ckdcpwqbm5v70xmjdyh5nadn02dfynaylna";
         };
       }))
       pkgs.libyaml
