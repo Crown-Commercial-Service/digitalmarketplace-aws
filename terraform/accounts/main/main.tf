@@ -74,7 +74,6 @@ module "jenkins" {
 }
 
 module "csw_inspector_role" {
-  source                = "git::https://github.com/alphagov/csw-client-role.git?ref=v1.0"
-  csw_agent_account_id  = "${var.csw_agent_account_id}"
-  csw_target_account_id = "${var.aws_main_account_id}"
+  source               = "git::https://github.com/alphagov/csw-client-role.git?ref=v1.2"
+  csw_agent_account_id = "${var.csw_agent_account_id}"
 }
