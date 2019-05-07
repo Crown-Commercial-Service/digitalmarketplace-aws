@@ -13,6 +13,7 @@ in (with args; {
     shortName = "dm-aws";
     buildInputs = [
       pythonPackages.python
+      pkgs.glibcLocales
       pkgs.nodejs
       pkgs.jq
       pkgs.sops
