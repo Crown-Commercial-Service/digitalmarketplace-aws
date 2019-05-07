@@ -15,9 +15,11 @@ resource "aws_cloudwatch_metric_alarm" "missing_logs_alarm" {
     LogGroupName = "${var.environment}-${var.app_names[count.index]}-${var.type}"
   }
 
-  // For 15 minutes
-  evaluation_periods = "1"
-  period             = "600"
+  // For 5 minutes
+  // This appears to cause our alarms to trigger at around the 10-12 minute mark
+  evaluation_periods = "5"
+
+  period = "60"
 
   // Totals 0
   statistic           = "Sum"
