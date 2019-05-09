@@ -1,0 +1,35 @@
+{
+  "preview": [
+    {"hostname": "dm-api-preview", "path": "/_metrics"},
+    {"hostname": "dm-search-api-preview", "path": "/_metrics"},
+    {"hostname": "dm-antivirus-api-preview", "path": "/_metrics"},
+    {"hostname": "dm-preview", "path": "/_metrics"},
+    {"hostname": "dm-preview", "path": "/admin/_metrics"},
+    {"hostname": "dm-preview", "path": "/buyers/_metrics"},
+    {"hostname": "dm-preview", "path": "/suppliers/_metrics"},
+    {"hostname": "dm-preview", "path": "/suppliers/opportunities/_metrics"},
+    {"hostname": "dm-preview", "path": "/user/_metrics"}
+  ],
+  "staging": [
+    {"hostname": "dm-api-staging", "path": "/_metrics"},
+    {"hostname": "dm-search-api-staging", "path": "/_metrics"},
+    {"hostname": "dm-antivirus-api-staging", "path": "/_metrics"},
+    {"hostname": "dm-staging", "path": "/_metrics"},
+    {"hostname": "dm-staging", "path": "/admin/_metrics"},
+    {"hostname": "dm-staging", "path": "/buyers/_metrics"},
+    {"hostname": "dm-staging", "path": "/suppliers/_metrics"},
+    {"hostname": "dm-staging", "path": "/suppliers/opportunities/_metrics"},
+    {"hostname": "dm-staging", "path": "/user/_metrics"}
+  ],
+  "production": [
+    {"hostname": "dm-api-production", "path": "/_metrics"},
+    {"hostname": "dm-search-api-production", "path": "/_metrics"},
+    {"hostname": "dm-antivirus-api-production", "path": "/_metrics"},
+    {"hostname": "dm-production", "path": "/_metrics"},
+    {"hostname": "dm-production", "path": "/admin/_metrics"},
+    {"hostname": "dm-production", "path": "/buyers/_metrics"},
+    {"hostname": "dm-production", "path": "/suppliers/_metrics"},
+    {"hostname": "dm-production", "path": "/suppliers/opportunities/_metrics"},
+    {"hostname": "dm-production", "path": "/user/_metrics"}
+  ]
+}
