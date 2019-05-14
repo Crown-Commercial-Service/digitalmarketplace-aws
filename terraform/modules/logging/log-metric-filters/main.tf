@@ -272,7 +272,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_7" {
 
 resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_8" {
   name           = "${var.environment}-router-request-times-8"
-  pattern        = "{$$.requestTime >= 5 && $$.requestTime < 10 && $$.request != \"*/_status?ignore-dependencies *\" && $$.request != \"POST*\" && $$.requestSize < 500000}"
+  pattern        = "{!($$.request != \"POST*\" && $$.requestSize > 500000) && $$.requestTime >= 5 && $$.requestTime < 10 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.router_log_group_name}"
 
   metric_transformation {
@@ -285,7 +285,7 @@ resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_8" {
 
 resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_router_9" {
   name           = "${var.environment}-router-request-times-9"
-  pattern        = "{$$.requestTime >= 10 && $$.request != \"*/_status?ignore-dependencies *\" && $$.request != \"POST*\" && $$.requestSize < 500000}"
+  pattern        = "{!($$.request != \"POST*\" && $$.requestSize > 500000) && $$.requestTime >= 10 && $$.request != \"*/_status?ignore-dependencies *\"}"
   log_group_name = "${var.router_log_group_name}"
 
   metric_transformation {
