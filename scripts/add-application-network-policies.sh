@@ -10,6 +10,21 @@ export BASE_YAML=$2
 export APPLICATION_NAME=$3
 export APPLICATION_SUFFIX=$4
 
+# TODO re add to Makefile deploy-app when we activate internal routes.
+# apps that communicate with each other over the "internal" private network (*.apps.internal) need
+# to have their explicitly "allowed" communication paths added as "network policies". these must be
+# added before the app is started otherwise it will not be able to access those other apps, or those
+# other apps won't be able to access *it*. the policies end up being associated with the app's guid
+# rather than app name, so these need to be re-created for new apps we create, but the policies
+# should follow the app's renaming at the end of the release process.
+#
+# the order of operations performed here (including inside add-application-network-policies.sh)
+# is carefully designed to make it hopefully-impossible for an app to get to the point of being started
+# with any required network policies not being in place, even if the "other" app (the other "party"
+# in the policy) is simultaneously going through the release process and having its names & routes
+# similarly juggled around. consider this carefully if making any changes to this.
+# ./scripts/add-application-network-policies.sh ./vars/${STAGE}.yml ./vars/common.yml ${APPLICATION_NAME} "-release"
+
 # In each of the cases for ingress and egress applications, we first apply the policy to any instances of the (in|e)gress
 # application that might (also?) be in the process of being released. The order that the two commands are run in *is* relevant
 # and designed to not to allow any policy combinations to be missed even in the face of concurrent release processes. As such,
