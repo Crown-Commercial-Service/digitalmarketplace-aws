@@ -34,16 +34,25 @@ antivirus-api:
 user-frontend:
   routes:
     - dm-{env}.cloudapps.digital/user
+    - dm-{env}.cloudapps.digital/user/_metrics
+  services:
+    - digitalmarketplace_prometheus
 
 admin-frontend:
   routes:
     - dm-{env}.cloudapps.digital/admin
+    - dm-{env}.cloudapps.digital/admin/_metrics
+  services:
+    - digitalmarketplace_prometheus
 
 buyer-frontend:
   memory: 700M
   routes:
     - dm-{env}.cloudapps.digital
+    - dm-{env}.cloudapps.digital/_metrics
     - dm-{env}.cloudapps.digital/buyers/direct-award
+  services:
+    - digitalmarketplace_prometheus
 
 supplier-frontend:
   memory: 700M
@@ -56,6 +65,9 @@ supplier-frontend:
 briefs-frontend:
   routes:
     - dm-{env}.cloudapps.digital/buyers
+    - dm-{env}.cloudapps.digital/buyers/_metrics
+  services:
+    - digitalmarketplace_prometheus
 
 brief-responses-frontend:
   routes:
