@@ -163,7 +163,7 @@ deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest ARGS="-v DUMP_FILE_NAME -v S3_POST_URL_DATA") -o digitalmarketplace/db-backup
 	cf set-env db-backup PUBKEY "$$(cat ${DM_CREDENTIALS_REPO}/gpg/database-backups/public.key)"
 	cf restage db-backup
-	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 2G -k 2G
+	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 3G -k 3G
 
 .PHONY: check-db-backup-task
 check-db-backup-task: ## Get the status for the last db backup task
