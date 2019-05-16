@@ -158,7 +158,7 @@ check-db-snapshot-service: ## Get the status for the db snapshot service
 .PHONY: deploy-db-backup-app
 deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	$(eval export APPLICATION_NAME=db-backup)
-	$(eval export DUMP_FILE_NAME=${STAGE}-$(shell date +"%Y%m%d%H%M").sql.gz.gpg)
+	$(if ${DUMP_FILE_NAME},,$(error Must specify DUMP_FILE_NAME as '<stage>-yyyyMMddHHmm.sql.gz.gpg'))
 	$(eval export S3_POST_URL_DATA=$(shell ${VIRTUALENV_ROOT}/bin/python ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups ${DUMP_FILE_NAME}))
 	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest ARGS="-v DUMP_FILE_NAME -v S3_POST_URL_DATA") -o digitalmarketplace/db-backup
 	cf set-env db-backup PUBKEY "$$(cat ${DM_CREDENTIALS_REPO}/gpg/database-backups/public.key)"
