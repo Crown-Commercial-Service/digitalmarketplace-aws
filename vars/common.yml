@@ -66,6 +66,6 @@ brief-responses-frontend:
 
 db-backup:
   instances: 1
-  memory: 2G
+  memory: 128M
   services:
     - digitalmarketplace_api_db
