@@ -11,8 +11,8 @@ STAGE=$( echo $1 | awk '{ print tolower($0) }' )
 
 IFS=$'\n'
 for HOSTNAME_PATH in $(jq -r ".${STAGE}[] | \"\(.hostname) \(.path)\"" vars/ip_whitelist_routes.json); do
-    HOSTNAME=$(echo $HOSTNAME_PATH | cut -f1 -d" ")
-    PATH=$(echo $HOSTNAME_PATH | cut -f2 -d" ")
-    echo cf bind-route-service cloudapps.digital re-ip-whitelist-service --hostname $HOSTNAME --path $PATH
-    cf bind-route-service cloudapps.digital re-ip-whitelist-service --hostname $HOSTNAME --path $PATH
+  HOSTNAME=$(echo $HOSTNAME_PATH | cut -f1 -d" ")
+  ROUTE_PATH=$(echo $HOSTNAME_PATH | cut -f2 -d" ")
+  echo cf bind-route-service cloudapps.digital re-ip-whitelist-service --hostname $HOSTNAME --path $ROUTE_PATH
+  cf bind-route-service cloudapps.digital re-ip-whitelist-service --hostname $HOSTNAME --path $ROUTE_PATH
 done
