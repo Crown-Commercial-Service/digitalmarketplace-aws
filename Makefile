@@ -125,7 +125,7 @@ deploy-app: ## Deploys the app to PaaS
 	./scripts/map-route.sh ${APPLICATION_NAME}-release <(make -s -C ${CURDIR} generate-manifest)
 
 	# Make sure relevant routes are whitelisted (can be found in vars/ip_whitelist_routes.json)
-	.scripts/add-ip-whitelist-route-service.sh ${APPLICATION_NAME}
+	./scripts/add-ip-whitelist-route-service.sh ${STAGE}
 
 	# Delete the route for the old app
 	@if cf app ${APPLICATION_NAME} >/dev/null; then ./scripts/unmap-route.sh ${APPLICATION_NAME}; fi
