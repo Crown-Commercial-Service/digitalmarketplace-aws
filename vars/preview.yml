@@ -3,53 +3,8 @@ domain: preview.marketplace.team
 maintenance_mode: live
 
 api:
-  routes:
-    - dm-api-{env}.apps.internal
-    - dm-api-{env}.cloudapps.digital/_metrics
   memory: 2GB
-  egress_to_applications:
-    - search-api
-
-search-api:
-  routes:
-    - dm-search-api-{env}.apps.internal
-    - dm-search-api-{env}.cloudapps.digital/_metrics
-
-antivirus-api:
-  routes:
-    - dm-antivirus-api-{env}.apps.internal
-    - dm-antivirus-api-{env}.cloudapps.digital/_metrics
 
 router:
   instances: 2
   rate_limiting_enabled: enabled
-  egress_to_applications:
-    - api
-    - antivirus-api
-    - search-api
-
-admin-frontend:
-  egress_to_applications:
-    - api
-
-brief-responses-frontend:
-  egress_to_applications:
-    - api
-
-briefs-frontend:
-  egress_to_applications:
-    - api
-
-buyer-frontend:
-  egress_to_applications:
-    - api
-    - search-api
-
-supplier-frontend:
-  egress_to_applications:
-    - api
-
-user-frontend:
-  egress_to_applications:
-    - api
-
