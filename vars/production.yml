@@ -17,6 +17,9 @@ api:
   memory: 2GB
   instances: 20
 
+buyer-frontend:
+  instances: 10
+
 user-frontend:
   instances: 2
 
