@@ -38,6 +38,31 @@ POLICY
 
 data "aws_iam_policy_document" "agreements_bucket_policy_document" {
   statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-agreements-preview-preview/*"
+    ]
+
+    condition {
+      test = "Bool"
+      variable = "aws:SecureTransport"
+      values = [
+        "false"
+      ]
+    }
+  }
+
+  statement {
     effect = "Allow"
 
     principals {
