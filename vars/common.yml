@@ -55,7 +55,7 @@ buyer-frontend:
     - digitalmarketplace_prometheus
 
 supplier-frontend:
-  memory: 1G
+  memory: 700M
   routes:
     - dm-{env}.cloudapps.digital/suppliers
     - dm-{env}.cloudapps.digital/suppliers/_metrics
