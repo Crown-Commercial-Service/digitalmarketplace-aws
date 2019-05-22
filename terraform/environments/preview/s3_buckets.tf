@@ -136,6 +136,31 @@ resource "aws_s3_bucket" "agreements_bucket" {
 
 data "aws_iam_policy_document" "reports_bucket_policy_document" {
   statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-reports-preview-preview/*"
+    ]
+
+    condition {
+      test = "Bool"
+      variable = "aws:SecureTransport"
+      values = [
+        "false"
+      ]
+    }
+  }
+
+  statement {
     effect = "Allow"
 
     principals {
@@ -181,6 +206,31 @@ resource "aws_s3_bucket" "reports_bucket" {
 # Communications jenkins: read write listversions
 
 data "aws_iam_policy_document" "communications_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-communications-preview-preview/*"
+    ]
+
+    condition {
+      test = "Bool"
+      variable = "aws:SecureTransport"
+      values = [
+        "false"
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -236,6 +286,31 @@ resource "aws_s3_bucket" "communications_bucket" {
 # Documents - jenkins: read write list listversions
 
 data "aws_iam_policy_document" "documents_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-documents-preview-preview/*"
+    ]
+
+    condition {
+      test = "Bool"
+      variable = "aws:SecureTransport"
+      values = [
+        "false"
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -306,9 +381,57 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   }
 }
 
+resource "aws_s3_bucket_policy" "g7-draft-documents_bucket" {
+  bucket = "${aws_s3_bucket.g7-draft-documents_bucket.id}"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": "arn:aws:s3:::digitalmarketplace-g7-draft-documents-preview-preview/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
 # Submissions - jenkins: listversions
 
 data "aws_iam_policy_document" "submissions_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-submissions-preview-preview/*"
+    ]
+
+    condition {
+      test = "Bool"
+      variable = "aws:SecureTransport"
+      values = [
+        "false"
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
