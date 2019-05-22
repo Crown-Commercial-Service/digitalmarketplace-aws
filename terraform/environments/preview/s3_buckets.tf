@@ -8,6 +8,29 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
   }
 }
 
+resource "aws_s3_bucket_policy" "server_access_logs_bucket" {
+  bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": "arn:aws:s3:::digitalmarketplace-logs-preview-preview/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
 # TODO remove these hard-coded definitions in favour of using the terraform/modules/s3-document-bucket module after the
 # tf v0.12 upgrade. We need to contitionally include the principals block
 
