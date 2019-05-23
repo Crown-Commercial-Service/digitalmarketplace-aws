@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "jenkins_logs_bucket" {
   bucket        = "${var.name}"
   force_destroy = true
+
   versioning {
     enabled = true
   }
