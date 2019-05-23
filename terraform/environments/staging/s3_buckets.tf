@@ -41,23 +41,24 @@ data "aws_iam_policy_document" "agreements_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = [
-      "*"
+      "*",
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-agreements-staging-staging/*"
+      "arn:aws:s3:::digitalmarketplace-agreements-staging-staging/*",
     ]
 
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "aws:SecureTransport"
+
       values = [
-        "false"
+        "false",
       ]
     }
   }
@@ -103,23 +104,24 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = [
-      "*"
+      "*",
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*"
+      "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*",
     ]
 
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "aws:SecureTransport"
+
       values = [
-        "false"
+        "false",
       ]
     }
   }
@@ -173,23 +175,24 @@ data "aws_iam_policy_document" "communications_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = [
-      "*"
+      "*",
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-communications-staging-staging/*"
+      "arn:aws:s3:::digitalmarketplace-communications-staging-staging/*",
     ]
 
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "aws:SecureTransport"
+
       values = [
-        "false"
+        "false",
       ]
     }
   }
@@ -235,23 +238,24 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = [
-      "*"
+      "*",
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-documents-staging-staging/*"
+      "arn:aws:s3:::digitalmarketplace-documents-staging-staging/*",
     ]
 
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "aws:SecureTransport"
+
       values = [
-        "false"
+        "false",
       ]
     }
   }
@@ -342,23 +346,24 @@ data "aws_iam_policy_document" "submissions_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = [
-      "*"
+      "*",
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-submissions-staging-staging/*"
+      "arn:aws:s3:::digitalmarketplace-submissions-staging-staging/*",
     ]
 
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "aws:SecureTransport"
+
       values = [
-        "false"
+        "false",
       ]
     }
   }

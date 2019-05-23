@@ -3,23 +3,24 @@ data "aws_iam_policy_document" "dev_uploads_s3_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = [
-      "*"
+      "*",
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-dev-uploads/*"
+      "arn:aws:s3:::digitalmarketplace-dev-uploads/*",
     ]
 
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "aws:SecureTransport"
+
       values = [
-        "false"
+        "false",
       ]
     }
   }
@@ -80,23 +81,24 @@ data "aws_iam_policy_document" "cleaned_db_dumps_s3_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type = "*"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = [
-      "*"
+      "*",
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-cleaned-db-dumps/*"
+      "arn:aws:s3:::digitalmarketplace-cleaned-db-dumps/*",
     ]
 
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "aws:SecureTransport"
+
       values = [
-        "false"
+        "false",
       ]
     }
   }
