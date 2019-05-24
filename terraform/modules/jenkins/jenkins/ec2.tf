@@ -32,6 +32,10 @@ resource "aws_ebs_volume" "jenkins_volume" {
   availability_zone = "${aws_instance.jenkins.availability_zone}"
   type              = "gp2"
   size              = 100
+
+  tags {
+    Name = "jenkins data 100gb ENC"
+  }
 }
 
 resource "aws_volume_attachment" "jenkins_ebs_att" {
