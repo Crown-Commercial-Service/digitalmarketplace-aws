@@ -76,9 +76,8 @@ The `main.tf` file of this module will take care of all of this for you however:
 ```
 module "cloudtrail" {
   source               = "../../modules/cloudtrail"
-  trail_name           = "digitalmarketplaces-account-cloudtrail" // Can be any name
-  retention_in_days    = 731 // How long to make logs accessible in CloudWatch for
+  account_id           = "${var.account_id}" // for the S3 bucket key prefix
   s3_bucket_name       = "digitalmarketplaces-account-cloudtrail-bucket" // Can be any name
-  aws_main_account_id  = "${var.account_id}" // for the S3 bucket key prefix
+  trail_name           = "digitalmarketplaces-account-cloudtrail" // Can be any name
 }
 ```
