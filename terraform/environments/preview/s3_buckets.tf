@@ -1,34 +1,43 @@
 # Other buckets should be set to log to this bucket
+data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+
+      identifiers = [
+        "*",
+      ]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-logs-preview-preview/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "server_access_logs_bucket" {
   bucket = "digitalmarketplace-logs-preview-preview"
   acl    = "log-delivery-write"
+  policy = "${data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json}"
 
   versioning {
     enabled = true
   }
-}
-
-resource "aws_s3_bucket_policy" "server_access_logs_bucket" {
-  bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
-
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Deny",
-      "Principal": "*",
-      "Action": "*",
-      "Resource": "arn:aws:s3:::digitalmarketplace-logs-preview-preview/*",
-      "Condition": {
-        "Bool": {
-          "aws:SecureTransport": "false"
-        }
-      }
-    }
-  ]
-}
-POLICY
 }
 
 # TODO remove these hard-coded definitions in favour of using the terraform/modules/s3-document-bucket module after the
@@ -371,9 +380,41 @@ resource "aws_s3_bucket" "documents_bucket" {
 
 # G7-draft-documents
 
+data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+
+      identifiers = [
+        "*",
+      ]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-g7-draft-documents-preview-preview/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   bucket = "digitalmarketplace-g7-draft-documents-preview-preview"
   acl    = "private"
+  policy = "${data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json}"
 
   versioning {
     enabled = true
@@ -385,29 +426,6 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   }
 }
 
-resource "aws_s3_bucket_policy" "g7-draft-documents_bucket" {
-  bucket = "${aws_s3_bucket.g7-draft-documents_bucket.id}"
-
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Deny",
-      "Principal": "*",
-      "Action": "*",
-      "Resource": "arn:aws:s3:::digitalmarketplace-g7-draft-documents-preview-preview/*",
-      "Condition": {
-        "Bool": {
-          "aws:SecureTransport": "false"
-        }
-      }
-    }
-  ]
-}
-POLICY
-}
-
 # Submissions - jenkins: listversions
 
 data "aws_iam_policy_document" "submissions_bucket_policy_document" {
@@ -415,8 +433,11 @@ data "aws_iam_policy_document" "submissions_bucket_policy_document" {
     effect = "Deny"
 
     principals = {
-      type        = "*"
-      identifiers = ["*"]
+      type = "*"
+
+      identifiers = [
+        "*",
+      ]
     }
 
     actions = [
