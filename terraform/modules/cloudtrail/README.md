@@ -13,13 +13,14 @@ This module is used to set up and direct [AWS CloudTrail](https://docs.aws.amazo
 CloudTrail creates log entries for user action events in AWS accounts and puts them in to log files in a specified AWS S3 bucket.
 It is also possible (but not required) to export these log files into CloudWatch so they are easier to search and view.
 
-This module has three sub-modules which it uses to do its work:
+This module has four sub-modules which it uses to do its work:
 
 * The `cloudtrail-bucket` module creates a bucket pre-configured with the permissions required for AWS CloudTrail service to put logs in it. If you already know which bucket you want to put the log files in you don't need this.
 * The `cloudtrail-cloudwatch` module
   * creates an AWS IAM role for the AWS CloudTrail service to assume
   * creates a AWS CloudWatch log group that the above IAM role can write to
 * The `cloudtrail-cloudtrail` module creates an AWS CloudTrail trail that writes to the given AWS S3 bucket and (optionally) exports logs to the given AWS CloudWatch log group
+* The `cloudtrail-validate-logs-role` module creates a role which can be used to validate logs using the AWS cli command `aws cloudtrail validate-logs`
 
 ## Examples
 
@@ -60,6 +61,12 @@ module "cloudtrail-cloudwatch" {
   retention_in_days = 731 // How long to make logs accessible in CloudWatch for
 }
 
+module "cloudtrail-validate-logs-role" {
+  source            = "../modules/cloudtrail/modules/cloudtrail-validate-logs-role"
+  assume_role_arn   = "arn:aws:iam::${var.account_id}:root" // Which account can assume this role
+  s3_bucket_arn     = "${module.cloudtrail-bucket.s3_bucket_arn}"
+}
+
 // Set up the CloudTrail trail
 module "cloudtrail-cloudtrail" {
   source                     = "../../modules/cloudtrail/modules/cloudtrail"
@@ -76,9 +83,9 @@ The `main.tf` file of this module will take care of all of this for you however:
 ```
 module "cloudtrail" {
   source               = "../../modules/cloudtrail"
-  trail_name           = "digitalmarketplaces-account-cloudtrail" // Can be any name
-  retention_in_days    = 731 // How long to make logs accessible in CloudWatch for
+  account_id           = "${var.account_id}" // for the S3 bucket key prefix
   s3_bucket_name       = "digitalmarketplaces-account-cloudtrail-bucket" // Can be any name
-  aws_main_account_id  = "${var.account_id}" // for the S3 bucket key prefix
+  trail_name           = "digitalmarketplaces-account-cloudtrail" // Can be any name
+  validate_account_id  = "${var.account_id}" // For assuming the cloudtrail-validate-logs role
 }
 ```
