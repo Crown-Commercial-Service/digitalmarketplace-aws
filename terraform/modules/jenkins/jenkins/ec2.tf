@@ -34,7 +34,9 @@ resource "aws_ebs_volume" "jenkins_volume" {
   size              = 100
 
   tags {
-    Name = "jenkins data 100gb ENC"
+    Name      = "jenkins data"
+    Size      = "100 GiB"
+    Encrypted = "true"
   }
 }
 
