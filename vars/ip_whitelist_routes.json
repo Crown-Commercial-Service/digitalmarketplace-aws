@@ -1,35 +1,35 @@
 {
-  "preview": [
-    {"hostname": "dm-api-preview", "path": "/_metrics"},
-    {"hostname": "dm-search-api-preview", "path": "/_metrics"},
-    {"hostname": "dm-antivirus-api-preview", "path": "/_metrics"},
-    {"hostname": "dm-preview", "path": "/_metrics"},
-    {"hostname": "dm-preview", "path": "/admin/_metrics"},
-    {"hostname": "dm-preview", "path": "/buyers/_metrics"},
-    {"hostname": "dm-preview", "path": "/suppliers/_metrics"},
-    {"hostname": "dm-preview", "path": "/suppliers/opportunities/_metrics"},
-    {"hostname": "dm-preview", "path": "/user/_metrics"}
-  ],
-  "staging": [
-    {"hostname": "dm-api-staging", "path": "/_metrics"},
-    {"hostname": "dm-search-api-staging", "path": "/_metrics"},
-    {"hostname": "dm-antivirus-api-staging", "path": "/_metrics"},
-    {"hostname": "dm-staging", "path": "/_metrics"},
-    {"hostname": "dm-staging", "path": "/admin/_metrics"},
-    {"hostname": "dm-staging", "path": "/buyers/_metrics"},
-    {"hostname": "dm-staging", "path": "/suppliers/_metrics"},
-    {"hostname": "dm-staging", "path": "/suppliers/opportunities/_metrics"},
-    {"hostname": "dm-staging", "path": "/user/_metrics"}
-  ],
-  "production": [
-    {"hostname": "dm-api-production", "path": "/_metrics"},
-    {"hostname": "dm-search-api-production", "path": "/_metrics"},
-    {"hostname": "dm-antivirus-api-production", "path": "/_metrics"},
-    {"hostname": "dm-production", "path": "/_metrics"},
-    {"hostname": "dm-production", "path": "/admin/_metrics"},
-    {"hostname": "dm-production", "path": "/buyers/_metrics"},
-    {"hostname": "dm-production", "path": "/suppliers/_metrics"},
-    {"hostname": "dm-production", "path": "/suppliers/opportunities/_metrics"},
-    {"hostname": "dm-production", "path": "/user/_metrics"}
-  ]
+  "preview": {
+    "api": [{"hostname": "dm-api-preview", "path": "/_metrics"}],
+    "search-api": [{"hostname": "dm-search-api-preview", "path": "/_metrics"}],
+    "antivirus-api": [{"hostname": "dm-antivirus-api-preview", "path": "/_metrics"}],
+    "buyer-frontend": [{"hostname": "dm-preview", "path": "/_metrics"}],
+    "admin-frontend": [{"hostname": "dm-preview", "path": "/admin/_metrics"}],
+    "briefs-frontend": [{"hostname": "dm-preview", "path": "/buyers/_metrics"}],
+    "supplier-frontend": [{"hostname": "dm-preview", "path": "/suppliers/_metrics"}],
+    "brief-responses-frontend": [{"hostname": "dm-preview", "path": "/suppliers/opportunities/_metrics"}],
+    "user-frontend": [{"hostname": "dm-preview", "path": "/user/_metrics"}]
+  },
+  "staging": {
+    "api": [{"hostname": "dm-api-staging", "path": "/_metrics"}],
+    "search-api": [{"hostname": "dm-search-api-staging", "path": "/_metrics"}],
+    "antivirus-api": [{"hostname": "dm-antivirus-api-staging", "path": "/_metrics"}],
+    "buyer-frontend": [{"hostname": "dm-staging", "path": "/_metrics"}],
+    "admin-frontend": [{"hostname": "dm-staging", "path": "/admin/_metrics"}],
+    "briefs-frontend": [{"hostname": "dm-staging", "path": "/buyers/_metrics"}],
+    "supplier-frontend": [{"hostname": "dm-staging", "path": "/suppliers/_metrics"}],
+    "brief-responses-frontend": [{"hostname": "dm-staging", "path": "/suppliers/opportunities/_metrics"}],
+    "user-frontend": [{"hostname": "dm-staging", "path": "/user/_metrics"}]
+  },
+  "production": {
+    "api": [{"hostname": "dm-api-production", "path": "/_metrics"}],
+    "search-api": [{"hostname": "dm-search-api-production", "path": "/_metrics"}],
+    "antivirus-api": [{"hostname": "dm-antivirus-api-production", "path": "/_metrics"}],
+    "buyer-frontend": [{"hostname": "dm-production", "path": "/_metrics"}],
+    "admin-frontend": [{"hostname": "dm-production", "path": "/admin/_metrics"}],
+    "briefs-frontend": [{"hostname": "dm-production", "path": "/buyers/_metrics"}],
+    "supplier-frontend": [{"hostname": "dm-production", "path": "/suppliers/_metrics"}],
+    "brief-responses-frontend": [{"hostname": "dm-production", "path": "/suppliers/opportunities/_metrics"}],
+    "user-frontend": [{"hostname": "dm-production", "path": "/user/_metrics"}]
+  }
 }
