@@ -1,7 +1,39 @@
 # Other buckets should be set to log to this bucket
+data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+
+      identifiers = [
+        "*",
+      ]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-logs-production-production/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "server_access_logs_bucket" {
   bucket = "digitalmarketplace-logs-production-production"
   acl    = "log-delivery-write"
+  policy = "${data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json}"
 
   versioning {
     enabled = true
@@ -14,6 +46,32 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
 # Agreements - devs: read write list, jenkins: read write list listversions
 
 data "aws_iam_policy_document" "agreements_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-agreements-production-production/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -93,6 +151,32 @@ resource "aws_s3_bucket" "agreements_bucket" {
 
 data "aws_iam_policy_document" "reports_bucket_policy_document" {
   statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-reports-production-production/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
+  statement {
     effect = "Allow"
 
     principals {
@@ -139,6 +223,32 @@ resource "aws_s3_bucket" "reports_bucket" {
 # Communications jenkins: read write listversions
 
 data "aws_iam_policy_document" "communications_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-communications-production-production/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -194,6 +304,32 @@ resource "aws_s3_bucket" "communications_bucket" {
 # Documents - jenkins: read write list listversions
 
 data "aws_iam_policy_document" "documents_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-documents-production-production/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -251,9 +387,41 @@ resource "aws_s3_bucket" "documents_bucket" {
 
 # G7-draft-documents
 
+data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+
+      identifiers = [
+        "*",
+      ]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-g7-draft-documents-production-production/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   bucket = "digitalmarketplace-g7-draft-documents-production-production"
   acl    = "private"
+  policy = "${data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json}"
 
   versioning {
     enabled = true
@@ -268,6 +436,32 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
 # Submissions - jenkins: read list listversions
 
 data "aws_iam_policy_document" "submissions_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-submissions-production-production/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 

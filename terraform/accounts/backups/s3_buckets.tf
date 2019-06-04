@@ -21,6 +21,17 @@ resource "aws_s3_bucket" "cross_region_database_backups_s3_bucket" {
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": "arn:aws:s3:::digitalmarketplace-cross-region-database-backups/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
       "Principal": {"AWS": "arn:aws:iam::${var.aws_backups_account_id}:role/backups"},
       "Effect": "Allow",
       "Action": [
@@ -62,6 +73,17 @@ resource "aws_s3_bucket" "database_backups_s3_bucket" {
 {
   "Version": "2012-10-17",
   "Statement": [
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": "arn:aws:s3:::digitalmarketplace-database-backups/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
     {
       "Principal": {"AWS": "arn:aws:iam::${var.aws_backups_account_id}:role/backups"},
       "Effect": "Allow",

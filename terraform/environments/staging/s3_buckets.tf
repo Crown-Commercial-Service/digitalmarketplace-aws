@@ -1,7 +1,39 @@
 # Other buckets should be set to log to this bucket
+data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+
+      identifiers = [
+        "*",
+      ]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-logs-staging-staging/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "server_access_logs_bucket" {
   bucket = "digitalmarketplace-logs-staging-staging"
   acl    = "log-delivery-write"
+  policy = "${data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json}"
 
   versioning {
     enabled = true
@@ -14,6 +46,32 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
 # Agreements - jenkins: listversions
 
 data "aws_iam_policy_document" "agreements_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-agreements-staging-staging/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -51,6 +109,32 @@ resource "aws_s3_bucket" "agreements_bucket" {
 # Reports - jenkins: read write list
 
 data "aws_iam_policy_document" "reports_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -97,6 +181,32 @@ resource "aws_s3_bucket" "reports_bucket" {
 
 data "aws_iam_policy_document" "communications_bucket_policy_document" {
   statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-communications-staging-staging/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
+  statement {
     effect = "Allow"
 
     principals {
@@ -133,6 +243,32 @@ resource "aws_s3_bucket" "communications_bucket" {
 # Documents - jenkins: read write list listversions
 
 data "aws_iam_policy_document" "documents_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-documents-staging-staging/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
@@ -175,9 +311,41 @@ resource "aws_s3_bucket" "documents_bucket" {
 
 # G7-draft-documents
 
+data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type = "*"
+
+      identifiers = [
+        "*",
+      ]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-g7-draft-documents-staging-staging/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   bucket = "digitalmarketplace-g7-draft-documents-staging-staging"
   acl    = "private"
+  policy = "${data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json}"
 
   versioning {
     enabled = true
@@ -192,6 +360,32 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
 # Submissions - jenkins: listversions
 
 data "aws_iam_policy_document" "submissions_bucket_policy_document" {
+  statement {
+    effect = "Deny"
+
+    principals = {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::digitalmarketplace-submissions-staging-staging/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "false",
+      ]
+    }
+  }
+
   statement {
     effect = "Allow"
 
