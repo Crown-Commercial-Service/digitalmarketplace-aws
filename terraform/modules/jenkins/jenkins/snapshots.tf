@@ -19,12 +19,6 @@ data "aws_iam_policy_document" "snapshot_jenkins_data_policy" {
     ]
 
     resources = ["*"]
-
-    condition {
-      test     = "StringEquals"
-      variable = "ec2:ResourceTag/Name"
-      values   = ["jenkins data"]
-    }
   }
 
   statement {
@@ -57,7 +51,7 @@ resource "aws_dlm_lifecycle_policy" "snapshot_jenkins_data" {
       create_rule {
         interval      = 24
         interval_unit = "HOURS"
-        times         = ["11:30"]
+        times         = ["23:30"]
       }
 
       retain_rule {
