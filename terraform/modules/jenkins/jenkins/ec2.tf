@@ -3,11 +3,12 @@ provider "aws" {
 }
 
 resource "aws_instance" "jenkins" {
-  ami                    = "${var.ami_id}"
-  instance_type          = "${var.instance_type}"
-  iam_instance_profile   = "${var.jenkins_instance_profile}"
-  key_name               = "${aws_key_pair.jenkins.key_name}"
-  vpc_security_group_ids = ["${aws_security_group.jenkins_instance_security_group.id}"]
+  ami                     = "${var.ami_id}"
+  disable_api_termination = true                                                         # prevent this instance from being destroyed from the console
+  instance_type           = "${var.instance_type}"
+  iam_instance_profile    = "${var.jenkins_instance_profile}"
+  key_name                = "${aws_key_pair.jenkins.key_name}"
+  vpc_security_group_ids  = ["${aws_security_group.jenkins_instance_security_group.id}"]
 
   tags {
     Name = "${var.name}"
