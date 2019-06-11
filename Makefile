@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
 VIRTUALENV_ROOT := $(shell [ -z ${VIRTUAL_ENV} ] && echo $$(pwd)/venv || echo ${VIRTUAL_ENV})
+export PATH := ${VIRTUALENV_ROOT}/bin:${PATH}
 
 PAAS_API ?= api.cloud.service.gov.uk
 PAAS_ORG ?= digitalmarketplace
