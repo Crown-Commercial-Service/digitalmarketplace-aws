@@ -81,6 +81,6 @@ module "csw_inspector_role" {
 }
 
 module "gds_security_audit_role" {
-  source           = "git::https://github.com/alphagov/tech-ops.git?ref=c363ba6//cyber-security/modules/gds_security_audit_role"
+  source           = "git::https://github.com/alphagov/tech-ops.git?ref=13f54e5//cyber-security/modules/gds_security_audit_role"
   chain_account_id = "${var.gds_security_audit_chain_account_id}"
 }
