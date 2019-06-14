@@ -236,3 +236,23 @@ resource "aws_iam_role_policy" "jenkins-cloudwatch-metrics" {
 
   policy = "${data.aws_iam_policy_document.cloudwatch-metrics-policy.json}"
 }
+
+data "aws_iam_policy_document" "jenkins_assume_cloudtrail_validate_logs" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    resources = [
+      "arn:aws:iam::${var.aws_main_account_id}:role/cloudtrail-validate-logs",
+      "arn:aws:iam::${var.aws_prod_account_id}:role/cloudtrail-validate-logs",
+      "arn:aws:iam::${var.aws_dev_account_id}:role/cloudtrail-validate-logs",
+      "arn:aws:iam::${var.aws_backups_account_id}:role/cloudtrail-validate-logs",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "jenkins_assume_cloudtrail_validate_logs" {
+  name = "JenkinsAssumeCloudTrailValidateLogs"
+  role = "${aws_iam_role.jenkins.id}"
+
+  policy = "${data.aws_iam_policy_document.jenkins_assume_cloudtrail_validate_logs.json}"
+}
