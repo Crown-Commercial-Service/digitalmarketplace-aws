@@ -1,5 +1,6 @@
 {
   "preview": {
+    "router": [{"hostname": "dm-router-preview", "path": "/_metrics"}],
     "api": [{"hostname": "dm-api-preview", "path": "/_metrics"}],
     "search-api": [{"hostname": "dm-search-api-preview", "path": "/_metrics"}],
     "antivirus-api": [{"hostname": "dm-antivirus-api-preview", "path": "/_metrics"}],
@@ -11,6 +12,7 @@
     "user-frontend": [{"hostname": "dm-preview", "path": "/user/_metrics"}]
   },
   "staging": {
+    "router": [{"hostname": "dm-router-staging", "path": "/_metrics"}],
     "api": [{"hostname": "dm-api-staging", "path": "/_metrics"}],
     "search-api": [{"hostname": "dm-search-api-staging", "path": "/_metrics"}],
     "antivirus-api": [{"hostname": "dm-antivirus-api-staging", "path": "/_metrics"}],
@@ -22,6 +24,7 @@
     "user-frontend": [{"hostname": "dm-staging", "path": "/user/_metrics"}]
   },
   "production": {
+    "router": [{"hostname": "dm-router-production", "path": "/_metrics"}],
     "api": [{"hostname": "dm-api-production", "path": "/_metrics"}],
     "search-api": [{"hostname": "dm-search-api-production", "path": "/_metrics"}],
     "antivirus-api": [{"hostname": "dm-antivirus-api-production", "path": "/_metrics"}],

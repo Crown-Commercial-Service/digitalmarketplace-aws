@@ -7,6 +7,8 @@ router:
   instances: 3
   rate_limiting_enabled: enabled
   routes:
+    - dm-router-{env}.cloudapps.digital
+    - dm-router-{env}.cloudapps.digital/_metrics
     - www.digitalmarketplace.service.gov.uk
     - api.digitalmarketplace.service.gov.uk
     - search-api.digitalmarketplace.service.gov.uk
