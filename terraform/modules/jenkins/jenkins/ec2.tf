@@ -33,6 +33,7 @@ resource "aws_ebs_volume" "jenkins_volume" {
   availability_zone = "${aws_instance.jenkins.availability_zone}"
   type              = "gp2"
   size              = 100
+  encrypted         = true
 
   tags {
     Name      = "jenkins data"
