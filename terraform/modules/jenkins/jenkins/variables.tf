@@ -3,7 +3,6 @@ variable "dev_user_ips" {
 }
 
 variable "jenkins_public_key_name" {}
-variable "jenkins_public_key" {}
 
 variable "name" {}
 variable "jenkins_wildcard_elb_cert_arn" {}

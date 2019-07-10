@@ -53,26 +53,6 @@ module "sops_credentials" {
   aws_account_ids = "${concat(list(var.aws_main_account_id), var.aws_sub_account_ids)}"
 }
 
-module "jenkins_elb_log_bucket" {
-  source = "../../modules/jenkins/log_bucket"
-  name   = "jenkins-ci.marketplace.team-logs-bucket"
-}
-
-module "jenkins" {
-  source                        = "../../modules/jenkins/jenkins"
-  name                          = "jenkins"
-  dev_user_ips                  = "${var.dev_user_ips}"
-  jenkins_public_key_name       = "${var.ssh_key_name}"                                         # confusingly-named variable in terraform/common.json
-  jenkins_public_key            = "${var.jenkins_public_key}"
-  jenkins_instance_profile      = "${aws_iam_instance_profile.jenkins.name}"
-  jenkins_wildcard_elb_cert_arn = "${aws_acm_certificate.jenkins_wildcard_elb_certificate.arn}"
-  ami_id                        = "ami-2a7d75c0"
-  instance_type                 = "t2.large"
-  dns_zone_id                   = "${aws_route53_zone.marketplace_team.zone_id}"
-  dns_name                      = "ci.marketplace.team"
-  log_bucket_name               = "${module.jenkins_elb_log_bucket.bucket_id}"
-}
-
 # TODO remove old csw_inspector_role in favour of new gds_security_audit_role when switch to new role  is completed by secops
 
 module "csw_inspector_role" {
