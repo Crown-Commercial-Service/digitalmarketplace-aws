@@ -77,6 +77,10 @@ module "jenkins" {
   log_bucket_name               = "${module.jenkins_elb_log_bucket.bucket_id}"
 }
 
+module "jenkins_snapshots" {
+  source = "../../modules/jenkins/snapshots"
+}
+
 # TODO remove old csw_inspector_role in favour of new gds_security_audit_role when switch to new role  is completed by secops
 
 module "csw_inspector_role" {
