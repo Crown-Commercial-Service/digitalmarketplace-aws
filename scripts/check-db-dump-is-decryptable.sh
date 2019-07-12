@@ -12,7 +12,7 @@ else
   echo 'Decryption succeeded'
 fi
 
-gpg2 --list-secret-keys --with-colons --fingerprint | grep fpr | cut -c 13-52 | xargs -n1 gpg2 --batch --delete-secret-key
+gpg2 --list-secret-keys --with-colons --fingerprint | grep sec -A 1 | grep fpr | cut -c 13-52 | xargs -n1 gpg2 --batch --yes --pinentry-mode loopback --delete-secret-key
 rm ./${DUMP_FILE_NAME}
 
 exit ${EXIT_CODE}
