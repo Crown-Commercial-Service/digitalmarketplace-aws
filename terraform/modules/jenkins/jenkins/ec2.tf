@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "eu-west-1"
-}
-
 resource "aws_instance" "jenkins" {
   ami                     = "${var.ami_id}"
   disable_api_termination = true                                                         # prevent this instance from being destroyed from the console

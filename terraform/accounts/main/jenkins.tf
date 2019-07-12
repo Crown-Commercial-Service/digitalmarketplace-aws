@@ -12,7 +12,7 @@ module "jenkins" {
   source                        = "../../modules/jenkins/jenkins"
   name                          = "jenkins"
   dev_user_ips                  = "${var.dev_user_ips}"
-  jenkins_public_key_name       = "${aws_key_pair.jenkins.key_name}"
+  jenkins_public_key_name       = "${aws_key_pair.jenkins.key_name}"                            # Or ${var.ssh_key_name}
   jenkins_instance_profile      = "${aws_iam_instance_profile.jenkins.name}"
   jenkins_wildcard_elb_cert_arn = "${aws_acm_certificate.jenkins_wildcard_elb_certificate.arn}"
   ami_id                        = "ami-2a7d75c0"

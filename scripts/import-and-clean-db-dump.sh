@@ -13,7 +13,7 @@ echo -n $($DM_CREDENTIALS_REPO/sops-wrapper -d $DM_CREDENTIALS_REPO/gpg/database
   gunzip | \
   psql "${POSTGRES_URI}"
 
-gpg2 --list-secret-keys --with-colons --fingerprint | grep fpr | cut -c 13-52 | xargs -n1 gpg2 --batch --delete-secret-key
+gpg2 --list-secret-keys --with-colons --fingerprint | grep sec -A 1 | grep fpr | cut -c 13-52 | xargs -n1 gpg2 --batch --yes --pinentry-mode loopback --delete-secret-key
 rm "${LATEST_PROD_DUMP}"
 
 psql --single-transaction --variable bcrypt_password="'$(${VIRTUALENV_ROOT}/bin/python ./scripts/generate-bcrypt-hashed-password.py Password1234 12)'" "${POSTGRES_URI}" < ./scripts/clean-db-dump.sql
