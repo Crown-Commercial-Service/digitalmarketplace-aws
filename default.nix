@@ -18,12 +18,12 @@ in (with args; {
       pkgs.jq
       pkgs.sops
       (pkgs.terraform.overrideAttrs (oldAttrs: rec {
-        name = "terraform-0.11.13";
+        name = "terraform-0.11.14";
         src = pkgs.fetchFromGitHub {
           owner  = "hashicorp";
           repo   = "terraform";
-          rev    = "v0.11.13";
-          sha256 = "014d2ibmbp5yc1802ckdcpwqbm5v70xmjdyh5nadn02dfynaylna";
+          rev    = "v0.11.14";
+          sha256 = "1bzz5wy13gh8j47mxxp6ij6yh20xmxd9n5lidaln3mf1bil19dmc";
         };
       }))
       pkgs.libyaml
