@@ -7,7 +7,7 @@ install:
   - wget ${TERRAFORM_DOWNLOAD_URL}
   - unzip -o ${TERRAFORM_FILE_NAME} -d /tmp
   - export PATH=/tmp:${PATH}
-  - pip install --no-use-wheel -r requirements-dev.txt
+  - make requirements-dev
 script:
   - make terraformatest
   - make test
