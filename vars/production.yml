@@ -17,7 +17,7 @@ router:
 
 api:
   memory: 2GB
-  instances: 10
+  instances: 8
 
 user-frontend:
   instances: 2
@@ -29,4 +29,4 @@ antivirus-api:
   instances: 4
 
 supplier-frontend:
-  instances: 14
+  instances: 8
