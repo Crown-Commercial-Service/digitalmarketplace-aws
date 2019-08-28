@@ -127,7 +127,7 @@ deploy-app: ## Deploys the app to PaaS
 .PHONY: deploy-db-migration
 deploy-db-migration: ## Deploys the db migration app
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --no-route --health-check-type none -i 1 -m 128M -c 'sleep 2h'
+	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --no-route --health-check-type none --health-check-http-endpoint none -i 1 -m 128M -c 'sleep 2h'
 	cf stop ${APPLICATION_NAME}-db-migration
 	cf run-task ${APPLICATION_NAME}-db-migration "cd /app && venv/bin/python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
 
