@@ -11,9 +11,3 @@
 {% block extra %}
     command: sleep 2h
 {% endblock %}
-
-{% block env %}
-      DUMP_FILE_NAME: {{ DUMP_FILE_NAME }}
-      S3_POST_URL_DATA: '{{ S3_POST_URL_DATA }}'
-      RECIPIENT: {{ RECIPIENT|default('Digital Marketplace DB backups') }}
-{% endblock %}

@@ -85,3 +85,9 @@ db-backup:
   memory: 128M
   services:
     - digitalmarketplace_api_db
+
+db-migration:
+  instances: 1
+  memory: 128M
+  services:
+    - digitalmarketplace_api_db

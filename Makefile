@@ -127,7 +127,7 @@ deploy-app: ## Deploys the app to PaaS
 .PHONY: deploy-db-migration
 deploy-db-migration: ## Deploys the db migration app
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
-	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --no-route --health-check-type none --health-check-http-endpoint none -i 1 -m 128M -c 'sleep 2h'
+	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest APPLICATION_NAME=db-migration) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --no-route
 	cf stop ${APPLICATION_NAME}-db-migration
 	cf run-task ${APPLICATION_NAME}-db-migration "cd /app && venv/bin/python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
 
@@ -153,7 +153,7 @@ deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	$(eval export S3_POST_URL_DATA=$(shell ${VIRTUALENV_ROOT}/bin/python ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups ${DUMP_FILE_NAME}))
 
 	# Deploy the backup app
-	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest ARGS="-v DUMP_FILE_NAME -v S3_POST_URL_DATA") -o digitalmarketplace/db-backup
+	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest ARGS="-v DUMP_FILE_NAME -v S3_POST_URL_DATA") -o digitalmarketplace/db-backup --no-route
 	cf set-env db-backup PUBKEY "$$(cat ${DM_CREDENTIALS_REPO}/gpg/database-backups/public.key)"
 	cf restage db-backup
 
