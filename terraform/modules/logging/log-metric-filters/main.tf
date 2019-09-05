@@ -335,6 +335,19 @@ resource "aws_cloudwatch_log_metric_filter" "reset-email-bad-role" {
   }
 }
 
+resource "aws_cloudwatch_log_metric_filter" "admin-manager-password-reset" {
+  name           = "${var.environment}-reset-email-bad-role"
+  pattern        = "{$$.code = \"update_user.password.role_warning\"}"
+  log_group_name = "${var.environment}-api-application"
+
+  metric_transformation {
+    name          = "${var.environment}-admin-manager-password-reset"
+    namespace     = "DM-admin-manager-password-reset"
+    value         = "1"
+    default_value = "0"
+  }
+}
+
 # The following two log metric filters output to the same metric (${var.environment}-dropped-antivirus-sns):
 # Because we have separate log streams 'Failure to connect to the AV API' and 'The AV API successfully returned a response'
 # we have to filter the "success" log group for responses >= 400 and the "failure" log group for anything
