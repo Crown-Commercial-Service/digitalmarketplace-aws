@@ -37,3 +37,8 @@ resource "aws_iam_user" "daniele_occhipinti" {
   name          = "danieleocchipinti"
   force_destroy = true
 }
+
+resource "aws_iam_user" "alistair_laing" {
+  name          = "alistairlaing"
+  force_destroy = true
+}
