@@ -8,8 +8,9 @@ import click
 
 sys.path.insert(0, '.')  # noqa
 
-from dmaws.utils import load_file, template_string, merge_dicts, UndefinedError
+from dmaws.utils import load_file, template_string, merge_dicts
 from dmaws.variables import load_variables
+from jinja2 import UndefinedError
 
 
 def get_variables_from_command_line_or_environment(vars):

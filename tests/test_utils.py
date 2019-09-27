@@ -4,9 +4,10 @@ import pytest
 from dmaws.utils import (
     DEFAULT_TEMPLATES_PATH,
     merge_dicts,
-    template, template_string, LazyTemplateMapping, UndefinedError,
+    template, template_string, LazyTemplateMapping,
     mkdir_p,
 )
+from jinja2 import UndefinedError
 
 
 class TestMergeDicts(object):

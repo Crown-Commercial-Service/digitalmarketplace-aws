@@ -3,7 +3,6 @@ import collections
 
 import yaml
 import jinja2
-from jinja2.exceptions import TemplateSyntaxError, UndefinedError  # noqa
 from jinja2.runtime import StrictUndefined
 
 
@@ -83,10 +82,11 @@ def template_string(string, variables, templates_path=None):
         variables: a dict of variables that the template can use
 
     Raises:
-        TemplateSyntaxError: there is an issue with the template syntax.
-        UndefinedError: the template could not find the value for a variable.
+        jinja2.TemplateSyntaxError: there is an issue with the template syntax.
+        jinja2.UndefinedError: the template could not find the value for a variable.
     """
     jinja_env = jinja2.Environment(
+        autoescape=False,
         trim_blocks=True,
         lstrip_blocks=True,
         undefined=StrictUndefined,
