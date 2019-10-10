@@ -31,6 +31,7 @@ variable "alphagov_git_repositories" {
     "digitalmarketplace-user-frontend",
     "digitalmarketplace-utils",
     "digitalmarketplace-visual-regression",
+    "digitalmarketplace-govuk-frontend",
   ]
 }
 
