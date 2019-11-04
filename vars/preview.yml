@@ -8,3 +8,6 @@ api:
 router:
   instances: 2
   rate_limiting_enabled: enabled
+
+search-api:
+  instances: 2
