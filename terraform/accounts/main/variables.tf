@@ -1,7 +1,7 @@
 variable "ssh_key_name" {}
 variable "jenkins_public_key" {}
 
-variable "dev_user_ips" {
+variable "aws_account_and_jenkins_login_ips" {
   type = "list"
 }
 
