@@ -11,7 +11,7 @@ resource "aws_iam_policy" "ip_restricted_access" {
     "Resource": "*",
     "Condition": {
       "NotIpAddress": {
-        "aws:SourceIp": [${join(",", formatlist("\"%s\"", var.dev_user_ips))}]
+        "aws:SourceIp": [${join(",", formatlist("\"%s\"", var.aws_account_and_jenkins_login_ips))}]
       },
       "Null": {
         "kms:ViaService": "true"

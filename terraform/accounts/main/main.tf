@@ -17,10 +17,10 @@ terraform {
 }
 
 module "iam_common" {
-  source              = "../../modules/iam-common"
-  dev_user_ips        = "${var.dev_user_ips}"
-  aws_main_account_id = "${var.aws_main_account_id}"
-  aws_dev_account_id  = "${var.aws_dev_account_id}"
+  source                            = "../../modules/iam-common"
+  aws_account_and_jenkins_login_ips = "${var.aws_account_and_jenkins_login_ips}"
+  aws_main_account_id               = "${var.aws_main_account_id}"
+  aws_dev_account_id                = "${var.aws_dev_account_id}"
 }
 
 module "iam_users" {
