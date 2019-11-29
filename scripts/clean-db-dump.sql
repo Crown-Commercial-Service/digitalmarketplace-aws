@@ -2,8 +2,8 @@
 
 \echo 'Update users'
 UPDATE users
-SET name = 'Test user',
-    email_address = id || '@user.marketplace.team',
+SET name = 'Test ' || role,
+    email_address = id || '@' || role || '.marketplace.team',
     password = :bcrypt_password,
     failed_login_count = 0,
     phone_number = '01234567890';
