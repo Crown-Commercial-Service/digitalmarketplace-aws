@@ -1,0 +1,18 @@
+# PyUp config
+# https://pyup.io/docs/bot/config/
+# Check dependencies in _only_ requirements-app, and open PRs with PyUp prefix.
+
+search: False
+schedule: "every week on sunday"
+
+requirements:
+
+  - requirements-dev.txt:
+      update: False
+      pin: True
+
+  - requirements.txt:
+      update: all
+      pin: True
+
+pr_prefix: "PyUp - "
