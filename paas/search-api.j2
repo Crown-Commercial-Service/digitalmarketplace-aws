@@ -1,5 +1,10 @@
 {% extends "_base.j2" %}
 
+{% block health_check %}
+    health-check-type: http
+    health-check-http-endpoint: {{ routes[0].partition('/')[1:]|join("") }}/_status
+{% endblock %}
+
 {% block env %}
       AWS_ACCESS_KEY_ID: {{ aws_access_key_id }}
       AWS_SECRET_ACCESS_KEY: {{ aws_secret_access_key }}
