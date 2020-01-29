@@ -27,6 +27,7 @@ in (with args; {
         };
       }))
       pkgs.libyaml
+      pkgs.openssh
       pkgs.libffi
       pkgs.cloudfoundry-cli
       ((import ./aws-auth.nix) (with pkgs; { inherit stdenv fetchFromGitHub makeWrapper jq awscli openssl; }))
