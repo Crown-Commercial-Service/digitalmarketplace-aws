@@ -1,6 +1,6 @@
 click==7.0
 Jinja2==2.11.1
-PyYAML==5.1.2
+PyYAML==5.3
 awscli==1.16.272
 requests==2.20.0
 boto3==1.10.25
