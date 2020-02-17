@@ -7,6 +7,8 @@ PAAS_API ?= api.cloud.service.gov.uk
 PAAS_ORG ?= digitalmarketplace
 PAAS_SPACE ?= ${STAGE}
 
+POSTGRES_NAME ?= dm_postgres_temp
+
 define check_space
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
 	@[ $$(cf target | grep -i 'space' | cut -d':' -f2) = "${PAAS_SPACE}" ] || (echo "${PAAS_SPACE} is not currently active cf space" && exit 1)
@@ -174,7 +176,11 @@ paas-clean: ## Cleans up all files created for the PaaS deployment
 
 .PHONY: run-postgres-container
 run-postgres-container: ## Runs a postgres container
-	docker run -d -p 63306:5432 postgres:9.5-alpine
+	# clean up existing container if any
+	docker stop ${POSTGRES_NAME} || true
+	docker rm -v ${POSTGRES_NAME} || true
+
+	docker run -d -p 63306:5432 --name ${POSTGRES_NAME} postgres:9.5-alpine
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the postgres container, imports the latest dump and cleans it.
@@ -186,8 +192,8 @@ apply-cleaned-db-dump: ## Migrate the cleaned db dump to a target stage and sync
 
 .PHONY: cleanup-postgres-container
 cleanup-postgres-container: ## Stop and remove the docker container and its volume
-	docker ps | grep postgres:9.5-alpine | awk '{print $$1}' | xargs -n1 docker stop
-	docker ps -a | grep postgres:9.5-alpine | awk '{print $$1}' | xargs -n1 docker rm -v
+	docker stop ${POSTGRES_NAME}
+	docker rm -v ${POSTGRES_NAME}
 
 .PHONY: populate-paas-db
 populate-paas-db: ## Imports postgres dump specified with `DB_DUMP=` to targeted spaces db
