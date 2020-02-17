@@ -7,7 +7,7 @@ PAAS_API ?= api.cloud.service.gov.uk
 PAAS_ORG ?= digitalmarketplace
 PAAS_SPACE ?= ${STAGE}
 
-POSTGRES_NAME ?= dm_postgres_temp
+POSTGRES_NAME ?= dm_db_tmp
 
 define check_space
 	$(if ${PAAS_SPACE},,$(error Must specify PAAS_SPACE))
@@ -176,11 +176,13 @@ paas-clean: ## Cleans up all files created for the PaaS deployment
 
 .PHONY: run-postgres-container
 run-postgres-container: ## Runs a postgres container
+	$(if ${POSTGRES_PASSWORD},,$(error Must specify POSTGRES_PASSWORD))
+
 	# clean up existing container if any
 	docker stop ${POSTGRES_NAME} || true
 	docker rm -v ${POSTGRES_NAME} || true
 
-	docker run -d -p 63306:5432 --name ${POSTGRES_NAME} postgres:9.5-alpine
+	docker run -d -p 63306:5432 -e POSTGRES_PASSWORD --name ${POSTGRES_NAME} postgres:9.5-alpine
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the postgres container, imports the latest dump and cleans it.
