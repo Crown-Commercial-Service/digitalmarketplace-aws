@@ -1,6 +1,6 @@
 ---
 domain: staging.marketplace.team
-maintenance_mode: live
+maintenance_mode: maintenance
 instances: 2
 
 api:
