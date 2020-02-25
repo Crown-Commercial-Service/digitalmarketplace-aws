@@ -1,9 +1,9 @@
 click==7.0
 Jinja2==2.11.1
 PyYAML==5.3
-awscli==1.18.0
-requests==2.22.0
-boto3==1.12.0
+awscli==1.18.5
+requests==2.23.0
+boto3==1.12.5
 docopt==0.6.2
 bcrypt==3.1.7
 yq==2.10.0
