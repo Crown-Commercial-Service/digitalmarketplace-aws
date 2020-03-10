@@ -24,9 +24,17 @@ user-frontend:
 
 admin-frontend:
   instances: 2
+  memory: 1GB
 
 antivirus-api:
   instances: 4
 
+buyer-frontend:
+  memory: 1G
+
+search-api:
+  memory: 1G
+
 supplier-frontend:
   instances: 8
+  memory: 2GB
