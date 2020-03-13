@@ -30,9 +30,11 @@ antivirus-api:
   instances: 4
 
 buyer-frontend:
+  instances: 8
   memory: 1G
 
 search-api:
+  instances: 8
   memory: 1G
 
 supplier-frontend:
