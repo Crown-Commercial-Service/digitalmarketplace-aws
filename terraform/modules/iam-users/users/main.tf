@@ -1,8 +1,3 @@
-resource "aws_iam_user" "ben_vandersteen" {
-  name          = "benvandersteen"
-  force_destroy = true
-}
-
 resource "aws_iam_user" "argyris_galamatis" {
   name          = "argyrisgalamatis"
   force_destroy = true
@@ -30,11 +25,6 @@ resource "aws_iam_user" "laurence_de_bruxelles" {
 
 resource "aws_iam_user" "daniele_occhipinti" {
   name          = "danieleocchipinti"
-  force_destroy = true
-}
-
-resource "aws_iam_user" "alistair_laing" {
-  name          = "alistairlaing"
   force_destroy = true
 }
 
