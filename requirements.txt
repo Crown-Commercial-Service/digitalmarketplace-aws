@@ -1,5 +1,5 @@
 click==7.1.1
-Jinja2==2.11.1
+Jinja2==2.11.2
 PyYAML==5.3.1
 awscli==1.18.39
 requests==2.23.0
