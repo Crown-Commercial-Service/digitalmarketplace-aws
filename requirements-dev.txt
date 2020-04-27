@@ -1,5 +1,5 @@
 -r requirements.txt
-flake8==3.7.7
+flake8==3.7.9
 mock==1.0.1
 pytest==3.2.3
 requests-mock==0.6.0
