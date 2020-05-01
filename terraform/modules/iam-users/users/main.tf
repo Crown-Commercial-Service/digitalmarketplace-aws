@@ -13,11 +13,6 @@ resource "aws_iam_user" "louise_ryan" {
   force_destroy = true
 }
 
-resource "aws_iam_user" "robert_scott" {
-  name          = "robertscott"
-  force_destroy = true
-}
-
 resource "aws_iam_user" "laurence_de_bruxelles" {
   name          = "laurencedebruxelles"
   force_destroy = true
@@ -35,5 +30,10 @@ resource "aws_iam_user" "paula_valenca" {
 
 resource "aws_iam_user" "brett_kyle" {
   name          = "brettkyle"
+  force_destroy = true
+}
+
+resource "aws_iam_user" "gideon_goldberg" {
+  name          = "gideongoldberg"
   force_destroy = true
 }
