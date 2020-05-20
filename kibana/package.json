@@ -1,6 +1,12 @@
 {
   "dependencies": {
-    "elasticdump": "^3.3.1"
+    "elasticdump": "^3.3.1",
+    "snyk": "^1.323.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
