@@ -22,9 +22,9 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_data_volume_disk_space" {
     path = "/data"
   }
 
-  // For for every 60 seconds
+  // For for every 300 seconds
   evaluation_periods = "1"
-  period             = "60"
+  period             = "300"
 
   // If totals 10gb or lower (in bytes)
   statistic           = "Sum"
@@ -48,9 +48,9 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_main_volume_disk_space" {
     path = "/"
   }
 
-  // For for every 60 seconds
+  // For for every 300 seconds
   evaluation_periods = "1"
-  period             = "60"
+  period             = "300"
 
   // If totals 1gb or lower (in bytes)
   statistic           = "Sum"
