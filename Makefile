@@ -160,7 +160,7 @@ deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	cf restage db-backup
 
 	# Run the backup script in a separate task container. This has its own disk and memory quotas, but inherits the db-backup app's context vars.
-	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 3G -k 3G
+	cf run-task db-backup "/app/create-db-dump.sh" --name db-backup -m 5G -k 5G
 
 .PHONY: check-db-backup-task
 check-db-backup-task: ## Get the status for the last db backup task
