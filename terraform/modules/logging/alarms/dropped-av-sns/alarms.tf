@@ -6,9 +6,9 @@ resource "aws_cloudwatch_metric_alarm" "dropped_antivirus_sns_alarm" {
   namespace   = "DM-SNS"
   metric_name = "${var.environment}-dropped-antivirus-sns"
 
-  // For for every 60 seconds
+  // For for every 300 seconds
   evaluation_periods = "1"
-  period             = "60"
+  period             = "300"
 
   // If totals 1 or higher
   statistic           = "Sum"
