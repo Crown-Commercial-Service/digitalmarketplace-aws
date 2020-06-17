@@ -6,7 +6,7 @@ resource "aws_cloudwatch_metric_alarm" "reset_email_bad_role_alarm" {
   namespace   = "DM-reset-email-bad-role"
   metric_name = "${var.environment}-reset-email-bad-role"
 
-  // For for every 300 seconds
+  // For every 300 seconds
   evaluation_periods = "1"
   period             = "300"
 

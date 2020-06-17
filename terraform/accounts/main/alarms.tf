@@ -22,7 +22,7 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_data_volume_disk_space" {
     path = "/data"
   }
 
-  // For for every 300 seconds
+  // For every 300 seconds
   evaluation_periods = "1"
   period             = "300"
 
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_main_volume_disk_space" {
     path = "/"
   }
 
-  // For for every 300 seconds
+  // For every 300 seconds
   evaluation_periods = "1"
   period             = "300"
 

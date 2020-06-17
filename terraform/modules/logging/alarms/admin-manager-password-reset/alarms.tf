@@ -6,7 +6,7 @@ resource "aws_cloudwatch_metric_alarm" "admin_manager_password_reset" {
   namespace   = "DM-admin-manager-password-reset"
   metric_name = "${var.environment}-admin-manager-password-reset"
 
-  // For for every 300 seconds
+  // For every 300 seconds
   evaluation_periods = "1"
   period             = "300"
 
