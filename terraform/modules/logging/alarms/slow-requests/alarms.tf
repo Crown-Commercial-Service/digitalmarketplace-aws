@@ -6,7 +6,7 @@ resource "aws_cloudwatch_metric_alarm" "slow_requests_5_10_alarm" {
   namespace   = "DM-RequestTimeBuckets"
   metric_name = "${var.environment}-router-request-times-8"
 
-  // For for every 5 minutes
+  // For every 5 minutes
   evaluation_periods = "1"
   period             = "300"
 
@@ -31,7 +31,7 @@ resource "aws_cloudwatch_metric_alarm" "slow_requests_gt_10_alarm" {
   namespace   = "DM-RequestTimeBuckets"
   metric_name = "${var.environment}-router-request-times-9"
 
-  // For for every 10 seconds
+  // For every 5 minutes
   evaluation_periods = "1"
   period             = "300"
 

@@ -74,9 +74,9 @@ resource "aws_cloudwatch_metric_alarm" "log_stream_lambda_error_alarm" {
     Resource     = "preview-log-stream-lambda"
   }
 
-  // For for every 60 seconds
+  // For every 300 seconds
   evaluation_periods = "1"
-  period             = "60"
+  period             = "300"
 
   // If totals 1 or higher
   statistic           = "Sum"

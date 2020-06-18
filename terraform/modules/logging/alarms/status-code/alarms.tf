@@ -6,9 +6,9 @@ resource "aws_cloudwatch_metric_alarm" "status_code_alarm" {
   namespace   = "DM-${var.status_code}s"
   metric_name = "${var.environment}-router-nginx-${var.status_code}s"
 
-  // For for every 60 seconds
+  // For every 300 seconds
   evaluation_periods = "1"
-  period             = "60"
+  period             = "300"
 
   // If totals 1 or higher
   statistic           = "Sum"

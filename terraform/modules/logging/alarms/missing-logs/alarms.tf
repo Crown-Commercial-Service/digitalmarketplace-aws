@@ -16,10 +16,8 @@ resource "aws_cloudwatch_metric_alarm" "missing_logs_alarm" {
   }
 
   // For 5 minutes
-  // This appears to cause our alarms to trigger at around the 10-12 minute mark
-  evaluation_periods = "5"
-
-  period = "60"
+  evaluation_periods = "1"
+  period             = "300"
 
   // Totals 0
   statistic           = "Sum"
