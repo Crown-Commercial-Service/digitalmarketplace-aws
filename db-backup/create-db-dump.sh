@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail
 
 echo -n "${PUBKEY}" > /app/public.key
 gpg2 --import /app/public.key
