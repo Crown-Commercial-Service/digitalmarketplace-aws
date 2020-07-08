@@ -9,7 +9,8 @@ router:
     - antivirus-api.{env}.marketplace.team
     - assets.{env}.marketplace.team
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 api:
   routes:
@@ -17,7 +18,8 @@ api:
     - dm-api-{env}.cloudapps.digital/_metrics
   services:
     - digitalmarketplace_api_db
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 search-api:
   routes:
@@ -25,7 +27,8 @@ search-api:
     - dm-search-api-{env}.cloudapps.digital/_metrics
   services:
     - search_api_elasticsearch
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 antivirus-api:
   memory: 2G
@@ -33,21 +36,24 @@ antivirus-api:
     - dm-antivirus-api-{env}.cloudapps.digital
     - dm-antivirus-api-{env}.cloudapps.digital/_metrics
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 user-frontend:
   routes:
     - dm-{env}.cloudapps.digital/user
     - dm-{env}.cloudapps.digital/user/_metrics
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 admin-frontend:
   routes:
     - dm-{env}.cloudapps.digital/admin
     - dm-{env}.cloudapps.digital/admin/_metrics
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 buyer-frontend:
   memory: 700M
@@ -56,7 +62,8 @@ buyer-frontend:
     - dm-{env}.cloudapps.digital/_metrics
     - dm-{env}.cloudapps.digital/buyers/direct-award
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 supplier-frontend:
   memory: 700M
@@ -64,21 +71,24 @@ supplier-frontend:
     - dm-{env}.cloudapps.digital/suppliers
     - dm-{env}.cloudapps.digital/suppliers/_metrics
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 briefs-frontend:
   routes:
     - dm-{env}.cloudapps.digital/buyers
     - dm-{env}.cloudapps.digital/buyers/_metrics
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 brief-responses-frontend:
   routes:
     - dm-{env}.cloudapps.digital/suppliers/opportunities
     - dm-{env}.cloudapps.digital/suppliers/opportunities/_metrics
   services:
-    - digitalmarketplace_prometheus
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
 
 db-backup:
   instances: 1
