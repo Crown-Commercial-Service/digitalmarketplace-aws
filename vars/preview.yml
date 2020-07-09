@@ -2,15 +2,58 @@
 domain: preview.marketplace.team
 maintenance_mode: live
 
+admin-frontend:
+  services:
+    - digitalmarketplace_splunk
+    - digitalmarketplace_prometheus
+
+antivirus-api:
+  services:
+    - digitalmarketplace_splunk
+    - digitalmarketplace_prometheus
+
 api:
   memory: 2GB
+  services:
+    - digitalmarketplace_splunk
+    - digitalmarketplace_prometheus
+    - digitalmarketplace_api_db
+
+brief-responses-frontend:
+    services:
+      - digitalmarketplace_splunk
+      - digitalmarketplace_prometheus
+
+briefs-frontend:
+  services:
+    - digitalmarketplace_splunk
+    - digitalmarketplace_prometheus
 
 buyer-frontend:
   instances: 2
+  services:
+    - digitalmarketplace_splunk
+    - digitalmarketplace_prometheus
 
 router:
   instances: 2
   rate_limiting_enabled: enabled
+  services:
+    - digitalmarketplace_splunk
+    - digitalmarketplace_prometheus
 
 search-api:
   instances: 2
+  services:
+    - search_api_elasticsearch
+    - digitalmarketplace_prometheus
+
+supplier-frontend:
+  services:
+    - digitalmarketplace_splunk
+    - digitalmarketplace_prometheus
+
+user-frontend:
+  services:
+    - search_api_elasticsearch
+    - digitalmarketplace_prometheus
