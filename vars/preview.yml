@@ -56,5 +56,5 @@ supplier-frontend:
 
 user-frontend:
   services:
-    - search_api_elasticsearch
+    - digitalmarketplace_splunk
     - digitalmarketplace_prometheus
