@@ -2,47 +2,58 @@ resource "aws_route53_zone" "root" {
   name = "${var.domain}"
 }
 
-resource "aws_route53_record" "www_acme_challenge" {
+resource "aws_route53_record" "www_acm_validation" {
   zone_id = "${aws_route53_zone.root.zone_id}"
-  name    = "_acme-challenge.www.${var.domain}"
-  type    = "TXT"
-  ttl     = "120"
+  name    = "${var.www_acm_name}${var.domain}"
+  type    = "CNAME"
+  ttl     = "86400"
 
   records = [
-    "${var.www_acme_challenge}",
+    "${var.www_acm_value}",
   ]
 }
 
-resource "aws_route53_record" "api_acme_challenge" {
+resource "aws_route53_record" "api_acm_validation" {
   zone_id = "${aws_route53_zone.root.zone_id}"
-  name    = "_acme-challenge.api.${var.domain}"
-  type    = "TXT"
-  ttl     = "120"
+  name    = "${var.api_acm_name}${var.domain}"
+  type    = "CNAME"
+  ttl     = "86400"
 
   records = [
-    "${var.api_acme_challenge}",
+    "${var.api_acm_value}",
   ]
 }
 
-resource "aws_route53_record" "search_api_acme_challenge" {
+resource "aws_route53_record" "search_api_acm_validation" {
   zone_id = "${aws_route53_zone.root.zone_id}"
-  name    = "_acme-challenge.search-api.${var.domain}"
-  type    = "TXT"
-  ttl     = "120"
+  name    = "${var.search_api_acm_name}${var.domain}"
+  type    = "CNAME"
+  ttl     = "86400"
 
   records = [
-    "${var.search_api_acme_challenge}",
+    "${var.search_api_acm_value}",
   ]
 }
 
-resource "aws_route53_record" "assets_acme_challenge" {
+resource "aws_route53_record" "antivirus_api_acm_validation" {
   zone_id = "${aws_route53_zone.root.zone_id}"
-  name    = "_acme-challenge.assets.${var.domain}"
-  type    = "TXT"
-  ttl     = "120"
+  name    = "${var.antivirus_api_acm_name}${var.domain}"
+  type    = "CNAME"
+  ttl     = "86400"
 
   records = [
-    "${var.assets_acme_challenge}",
+    "${var.antivirus_api_acm_value}",
+  ]
+}
+
+resource "aws_route53_record" "assets_acm_validation" {
+  zone_id = "${aws_route53_zone.root.zone_id}"
+  name    = "${var.www_acm_name}${var.domain}"
+  type    = "CNAME"
+  ttl     = "86400"
+
+  records = [
+    "${var.assets_acm_value}",
   ]
 }
 
