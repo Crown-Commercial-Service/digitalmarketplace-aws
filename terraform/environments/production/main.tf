@@ -26,17 +26,17 @@ module "production_router" {
 
   log_retention_days = "3653"
 
-  cname_domain              = "d3pp9vxqezcjw2.cloudfront.net"
-  www_acm_value             = "_2533026340ed4b4a24b09340fedc85d5.jfrzftwwjs.acm-validations.aws."
-  www_acm_name              = "_f8537f5176fa0132541cc64978203785.www."
-  api_acm_value             = "_a716cce694fa6f137f0b635d2d99e640.jfrzftwwjs.acm-validations.aws."
-  api_acm_name              = "_cd4d4ebc88b211a33f49a7bfbec4153c.api."
-  search_api_acm_value      = "_43a6fa789628598d9d54032cf6b0275a.jfrzftwwjs.acm-validations.aws."
-  search_api_acm_name       = "_f6f4c3316e1f46a83a398775af242e71.search-api."
-  assets_acm_value          = "_1e1ff1759e34e6e56f7000e46eba51a2.jfrzftwwjs.acm-validations.aws."
-  assets_acm_name           = "_a504b430ba24d9f975df4d5677fa5683.assets."
-  antivirus_api_acm_value   = "_a2c38fdc747637add5b6ff0958fe5141.jfrzftwwjs.acm-validations.aws."
-  antivirus_api_acm_name    = "_c304f7f525b21772de85e239fc32df96.antivirus-api."
+  cname_domain            = "d3pp9vxqezcjw2.cloudfront.net"
+  www_acm_value           = "_2533026340ed4b4a24b09340fedc85d5.jfrzftwwjs.acm-validations.aws."
+  www_acm_name            = "_f8537f5176fa0132541cc64978203785.www."
+  api_acm_value           = "_a716cce694fa6f137f0b635d2d99e640.jfrzftwwjs.acm-validations.aws."
+  api_acm_name            = "_cd4d4ebc88b211a33f49a7bfbec4153c.api."
+  search_api_acm_value    = "_43a6fa789628598d9d54032cf6b0275a.jfrzftwwjs.acm-validations.aws."
+  search_api_acm_name     = "_f6f4c3316e1f46a83a398775af242e71.search-api."
+  assets_acm_value        = "_1e1ff1759e34e6e56f7000e46eba51a2.jfrzftwwjs.acm-validations.aws."
+  assets_acm_name         = "_a504b430ba24d9f975df4d5677fa5683.assets."
+  antivirus_api_acm_value = "_a2c38fdc747637add5b6ff0958fe5141.jfrzftwwjs.acm-validations.aws."
+  antivirus_api_acm_name  = "_c304f7f525b21772de85e239fc32df96.antivirus-api."
 }
 
 module "application_logs" {
