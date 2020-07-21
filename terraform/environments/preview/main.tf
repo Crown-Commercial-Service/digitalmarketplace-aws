@@ -26,11 +26,17 @@ module "preview_router" {
 
   log_retention_days = "180"
 
-  cname_domain              = "d3eyi6749eogkv.cloudfront.net"
-  www_acme_challenge        = "10BxG5sYBrsXy9nTFn4U2dn90v0ic7yFGkf5egYYzvM"
-  api_acme_challenge        = "dTEB4iW45IMydD38YUCjjwtbaX1V-tXki-J1dZ4IIK4"
-  search_api_acme_challenge = "mn-kwBxpLeqkLBenVhQYZIoX02iIaMPaAiYw1ndiKy4"
-  assets_acme_challenge     = "nml3dVZaOkLIUql5v6rxPb-vHy2PoXbJ6oFGzMB8SrY"
+  cname_domain            = "d25mxit1hgdj3z.cloudfront.net"
+  www_acm_value           = "_d3502b7f8e8375277e10b2a7a5c5184f.tfmgdnztqk.acm-validations.aws."
+  www_acm_name            = "_d3fce2c248a4041784f06c22a0090865.assets."
+  api_acm_value           = "_bd3d82c6197b75e9ab21e7a60512f7ef.tfmgdnztqk.acm-validations.aws."
+  api_acm_name            = "_588eb18af3dc5d8581c483bd3df00607.api."
+  search_api_acm_value    = "_64f5fb82d733c1d2222e4aa64a03b037.tfmgdnztqk.acm-validations.aws."
+  search_api_acm_name     = "_652fee20b56f7182234ee35cf8cbbc3e.search-api."
+  assets_acm_value        = "_67847da8bf05e8175ebfdf514f34cd3f.tfmgdnztqk.acm-validations.aws."
+  assets_acm_name         = "_d3fce2c248a4041784f06c22a0090865.assets."
+  antivirus_api_acm_value = "_304c9698a6caf6522fd7c0f8c1f3f206.tfmgdnztqk.acm-validations.aws."
+  antivirus_api_acm_name  = "_e9bbdc88aebdbb1753eb4c81fd7cf1b9.antivirus-api."
 }
 
 module "application_logs" {
