@@ -16,8 +16,8 @@ router:
     - assets.digitalmarketplace.service.gov.uk
 
 api:
-  memory: 2GB
-  instances: 10
+  memory: 4GB
+  instances: 20
 
 user-frontend:
   instances: 2
@@ -38,5 +38,5 @@ search-api:
   memory: 1G
 
 supplier-frontend:
-  instances: 10
-  memory: 1GB
+  instances: 20
+  memory: 4GB
