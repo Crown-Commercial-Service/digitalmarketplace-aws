@@ -38,5 +38,5 @@ search-api:
   memory: 1G
 
 supplier-frontend:
-  instances: 10
-  memory: 1GB
+  instances: 20
+  memory: 4GB
