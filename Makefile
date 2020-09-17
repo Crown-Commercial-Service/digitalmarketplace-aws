@@ -172,7 +172,7 @@ cleanup-db-backup: ## Remove snapshot service and app
 
 .PHONY: paas-clean
 paas-clean: ## Cleans up all files created for the PaaS deployment
-	cf logout
+	-cf logout
 
 .PHONY: run-postgres-container
 run-postgres-container: ## Runs a postgres container
