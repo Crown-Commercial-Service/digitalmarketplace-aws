@@ -30,7 +30,7 @@ such as `make requirements` or `pip`).
 
 Make sure you have Terraform installed: https://www.terraform.io/downloads.html
 
-Note, we suggest installing the latest v0.x.x of Terraform. Terraform is backwards incompatible (i.e. if someone has run
+Note, we suggest installing the latest v0.11.x of Terraform. Terraform is backwards incompatible (i.e. if someone has run
 terraform `plan` with version v0.11.3 and then you try to run it with v0.11.2, it will say that you need to update your
 tool to atleast v0.11.3) so the minimum version will be based on what the developer before you has used.
 
