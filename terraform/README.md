@@ -28,16 +28,11 @@ such as `make requirements` or `pip`).
 
 ### Install Terraform
 
-Make sure you have Terraform installed: https://www.terraform.io/downloads.html
+Make sure you have Terraform installed. You will need the latest v0.11 version. Terraform is backwards incompatible (i.e. if someone has run terraform `plan` with version v0.11.3 and then you try to run it with v0.11.2, it will say that you need to update your tool to at least v0.11.3) so the minimum version will be based on what the developer before you has used.
 
-Note, we suggest installing the latest v0.11.x of Terraform. Terraform is backwards incompatible (i.e. if someone has run
-terraform `plan` with version v0.11.3 and then you try to run it with v0.11.2, it will say that you need to update your
-tool to atleast v0.11.3) so the minimum version will be based on what the developer before you has used.
+You should use [tfenv](https://github.com/tfutils/tfenv) to install and manage Terraform, as this is the easiest way to get the right version. You may instead [download it directly](https://www.terraform.io/downloads.html), or run `brew install terraform`.
 
-Download the zip file, extract it and copy the terraform executable to `/usr/local/bin` (or your preferred location).
-Alternatively you can use brew: ```brew install terraform```.
-
-Check the install with running ```terraform -v```.
+Check the install with running `terraform --version`.
 
 ### AWS cli
 
