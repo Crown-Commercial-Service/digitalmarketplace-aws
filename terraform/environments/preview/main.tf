@@ -79,6 +79,7 @@ module "antivirus-sns" {
   bucket_arns = [
     "${aws_s3_bucket.agreements_bucket.arn}",
     "${aws_s3_bucket.communications_bucket.arn}",
+    "${aws_s3_bucket.documents_bucket.arn}",
     "${aws_s3_bucket.submissions_bucket.arn}",
   ]
 }
