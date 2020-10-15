@@ -131,7 +131,7 @@ deploy-db-migration: ## Deploys the db migration app
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest APPLICATION_NAME=db-migration) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --no-route
 	cf stop ${APPLICATION_NAME}-db-migration
-	cf run-task ${APPLICATION_NAME}-db-migration "cd /app && venv/bin/python application.py db upgrade" --name ${APPLICATION_NAME}-db-migration
+	cf run-task ${APPLICATION_NAME}-db-migration "cd /app && FLASK_APP=application:application venv/bin/flask db upgrade" --name ${APPLICATION_NAME}-db-migration
 
 .PHONY: check-db-migration-task
 check-db-migration-task: ## Get the status for the last db migration task
