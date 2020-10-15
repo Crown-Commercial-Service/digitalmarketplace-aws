@@ -122,8 +122,8 @@ deploy-app: ## Deploys the app to PaaS
 	@echo "Waiting for previous app version to process existing requests..."
 	sleep 60
 
-	cf stop ${APPLICATION_NAME}
-	cf delete -f ${APPLICATION_NAME}
+	-cf stop ${APPLICATION_NAME}
+	-cf delete -f ${APPLICATION_NAME}
 	cf rename ${APPLICATION_NAME}-release ${APPLICATION_NAME}
 
 .PHONY: deploy-db-migration
