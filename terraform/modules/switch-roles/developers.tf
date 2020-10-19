@@ -1,3 +1,8 @@
+provider "aws" {
+  region  = "eu-west-1"
+  version = "~> 2.70"
+}
+
 resource "aws_iam_policy" "developer" {
   name = "Developer"
 
@@ -65,6 +70,7 @@ resource "aws_iam_policy" "developer" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role" "developers" {
@@ -89,19 +95,21 @@ resource "aws_iam_role" "developers" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "developers_ip_restriced" {
-  role       = "${aws_iam_role.developers.name}"
-  policy_arn = "${var.ip_restricted_access_policy_arn}"
+  role       = aws_iam_role.developers.name
+  policy_arn = var.ip_restricted_access_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "developers_developer" {
-  role       = "${aws_iam_role.developers.id}"
-  policy_arn = "${aws_iam_policy.developer.arn}"
+  role       = aws_iam_role.developers.id
+  policy_arn = aws_iam_policy.developer.arn
 }
 
 resource "aws_iam_role_policy_attachment" "developers_iam_manage_account" {
-  role       = "${aws_iam_role.developers.name}"
-  policy_arn = "${var.iam_manage_account_policy_arn}"
+  role       = aws_iam_role.developers.name
+  policy_arn = var.iam_manage_account_policy_arn
 }
+
