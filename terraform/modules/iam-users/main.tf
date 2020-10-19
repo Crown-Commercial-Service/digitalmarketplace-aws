@@ -1,3 +1,4 @@
 module "users" {
-  source = "users"
+  source = "./users"
 }
+
