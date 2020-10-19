@@ -1,8 +1,13 @@
+provider "aws" {
+  region  = "eu-west-1"
+  version = "~> 2.70"
+}
+
 resource "aws_sns_topic" "s3_file_upload_notification" {
   name                              = "s3_file_upload_notification_${var.environment}"
-  http_success_feedback_role_arn    = "${aws_iam_role.sns_success_feedback.arn}"
+  http_success_feedback_role_arn    = aws_iam_role.sns_success_feedback.arn
   http_success_feedback_sample_rate = 100
-  http_failure_feedback_role_arn    = "${aws_iam_role.sns_failure_feedback.arn}"
+  http_failure_feedback_role_arn    = aws_iam_role.sns_failure_feedback.arn
 
   delivery_policy = <<EOF
 {
@@ -20,9 +25,11 @@ resource "aws_sns_topic" "s3_file_upload_notification" {
   }
 }
 EOF
+
 }
 
 resource "aws_sns_topic_policy" "s3_file_upload_notification_policy_attachment" {
-  arn    = "${aws_sns_topic.s3_file_upload_notification.arn}"
-  policy = "${data.aws_iam_policy_document.s3_file_upload_notification_topic_policy.json}"
+  arn    = aws_sns_topic.s3_file_upload_notification.arn
+  policy = data.aws_iam_policy_document.s3_file_upload_notification_topic_policy.json
 }
+
