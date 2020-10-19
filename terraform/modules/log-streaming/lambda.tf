@@ -1,3 +1,12 @@
+provider "aws" {
+  region  = "eu-west-1"
+  version = "~> 2.70"
+}
+
+provider "archive" {
+  version = "~> 1.3"
+}
+
 data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "../../modules/log-streaming/src"
@@ -10,7 +19,7 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name = "${var.name}"
+  name = var.name
 
   assume_role_policy = <<EOF
 {
@@ -26,11 +35,12 @@ resource "aws_iam_role" "lambda" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy" "lambda_logging" {
-  name = "${var.name}"
-  role = "${aws_iam_role.lambda.id}"
+  name = var.name
+  role = aws_iam_role.lambda.id
 
   policy = <<EOF
 {
@@ -50,14 +60,15 @@ resource "aws_iam_role_policy" "lambda_logging" {
   ]
 }
 EOF
+
 }
 
 resource "aws_lambda_function" "log_stream_lambda" {
-  function_name    = "${var.name}"
+  function_name    = var.name
   description      = "Stream CloudWatch Logs to Elasticsearch"
   filename         = "../../modules/log-streaming/lambda.zip"
-  source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
-  role             = "${aws_iam_role.lambda.arn}"
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  role             = aws_iam_role.lambda.arn
   handler          = "main.handler"
   runtime          = "nodejs10.x"
   memory_size      = 128
@@ -65,8 +76,9 @@ resource "aws_lambda_function" "log_stream_lambda" {
 
   environment {
     variables = {
-      ELASTICSEARCH_URL     = "${var.elasticsearch_url}"
-      ELASTICSEARCH_API_KEY = "${var.elasticsearch_api_key}"
+      ELASTICSEARCH_URL     = var.elasticsearch_url
+      ELASTICSEARCH_API_KEY = var.elasticsearch_api_key
     }
   }
 }
+
