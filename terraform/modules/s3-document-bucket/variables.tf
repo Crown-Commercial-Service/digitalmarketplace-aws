@@ -11,16 +11,17 @@ variable "log_bucket_name" {
 }
 
 variable "read_object_roles" {
-  type        = "list"
+  type        = list(string)
   description = "A list of role ARNs to apply get object permssions to."
 }
 
 variable "write_object_roles" {
-  type        = "list"
+  type        = list(string)
   description = "A list of role ARNs to apply S3:PutObject and S3:PutObjectACL permissions to."
 }
 
 variable "list_bucket_roles" {
-  type        = "list"
+  type        = list(string)
   description = "A list of role ARNs to give S3ListBucket and S3:ListBucketLocation to."
 }
+

@@ -1,9 +1,14 @@
+provider "aws" {
+  region  = "eu-west-1"
+  version = "~> 2.70"
+}
+
 data "aws_iam_policy_document" "document_bucket_policy_document" {
   statement {
     effect = "Allow"
 
     principals {
-      identifiers = "${var.read_object_roles}"
+      identifiers = var.read_object_roles
       type        = "AWS"
     }
 
@@ -21,7 +26,7 @@ data "aws_iam_policy_document" "document_bucket_policy_document" {
     effect = "Allow"
 
     principals {
-      identifiers = "${var.write_object_roles}"
+      identifiers = var.write_object_roles
       type        = "AWS"
     }
 
@@ -40,7 +45,7 @@ data "aws_iam_policy_document" "document_bucket_policy_document" {
     effect = "Allow"
 
     principals {
-      identifiers = "${var.list_bucket_roles}"
+      identifiers = var.list_bucket_roles
       type        = "AWS"
     }
 
@@ -65,9 +70,10 @@ resource "aws_s3_bucket" "document_bucket" {
   }
 
   logging {
-    target_bucket = "${var.log_bucket_name}"
+    target_bucket = var.log_bucket_name
     target_prefix = "digitalmarketplace-${var.bucket_name}-${var.environment}-${var.environment}/"
   }
 
-  policy = "${data.aws_iam_policy_document.document_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.document_bucket_policy_document.json
 }
+
