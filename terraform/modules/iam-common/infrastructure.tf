@@ -33,6 +33,7 @@ resource "aws_iam_policy" "infrastructure" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role" "infrastructure" {
@@ -52,9 +53,11 @@ resource "aws_iam_role" "infrastructure" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "infrastructure_infrastructure" {
-  role       = "${aws_iam_role.infrastructure.id}"
-  policy_arn = "${aws_iam_policy.infrastructure.arn}"
+  role       = aws_iam_role.infrastructure.id
+  policy_arn = aws_iam_policy.infrastructure.arn
 }
+

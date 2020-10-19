@@ -18,6 +18,7 @@ resource "aws_iam_policy" "admin" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role" "admins" {
@@ -42,9 +43,11 @@ resource "aws_iam_role" "admins" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "admins_admin" {
-  role       = "${aws_iam_role.admins.name}"
-  policy_arn = "${aws_iam_policy.admin.arn}"
+  role       = aws_iam_role.admins.name
+  policy_arn = aws_iam_policy.admin.arn
 }
+
