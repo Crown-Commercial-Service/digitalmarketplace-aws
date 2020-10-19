@@ -1,5 +1,6 @@
 provider "aws" {
-  region = "eu-west-1"
+  region  = "eu-west-1"
+  version = "~> 2.70"
 }
 
 provider "aws" {
@@ -7,4 +8,6 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "current" {
+}
+

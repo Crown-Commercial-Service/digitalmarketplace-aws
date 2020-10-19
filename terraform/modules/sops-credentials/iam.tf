@@ -29,6 +29,7 @@ resource "aws_iam_policy" "sops_credentials_access" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role" "sops_credentials_access" {
@@ -41,18 +42,22 @@ resource "aws_iam_role" "sops_credentials_access" {
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": [${join(",", formatlist("\"arn:aws:iam::%s:root\"", var.aws_account_ids))}]
+        "AWS": [${join(
+  ",",
+  formatlist("\"arn:aws:iam::%s:root\"", var.aws_account_ids),
+)}]
       },
       "Action": "sts:AssumeRole"
     }
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "sops_credentials_access" {
-  role       = "${aws_iam_role.sops_credentials_access.name}"
-  policy_arn = "${aws_iam_policy.sops_credentials_access.arn}"
+  role       = aws_iam_role.sops_credentials_access.name
+  policy_arn = aws_iam_policy.sops_credentials_access.arn
 }
 
 resource "aws_iam_policy" "assume_sops_credentials_access" {
@@ -77,10 +82,12 @@ resource "aws_iam_policy" "assume_sops_credentials_access" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_group_policy_attachment" "iam_group_assume_sops_credentials_access" {
-  count      = "${var.sops_credentials_access_iam_groups_count}"
-  group      = "${element(var.sops_credentials_access_iam_groups, count.index)}"
-  policy_arn = "${aws_iam_policy.assume_sops_credentials_access.arn}"
+  count      = var.sops_credentials_access_iam_groups_count
+  group      = element(var.sops_credentials_access_iam_groups, count.index)
+  policy_arn = aws_iam_policy.assume_sops_credentials_access.arn
 }
+
