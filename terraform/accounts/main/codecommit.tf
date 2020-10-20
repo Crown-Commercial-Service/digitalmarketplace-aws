@@ -1,5 +1,5 @@
 variable "alphagov_git_repositories" {
-  type = "list"
+  type = list(string)
 
   default = [
     "digitalmarketplace-api",
@@ -36,9 +36,10 @@ variable "alphagov_git_repositories" {
 }
 
 resource "aws_codecommit_repository" "codecommit_backup_repos" {
-  count = "${length(var.alphagov_git_repositories)}"
+  count = length(var.alphagov_git_repositories)
 
-  repository_name = "${var.alphagov_git_repositories[count.index]}"
+  repository_name = var.alphagov_git_repositories[count.index]
   description     = "Backup CodeCommit repo for github.com/alphagov/${var.alphagov_git_repositories[count.index]}"
   default_branch  = "master"
 }
+
