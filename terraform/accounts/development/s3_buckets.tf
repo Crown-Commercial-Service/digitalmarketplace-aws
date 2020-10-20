@@ -2,7 +2,7 @@ data "aws_iam_policy_document" "dev_uploads_s3_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -73,14 +73,14 @@ resource "aws_s3_bucket" "dev_uploads_s3_bucket" {
     enabled = true
   }
 
-  policy = "${data.aws_iam_policy_document.dev_uploads_s3_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.dev_uploads_s3_bucket_policy_document.json
 }
 
 data "aws_iam_policy_document" "cleaned_db_dumps_s3_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -151,5 +151,6 @@ resource "aws_s3_bucket" "cleaned_db_dumps_s3_bucket" {
     enabled = true
   }
 
-  policy = "${data.aws_iam_policy_document.cleaned_db_dumps_s3_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.cleaned_db_dumps_s3_bucket_policy_document.json
 }
+
