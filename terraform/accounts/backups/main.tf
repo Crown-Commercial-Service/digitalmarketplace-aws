@@ -1,10 +1,10 @@
 provider "aws" {
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 provider "aws" {
-  alias   = "london"
-  region  = "eu-west-2"
+  alias  = "london"
+  region = "eu-west-2"
 }
 
 resource "aws_iam_account_alias" "alias" {
@@ -12,8 +12,8 @@ resource "aws_iam_account_alias" "alias" {
 }
 
 module "cyber_security_audit_role" {
-  source = "git::https://github.com/alphagov/tech-ops//cyber-security/modules/gds_security_audit_role?ref=720885a9769c40942ff30b32179e1fad18f2ca10"
-  chain_account_id = "${var.gds_security_audit_chain_account_id}"
+  source           = "git::https://github.com/alphagov/tech-ops//cyber-security/modules/gds_security_audit_role?ref=720885a9769c40942ff30b32179e1fad18f2ca10"
+  chain_account_id = var.gds_security_audit_chain_account_id
 }
 
 terraform {
@@ -24,3 +24,4 @@ terraform {
     encrypt = "true"
   }
 }
+
