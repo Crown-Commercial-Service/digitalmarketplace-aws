@@ -3,7 +3,7 @@ data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
 resource "aws_s3_bucket" "server_access_logs_bucket" {
   bucket = "digitalmarketplace-logs-staging-staging"
   acl    = "log-delivery-write"
-  policy = "${data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json
 
   versioning {
     enabled = true
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "agreements_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -99,11 +99,11 @@ resource "aws_s3_bucket" "agreements_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-agreements-staging-staging/"
   }
 
-  policy = "${data.aws_iam_policy_document.agreements_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.agreements_bucket_policy_document.json
 }
 
 # Reports - jenkins: read write list
@@ -112,7 +112,7 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -170,11 +170,11 @@ resource "aws_s3_bucket" "reports_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-reports-staging-staging/"
   }
 
-  policy = "${data.aws_iam_policy_document.reports_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.reports_bucket_policy_document.json
 }
 
 # Communications - jenkins: listversions
@@ -183,7 +183,7 @@ data "aws_iam_policy_document" "communications_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -233,11 +233,11 @@ resource "aws_s3_bucket" "communications_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-communications-staging-staging/"
   }
 
-  policy = "${data.aws_iam_policy_document.communications_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.communications_bucket_policy_document.json
 }
 
 # Documents - jenkins: read write list listversions
@@ -246,7 +246,7 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -302,11 +302,11 @@ resource "aws_s3_bucket" "documents_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-documents-staging-staging/"
   }
 
-  policy = "${data.aws_iam_policy_document.documents_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.documents_bucket_policy_document.json
 }
 
 # G7-draft-documents
@@ -315,7 +315,7 @@ data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -345,14 +345,14 @@ data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
 resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   bucket = "digitalmarketplace-g7-draft-documents-staging-staging"
   acl    = "private"
-  policy = "${data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json
 
   versioning {
     enabled = true
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-g7-draft-documents-staging-staging/"
   }
 }
@@ -363,7 +363,7 @@ data "aws_iam_policy_document" "submissions_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -413,9 +413,10 @@ resource "aws_s3_bucket" "submissions_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-submissions-staging-staging/"
   }
 
-  policy = "${data.aws_iam_policy_document.submissions_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.submissions_bucket_policy_document.json
 }
+
