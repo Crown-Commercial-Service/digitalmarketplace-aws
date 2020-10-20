@@ -4,7 +4,7 @@ data "aws_iam_policy_document" "cross_region_documents_s3_bucket_policy_document
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -32,11 +32,11 @@ data "aws_iam_policy_document" "cross_region_documents_s3_bucket_policy_document
 }
 
 resource "aws_s3_bucket" "cross_region_documents_s3_bucket" {
-  provider = "aws.london"
+  provider = aws.london
   bucket   = "digitalmarketplace-cross-region-documents-preview-preview"
   acl      = "private"
   region   = "eu-west-2"
-  policy   = "${data.aws_iam_policy_document.cross_region_documents_s3_bucket_policy_document.json}"
+  policy   = data.aws_iam_policy_document.cross_region_documents_s3_bucket_policy_document.json
 
   versioning {
     enabled = true
@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "cross_region_agreements_s3_bucket_policy_documen
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -75,11 +75,11 @@ data "aws_iam_policy_document" "cross_region_agreements_s3_bucket_policy_documen
 }
 
 resource "aws_s3_bucket" "cross_region_agreements_s3_bucket" {
-  provider = "aws.london"
+  provider = aws.london
   bucket   = "digitalmarketplace-cross-region-agreements-preview-preview"
   acl      = "private"
   region   = "eu-west-2"
-  policy   = "${data.aws_iam_policy_document.cross_region_agreements_s3_bucket_policy_document.json}"
+  policy   = data.aws_iam_policy_document.cross_region_agreements_s3_bucket_policy_document.json
 
   versioning {
     enabled = true
@@ -90,7 +90,7 @@ data "aws_iam_policy_document" "cross_region_communications_s3_bucket_policy_doc
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -118,11 +118,11 @@ data "aws_iam_policy_document" "cross_region_communications_s3_bucket_policy_doc
 }
 
 resource "aws_s3_bucket" "cross_region_communications_s3_bucket" {
-  provider = "aws.london"
+  provider = aws.london
   bucket   = "digitalmarketplace-cross-region-communications-preview-preview"
   acl      = "private"
   region   = "eu-west-2"
-  policy   = "${data.aws_iam_policy_document.cross_region_communications_s3_bucket_policy_document.json}"
+  policy   = data.aws_iam_policy_document.cross_region_communications_s3_bucket_policy_document.json
 
   versioning {
     enabled = true
@@ -133,7 +133,7 @@ data "aws_iam_policy_document" "cross_region_submissions_s3_bucket_policy_docume
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -161,13 +161,14 @@ data "aws_iam_policy_document" "cross_region_submissions_s3_bucket_policy_docume
 }
 
 resource "aws_s3_bucket" "cross_region_submissions_s3_bucket" {
-  provider = "aws.london"
+  provider = aws.london
   bucket   = "digitalmarketplace-cross-region-submissions-preview-preview"
   acl      = "private"
   region   = "eu-west-2"
-  policy   = "${data.aws_iam_policy_document.cross_region_submissions_s3_bucket_policy_document.json}"
+  policy   = data.aws_iam_policy_document.cross_region_submissions_s3_bucket_policy_document.json
 
   versioning {
     enabled = true
   }
 }
+

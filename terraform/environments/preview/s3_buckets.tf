@@ -3,7 +3,7 @@ data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
 resource "aws_s3_bucket" "server_access_logs_bucket" {
   bucket = "digitalmarketplace-logs-preview-preview"
   acl    = "log-delivery-write"
-  policy = "${data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json
 
   versioning {
     enabled = true
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "agreements_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -121,11 +121,11 @@ resource "aws_s3_bucket" "agreements_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-agreements-preview-preview/"
   }
 
-  policy = "${data.aws_iam_policy_document.agreements_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.agreements_bucket_policy_document.json
 
   replication_configuration {
     role = "arn:aws:iam::${var.aws_dev_account_id}:role/replication"
@@ -136,7 +136,7 @@ resource "aws_s3_bucket" "agreements_bucket" {
       status = "Enabled"
 
       destination {
-        bucket = "${aws_s3_bucket.cross_region_agreements_s3_bucket.arn}"
+        bucket = aws_s3_bucket.cross_region_agreements_s3_bucket.arn
       }
     }
   }
@@ -148,7 +148,7 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -207,11 +207,11 @@ resource "aws_s3_bucket" "reports_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-reports-preview-preview/"
   }
 
-  policy = "${data.aws_iam_policy_document.reports_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.reports_bucket_policy_document.json
 }
 
 # Communications jenkins: read write listversions
@@ -220,7 +220,7 @@ data "aws_iam_policy_document" "communications_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -274,11 +274,11 @@ resource "aws_s3_bucket" "communications_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-communications-preview-preview/"
   }
 
-  policy = "${data.aws_iam_policy_document.communications_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.communications_bucket_policy_document.json
 
   replication_configuration {
     role = "arn:aws:iam::${var.aws_dev_account_id}:role/replication"
@@ -289,7 +289,7 @@ resource "aws_s3_bucket" "communications_bucket" {
       status = "Enabled"
 
       destination {
-        bucket = "${aws_s3_bucket.cross_region_communications_s3_bucket.arn}"
+        bucket = aws_s3_bucket.cross_region_communications_s3_bucket.arn
       }
     }
   }
@@ -301,7 +301,7 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
@@ -357,11 +357,11 @@ resource "aws_s3_bucket" "documents_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-documents-preview-preview/"
   }
 
-  policy = "${data.aws_iam_policy_document.documents_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.documents_bucket_policy_document.json
 
   replication_configuration {
     role = "arn:aws:iam::${var.aws_dev_account_id}:role/replication"
@@ -372,7 +372,7 @@ resource "aws_s3_bucket" "documents_bucket" {
       status = "Enabled"
 
       destination {
-        bucket = "${aws_s3_bucket.cross_region_documents_s3_bucket.arn}"
+        bucket = aws_s3_bucket.cross_region_documents_s3_bucket.arn
       }
     }
   }
@@ -384,7 +384,7 @@ data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -414,14 +414,14 @@ data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
 resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   bucket = "digitalmarketplace-g7-draft-documents-preview-preview"
   acl    = "private"
-  policy = "${data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json
 
   versioning {
     enabled = true
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-g7-draft-documents-preview-preview/"
   }
 }
@@ -432,7 +432,7 @@ data "aws_iam_policy_document" "submissions_bucket_policy_document" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type = "*"
 
       identifiers = [
@@ -485,7 +485,7 @@ resource "aws_s3_bucket" "submissions_bucket" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.server_access_logs_bucket.id}"
+    target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-submissions-preview-preview/"
   }
 
@@ -498,10 +498,11 @@ resource "aws_s3_bucket" "submissions_bucket" {
       status = "Enabled"
 
       destination {
-        bucket = "${aws_s3_bucket.cross_region_submissions_s3_bucket.arn}"
+        bucket = aws_s3_bucket.cross_region_submissions_s3_bucket.arn
       }
     }
   }
 
-  policy = "${data.aws_iam_policy_document.submissions_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.submissions_bucket_policy_document.json
 }
+
