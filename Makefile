@@ -98,7 +98,7 @@ deploy-app: ## Deploys the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
-	cf push --no-start --no-route -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
+	cf push --no-start --no-route -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --docker-username ${DOCKER_USERNAME}
 
 	@echo "Waiting to ensure new app's assigned service credentials have taken effect..."
 	sleep 60
