@@ -3,6 +3,7 @@ python:
   - "3.6"
   - "3.7"
   - "3.8"
+  - "3.9"
 env:
   - TERRAFORM_VERSION=0.11.14 TERRAFORM_FILE_NAME=terraform_${TERRAFORM_VERSION}_linux_amd64.zip TERRAFORM_DOWNLOAD_URL=https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${TERRAFORM_FILE_NAME}
 install:
