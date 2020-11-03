@@ -1,10 +1,33 @@
 ---
 domain: staging.marketplace.team
 maintenance_mode: live
-instances: 2
+instances: 5
 
 api:
-  memory: 2GB
+  memory: 4GB
+  instances: 20
+
+user-frontend:
+  instances: 2
+
+admin-frontend:
+  instances: 2
+  memory: 1GB
+
+antivirus-api:
+  instances: 4
+
+buyer-frontend:
+  instances: 10
+  memory: 1G
+
+search-api:
+  memory: 1G
+
+supplier-frontend:
+  instances: 40
+  memory: 4GB
 
 router:
-  rate_limiting_enabled: enabled
+  instances: 6
+  rate_limiting_enabled: disabled
