@@ -11,8 +11,8 @@ There are a few independent tools we're using that are configured and run from t
   to create and manage AWS resources (DNS records, CloudWatch logs, S3 buckets etc.)
 * `scripts` contains executable scripts we use to manage our PaaS environments and Hosted Graphite
 * `dmaws` contains some helper python functions used by some of the scripts
-* `paas` contains PaaS manifest templates that are rendered by `make generate-manifest`
-* `vars` contains environment specific variables used in the PaaS manifest generation
+* `paas` contains PaaS manifest templates that are rendered by `make generate-manifest`. To deploy changes, [re-release all the apps in the relevant environments](https://alphagov.github.io/digitalmarketplace-manual/infrastructure/paas.html#scaling-apps)
+* `vars` contains environment specific variables used in the PaaS manifest generation. To deploy changes, [re-release all the apps in the relevant environments](https://alphagov.github.io/digitalmarketplace-manual/infrastructure/paas.html#scaling-apps)
 * `kibana` contains a Makefile and dependencies list for managing Kibana configuration
 
 ## Setup
