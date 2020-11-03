@@ -15,7 +15,7 @@ admin-frontend:
   memory: 1GB
 
 antivirus-api:
-  instances: 4
+  instances: 8
 
 buyer-frontend:
   instances: 10
