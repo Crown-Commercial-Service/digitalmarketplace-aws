@@ -4,8 +4,8 @@ maintenance_mode: live
 instances: 5
 
 api:
-  memory: 2GB
-  instances: 10
+  memory: 4GB
+  instances: 20
 
 user-frontend:
   instances: 2
@@ -18,14 +18,15 @@ antivirus-api:
   instances: 4
 
 buyer-frontend:
+  instances: 10
   memory: 1G
 
 search-api:
   memory: 1G
 
 supplier-frontend:
-  instances: 10
-  memory: 1GB
+  instances: 40
+  memory: 4GB
 
 router:
   instances: 6
