@@ -9,8 +9,10 @@
 
       DM_MANDRILL_API_KEY: {{ shared_tokens.mandrill_key }}
 
+      DM_REDIS_SERVICE_NAME: 'digitalmarketplace_redis'
       DM_SEARCH_API_AUTH_TOKEN: {{ search_api.auth_tokens[0] }}
       DM_SEARCH_API_URL: https://dm-search-api-{{ environment }}.cloudapps.digital
+      
 
       PROXY_AUTH_CREDENTIALS: {{ proxy_auth_credentials }}
 
