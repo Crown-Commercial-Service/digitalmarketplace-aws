@@ -4,9 +4,44 @@ maintenance_mode: live
 
 api:
   memory: 2GB
-
+  
 buyer-frontend:
   instances: 2
+  services:
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
+    - digitalmarketplace_redis
+
+admin-frontend:
+  services:
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
+    - digitalmarketplace_redis
+
+brief-responses-frontend:
+  services:
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
+    - digitalmarketplace_redis
+
+briefs-frontend:
+  services:
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
+    - digitalmarketplace_redis
+
+supplier-frontend:
+  services:
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
+    - digitalmarketplace_redis
+    
+user-frontend:
+  services:
+    - digitalmarketplace_prometheus 
+    - digitalmarketplace_splunk
+    - digitalmarketplace_redis
+
 
 router:
   instances: 2
