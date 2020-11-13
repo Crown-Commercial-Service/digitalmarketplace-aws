@@ -49,6 +49,3 @@ router:
 
 search-api:
   instances: 2
-
-env:
-  DM_USE_REDIS_SESSION_TYPE: "true"
