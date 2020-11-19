@@ -45,3 +45,5 @@ user-frontend:
     - digitalmarketplace_splunk
     - digitalmarketplace_redis
 
+env:
+  DM_USE_REDIS_SESSION_TYPE: "true"
