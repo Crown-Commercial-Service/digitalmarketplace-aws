@@ -46,6 +46,7 @@ user-frontend:
   services:
     - digitalmarketplace_prometheus 
     - digitalmarketplace_splunk
+    - digitalmarketplace_redis
 
 admin-frontend:
   routes:
@@ -54,6 +55,7 @@ admin-frontend:
   services:
     - digitalmarketplace_prometheus 
     - digitalmarketplace_splunk
+    - digitalmarketplace_redis
 
 buyer-frontend:
   memory: 700M
@@ -64,6 +66,7 @@ buyer-frontend:
   services:
     - digitalmarketplace_prometheus 
     - digitalmarketplace_splunk
+    - digitalmarketplace_redis
 
 supplier-frontend:
   memory: 700M
@@ -73,6 +76,7 @@ supplier-frontend:
   services:
     - digitalmarketplace_prometheus 
     - digitalmarketplace_splunk
+    - digitalmarketplace_redis
 
 briefs-frontend:
   routes:
@@ -81,6 +85,7 @@ briefs-frontend:
   services:
     - digitalmarketplace_prometheus 
     - digitalmarketplace_splunk
+    - digitalmarketplace_redis
 
 brief-responses-frontend:
   routes:
@@ -89,6 +94,7 @@ brief-responses-frontend:
   services:
     - digitalmarketplace_prometheus 
     - digitalmarketplace_splunk
+    - digitalmarketplace_redis
 
 db-backup:
   instances: 1
@@ -101,3 +107,6 @@ db-migration:
   memory: 128M
   services:
     - digitalmarketplace_api_db
+
+env:
+  DM_USE_REDIS_SESSION_TYPE: "true"
