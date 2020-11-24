@@ -7,7 +7,7 @@ api:
   memory: 2GB
 
 router:
-  rate_limiting_enabled: disabled
+  rate_limiting_enabled: enabled
 
 buyer-frontend:
   services:
