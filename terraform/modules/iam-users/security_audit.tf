@@ -2,6 +2,29 @@ resource "aws_iam_group" "security_audit" {
   name = "SecurityAudit"
 }
 
+resource "aws_iam_group_policy" "security_audit_assume_role" {
+  name  = "SecurityAuditAssumeRole"
+  group = "${aws_iam_group.security_audit.name}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::${var.aws_dev_account_id}:role/security_audit",
+        "arn:aws:iam::${var.aws_prod_account_id}:role/security_audit"
+      ]
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_group_policy_attachment" "security_audit_policy" {
   group      = "${aws_iam_group.security_audit.name}"
   policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
