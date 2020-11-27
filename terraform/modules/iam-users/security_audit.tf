@@ -1,5 +1,5 @@
 resource "aws_iam_group" "security_audit" {
-  name = "Security Audit"
+  name = "SecurityAudit"
 }
 
 resource "aws_iam_group_policy_attachment" "security_audit_policy" {
@@ -12,7 +12,7 @@ resource "aws_iam_group_policy_attachment" "read_only_access_policy" {
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }
 
-resource "aws_iam_group_policy_attachment" "developers_ip_restriced" {
+resource "aws_iam_group_policy_attachment" "security_audit_ip_restricted" {
   group      = "${aws_iam_group.security_audit.name}"
   policy_arn = "${var.ip_restricted_access_policy_arn}"
 }

@@ -40,3 +40,7 @@ variable "dev_infrastructure_users" {
 variable "prod_infrastructure_users" {
   type = "list"
 }
+
+variable "security_audit_users" {
+  type = "list"
+}
