@@ -38,6 +38,7 @@ module "iam_users" {
   aws_dev_account_id              = "${var.aws_dev_account_id}"
   aws_backups_account_id          = "${var.aws_backups_account_id}"
   aws_prod_account_id             = "${var.aws_prod_account_id}"
+  security_audit_users            = "${var.security_audit_users}"
 }
 
 module "sops_credentials" {
