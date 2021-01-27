@@ -184,7 +184,7 @@ run-postgres-container: ## Runs a postgres container
 	docker stop ${POSTGRES_NAME} || true
 	docker rm -v ${POSTGRES_NAME} || true
 
-	docker run -d -p 63306:5432 -e POSTGRES_PASSWORD --name ${POSTGRES_NAME} postgres:10.13-alpine
+	docker run -d -p 63306:5432 -e POSTGRES_PASSWORD --name ${POSTGRES_NAME} postgres:12-alpine
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the postgres container, imports the latest dump and cleans it.
