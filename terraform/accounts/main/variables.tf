@@ -54,3 +54,6 @@ variable "prod_infrastructure_users" {
   type = list(string)
 }
 
+variable "security_audit_users" {
+  type = "list"
+}

@@ -10,4 +10,6 @@
 
       DM_SEARCH_API_AUTH_TOKEN: {{ search_api.auth_tokens[0] }}
       DM_SEARCH_API_URL: https://dm-search-api-{{ environment }}.cloudapps.digital
+
+      DM_G12_RECOVERY_SUPPLIER_IDS: {{ g12_recovery_supplier_ids|join(',') }}
 {% endblock %}

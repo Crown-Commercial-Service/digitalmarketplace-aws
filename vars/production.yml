@@ -4,11 +4,11 @@ maintenance_mode: live
 instances: 5
 
 router:
+  # If you change the number of router instances, update the per-instance rate limit to keep the overall rate limit the
+  # same. See digitalmarketplace-router/templates/nginx.conf.j2#L53
   instances: 6
   rate_limiting_enabled: enabled
   routes:
-    - dm-router-{env}.cloudapps.digital
-    - dm-router-{env}.cloudapps.digital/_metrics
     - www.digitalmarketplace.service.gov.uk
     - api.digitalmarketplace.service.gov.uk
     - search-api.digitalmarketplace.service.gov.uk

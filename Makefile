@@ -98,7 +98,9 @@ deploy-app: ## Deploys the app to PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${RELEASE_NAME},,$(error Must specify RELEASE_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
-	cf push --no-start --no-route -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME}
+	$(if ${CF_DOCKER_PASSWORD},,$(error Must specify CF_DOCKER_PASSWORD))
+	$(if ${DOCKER_USERNAME},,$(error Must specify DOCKER_USERNAME))
+	cf push --no-start --no-route -f <(make -s -C ${CURDIR} generate-manifest) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --docker-username ${DOCKER_USERNAME}
 
 	@echo "Waiting to ensure new app's assigned service credentials have taken effect..."
 	sleep 60
@@ -182,7 +184,7 @@ run-postgres-container: ## Runs a postgres container
 	docker stop ${POSTGRES_NAME} || true
 	docker rm -v ${POSTGRES_NAME} || true
 
-	docker run -d -p 63306:5432 -e POSTGRES_PASSWORD --name ${POSTGRES_NAME} postgres:9.5-alpine
+	docker run -d -p 63306:5432 -e POSTGRES_PASSWORD --name ${POSTGRES_NAME} postgres:12-alpine
 
 .PHONY: import-and-clean-db-dump
 import-and-clean-db-dump: virtualenv ## Connects to the postgres container, imports the latest dump and cleans it.

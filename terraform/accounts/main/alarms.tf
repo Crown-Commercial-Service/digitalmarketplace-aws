@@ -27,9 +27,10 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_data_volume_disk_space" {
   period             = "300"
 
   // If totals 10gb or lower (in bytes)
-  statistic           = "Sum"
+  statistic           = "Minimum"
   comparison_operator = "LessThanOrEqualToThreshold"
   threshold           = "10000000000"
+  datapoints_to_alarm = 1
 
   // Email slack
   alarm_actions = [module.alarm_email_sns.email_topic_arn]
@@ -53,9 +54,10 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_main_volume_disk_space" {
   period             = "300"
 
   // If totals 1gb or lower (in bytes)
-  statistic           = "Sum"
+  statistic           = "Minimum"
   comparison_operator = "LessThanOrEqualToThreshold"
   threshold           = "1000000000"
+  datapoints_to_alarm = 1
 
   // Email slack
   alarm_actions = [module.alarm_email_sns.email_topic_arn]

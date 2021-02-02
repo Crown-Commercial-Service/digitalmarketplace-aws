@@ -4,7 +4,7 @@ maintenance_mode: live
 
 api:
   memory: 2GB
-
+  
 buyer-frontend:
   instances: 2
 
