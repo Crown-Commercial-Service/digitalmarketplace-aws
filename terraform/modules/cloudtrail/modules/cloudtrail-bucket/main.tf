@@ -2,7 +2,7 @@ data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
   statement {
     effect = "Deny"
 
-    principals = {
+    principals {
       type        = "*"
       identifiers = ["*"]
     }
