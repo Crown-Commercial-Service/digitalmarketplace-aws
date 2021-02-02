@@ -22,10 +22,10 @@ define run_terraform
 	PRIVATE_KEY_FILE=$$(mktemp) ;\
 	trap 'rm $$PRIVATE_KEY_FILE' EXIT ;\
 	${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/aws-keys/ci.pem.enc > $$PRIVATE_KEY_FILE ;\
+	TF_VAR_jenkins_public_key="$$(ssh-keygen -y -f $$PRIVATE_KEY_FILE)" \
 	aws-auth terraform ${1} \
 		-var-file=<(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/terraform/${TERRAFORM_PROJECT}.json) \
 		-var-file=<(${DM_CREDENTIALS_REPO}/sops-wrapper -d ${DM_CREDENTIALS_REPO}/terraform/common.json) \
-		-var jenkins_public_key="$$(ssh-keygen -y -f $$PRIVATE_KEY_FILE)" \
 		${2}
 endef
 
