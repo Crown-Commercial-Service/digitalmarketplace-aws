@@ -19,8 +19,8 @@ resource "aws_cloudwatch_metric_alarm" "slow_requests_5_10_alarm" {
   treat_missing_data = "notBreaching"
 
   // Email slack
-  alarm_actions = ["${var.alarm_email_topic_arn}"]
-  ok_actions    = ["${var.alarm_recovery_email_topic_arn}"]
+  alarm_actions = [var.alarm_email_topic_arn]
+  ok_actions    = [var.alarm_recovery_email_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "slow_requests_gt_10_alarm" {
@@ -44,6 +44,6 @@ resource "aws_cloudwatch_metric_alarm" "slow_requests_gt_10_alarm" {
   treat_missing_data = "notBreaching"
 
   // Email slack
-  alarm_actions = ["${var.alarm_email_topic_arn}"]
-  ok_actions    = ["${var.alarm_recovery_email_topic_arn}"]
+  alarm_actions = [var.alarm_email_topic_arn]
+  ok_actions    = [var.alarm_recovery_email_topic_arn]
 }

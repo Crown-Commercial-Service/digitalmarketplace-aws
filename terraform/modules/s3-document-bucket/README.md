@@ -22,7 +22,7 @@ module "a_bucket" {
   source              = "../../modules/s3-document-bucket"
   environment         = "preview"                                            # Used as a bucket name suffix in line with current conventions
   bucket_name         = "submissions"                                        # Actual name
-  log_bucket_arn      = "${aws_s3_bucket.server_access_logs_bucket.arn}"     # A bucket to log access to
+  log_bucket_arn      = aws_s3_bucket.server_access_logs_bucket.arn     # A bucket to log access to
   read_object_roles   = ["arn:aws:iam::<SOME-ACCOUNT-ID>:role/<SOME-ROLE>"]  # Roles to give read
   write_object_roles  = []                                                   # Roles to give write
   list_bucket_roles   = ["arn:aws:iam::<SOME-ACCOUNT-ID>:role/<SOME-ROLE>"]  # Roles to give list

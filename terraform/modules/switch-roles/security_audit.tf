@@ -23,16 +23,16 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "security_audit_security_audit" {
-  role       = "${aws_iam_role.security_audit.id}"
+  role       = aws_iam_role.security_audit.id
   policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
 }
 
 resource "aws_iam_role_policy_attachment" "security_audit_read_only" {
-  role       = "${aws_iam_role.security_audit.id}"
+  role       = aws_iam_role.security_audit.id
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "security_audit_ip_restricted" {
-  role       = "${aws_iam_role.security_audit.name}"
-  policy_arn = "${var.ip_restricted_access_policy_arn}"
+  role       = aws_iam_role.security_audit.name
+  policy_arn = var.ip_restricted_access_policy_arn
 }

@@ -64,17 +64,17 @@ module "cloudtrail-cloudwatch" {
 module "cloudtrail-validate-logs-role" {
   source            = "../modules/cloudtrail/modules/cloudtrail-validate-logs-role"
   assume_role_arn   = "arn:aws:iam::${var.account_id}:root" // Which account can assume this role
-  s3_bucket_arn     = "${module.cloudtrail-bucket.s3_bucket_arn}"
+  s3_bucket_arn     = module.cloudtrail-bucket.s3_bucket_arn
 }
 
 // Set up the CloudTrail trail
 module "cloudtrail-cloudtrail" {
   source                     = "../../modules/cloudtrail/modules/cloudtrail"
   trail_name                 = "digitalmarketplaces-account-cloudtrail" // Can be any name
-  s3_bucket_name             = "${module.cloudtrail_bucket.s3_bucket_name}" // This is currently the name of the bucket being used
-  s3_bucket_key_prefix       = "${var.account_id}" // As per RE guidelines this should be the id of the account exporting the CloudTrail trail log files
-  cloud_watch_logs_role_arn  = "${module.cloudtrail-cloudwatch.cloud_watch_logs_role_arn}"
-  cloud_watch_logs_group_arn = "${module.cloudtrail-cloudwatch.cloud_watch_logs_group_arn}"
+  s3_bucket_name             = module.cloudtrail_bucket.s3_bucket_name // This is currently the name of the bucket being used
+  s3_bucket_key_prefix       = var.account_id // As per RE guidelines this should be the id of the account exporting the CloudTrail trail log files
+  cloud_watch_logs_role_arn  = module.cloudtrail-cloudwatch.cloud_watch_logs_role_arn
+  cloud_watch_logs_group_arn = module.cloudtrail-cloudwatch.cloud_watch_logs_group_arn
 }
 ```
 
@@ -83,9 +83,9 @@ The `main.tf` file of this module will take care of all of this for you however:
 ```
 module "cloudtrail" {
   source               = "../../modules/cloudtrail"
-  account_id           = "${var.account_id}" // for the S3 bucket key prefix
+  account_id           = var.account_id // for the S3 bucket key prefix
   s3_bucket_name       = "digitalmarketplaces-account-cloudtrail-bucket" // Can be any name
   trail_name           = "digitalmarketplaces-account-cloudtrail" // Can be any name
-  validate_account_id  = "${var.account_id}" // For assuming the cloudtrail-validate-logs role
+  validate_account_id  = var.account_id // For assuming the cloudtrail-validate-logs role
 }
 ```

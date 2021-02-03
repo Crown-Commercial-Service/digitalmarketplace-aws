@@ -70,12 +70,12 @@ data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
 }
 
 resource "aws_s3_bucket" "cloudtrail_bucket" {
-  bucket        = "${var.s3_bucket_name}"
+  bucket        = var.s3_bucket_name
   force_destroy = true
 
   versioning {
     enabled = true
   }
 
-  policy = "${data.aws_iam_policy_document.cloudtrail_bucket_policy.json}"
+  policy = data.aws_iam_policy_document.cloudtrail_bucket_policy.json
 }
