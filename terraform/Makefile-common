@@ -16,7 +16,7 @@ init:: ## Run init
 	aws-auth terraform get
 	aws-auth terraform init
 
-define run_terraform
+define run_terraform  # TODO: convert variable files to provide environment variables instead
 	@set -e ;\
 	${DM_CREDENTIALS_REPO}/sops-wrapper -v > /dev/null ;\
 	PRIVATE_KEY_FILE=$$(mktemp) ;\
