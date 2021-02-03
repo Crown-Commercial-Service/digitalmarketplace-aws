@@ -9,7 +9,7 @@ resource "aws_route53_zone" "root" {
 
 resource "aws_route53_record" "www_acm_validation" {
   zone_id = aws_route53_zone.root.zone_id
-  name    = var.www_acm_name}${var.domain
+  name    = "${var.www_acm_name}${var.domain}"
   type    = "CNAME"
   ttl     = "86400"
 
@@ -20,7 +20,7 @@ resource "aws_route53_record" "www_acm_validation" {
 
 resource "aws_route53_record" "api_acm_validation" {
   zone_id = aws_route53_zone.root.zone_id
-  name    = var.api_acm_name}${var.domain
+  name    = "${var.api_acm_name}${var.domain}"
   type    = "CNAME"
   ttl     = "86400"
 
@@ -31,7 +31,7 @@ resource "aws_route53_record" "api_acm_validation" {
 
 resource "aws_route53_record" "search_api_acm_validation" {
   zone_id = aws_route53_zone.root.zone_id
-  name    = var.search_api_acm_name}${var.domain
+  name    = "${var.search_api_acm_name}${var.domain}"
   type    = "CNAME"
   ttl     = "86400"
 
@@ -42,7 +42,7 @@ resource "aws_route53_record" "search_api_acm_validation" {
 
 resource "aws_route53_record" "antivirus_api_acm_validation" {
   zone_id = aws_route53_zone.root.zone_id
-  name    = var.antivirus_api_acm_name}${var.domain
+  name    = "${var.antivirus_api_acm_name}${var.domain}"
   type    = "CNAME"
   ttl     = "86400"
 
@@ -53,7 +53,7 @@ resource "aws_route53_record" "antivirus_api_acm_validation" {
 
 resource "aws_route53_record" "assets_acm_validation" {
   zone_id = aws_route53_zone.root.zone_id
-  name    = var.www_acm_name}${var.domain
+  name    = "${var.www_acm_name}${var.domain}"
   type    = "CNAME"
   ttl     = "86400"
 

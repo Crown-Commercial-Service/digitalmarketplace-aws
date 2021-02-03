@@ -37,7 +37,7 @@ resource "aws_iam_role_policy" "cloud_watch_policy" {
         "logs:CreateLogStream"
       ],
       "Resource": [
-        "${aws_cloudwatch_log_group.cloudtrail_log_group.arn}"
+        aws_cloudwatch_log_group.cloudtrail_log_group.arn
       ]
     },
     {
@@ -46,7 +46,7 @@ resource "aws_iam_role_policy" "cloud_watch_policy" {
         "logs:PutLogEvents"
       ],
       "Resource": [
-        "${aws_cloudwatch_log_group.cloudtrail_log_group.arn}"
+        aws_cloudwatch_log_group.cloudtrail_log_group.arn
       ]
     }
   ]

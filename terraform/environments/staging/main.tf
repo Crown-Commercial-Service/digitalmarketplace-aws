@@ -51,13 +51,13 @@ module "log_streaming" {
     module.staging_router.json_log_groups,
     module.application_logs.nginx_log_groups,
   )]
-  application_log_groups = [module.application_logs.application_log_groups]
+  application_log_groups = module.application_logs.application_log_groups
 }
 
 module "log_metrics" {
   source                               = "../../modules/logging/log-metric-filters"
   environment                          = "staging"
-  app_names                            = [module.application_logs.app_names]
+  app_names                            = module.application_logs.app_names
   router_log_group_name                = element(module.staging_router.json_log_groups, 0)
   antivirus_sns_failure_log_group_name = module.antivirus-sns.failure_log_group_name
   antivirus_sns_success_log_group_name = module.antivirus-sns.success_log_group_name

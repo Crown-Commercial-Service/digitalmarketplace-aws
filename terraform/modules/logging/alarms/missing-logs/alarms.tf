@@ -4,15 +4,15 @@
 
 resource "aws_cloudwatch_metric_alarm" "missing_logs_alarm" {
   count             = length(var.app_names)
-  alarm_name        = var.environment}-missing-logs-${var.app_names[count.index]
+  alarm_name        = "${var.environment}-missing-logs-${var.app_names[count.index]}"
   alarm_description = "Alerts on missing logs from ${var.environment} ${var.app_names[count.index]}"
 
   // Metric
   namespace   = "AWS/Logs"
   metric_name = "IncomingLogEvents"
 
-  dimensions {
-    LogGroupName = var.environment}-${var.app_names[count.index]}-${var.type
+  dimensions = {
+    LogGroupName = "${var.environment}-${var.app_names[count.index]}-${var.type}"
   }
 
   // For 5 minutes

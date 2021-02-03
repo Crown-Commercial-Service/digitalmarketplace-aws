@@ -15,7 +15,7 @@ module "missing_application_logs_alarms" {
   source                         = "../../modules/logging/alarms/missing-logs"
   environment                    = "production"
   type                           = "application"
-  app_names                      = [module.application_logs.app_names]
+  app_names                      = module.application_logs.app_names
   alarm_email_topic_arn          = module.alarm_email_sns.email_topic_arn
   alarm_recovery_email_topic_arn = module.alarm_recovery_email_sns.email_topic_arn
 }

@@ -15,8 +15,8 @@ resource "aws_iam_policy" "sops_credentials_access" {
         "kms:DescribeKey"
       ],
       "Resource": [
-        "${aws_kms_key.sops_credentials_primary.arn}",
-        "${aws_kms_key.sops_credentials_secondary.arn}"
+        aws_kms_key.sops_credentials_primary.arn,
+        aws_kms_key.sops_credentials_secondary.arn
       ]
     },
     {
@@ -72,7 +72,7 @@ resource "aws_iam_policy" "assume_sops_credentials_access" {
       "Action": [
         "sts:AssumeRole"
       ],
-      "Resource": "${aws_iam_role.sops_credentials_access.arn}",
+      "Resource": aws_iam_role.sops_credentials_access.arn,
       "Condition": {
         "Bool": {
           "aws:MultiFactorAuthPresent": true
