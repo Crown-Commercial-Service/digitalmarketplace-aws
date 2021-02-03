@@ -52,10 +52,10 @@ module "log_streaming" {
   elasticsearch_url     = var.logs_elasticsearch_url
   elasticsearch_api_key = var.logs_elasticsearch_api_key
 
-  nginx_log_groups = [concat(
+  nginx_log_groups = concat(
     module.production_router.json_log_groups,
     module.application_logs.nginx_log_groups,
-  )]
+  )
   application_log_groups = module.application_logs.application_log_groups
 }
 
