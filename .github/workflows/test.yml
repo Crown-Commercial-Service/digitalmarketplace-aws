@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install Ubuntu packages
-        run: sudo apt-get install libxml2-dev libxslt1-dev python-dev terraform=$(cat terraform/.terraform-version)
+        run: sudo apt-get install libxml2-dev libxslt1-dev python-dev
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -30,6 +30,17 @@ jobs:
       - name: Run Python tests
         run: make test
 
+  terraform_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Terraform
+        run: |
+          brew install tfenv
+          tfenv install
+
       - name: Validate terraform
         run: |
           make terraformatest
+          make test-terraform
