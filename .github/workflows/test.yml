@@ -40,6 +40,12 @@ jobs:
           brew install tfenv
           tfenv install
 
+      - name: Setup Terraform cache
+        uses: actions/cache@v2
+        with:
+          path: "**/.terraform"
+          key: terraform-${{ runner.os }}-${{ hashFiles('**/.terraform-version') }}
+
       - name: Validate terraform
         run: |
           make terraformatest

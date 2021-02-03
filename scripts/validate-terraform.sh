@@ -7,8 +7,9 @@ function validate() {
   echo $validate_path
   cd $validate_path
 
-  if [ ! -e .terraform ]
+  if [ ! -e .terraform/terraform.tfstate ]
   then
+    # Has never been initialised with AWS access, so we can safely (re-)initialise without AWS access.
     terraform init -backend=false
   fi
 
