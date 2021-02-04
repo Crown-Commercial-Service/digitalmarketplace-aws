@@ -24,11 +24,15 @@ test: test-flake8 test-unit
 
 .PHONY: terraformat
 terraformat:
-	terraform fmt -list=true -diff=true -write=true terraform
+	terraform fmt -list=true -diff=true -write=true -recursive terraform
 
 .PHONY: terraformatest
 terraformatest:
 	./scripts/check-terraform-formatting.sh
+
+.PHONY: test-terraform
+test-terraform:
+	./scripts/validate-terraform.sh
 
 .PHONY: test-flake8
 test-flake8: virtualenv
