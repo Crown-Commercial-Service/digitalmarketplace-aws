@@ -101,6 +101,7 @@ resource "aws_cloudwatch_metric_alarm" "log_stream_lambda_error_alarm" {
   treat_missing_data = "notBreaching"
 
   // Email slack
+  alarm_actions = [module.alarm_email_sns.email_topic_arn]
   ok_actions = [module.alarm_recovery_email_sns.email_topic_arn]
 }
 
