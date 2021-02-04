@@ -28,7 +28,7 @@ such as `make requirements` or `pip`).
 
 ### Install Terraform
 
-Make sure you have Terraform installed. You will need the latest v0.12 version. Terraform is backwards incompatible (i.e. if someone has run terraform `plan` with version v0.12.3 and then you try to run it with v0.12.2, it will say that you need to update your tool to at least v0.12.3) so the minimum version will be based on what the developer before you has used.
+Make sure you have Terraform installed. You will need the version set in [.terraform-version](.terraform-version). Terraform is backwards incompatible (i.e. if someone has run terraform `plan` with version v0.12.3 and then you try to run it with v0.12.2, it will say that you need to update your tool to at least v0.12.3) so the minimum version will be based on what the developer before you has used.
 
 You should use [tfenv](https://github.com/tfutils/tfenv) to install and manage Terraform, as this is the easiest way to get the right version. You may instead [download it directly](https://www.terraform.io/downloads.html), or run `brew install terraform`.
 
