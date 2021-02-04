@@ -54,7 +54,7 @@ Terraform can be used only with MFA therefore you have to set up your profiles b
 
 Before running a terraform command you need to set the `AWS_PROFILE` environment variable. This needs to be set to a profile that has permissions to complete the tasks included in the command.
 
-You can find details of the AWS profiles in the [AWS accounts section](https://alphagov.github.io/digitalmarketplace-manual/aws-accounts.html#available-roles) of the Digital Marketplace manual.
+You can find details of the AWS profiles in the [AWS accounts section](https://alphagov.github.io/digitalmarketplace-manual/infrastructure/aws-accounts.html#available-roles) of the Digital Marketplace manual.
 
 
 ### Example
