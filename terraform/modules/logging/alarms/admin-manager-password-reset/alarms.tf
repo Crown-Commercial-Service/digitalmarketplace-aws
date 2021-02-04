@@ -19,6 +19,6 @@ resource "aws_cloudwatch_metric_alarm" "admin_manager_password_reset" {
   treat_missing_data = "notBreaching"
 
   // Email slack
-  alarm_actions = ["${var.alarm_email_topic_arn}"]
-  ok_actions    = ["${var.alarm_recovery_email_topic_arn}"]
+  alarm_actions = [var.alarm_email_topic_arn]
+  ok_actions    = [var.alarm_recovery_email_topic_arn]
 }

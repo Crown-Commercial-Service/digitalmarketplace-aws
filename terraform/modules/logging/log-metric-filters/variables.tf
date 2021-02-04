@@ -1,11 +1,19 @@
-variable "environment" {}
-
-variable "app_names" {
-  type = "list"
+variable "environment" {
 }
 
-variable "router_log_group_name" {}
+variable "app_names" {
+  type = list(string)
+}
 
-variable "antivirus_sns_failure_log_group_name" {}
-variable "antivirus_sns_success_log_group_name" {}
-variable "antivirus_sns_topic_num_retries" {}
+variable "router_log_group_name" {
+}
+
+variable "antivirus_sns_failure_log_group_name" {
+}
+
+variable "antivirus_sns_success_log_group_name" {
+}
+
+variable "antivirus_sns_topic_num_retries" {
+}
+

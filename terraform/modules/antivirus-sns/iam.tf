@@ -15,11 +15,12 @@ resource "aws_iam_role" "sns_success_feedback" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "sns_success_feedback_sns_feedback" {
-  role       = "${aws_iam_role.sns_success_feedback.name}"
-  policy_arn = "${aws_iam_policy.sns_feedback.arn}"
+  role       = aws_iam_role.sns_success_feedback.name
+  policy_arn = aws_iam_policy.sns_feedback.arn
 }
 
 resource "aws_iam_role" "sns_failure_feedback" {
@@ -39,11 +40,12 @@ resource "aws_iam_role" "sns_failure_feedback" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "sns_failure_feedback_sns_feedback" {
-  role       = "${aws_iam_role.sns_failure_feedback.name}"
-  policy_arn = "${aws_iam_policy.sns_feedback.arn}"
+  role       = aws_iam_role.sns_failure_feedback.name
+  policy_arn = aws_iam_policy.sns_feedback.arn
 }
 
 resource "aws_iam_policy" "sns_feedback" {
@@ -69,6 +71,7 @@ resource "aws_iam_policy" "sns_feedback" {
   ]
 }
 EOF
+
 }
 
 data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
@@ -94,7 +97,7 @@ data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
       variable = "AWS:SourceOwner"
 
       values = [
-        "${var.account_id}",
+        var.account_id,
       ]
     }
 
@@ -106,7 +109,7 @@ data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
     }
 
     resources = [
-      "${aws_sns_topic.s3_file_upload_notification.arn}",
+      aws_sns_topic.s3_file_upload_notification.arn,
     ]
   }
 
@@ -133,7 +136,7 @@ data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
     }
 
     resources = [
-      "${aws_sns_topic.s3_file_upload_notification.arn}",
+      aws_sns_topic.s3_file_upload_notification.arn,
     ]
   }
 
@@ -148,7 +151,7 @@ data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
 
-      values = ["${var.bucket_arns}"]
+      values = var.bucket_arns
     }
 
     effect = "Allow"
@@ -159,7 +162,8 @@ data "aws_iam_policy_document" "s3_file_upload_notification_topic_policy" {
     }
 
     resources = [
-      "${aws_sns_topic.s3_file_upload_notification.arn}",
+      aws_sns_topic.s3_file_upload_notification.arn,
     ]
   }
 }
+

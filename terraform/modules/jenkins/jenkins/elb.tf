@@ -1,11 +1,11 @@
 resource "aws_elb" "jenkins_elb" {
   name            = "${var.name}-ELB"
-  subnets         = ["${aws_instance.jenkins.subnet_id}"]
-  instances       = ["${aws_instance.jenkins.id}"]
-  security_groups = ["${aws_security_group.jenkins_elb_security_group.id}"]
+  subnets         = [aws_instance.jenkins.subnet_id]
+  instances       = [aws_instance.jenkins.id]
+  security_groups = [aws_security_group.jenkins_elb_security_group.id]
 
   access_logs {
-    bucket   = "${var.log_bucket_name}"
+    bucket   = var.log_bucket_name
     interval = 60
     enabled  = true
   }
@@ -15,7 +15,7 @@ resource "aws_elb" "jenkins_elb" {
     instance_protocol  = "http"
     lb_port            = 443
     lb_protocol        = "https"
-    ssl_certificate_id = "${var.jenkins_wildcard_elb_cert_arn}"
+    ssl_certificate_id = var.jenkins_wildcard_elb_cert_arn
   }
 
   listener {
@@ -33,7 +33,8 @@ resource "aws_elb" "jenkins_elb" {
     interval            = 30
   }
 
-  tags {
+  tags = {
     Name = "${var.name} ELB"
   }
 }
+

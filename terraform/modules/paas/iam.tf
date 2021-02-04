@@ -1,9 +1,14 @@
+provider "aws" {
+  region  = "eu-west-1"
+  version = "~> 2.70"
+}
+
 resource "aws_iam_user" "paas_app" {
   name = "paas-app"
 }
 
 resource "aws_iam_user_policy" "paas_app_policy" {
-  user = "${aws_iam_user.paas_app.name}"
+  user = aws_iam_user.paas_app.name
   name = "PaaSAppPolicy"
 
   policy = <<EOF
@@ -41,4 +46,6 @@ resource "aws_iam_user_policy" "paas_app_policy" {
   ]
 }
 EOF
+
 }
+

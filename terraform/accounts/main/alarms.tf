@@ -1,13 +1,13 @@
 module "alarm_email_sns" {
   source     = "../../modules/logging/alarms/email-notification"
   name       = "main"
-  account_id = "${var.aws_main_account_id}"
+  account_id = var.aws_main_account_id
 }
 
 module "alarm_recovery_email_sns" {
   source     = "../../modules/logging/alarms/email-notification"
   name       = "main-recovery"
-  account_id = "${var.aws_main_account_id}"
+  account_id = var.aws_main_account_id
 }
 
 resource "aws_cloudwatch_metric_alarm" "jenkins_data_volume_disk_space" {
@@ -33,8 +33,8 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_data_volume_disk_space" {
   datapoints_to_alarm = 1
 
   // Email slack
-  alarm_actions = ["${module.alarm_email_sns.email_topic_arn}"]
-  ok_actions    = ["${module.alarm_recovery_email_sns.email_topic_arn}"]
+  alarm_actions = [module.alarm_email_sns.email_topic_arn]
+  ok_actions = [module.alarm_recovery_email_sns.email_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "jenkins_main_volume_disk_space" {
@@ -60,6 +60,7 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_main_volume_disk_space" {
   datapoints_to_alarm = 1
 
   // Email slack
-  alarm_actions = ["${module.alarm_email_sns.email_topic_arn}"]
-  ok_actions    = ["${module.alarm_recovery_email_sns.email_topic_arn}"]
+  alarm_actions = [module.alarm_email_sns.email_topic_arn]
+  ok_actions = [module.alarm_recovery_email_sns.email_topic_arn]
 }
+

@@ -4,7 +4,7 @@ resource "aws_iam_group" "dev_infrastructure" {
 
 resource "aws_iam_group_policy" "dev_infrastructure" {
   name  = "DevInfrastructure"
-  group = "${aws_iam_group.dev_infrastructure.name}"
+  group = aws_iam_group.dev_infrastructure.name
 
   policy = <<EOF
 {
@@ -22,13 +22,14 @@ resource "aws_iam_group_policy" "dev_infrastructure" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_group_membership" "dev_infrastructure" {
   name       = "dev_infrastructure"
-  users      = ["${var.dev_infrastructure_users}"]
-  group      = "${aws_iam_group.dev_infrastructure.name}"
-  depends_on = ["module.users"]
+  users      = var.dev_infrastructure_users
+  group      = aws_iam_group.dev_infrastructure.name
+  depends_on = [module.users]
 }
 
 resource "aws_iam_group" "prod_infrastructure" {
@@ -37,7 +38,7 @@ resource "aws_iam_group" "prod_infrastructure" {
 
 resource "aws_iam_group_policy" "prod_infrastructure" {
   name  = "ProdInfrastructure"
-  group = "${aws_iam_group.prod_infrastructure.name}"
+  group = aws_iam_group.prod_infrastructure.name
 
   policy = <<EOF
 {
@@ -55,11 +56,13 @@ resource "aws_iam_group_policy" "prod_infrastructure" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_group_membership" "prod_infrastructure" {
   name       = "prod_infrastructure"
-  users      = ["${var.prod_infrastructure_users}"]
-  group      = "${aws_iam_group.prod_infrastructure.name}"
-  depends_on = ["module.users"]
+  users      = var.prod_infrastructure_users
+  group      = aws_iam_group.prod_infrastructure.name
+  depends_on = [module.users]
 }
+

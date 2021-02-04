@@ -6,3 +6,4 @@ resource "aws_iam_account_password_policy" "policy" {
   require_symbols                = false
   allow_users_to_change_password = true
 }
+

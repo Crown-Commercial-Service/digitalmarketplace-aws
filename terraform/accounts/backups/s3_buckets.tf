@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "cross_region_database_backups_s3_bucket" {
-  provider = "aws.london"
+  provider = aws.london
   bucket   = "digitalmarketplace-cross-region-database-backups"
   acl      = "private"
   region   = "eu-west-2"
@@ -51,6 +51,7 @@ resource "aws_s3_bucket" "cross_region_database_backups_s3_bucket" {
   ]
 }
 POLICY
+
 }
 
 resource "aws_s3_bucket" "database_backups_s3_bucket" {
@@ -124,8 +125,9 @@ resource "aws_s3_bucket" "database_backups_s3_bucket" {
 }
 POLICY
 
+
   replication_configuration {
-    role = "${aws_iam_role.replication_role.arn}"
+    role = aws_iam_role.replication_role.arn
 
     rules {
       id     = "cross-region-backups-replication"
@@ -133,8 +135,9 @@ POLICY
       status = "Enabled"
 
       destination {
-        bucket = "${aws_s3_bucket.cross_region_database_backups_s3_bucket.arn}"
+        bucket = aws_s3_bucket.cross_region_database_backups_s3_bucket.arn
       }
     }
   }
 }
+

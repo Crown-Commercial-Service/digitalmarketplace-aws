@@ -11,7 +11,10 @@ resource "aws_iam_policy" "ip_restricted_access" {
     "Resource": "*",
     "Condition": {
       "NotIpAddress": {
-        "aws:SourceIp": [${join(",", formatlist("\"%s\"", var.aws_account_and_jenkins_login_ips))}]
+        "aws:SourceIp": [${join(
+  ",",
+  formatlist("\"%s\"", var.aws_account_and_jenkins_login_ips),
+)}]
       },
       "Null": {
         "kms:ViaService": "true"
@@ -20,6 +23,7 @@ resource "aws_iam_policy" "ip_restricted_access" {
   }
 }
 EOF
+
 }
 
 resource "aws_iam_policy" "iam_manage_account" {
@@ -92,4 +96,6 @@ resource "aws_iam_policy" "iam_manage_account" {
   ]
 }
 EOF
+
 }
+

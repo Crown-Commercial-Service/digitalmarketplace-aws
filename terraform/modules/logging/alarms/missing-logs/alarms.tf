@@ -3,7 +3,7 @@
 // The alarm will be triggered when the metric is not emitted due to the breaching poicy on missing data
 
 resource "aws_cloudwatch_metric_alarm" "missing_logs_alarm" {
-  count             = "${length(var.app_names)}"
+  count             = length(var.app_names)
   alarm_name        = "${var.environment}-missing-logs-${var.app_names[count.index]}"
   alarm_description = "Alerts on missing logs from ${var.environment} ${var.app_names[count.index]}"
 
@@ -11,7 +11,7 @@ resource "aws_cloudwatch_metric_alarm" "missing_logs_alarm" {
   namespace   = "AWS/Logs"
   metric_name = "IncomingLogEvents"
 
-  dimensions {
+  dimensions = {
     LogGroupName = "${var.environment}-${var.app_names[count.index]}-${var.type}"
   }
 
@@ -30,6 +30,6 @@ resource "aws_cloudwatch_metric_alarm" "missing_logs_alarm" {
   treat_missing_data = "breaching"
 
   // Email slack on error and recovery
-  alarm_actions = ["${var.alarm_email_topic_arn}"]
-  ok_actions    = ["${var.alarm_recovery_email_topic_arn}"]
+  alarm_actions = [var.alarm_email_topic_arn]
+  ok_actions    = [var.alarm_recovery_email_topic_arn]
 }

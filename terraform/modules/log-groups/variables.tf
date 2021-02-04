@@ -1,8 +1,11 @@
-variable "environment" {}
-variable "retention_in_days" {}
+variable "environment" {
+}
+
+variable "retention_in_days" {
+}
 
 variable "app_names" {
-  type = "list"
+  type = list(string)
 
   default = [
     "buyer-frontend",
@@ -16,3 +19,4 @@ variable "app_names" {
     "antivirus-api",
   ]
 }
+

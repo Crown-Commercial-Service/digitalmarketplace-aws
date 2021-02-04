@@ -2,7 +2,7 @@ data "aws_iam_policy_document" "jenkins_role" {
   statement {
     actions = ["sts:AssumeRole"]
 
-    principals = {
+    principals {
       type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
@@ -12,12 +12,12 @@ data "aws_iam_policy_document" "jenkins_role" {
 resource "aws_iam_role" "jenkins" {
   name = "jenkins-ci-IAMRole-1FIPDG9DE2CWJ"
 
-  assume_role_policy = "${data.aws_iam_policy_document.jenkins_role.json}"
+  assume_role_policy = data.aws_iam_policy_document.jenkins_role.json
 }
 
 resource "aws_iam_instance_profile" "jenkins" {
   name = "jenkins-ci-InstanceProfile-AOFDQ580SQSK"
-  role = "${aws_iam_role.jenkins.id}"
+  role = aws_iam_role.jenkins.id
 }
 
 data "aws_iam_policy_document" "jenkins_policy" {
@@ -28,7 +28,10 @@ data "aws_iam_policy_document" "jenkins_policy" {
       "sts:AssumeRole",
     ]
 
-    resources = "${formatlist("arn:aws:iam::%s:role/infrastructure", var.aws_sub_account_ids)}"
+    resources = formatlist(
+      "arn:aws:iam::%s:role/infrastructure",
+      var.aws_sub_account_ids,
+    )
   }
 
   statement {
@@ -191,9 +194,9 @@ data "aws_iam_policy_document" "jenkins_policy" {
 
 resource "aws_iam_role_policy" "jenkins" {
   name = "Jenkins"
-  role = "${aws_iam_role.jenkins.id}"
+  role = aws_iam_role.jenkins.id
 
-  policy = "${data.aws_iam_policy_document.jenkins_policy.json}"
+  policy = data.aws_iam_policy_document.jenkins_policy.json
 }
 
 data "aws_iam_policy_document" "cloudwatch-logs-policy" {
@@ -213,9 +216,9 @@ data "aws_iam_policy_document" "cloudwatch-logs-policy" {
 
 resource "aws_iam_role_policy" "jenkins-cloudwatch-logs" {
   name = "JenkinsCloudWatchLogs"
-  role = "${aws_iam_role.jenkins.id}"
+  role = aws_iam_role.jenkins.id
 
-  policy = "${data.aws_iam_policy_document.cloudwatch-logs-policy.json}"
+  policy = data.aws_iam_policy_document.cloudwatch-logs-policy.json
 }
 
 data "aws_iam_policy_document" "cloudwatch-metrics-policy" {
@@ -232,9 +235,9 @@ data "aws_iam_policy_document" "cloudwatch-metrics-policy" {
 
 resource "aws_iam_role_policy" "jenkins-cloudwatch-metrics" {
   name = "JenkinsCloudWatchMetrics"
-  role = "${aws_iam_role.jenkins.id}"
+  role = aws_iam_role.jenkins.id
 
-  policy = "${data.aws_iam_policy_document.cloudwatch-metrics-policy.json}"
+  policy = data.aws_iam_policy_document.cloudwatch-metrics-policy.json
 }
 
 data "aws_iam_policy_document" "jenkins_assume_cloudtrail_validate_logs" {
@@ -252,7 +255,8 @@ data "aws_iam_policy_document" "jenkins_assume_cloudtrail_validate_logs" {
 
 resource "aws_iam_role_policy" "jenkins_assume_cloudtrail_validate_logs" {
   name = "JenkinsAssumeCloudTrailValidateLogs"
-  role = "${aws_iam_role.jenkins.id}"
+  role = aws_iam_role.jenkins.id
 
-  policy = "${data.aws_iam_policy_document.jenkins_assume_cloudtrail_validate_logs.json}"
+  policy = data.aws_iam_policy_document.jenkins_assume_cloudtrail_validate_logs.json
 }
+

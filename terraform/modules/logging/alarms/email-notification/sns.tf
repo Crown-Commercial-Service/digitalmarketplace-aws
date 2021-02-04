@@ -39,12 +39,12 @@ data "aws_iam_policy_document" "alarm_email_topic_policy_document" {
       variable = "AWS:SourceOwner"
 
       values = [
-        "${var.account_id}",
+        var.account_id,
       ]
     }
 
     resources = [
-      "${aws_sns_topic.alarm_email_topic.arn}",
+      aws_sns_topic.alarm_email_topic.arn,
     ]
   }
 
@@ -85,23 +85,23 @@ data "aws_iam_policy_document" "alarm_email_topic_policy_document" {
     }
 
     resources = [
-      "${aws_sns_topic.alarm_email_topic.arn}",
+      aws_sns_topic.alarm_email_topic.arn,
     ]
   }
 }
 
 resource "aws_sns_topic_policy" "alarm_email_topic_policy" {
-  arn = "${aws_sns_topic.alarm_email_topic.arn}"
+  arn = aws_sns_topic.alarm_email_topic.arn
 
-  policy = "${data.aws_iam_policy_document.alarm_email_topic_policy_document.json}"
+  policy = data.aws_iam_policy_document.alarm_email_topic_policy_document.json
 }
 
 // The below is unsupported but describes the subscription of a slack email to the topic
 // https://www.terraform.io/docs/providers/aws/r/sns_topic_subscription.html#email
 //
 //resource "aws_sns_topic_subscription" "slack_dm_2nd_line_email_subscription_to_topic" {
-//  topic_arn = "${aws_sns_topic.slack_dm_2nd_line_email.arn}"
+//  topic_arn = aws_sns_topic.slack_dm_2nd_line_email.arn
 //  protocol  = "email"
-//  endpoint  = "${var.email_address}"
+//  endpoint  = var.email_address
 //}
 

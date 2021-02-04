@@ -19,6 +19,7 @@ resource "aws_iam_role" "replication_role" {
   ]
 }
 POLICY
+
 }
 
 resource "aws_iam_policy" "replication_policy" {
@@ -127,9 +128,11 @@ resource "aws_iam_policy" "replication_policy" {
   ]
 }
 POLICY
+
 }
 
 resource "aws_iam_role_policy_attachment" "replication" {
-  role       = "${aws_iam_role.replication_role.id}"
-  policy_arn = "${aws_iam_policy.replication_policy.arn}"
+  role       = aws_iam_role.replication_role.id
+  policy_arn = aws_iam_policy.replication_policy.arn
 }
+

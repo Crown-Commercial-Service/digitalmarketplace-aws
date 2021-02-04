@@ -38,8 +38,8 @@ module "missing_logs_alarms" {
   source                = "../../modules/logging/alarms/missing-logs"
   environment           = "preview"
   app_names             = ["buyer-frontend", "api", "something else", "etc..."]
-  alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
-  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
+  alarm_email_topic_arn = module.email_alarm_sns.alarm_email_topic_arn
+  alarm_recovery_email_topic_arn = module.alarm_recovery_email_sns.email_topic_arn
 }
 ```
 
@@ -54,8 +54,8 @@ module "slow_requests_alarms" {
   source                = "../../modules/logging/alarms/slow-requests"
   environment           = "preview"
   app_name              = "router"
-  alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
-  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
+  alarm_email_topic_arn = module.email_alarm_sns.alarm_email_topic_arn
+  alarm_recovery_email_topic_arn = module.alarm_recovery_email_sns.email_topic_arn
 }
 ```
 
@@ -70,8 +70,8 @@ module "router_500_alarm" {
   source                = "../../modules/logging/alarms/status-code"
   environment           = "preview"
   status_code           = "500"
-  alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
-  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
+  alarm_email_topic_arn = module.email_alarm_sns.alarm_email_topic_arn
+  alarm_recovery_email_topic_arn = module.alarm_recovery_email_sns.email_topic_arn
 }
 ```
 
@@ -85,7 +85,7 @@ It relies on the [`${var.environment}-dropped-antivirus-sns` metrics](https://gi
 module "dropped_av_sns_alarm" {
   source                = "../../modules/logging/alarms/dropped-av-sns"
   environment           = "preview"
-  alarm_email_topic_arn = "${module.email_alarm_sns.alarm_email_topic_arn}"
-  alarm_recovery_email_topic_arn = "${module.alarm_recovery_email_sns.email_topic_arn}"
+  alarm_email_topic_arn = module.email_alarm_sns.alarm_email_topic_arn
+  alarm_recovery_email_topic_arn = module.alarm_recovery_email_sns.email_topic_arn
 }
 ```
