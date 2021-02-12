@@ -161,7 +161,7 @@ deploy-db-backup-app: virtualenv ## Deploys the db backup app
 	$(eval export S3_POST_URL_DATA=$(shell ${VIRTUALENV_ROOT}/bin/python ./scripts/generate-s3-post-url-data.py digitalmarketplace-database-backups ${DUMP_FILE_NAME}))
 
 	# Deploy the backup app
-	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest ARGS="-v DUMP_FILE_NAME -v S3_POST_URL_DATA") -o digitalmarketplace/db-backup --no-route
+	cf push db-backup -f <(make -s -C ${CURDIR} generate-manifest ARGS="-v DUMP_FILE_NAME -v S3_POST_URL_DATA") -o digitalmarketplace/db-backup:pg-12 --no-route
 	cf set-env db-backup PUBKEY "$$(cat ${DM_CREDENTIALS_REPO}/gpg/database-backups/public.key)"
 	cf restage db-backup
 
