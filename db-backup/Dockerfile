@@ -1,4 +1,4 @@
-FROM python:3.6-slim
+FROM python:3.6.12-slim
 
 RUN mkdir /app
 
