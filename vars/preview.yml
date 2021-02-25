@@ -4,6 +4,10 @@ maintenance_mode: maintenance
 
 api:
   memory: 2GB
+  services:
+    - restored-db
+    - digitalmarketplace_prometheus
+    - digitalmarketplace_splunk
   
 buyer-frontend:
   instances: 2
