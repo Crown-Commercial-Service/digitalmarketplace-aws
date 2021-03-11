@@ -94,6 +94,9 @@ variable "alphagov_git_repositories" {
     digitalmarketplace-govuk-frontend = {
       default_branch = "master"
     },
+    digitalmarketplace-developer-tools = {
+      default_branch = "main"
+    },
   }
 }
 
