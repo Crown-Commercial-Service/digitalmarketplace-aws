@@ -10,9 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Ubuntu packages
-        run: sudo apt-get install libxml2-dev libxslt1-dev python-dev
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
