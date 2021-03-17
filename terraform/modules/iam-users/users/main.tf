@@ -3,11 +3,6 @@ resource "aws_iam_user" "argyris_galamatis" {
   force_destroy = true
 }
 
-resource "aws_iam_user" "louise_ryan" {
-  name          = "louiseryan"
-  force_destroy = true
-}
-
 resource "aws_iam_user" "laurence_de_bruxelles" {
   name          = "laurencedebruxelles"
   force_destroy = true
