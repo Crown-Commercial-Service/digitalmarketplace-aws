@@ -34,7 +34,6 @@ resource "aws_s3_bucket" "cross_region_documents_s3_bucket" {
   provider = aws.london
   bucket   = "digitalmarketplace-cross-region-documents-production"
   acl      = "private"
-  region   = "eu-west-2"
   policy   = data.aws_iam_policy_document.cross_region_documents_s3_bucket_policy_document.json
 
   versioning {
@@ -77,7 +76,6 @@ resource "aws_s3_bucket" "cross_region_agreements_s3_bucket" {
   provider = aws.london
   bucket   = "digitalmarketplace-cross-region-agreements-production"
   acl      = "private"
-  region   = "eu-west-2"
   policy   = data.aws_iam_policy_document.cross_region_agreements_s3_bucket_policy_document.json
 
   versioning {
@@ -120,7 +118,6 @@ resource "aws_s3_bucket" "cross_region_communications_s3_bucket" {
   provider = aws.london
   bucket   = "digitalmarketplace-cross-region-communications-production"
   acl      = "private"
-  region   = "eu-west-2"
   policy   = data.aws_iam_policy_document.cross_region_communications_s3_bucket_policy_document.json
 
   versioning {
@@ -163,7 +160,6 @@ resource "aws_s3_bucket" "cross_region_submissions_s3_bucket" {
   provider = aws.london
   bucket   = "digitalmarketplace-cross-region-submissions-production"
   acl      = "private"
-  region   = "eu-west-2"
   policy   = data.aws_iam_policy_document.cross_region_submissions_s3_bucket_policy_document.json
 
   versioning {
