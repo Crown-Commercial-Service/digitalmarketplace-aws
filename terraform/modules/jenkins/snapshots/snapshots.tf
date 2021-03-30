@@ -1,6 +1,5 @@
 provider "aws" {
   region  = "eu-west-1"
-  version = "~> 2.70"
 }
 
 data "aws_iam_policy_document" "snapshot_jenkins_data_role" {

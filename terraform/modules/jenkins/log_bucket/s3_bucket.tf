@@ -1,6 +1,5 @@
 provider "aws" {
   region  = "eu-west-1"
-  version = "~> 2.70"
 }
 
 resource "aws_s3_bucket" "jenkins_logs_bucket" {
