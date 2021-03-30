@@ -1,9 +1,11 @@
-provider "aws" {
-  region  = "eu-west-1"
-  version = "2.70"
-}
-
 terraform {
+    required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.34.0"
+      region  = "eu-west-1"
+    }
+  }
   backend "s3" {
     bucket  = "digitalmarketplace-terraform-state-production"
     key     = "environments/staging/terraform.tfstate"
