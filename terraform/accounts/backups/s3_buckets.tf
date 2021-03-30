@@ -2,7 +2,6 @@ resource "aws_s3_bucket" "cross_region_database_backups_s3_bucket" {
   provider = aws.london
   bucket   = "digitalmarketplace-cross-region-database-backups"
   acl      = "private"
-  region   = "eu-west-2"
 
   versioning {
     enabled = true
