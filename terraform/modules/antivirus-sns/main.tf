@@ -1,6 +1,5 @@
 provider "aws" {
   region  = "eu-west-1"
-  version = "~> 2.70"
 }
 
 resource "aws_sns_topic" "s3_file_upload_notification" {

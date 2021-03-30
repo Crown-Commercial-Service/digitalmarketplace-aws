@@ -2,7 +2,6 @@
 
 provider "aws" {
   region  = "eu-west-1"
-  version = "~> 2.70"
 }
 
 resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_0" {
