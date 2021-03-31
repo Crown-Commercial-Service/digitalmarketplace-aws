@@ -32,6 +32,7 @@ terraformatest:
 
 .PHONY: test-terraform
 test-terraform:
+	$(eval export AWS_DEFAULT_REGION=eu-west-2)
 	./scripts/validate-terraform.sh
 
 .PHONY: test-flake8
