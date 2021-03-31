@@ -1,12 +1,15 @@
-provider "aws" {
-  region = "eu-west-1"
-}
-
-resource "aws_iam_account_alias" "alias" {
+  resource "aws_iam_account_alias" "alias" {
   account_alias = "digitalmarketplace"
 }
 
 terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.34.0"
+      region  = "eu-west-1"
+    }
+  }
   backend "s3" {
     bucket  = "digitalmarketplace-terraform-state-main"
     key     = "accounts/main/terraform.tfstate"
