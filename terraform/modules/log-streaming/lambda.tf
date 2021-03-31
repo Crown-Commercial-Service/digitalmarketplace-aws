@@ -69,7 +69,7 @@ resource "aws_lambda_function" "log_stream_lambda" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   role             = aws_iam_role.lambda.arn
   handler          = "main.handler"
-  runtime          = "nodejs10.x"
+  runtime          = "nodejs14.x"
   memory_size      = 128
   timeout          = 10
 
