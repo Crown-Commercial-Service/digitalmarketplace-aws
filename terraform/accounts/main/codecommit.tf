@@ -5,19 +5,19 @@ variable "alphagov_git_repositories" {
 
   default = {
     digitalmarketplace-api = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-search-api = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-admin-frontend = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-agreements = {
       default_branch = "master"
     },
     digitalmarketplace-antivirus-api = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-apiclient = {
       default_branch = "master"
@@ -29,13 +29,13 @@ variable "alphagov_git_repositories" {
       default_branch = "master"
     },
     digitalmarketplace-brief-responses-frontend = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-briefs-frontend = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-buyer-frontend = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-content-loader = {
       default_branch = "master"
@@ -68,7 +68,7 @@ variable "alphagov_git_repositories" {
       default_branch = "master"
     },
     digitalmarketplace-router = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-runner = {
       default_branch = "main"
@@ -77,13 +77,13 @@ variable "alphagov_git_repositories" {
       default_branch = "master"
     },
     digitalmarketplace-supplier-frontend = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-test-utils = {
       default_branch = "main"
     },
     digitalmarketplace-user-frontend = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-utils = {
       default_branch = "master"
