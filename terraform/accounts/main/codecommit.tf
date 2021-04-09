@@ -74,7 +74,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-scripts = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-supplier-frontend = {
       default_branch = "main"
