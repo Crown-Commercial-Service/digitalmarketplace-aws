@@ -16,7 +16,7 @@ These modules are used to set up [AWS CloudWatch Alarms](https://docs.aws.amazon
 They should be set up per environment.
 
 * The `email-notification` module will set up an AWS SNS Topic for your alarms to post to
-* `missing-logs`, `slow-requests` and `status-code` are alarms based on the metrics defined in [`../log-metric-filters`](https://github.com/alphagov/digitalmarketplace-aws/tree/master/terraform/modules/logging/log-metric-filters)
+* `missing-logs`, `slow-requests` and `status-code` are alarms based on the metrics defined in [`../log-metric-filters`](https://github.com/alphagov/digitalmarketplace-aws/tree/main/terraform/modules/logging/log-metric-filters)
 
 ## SNS
 
