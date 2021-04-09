@@ -53,7 +53,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-functional-tests = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-jenkins = {
       default_branch = "main"
