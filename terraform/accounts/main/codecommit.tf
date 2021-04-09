@@ -23,7 +23,7 @@ variable "alphagov_git_repositories" {
       default_branch = "master"
     },
     digitalmarketplace-aws = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-bad-words = {
       default_branch = "master"
