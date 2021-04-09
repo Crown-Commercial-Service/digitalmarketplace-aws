@@ -86,7 +86,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-utils = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-visual-regression = {
       default_branch = "master"
