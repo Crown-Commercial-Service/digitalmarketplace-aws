@@ -44,7 +44,7 @@ variable "alphagov_git_repositories" {
       default_branch = "master"
     },
     digitalmarketplace-docker-base = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-frameworks = {
       default_branch = "main"
