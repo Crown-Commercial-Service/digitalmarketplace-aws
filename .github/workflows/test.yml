@@ -32,10 +32,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Terraform
+      - name: Install tfenv
         run: |
-          brew install tfenv
-          tfenv install
+          git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+          echo "$HOME/.tfenv/bin" >> $GITHUB_PATH
+      
+      - name: Install Terraform
+        run: tfenv install
 
       - name: Setup Terraform cache
         uses: actions/cache@v2
