@@ -20,7 +20,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-apiclient = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-aws = {
       default_branch = "main"
