@@ -4,12 +4,12 @@ maintenance_mode: live
 
 api:
   memory: 2GB
-  
+
 buyer-frontend:
   instances: 2
 
 router:
-  instances: 2
+  instances: 3
   rate_limiting_enabled: enabled
 
 search-api:
