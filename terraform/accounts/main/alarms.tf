@@ -22,9 +22,9 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_data_volume_disk_space" {
     path = "/data"
   }
 
-  // For every 300 seconds
+  // For every minute
   evaluation_periods = "1"
-  period             = "300"
+  period             = "60"
 
   // If totals 10gb or lower (in bytes)
   statistic           = "Minimum"
@@ -49,9 +49,9 @@ resource "aws_cloudwatch_metric_alarm" "jenkins_main_volume_disk_space" {
     path = "/"
   }
 
-  // For every 300 seconds
+  // For every minute
   evaluation_periods = "1"
-  period             = "300"
+  period             = "60"
 
   // If totals 1gb or lower (in bytes)
   statistic           = "Minimum"
