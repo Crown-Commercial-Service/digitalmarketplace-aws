@@ -1,7 +1,7 @@
 # App-specific nginx log buckets
 
 provider "aws" {
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 resource "aws_cloudwatch_log_metric_filter" "request_time_bucket_0" {
