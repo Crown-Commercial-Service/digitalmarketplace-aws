@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 data "aws_iam_policy_document" "snapshot_jenkins_data_role" {

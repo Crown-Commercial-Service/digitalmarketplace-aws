@@ -1,4 +1,4 @@
-  resource "aws_iam_account_alias" "alias" {
+resource "aws_iam_account_alias" "alias" {
   account_alias = "digitalmarketplace"
 }
 
@@ -7,7 +7,6 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 3.34.0"
-      region  = "eu-west-1"
     }
   }
   backend "s3" {

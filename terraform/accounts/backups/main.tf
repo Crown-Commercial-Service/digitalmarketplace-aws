@@ -19,11 +19,10 @@ module "cyber_security_audit_role" {
 }
 
 terraform {
-    required_providers {
+  required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 3.34.0"
-      region  = "eu-west-1"
     }
   }
   backend "s3" {

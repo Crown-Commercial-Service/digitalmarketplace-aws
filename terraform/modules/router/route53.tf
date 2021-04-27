@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 resource "aws_route53_zone" "root" {

@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 resource "aws_sns_topic" "s3_file_upload_notification" {
