@@ -2,9 +2,6 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-provider "archive" {
-  version = "~> 1.3"
-}
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
