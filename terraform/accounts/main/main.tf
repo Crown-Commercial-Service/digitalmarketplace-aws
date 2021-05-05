@@ -17,6 +17,27 @@ terraform {
   }
 }
 
+resource "aws_s3_bucket_policy" "main_tfstate_bucket_policy" {
+  bucket = "digitalmarketplace-terraform-state-main"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id = "MainTFStateOnlyEncryptedConnectionPolicy"
+    Statement = [
+      {
+        Effect: "Deny",
+        Principal: "*",
+        Action: "*",
+        Resource: "arn:aws:s3:::digitalmarketplace-terraform-state-main/*",
+        Condition: {
+            Bool: {
+                "aws:SecureTransport": "false"
+            }
+        }
+      }
+    ]
+  })
+}
+
 module "iam_common" {
   source                            = "../../modules/iam-common"
   aws_account_and_jenkins_login_ips = var.aws_account_and_jenkins_login_ips
