@@ -33,3 +33,23 @@ terraform {
   }
 }
 
+resource "aws_s3_bucket_policy" "backups_tfstate_bucket_policy" {
+  bucket = "digitalmarketplace-terraform-state-backups"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id = "BackupsTFStateOnlyEncryptedConnectionPolicy"
+    Statement = [
+      {
+        Effect: "Deny",
+        Principal: "*",
+        Action: "*",
+        Resource: "arn:aws:s3:::digitalmarketplace-terraform-state-backups/*",
+        Condition: {
+            Bool: {
+                "aws:SecureTransport": "false"
+            }
+        }
+      }
+    ]
+  })
+}
