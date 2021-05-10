@@ -3,7 +3,7 @@ Jinja2==2.11.3
 PyYAML==5.4.1
 awscli==1.19.58
 requests==2.25.1
-boto3==1.17.58
+boto3==1.17.69
 docopt==0.6.2
 bcrypt==3.2.0
 yq==2.12.0
