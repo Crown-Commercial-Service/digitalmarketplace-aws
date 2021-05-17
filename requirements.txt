@@ -1,4 +1,4 @@
-click==7.1.2
+click==8.0.0
 Jinja2==2.11.3
 PyYAML==5.4.1
 awscli==1.19.71
