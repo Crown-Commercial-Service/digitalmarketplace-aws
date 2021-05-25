@@ -74,6 +74,14 @@ resource "aws_s3_bucket" "dev_uploads_s3_bucket" {
   }
 
   policy = data.aws_iam_policy_document.dev_uploads_s3_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 data "aws_iam_policy_document" "cleaned_db_dumps_s3_bucket_policy_document" {
@@ -152,5 +160,13 @@ resource "aws_s3_bucket" "cleaned_db_dumps_s3_bucket" {
   }
 
   policy = data.aws_iam_policy_document.cleaned_db_dumps_s3_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 

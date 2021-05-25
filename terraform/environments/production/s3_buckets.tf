@@ -38,6 +38,14 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
   versioning {
     enabled = true
   }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # TODO remove these hard-coded definitions in favour of using the terraform/modules/s3-document-bucket module after the
@@ -145,6 +153,14 @@ resource "aws_s3_bucket" "agreements_bucket" {
       }
     }
   }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # Reports - devs: read write list jenkins: read write list
@@ -218,6 +234,14 @@ resource "aws_s3_bucket" "reports_bucket" {
   }
 
   policy = data.aws_iam_policy_document.reports_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # Communications jenkins: read write listversions
@@ -296,6 +320,14 @@ resource "aws_s3_bucket" "communications_bucket" {
 
       destination {
         bucket = aws_s3_bucket.cross_region_communications_s3_bucket.arn
+      }
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
       }
     }
   }
@@ -383,6 +415,14 @@ resource "aws_s3_bucket" "documents_bucket" {
       }
     }
   }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # G7-draft-documents
@@ -430,6 +470,14 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-g7-draft-documents-production-production/"
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
   }
 }
 
@@ -509,6 +557,14 @@ resource "aws_s3_bucket" "submissions_bucket" {
 
       destination {
         bucket = aws_s3_bucket.cross_region_submissions_s3_bucket.arn
+      }
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
       }
     }
   }

@@ -38,6 +38,14 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
   versioning {
     enabled = true
   }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # TODO remove these hard-coded definitions in favour of using the terraform/modules/s3-document-bucket module after the
@@ -104,6 +112,14 @@ resource "aws_s3_bucket" "agreements_bucket" {
   }
 
   policy = data.aws_iam_policy_document.agreements_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # Reports - jenkins: read write list
@@ -175,6 +191,14 @@ resource "aws_s3_bucket" "reports_bucket" {
   }
 
   policy = data.aws_iam_policy_document.reports_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # Communications - jenkins: listversions
@@ -238,6 +262,14 @@ resource "aws_s3_bucket" "communications_bucket" {
   }
 
   policy = data.aws_iam_policy_document.communications_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # Documents - jenkins: read write list listversions
@@ -307,6 +339,14 @@ resource "aws_s3_bucket" "documents_bucket" {
   }
 
   policy = data.aws_iam_policy_document.documents_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # G7-draft-documents
@@ -354,6 +394,14 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
     target_prefix = "digitalmarketplace-g7-draft-documents-staging-staging/"
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
   }
 }
 
@@ -418,5 +466,13 @@ resource "aws_s3_bucket" "submissions_bucket" {
   }
 
   policy = data.aws_iam_policy_document.submissions_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
