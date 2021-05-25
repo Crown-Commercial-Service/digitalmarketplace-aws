@@ -140,6 +140,14 @@ resource "aws_s3_bucket" "agreements_bucket" {
       }
     }
   }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 # Reports - devs: read write list
@@ -373,6 +381,13 @@ resource "aws_s3_bucket" "documents_bucket" {
 
       destination {
         bucket = aws_s3_bucket.cross_region_documents_s3_bucket.arn
+      }
+    }
+  }
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
       }
     }
   }
