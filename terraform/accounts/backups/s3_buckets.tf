@@ -51,6 +51,13 @@ resource "aws_s3_bucket" "cross_region_database_backups_s3_bucket" {
 }
 POLICY
 
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 resource "aws_s3_bucket" "database_backups_s3_bucket" {
@@ -135,6 +142,14 @@ POLICY
 
       destination {
         bucket = aws_s3_bucket.cross_region_database_backups_s3_bucket.arn
+      }
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
       }
     }
   }

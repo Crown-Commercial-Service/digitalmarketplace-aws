@@ -75,5 +75,13 @@ resource "aws_s3_bucket" "document_bucket" {
   }
 
   policy = data.aws_iam_policy_document.document_bucket_policy_document.json
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 

@@ -21,17 +21,17 @@ resource "aws_s3_bucket_policy" "development_tfstate_bucket_policy" {
   bucket = "digitalmarketplace-terraform-state-development"
   policy = jsonencode({
     Version = "2012-10-17"
-    Id = "DevTFStateOnlyEncryptedConnectionPolicy"
+    Id      = "DevTFStateOnlyEncryptedConnectionPolicy"
     Statement = [
       {
-        Effect: "Deny",
-        Principal: "*",
-        Action: "*",
-        Resource: "arn:aws:s3:::digitalmarketplace-terraform-state-development/*",
-        Condition: {
-            Bool: {
-                "aws:SecureTransport": "false"
-            }
+        Effect : "Deny",
+        Principal : "*",
+        Action : "*",
+        Resource : "arn:aws:s3:::digitalmarketplace-terraform-state-development/*",
+        Condition : {
+          Bool : {
+            "aws:SecureTransport" : "false"
+          }
         }
       }
     ]
