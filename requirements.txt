@@ -1,7 +1,7 @@
 click==8.0.1
 Jinja2==2.11.3
 PyYAML==5.4.1
-awscli==1.19.71
+awscli==1.19.80
 requests==2.25.1
 boto3==1.17.70
 docopt==0.6.2
