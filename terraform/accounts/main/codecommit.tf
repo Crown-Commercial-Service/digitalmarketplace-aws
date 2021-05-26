@@ -38,7 +38,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-content-loader = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-credentials = {
       default_branch = "master"
