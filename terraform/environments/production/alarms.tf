@@ -46,14 +46,6 @@ module "router_500_alarm" {
   alarm_recovery_email_topic_arn = module.alarm_recovery_email_sns.email_topic_arn
 }
 
-module "router_429_alarm" {
-  source                         = "../../modules/logging/alarms/status-code"
-  environment                    = "production"
-  status_code                    = "429"
-  alarm_email_topic_arn          = module.alarm_email_sns.email_topic_arn
-  alarm_recovery_email_topic_arn = module.alarm_recovery_email_sns.email_topic_arn
-}
-
 module "reset_email_bad_role_alarm" {
   source                         = "../../modules/logging/alarms/reset-email-bad-role"
   environment                    = "production"
