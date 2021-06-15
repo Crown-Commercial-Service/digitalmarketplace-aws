@@ -5,7 +5,7 @@ resource "aws_security_group" "jenkins_elb_security_group" {
   description = "Security group for Jenkins ELB"
 }
 
-resource "aws_security_group_rule" "jenkins_elb_allow_ssh_from_whitelisted_ips" {
+resource "aws_security_group_rule" "jenkins_elb_allow_ssh_from_allowlisted_ips" {
   security_group_id = aws_security_group.jenkins_elb_security_group.id
   type              = "ingress"
   from_port         = 22
@@ -14,7 +14,7 @@ resource "aws_security_group_rule" "jenkins_elb_allow_ssh_from_whitelisted_ips" 
   cidr_blocks       = var.aws_account_and_jenkins_login_ips
 }
 
-resource "aws_security_group_rule" "jenkins_elb_allow_https_from_whitelisted_ips" {
+resource "aws_security_group_rule" "jenkins_elb_allow_https_from_allowlisted_ips" {
   security_group_id = aws_security_group.jenkins_elb_security_group.id
   type              = "ingress"
   from_port         = 443
