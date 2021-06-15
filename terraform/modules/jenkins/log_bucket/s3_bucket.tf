@@ -8,6 +8,7 @@ resource "aws_s3_bucket" "jenkins_logs_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   # The id 156460612806 is the ELB account (eu-west-1)
