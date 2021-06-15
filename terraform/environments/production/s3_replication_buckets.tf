@@ -38,6 +38,7 @@ resource "aws_s3_bucket" "cross_region_documents_s3_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   server_side_encryption_configuration {
@@ -88,6 +89,7 @@ resource "aws_s3_bucket" "cross_region_agreements_s3_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   server_side_encryption_configuration {
@@ -138,6 +140,7 @@ resource "aws_s3_bucket" "cross_region_communications_s3_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   server_side_encryption_configuration {
@@ -188,6 +191,7 @@ resource "aws_s3_bucket" "cross_region_submissions_s3_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   server_side_encryption_configuration {
