@@ -37,6 +37,7 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   server_side_encryption_configuration {
@@ -126,6 +127,7 @@ resource "aws_s3_bucket" "agreements_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   logging {
@@ -220,6 +222,7 @@ resource "aws_s3_bucket" "reports_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   logging {
@@ -295,6 +298,7 @@ resource "aws_s3_bucket" "communications_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   logging {
@@ -386,6 +390,7 @@ resource "aws_s3_bucket" "documents_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   logging {
@@ -457,6 +462,7 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   logging {
@@ -529,6 +535,7 @@ resource "aws_s3_bucket" "submissions_bucket" {
 
   versioning {
     enabled = true
+    mfa_delete = true
   }
 
   logging {
