@@ -13,6 +13,9 @@ resource "aws_instance" "jenkins" {
   tags = {
     Name = var.name
   }
+  root_block_device {
+    volume_size = "32"
+  }
 }
 
 resource "aws_eip" "jenkins" {
