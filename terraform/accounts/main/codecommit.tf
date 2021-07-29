@@ -14,7 +14,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-agreements = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-antivirus-api = {
       default_branch = "main"
