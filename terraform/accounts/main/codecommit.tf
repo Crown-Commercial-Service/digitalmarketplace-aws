@@ -65,7 +65,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-performance-testing = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-router = {
       default_branch = "main"
