@@ -18,7 +18,7 @@ module "jenkins_2" {
   ami_id                            = "ami-01e6a0b85de033c99"
   instance_type                     = "t3.large"
   dns_zone_id                       = aws_route53_zone.marketplace_team.zone_id
-  dns_name                          = "ci.marketplace.team"
+  dns_name                          = "ci-old.marketplace.team"
   log_bucket_name                   = module.jenkins_elb_log_bucket.bucket_id
 }
 
@@ -32,7 +32,7 @@ module "jenkins_3" {
   ami_id                            = "ami-03caf24deed650e2c"
   instance_type                     = "t3.large"
   dns_zone_id                       = aws_route53_zone.marketplace_team.zone_id
-  dns_name                          = "ci-test.marketplace.team"
+  dns_name                          = "ci.marketplace.team"
   log_bucket_name                   = module.jenkins_elb_log_bucket.bucket_id
 }
 
