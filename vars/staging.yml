@@ -5,10 +5,6 @@ instances: 2
 
 api:
   memory: 2GB
-  services:
-    - restore_db_14_08_2021
-    - digitalmarketplace_prometheus
-    - digitalmarketplace_splunk
 
 router:
   instances: 3
