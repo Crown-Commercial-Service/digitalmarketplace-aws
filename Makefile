@@ -18,9 +18,17 @@ endef
 help:
 	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: bootstrap
+bootstrap: ## Install invoke
+	pip install digitalmarketplace-developer-tools
+	@echo done
+	-@[ -z "$$TERM" ] || tput setaf 2  # green
+	@>&2 echo dmdevtools has been installed globally, run developer tasks with '`invoke`'
+	-@[ -z "$$TERM" ] || tput setaf 9  # default
 
 .PHONY: test
-test: test-flake8 test-unit
+test:
+	invoke test
 
 .PHONY: terraformat
 terraformat:
@@ -36,26 +44,24 @@ test-terraform:
 	./scripts/validate-terraform.sh
 
 .PHONY: test-flake8
-test-flake8: virtualenv
-	${VIRTUALENV_ROOT}/bin/flake8 .
+test-flake8:
+	invoke test-flake8
 
 .PHONY: test-unit
-test-unit: virtualenv
-	${VIRTUALENV_ROOT}/bin/py.test ${PYTEST_ARGS}
+test-unit:
+	invoke test-python
 
 .PHONY: requirements
-requirements: virtualenv requirements.txt
-	${VIRTUALENV_ROOT}/bin/pip install -r requirements.txt
+requirements:
+	invoke requirements
 
 .PHONY: requirements-dev
-requirements-dev: virtualenv requirements-dev.txt
-	${VIRTUALENV_ROOT}/bin/pip install -r requirements-dev.txt
+requirements-dev:
+	invoke requirements-dev
 
 .PHONY: virtualenv
-virtualenv: ${VIRTUALENV_ROOT}/activate ## Create virtualenv if it does not exist
-
-${VIRTUALENV_ROOT}/activate:
-	@[ -z "${VIRTUAL_ENV}" ] && [ ! -d venv ] && python3 -m venv venv || true
+virtualenv: ## Create virtualenv if it does not exist
+	invoke virtualenv
 
 .PHONY: preview
 preview: ## Set stage to preview
