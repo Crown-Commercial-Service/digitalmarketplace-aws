@@ -17,17 +17,20 @@ jobs:
 
       - name: Setup Python cache
         uses: actions/cache@v2
+        id: python-cache
         with:
           path: venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: venv-${{ runner.os }}-${{ matrix.python-version }}-
 
       - name: Install developer tools
         run: make bootstrap
 
       - name: Install dependencies
         run: invoke requirements-dev
+        if: steps.python-cache.outputs.cache-hit != 'true'
 
-      - name: Run Python tests
+      - name: Run tests
         run: invoke test
 
   terraform_test:
