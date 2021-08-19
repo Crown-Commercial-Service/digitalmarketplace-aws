@@ -1,6 +1,0 @@
--c requirements.txt
-
-flake8
-mock
-pytest
-requests-mock
