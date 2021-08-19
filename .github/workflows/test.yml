@@ -25,10 +25,10 @@ jobs:
         run: make bootstrap
 
       - name: Install dependencies
-        run: make requirements-dev
+        run: invoke requirements-dev
 
       - name: Run Python tests
-        run: make test
+        run: invoke test
 
   terraform_test:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
         run: |
           git clone https://github.com/tfutils/tfenv.git ~/.tfenv
           echo "$HOME/.tfenv/bin" >> $GITHUB_PATH
-      
+
       - name: Install Terraform
         run: tfenv install
 
