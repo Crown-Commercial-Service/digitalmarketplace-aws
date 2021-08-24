@@ -25,6 +25,8 @@ This simple module creates an [SNS Topic](https://docs.aws.amazon.com/sns/latest
 SNS Topics are analagous to [Mailchimp lists](https://mailchimp.com/help/lists)
 The topic/ list the `email-notification` module creates can only be managed, and posted to, by account entities. And only GDS emails can subscribe to the list.
 
+We manage the emails subscribed to the topic manually - they are not controlled by Terraform.
+
 ## Alarms
 
 ### missing-logs
