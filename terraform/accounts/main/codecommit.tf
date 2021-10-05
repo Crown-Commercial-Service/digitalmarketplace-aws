@@ -89,7 +89,7 @@ variable "alphagov_git_repositories" {
       default_branch = "main"
     },
     digitalmarketplace-visual-regression = {
-      default_branch = "master"
+      default_branch = "main"
     },
     digitalmarketplace-govuk-frontend = {
       default_branch = "master"
