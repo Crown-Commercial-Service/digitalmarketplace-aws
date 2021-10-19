@@ -18,7 +18,7 @@ There are a few independent tools we're using that are configured and run from t
 ## Setup
 
 ### Set up python dependencies
-Install dependencies with [venv](https://docs.python.org/3.6/library/venv.html)
+Install dependencies with [venv](https://docs.python.org/3.9/library/venv.html)
 and [pip](https://pip.pypa.io/en/latest/installing.html).
 
 ```
