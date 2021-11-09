@@ -1,13 +1,3 @@
-resource "aws_iam_user" "daniele_occhipinti" {
-  name          = "danieleocchipinti"
-  force_destroy = true
-}
-
-resource "aws_iam_user" "paula_valenca" {
-  name          = "paulavalenca"
-  force_destroy = true
-}
-
 resource "aws_iam_user" "benjamin_gill" {
   name          = "benjamingill"
   force_destroy = true
