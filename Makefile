@@ -24,7 +24,8 @@ test: test-flake8 test-unit
 
 .PHONY: terraformat
 terraformat:
-	terraform fmt -list=true -diff=true -write=true -recursive terraform
+	cd terraform
+	terraform fmt -list=true -diff=true -write=true -recursive
 
 .PHONY: terraformatest
 terraformatest:
