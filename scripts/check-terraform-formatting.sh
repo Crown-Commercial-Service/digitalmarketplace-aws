@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eou pipefail
 
 LINT_OUTPUT=$(terraform fmt -write=false -list=true -diff=true -recursive terraform)
 if [ ! -z "${LINT_OUTPUT}" ]; then
