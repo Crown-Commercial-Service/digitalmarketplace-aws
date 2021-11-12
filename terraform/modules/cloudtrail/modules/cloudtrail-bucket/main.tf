@@ -74,7 +74,7 @@ resource "aws_s3_bucket" "cloudtrail_bucket" {
   force_destroy = true
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 

@@ -36,7 +36,7 @@ resource "aws_s3_bucket" "server_access_logs_bucket" {
   policy = data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
@@ -104,7 +104,7 @@ resource "aws_s3_bucket" "agreements_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
@@ -184,7 +184,7 @@ resource "aws_s3_bucket" "reports_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
@@ -256,7 +256,7 @@ resource "aws_s3_bucket" "communications_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
@@ -334,7 +334,7 @@ resource "aws_s3_bucket" "documents_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
@@ -393,7 +393,7 @@ resource "aws_s3_bucket" "g7-draft-documents_bucket" {
   policy = data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
@@ -463,7 +463,7 @@ resource "aws_s3_bucket" "submissions_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 

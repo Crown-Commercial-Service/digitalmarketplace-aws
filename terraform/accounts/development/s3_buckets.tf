@@ -70,7 +70,7 @@ resource "aws_s3_bucket" "dev_uploads_s3_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
@@ -157,7 +157,7 @@ resource "aws_s3_bucket" "cleaned_db_dumps_s3_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 

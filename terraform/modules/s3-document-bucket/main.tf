@@ -66,7 +66,7 @@ resource "aws_s3_bucket" "document_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 

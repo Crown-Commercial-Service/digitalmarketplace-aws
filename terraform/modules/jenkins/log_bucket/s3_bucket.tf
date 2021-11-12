@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "jenkins_logs_bucket" {
   force_destroy = true
 
   versioning {
-    enabled = true
+    enabled    = true
     mfa_delete = true
   }
 
