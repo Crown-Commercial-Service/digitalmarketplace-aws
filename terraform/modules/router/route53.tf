@@ -52,7 +52,7 @@ resource "aws_route53_record" "antivirus_api_acm_validation" {
 
 resource "aws_route53_record" "assets_acm_validation" {
   zone_id = aws_route53_zone.root.zone_id
-  name    = "${var.www_acm_name}${var.domain}"
+  name    = "${var.assets_acm_name}${var.domain}"
   type    = "CNAME"
   ttl     = "86400"
 
