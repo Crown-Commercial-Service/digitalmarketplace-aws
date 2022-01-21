@@ -31,7 +31,7 @@ module "preview_router" {
 
   cname_domain            = "d25mxit1hgdj3z.cloudfront.net"
   www_acm_value           = "_d3502b7f8e8375277e10b2a7a5c5184f.tfmgdnztqk.acm-validations.aws."
-  www_acm_name            = "_d3fce2c248a4041784f06c22a0090865.assets."
+  www_acm_name            = "_300d3b1b4424b600342366347505371a.www."
   api_acm_value           = "_bd3d82c6197b75e9ab21e7a60512f7ef.tfmgdnztqk.acm-validations.aws."
   api_acm_name            = "_588eb18af3dc5d8581c483bd3df00607.api."
   search_api_acm_value    = "_64f5fb82d733c1d2222e4aa64a03b037.tfmgdnztqk.acm-validations.aws."
