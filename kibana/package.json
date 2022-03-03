@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "elasticdump": "^3.3.1"
+    "elasticdump": "^6.81.0"
   },
   "devDependencies": {}
 }
