@@ -3,38 +3,13 @@ resource "aws_iam_user" "benjamin_gill" {
   force_destroy = true
 }
 
-resource "aws_iam_user" "george_hill" {
-  name          = "georgehill"
-  force_destroy = true
-}
-
 resource "aws_iam_user" "jamieeunson" {
   name          = "jamieeunson"
   force_destroy = true
 }
 
-resource "aws_iam_user" "jackjones" {
-  name          = "jackjones"
-  force_destroy = true
-}
-
-resource "aws_iam_user" "willtrust" {
-  name          = "willtrust"
-  force_destroy = true
-}
-
-resource "aws_iam_user" "johndenford" {
-  name          = "johndenford"
-  force_destroy = true
-}
-
 resource "aws_iam_user" "crispinosborne" {
   name          = "crispinosborne"
-  force_destroy = true
-}
-
-resource "aws_iam_user" "muhammadahmad" {
-  name          = "muhammadahmad"
   force_destroy = true
 }
 
