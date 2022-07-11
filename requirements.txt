@@ -7,5 +7,5 @@ boto3==1.23.10
 botocore==1.26.10
 docopt==0.6.2
 bcrypt==3.2.2
-yq==2.14.0
+yq==3.0.2
 rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
