@@ -1,8 +1,3 @@
-resource "aws_iam_user" "benjamin_gill" {
-  name          = "benjamingill"
-  force_destroy = true
-}
-
 resource "aws_iam_user" "jamieeunson" {
   name          = "jamieeunson"
   force_destroy = true
