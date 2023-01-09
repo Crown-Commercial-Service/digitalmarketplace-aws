@@ -16,7 +16,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Python cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
@@ -41,7 +41,7 @@ jobs:
         run: tfenv install
 
       - name: Setup Terraform cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: "**/.terraform"
           key: terraform-${{ runner.os }}-${{ hashFiles('**/.terraform-version') }}
