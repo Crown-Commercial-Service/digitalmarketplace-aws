@@ -18,7 +18,7 @@ def _get_service_by_name(service_name, client):
 @click.command()
 @click.argument("project")
 @click.argument("app")
-@click.argument("tf-outputs-json")
+@click.argument("tf-outputs-json", type=click.File("rb"))
 @click.option(
     "--image-tag",
     default="latest",
@@ -32,10 +32,10 @@ def deploy_image_to_apprunner(project, app, tf_outputs_json, image_tag):
 
     APP is the name of the service (e.g. "buyer-frontend")
 
-    TF_OUTPUTS_JSON is a JSON string of outputs object from `terraform output -json`
+    TF_OUTPUTS_JSON is a streamed JSON string of outputs object from `terraform output -json`
 
     """
-    tf_outputs = json.loads(tf_outputs_json)
+    tf_outputs = json.loads(tf_outputs_json.read())
     apprunner_service_name = f"{project}-{app}"
     app_snake = app.replace("-", "_")
     repo_url_var_name = f"ecr_repo_url_{app_snake}"

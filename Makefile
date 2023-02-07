@@ -73,6 +73,18 @@ production: ## Set stage to production
 	$(eval export STAGE=production)
 	@true
 
+.PHONY: deploy-app-aws-native
+deploy-app-aws-native: ## Deploys the app to native AWS services
+    ## POC: Bare bones
+	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	$(if ${STAGE},,$(error Must specify STAGE))
+	## N.B. No safety checks at this time!
+	terraform -chdir=infrastructure-aws/environments/${STAGE} apply --auto-approve
+	@${VIRTUALENV_ROOT}/bin/python scripts/deploy_image_to_apprunner.py \
+		digitalmarketplace \
+		${APPLICATION_NAME} \
+		<(terraform -chdir=infrastructure-aws/environments/${STAGE} output -json)
+
 .PHONY: generate-manifest
 generate-manifest: virtualenv ## Generate manifest file for PaaS
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
