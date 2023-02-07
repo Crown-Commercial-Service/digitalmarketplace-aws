@@ -18,7 +18,7 @@ module "buyer_frontend_service" {
   source = "../../modules/single-apprunner-service"
 
   apprunner_build_role_name = aws_iam_role.apprunner_build.name
-  ecr_repo_name             = var.ecr_repo_name_buyer_frontend
   environment_name          = var.environment_name
   project_name              = var.project_name
+  service_name              = "buyer-frontend"
 }

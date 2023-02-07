@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import json
 
 import boto3
 import click
@@ -15,19 +16,31 @@ def _get_service_by_name(service_name, client):
 
 
 @click.command()
-@click.argument("image-identifier")
-@click.argument("apprunner-service-name")
-@click.argument("build-role-arn")
-def deploy_image_to_apprunner(image_identifier, apprunner_service_name, build_role_arn):
+@click.argument("project")
+@click.argument("app")
+@click.argument("tf-outputs-json")
+@click.option(
+    "--image-tag",
+    default="latest",
+    help="Version tag of Docker image in repo (default: 'latest')",
+)
+def deploy_image_to_apprunner(project, app, tf_outputs_json, image_tag):
     """
     Deploy a Docker image from ECR into a named AppRunner service.
 
-    IMAGE_IDENTIFIER id the identifier for Docker image to pull from ECR, as a URI. Ignored if named service exists.
+    PROJECT is the name of the system / namespace (e.g. "digitalmarketplace")
 
-    APPRUNNER_SERVICE_NAME is the unique ServiceName of AppRunner service - will be created if not already in existence.
+    APP is the name of the service (e.g. "buyer-frontend")
 
-    BUILD_ROLE_ARN is the ARN of IAM role which grants App Runner Builder access to the ECR repository. Ignored if named service exists.
+    TF_OUTPUTS_JSON is a JSON string of outputs object from `terraform output -json`
+
     """
+    tf_outputs = json.loads(tf_outputs_json)
+    apprunner_service_name = f"{project}-{app}"
+    app_snake = app.replace("-", "_")
+    repo_url_var_name = f"ecr_repo_url_{app_snake}"
+    apprunner_build_iam_role_arn = tf_outputs["apprunner_build_iam_role_arn"]["value"]
+    ecr_image_identifier = tf_outputs[repo_url_var_name]["value"] + ":" + image_tag
 
     apprunner_client = boto3.client("apprunner")
 
@@ -45,8 +58,8 @@ def deploy_image_to_apprunner(image_identifier, apprunner_service_name, build_ro
         print("Service '{}' not found - creating anew".format(apprunner_service_name))
         response = _create_service(
             service_name=apprunner_service_name,
-            image_identifier=image_identifier,
-            build_role_arn=build_role_arn,
+            image_identifier=ecr_image_identifier,
+            build_role_arn=apprunner_build_iam_role_arn,
             client=apprunner_client,
         )
 

@@ -10,6 +10,7 @@ The folder contains sub-folders, each with a different purpose:
 * [compositions](./compositions/README.md) - A layer of abstraction between Environments and classic modules
 * [modules](./modules/README.md) - Re-usable collections of resources which provide some singular function of business value)
 * [data-source-groups](./data-source-groups/README.md) - References to existing AWS resources whose properties are required during the application of Terraform
+* [resource-groups](./resource-groups/README.md) - Collections of resources grouped for convenience based on commonality of implementation requirements
 
 
 ## IAM resource naming

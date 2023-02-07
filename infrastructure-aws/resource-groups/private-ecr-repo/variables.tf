@@ -8,7 +8,7 @@ variable "project_name" {
   description = "Namespace to prepend to resource names where hierarchy is required"
 }
 
-variable "repo_name" {
+variable "service_name" {
   type        = string
-  description = "Name of the existing ECR repo"
+  description = "Name of the service which is based on this repo"
 }

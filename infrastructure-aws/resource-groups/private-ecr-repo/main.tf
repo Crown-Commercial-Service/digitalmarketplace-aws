@@ -1,9 +1,9 @@
-data "aws_ecr_repository" "repo" {
-  name = var.repo_name
+resource "aws_ecr_repository" "repo" {
+  name = "${var.project_name}/${var.service_name}"
 }
 
 resource "aws_iam_policy" "read_repo" {
-  name = "${var.project_name}-${var.environment_name}-ecr-repo-${replace(var.repo_name, "/", "-")}-read"
+  name = "${var.project_name}-${var.environment_name}-ecr-repo-${var.service_name}-read"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -16,7 +16,7 @@ resource "aws_iam_policy" "read_repo" {
         ],
         Effect = "Allow",
         Resource = [
-          data.aws_ecr_repository.repo.arn
+          aws_ecr_repository.repo.arn
         ]
       },
       {

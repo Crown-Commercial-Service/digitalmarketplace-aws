@@ -1,9 +1,9 @@
 module "ecr_repo" {
-  source = "../../data-source-groups/private-ecr-repo"
+  source = "../../resource-groups/private-ecr-repo"
 
   environment_name = var.environment_name
   project_name     = var.project_name
-  repo_name        = var.ecr_repo_name
+  service_name     = var.service_name
 }
 
 resource "aws_iam_role_policy_attachment" "apprunner_build__read_ecr" {
