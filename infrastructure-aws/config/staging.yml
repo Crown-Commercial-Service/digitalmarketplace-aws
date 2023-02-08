@@ -2,4 +2,23 @@
 ---
 buyer-frontend:
   environment:
+    AWS_DEFAULT_REGION: eu-west-1
+    # Setting DM_LOG_PATH to /dev/null is a hack for the POC. The rationale goes like this:
+    #  1. For reasons documented elsewhere it is necessary to run the frotnend services in this
+    #     POC in an "as-Live" mode (in our case we choose 'staging')
+    #  2. During existing operations, in "as-live" mode, DM_LOG_PATH is usually set to blank by\
+    #     providing it as an empty environment variable (i.e. `DM_LOG_PATH=`)
+    #  3. The provision API for App Runner services *prohibits* empty environment variables.
+    #  4. Leaving DM_LOG_PATH as the default value '/var/log/digitalmarketplace/application.log' surfaces
+    #     what appears to be an undetected bug in the service: the directory /var/log/digitalmarketplace is
+    #     writable only by the root user whereas the Flask app which attempts to write this log runs as a
+    #     non-root user. Therefore the service fails to start up.
+    #
+    #  And so we are forced to pass in a DM_LOG_PATH value which has the following qualities:
+    #     - is non-blank
+    #     - doesn't name a file location which is out of permission
+    #     - doesn't have the side-effect of filling up the instance disk by writing to an
+    #       unmanaged, un-rotated location.
+    #  Hence /dev/null
+    DM_LOG_PATH: /dev/null
     PORT: "80"  # All env vars are strings!

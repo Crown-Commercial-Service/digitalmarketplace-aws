@@ -81,7 +81,10 @@ def deploy_image_to_apprunner(
     app_name_snake = app_name.replace("-", "_")
 
     apprunner_build_iam_role_arn = tf_outputs["apprunner_build_iam_role_arn"]["value"]
-    repo_url_var_name = f"ecr_repo_{app_name_snake}_url"
+    service_instance_iam_role_arn = tf_outputs["instance_role_buyer_frontend_arn"][
+        "value"
+    ]
+    repo_url_var_name = f"ecr_repo_url_{app_name_snake}"
     ecr_image_identifier = tf_outputs[repo_url_var_name]["value"] + ":" + image_tag
 
     apprunner_client = boto3.client("apprunner")
@@ -102,6 +105,7 @@ def deploy_image_to_apprunner(
             service_name=apprunner_service_name,
             image_identifier=ecr_image_identifier,
             build_role_arn=apprunner_build_iam_role_arn,
+            service_instance_iam_role_arn=service_instance_iam_role_arn,
             env_vars=env_vars,
             client=apprunner_client,
         )
@@ -109,7 +113,14 @@ def deploy_image_to_apprunner(
     print("Requested. Response: {}".format(response))
 
 
-def _create_service(service_name, image_identifier, build_role_arn, env_vars, client):
+def _create_service(
+    service_name,
+    image_identifier,
+    build_role_arn,
+    service_instance_iam_role_arn,
+    env_vars,
+    client,
+):
     return client.create_service(
         ServiceName=service_name,
         SourceConfiguration={
@@ -124,6 +135,7 @@ def _create_service(service_name, image_identifier, build_role_arn, env_vars, cl
             "AutoDeploymentsEnabled": False,
             "AuthenticationConfiguration": {"AccessRoleArn": build_role_arn},
         },
+        InstanceConfiguration={"InstanceRoleArn": service_instance_iam_role_arn},
         HealthCheckConfiguration={"Path": "/"},  # TODO make arg
     )
 

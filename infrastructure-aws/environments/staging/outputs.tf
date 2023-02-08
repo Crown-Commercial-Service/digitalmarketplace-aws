@@ -7,3 +7,8 @@ output "ecr_repo_url_buyer_frontend" {
   description = "URL of the ECR repo for Buyer Frontend"
   value       = module.digitalmarketplace_full.ecr_repo_url_buyer_frontend
 }
+
+output "instance_role_buyer_frontend_arn" {
+  description = "ARN of the service role created for AppRunner instances of the Buyer Frontend servuce"
+  value       = module.digitalmarketplace_full.instance_role_buyer_frontend_arn
+}
