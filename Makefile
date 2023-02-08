@@ -74,7 +74,7 @@ production: ## Set stage to production
 	@true
 
 .PHONY: deploy-app-aws-native
-deploy-app-aws-native: ## Deploys the app to native AWS services
+deploy-app-aws-native: virtualenv ## Deploys the app to native AWS services
     ## POC: Bare bones
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
@@ -82,6 +82,7 @@ deploy-app-aws-native: ## Deploys the app to native AWS services
 	terraform -chdir=infrastructure-aws/environments/${STAGE} apply --auto-approve
 	@${VIRTUALENV_ROOT}/bin/python scripts/deploy_image_to_apprunner.py \
 		digitalmarketplace \
+		${STAGE} \
 		${APPLICATION_NAME} \
 		<(terraform -chdir=infrastructure-aws/environments/${STAGE} output -json)
 

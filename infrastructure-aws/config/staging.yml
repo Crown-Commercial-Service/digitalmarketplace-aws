@@ -1,0 +1,5 @@
+# WIP for POC investigation into DMP 1.0 migration
+---
+buyer-frontend:
+  environment:
+    PORT: "80"  # All env vars are strings!
