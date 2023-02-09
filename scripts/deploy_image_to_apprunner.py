@@ -77,6 +77,9 @@ def deploy_image_to_apprunner(
         supplied_env_vars=config[app_name]["environment"],
     )
 
+    env_vars["DM_DATA_API_URL"] = tf_outputs["fake_api_url"]["value"][
+        :-1
+    ]  # Remove trailing slash
     apprunner_service_name = f"{project}-{app_name}"
     app_name_snake = app_name.replace("-", "_")
 

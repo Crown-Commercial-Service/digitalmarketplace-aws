@@ -3,6 +3,11 @@ output "apprunner_build_iam_role_arn" {
   value       = aws_iam_role.apprunner_build.arn
 }
 
+output "fake_api_url" {
+  description = "Open access endpoint to the fake API"
+  value       = aws_lambda_function_url.fake_api.function_url
+}
+
 output "instance_role_buyer_frontend_arn" {
   description = "ARN of the service role created for AppRunner instances of the Buyer Frontend servuce"
   value       = module.buyer_frontend_service.instance_role_arn
