@@ -44,3 +44,7 @@ Policies will be named with the following components, separated with hyphens:
 This must be kept within the maximum Permission name length of *128 characters*.
 
 ## Resource tagging
+
+Currently we only use default tags for resources created for the POC. These are defined in a *provider.tf* file in each environment, for example [this one](./environments/staging/provider.tf) in the POC Staging environment.
+
+All taggable resources will receive the tags as defined in that file.
