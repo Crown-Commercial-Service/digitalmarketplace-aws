@@ -22,3 +22,6 @@ buyer-frontend:
     #  Hence /dev/null
     DM_LOG_PATH: /dev/null
     PORT: "80"  # All env vars are strings!
+    # Temporary hack - htaccess record for basic auth on frontend services
+    # TODO Generate automatically
+    PROXY_AUTH_CREDENTIALS: "poc:$apr1$ucZGAcrR$AZlxfQzm2vrYJT/HYwBWF/"
