@@ -23,6 +23,11 @@ output "fake_api_url" {
   value       = module.digitalmarketplace_full.fake_api_url
 }
 
+output "frontend_session_cache_nodes" {
+  description = "List of node objects for the frontend session cache"
+  value       = module.digitalmarketplace_full.frontend_session_cache_nodes
+}
+
 output "instance_role_buyer_frontend_arn" {
   description = "ARN of the service role created for AppRunner instances of the Buyer Frontend servuce"
   value       = module.digitalmarketplace_full.instance_role_buyer_frontend_arn

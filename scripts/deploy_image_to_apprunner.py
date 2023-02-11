@@ -98,6 +98,26 @@ def deploy_image_to_apprunner(
     service_instance_iam_role_arn = tf_outputs["instance_role_buyer_frontend_arn"][
         "value"
     ]
+
+    # Hack into place the automagical VCAP_SERVICES "discovery" variable - The immutable app code
+    # dictates that we provide this construct in this manner.
+    # TODO Note in POC issues log
+    env_vars["DM_REDIS_SERVICE_NAME"] = "redis"
+    cache_node = tf_outputs["frontend_session_cache_nodes"]["value"][0]
+    redis_cache_address = "{address}:{port}".format(
+        address=cache_node["address"], port=cache_node["port"]
+    )
+    env_vars["VCAP_SERVICES"] = json.dumps(
+        {
+            "redis": [
+                {
+                    "name": "redis",
+                    "credentials": {"uri": f"redis://{redis_cache_address}"},
+                }
+            ]
+        }
+    )
+
     repo_url_var_name = f"ecr_repo_url_{app_name_snake}"
     ecr_image_identifier = tf_outputs[repo_url_var_name]["value"] + ":" + image_tag
     vpc_id = tf_outputs["vpc_id"]["value"]

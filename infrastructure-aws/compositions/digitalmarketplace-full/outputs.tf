@@ -23,6 +23,11 @@ output "fake_api_url" {
   value       = aws_lambda_function_url.fake_api.function_url
 }
 
+output "frontend_session_cache_nodes" {
+  description = "List of node objects for the frontend session cache"
+  value       = aws_elasticache_cluster.frontend_sessions.cache_nodes
+}
+
 output "instance_role_buyer_frontend_arn" {
   description = "ARN of the service role created for AppRunner instances of the Buyer Frontend servuce"
   value       = module.buyer_frontend_service.instance_role_arn
