@@ -1,6 +1,7 @@
 module "digitalmarketplace_full" {
   source = "../../compositions/digitalmarketplace-full"
 
+  aws_region                    = var.aws_region
   environment_name              = var.environment_name
   project_name                  = var.project_name
   vpc_cidr_block                = var.vpc_cidr_block

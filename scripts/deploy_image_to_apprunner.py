@@ -3,6 +3,7 @@
 
 import copy
 import json
+import secrets
 import sys
 
 import boto3
@@ -11,6 +12,10 @@ import click
 sys.path.insert(0, ".")  # noqa - For the import of dmaws module
 
 from dmaws.utils import read_yaml_file
+
+
+def _get_random_hex(nbytes):
+    return secrets.token_hex(nbytes=nbytes)
 
 
 def _get_service_by_name(service_name, client):
@@ -84,11 +89,18 @@ def deploy_image_to_apprunner(
     app_name_snake = app_name.replace("-", "_")
 
     apprunner_build_iam_role_arn = tf_outputs["apprunner_build_iam_role_arn"]["value"]
+    apprunner_egress_vpc_connector_arn = tf_outputs[
+        "apprunner_egress_vpc_connector_arn"
+    ]["value"]
+    apprunner_ingress_vpc_endpoint_id = tf_outputs["apprunner_ingress_vpc_endpoint_id"][
+        "value"
+    ]
     service_instance_iam_role_arn = tf_outputs["instance_role_buyer_frontend_arn"][
         "value"
     ]
     repo_url_var_name = f"ecr_repo_url_{app_name_snake}"
     ecr_image_identifier = tf_outputs[repo_url_var_name]["value"] + ":" + image_tag
+    vpc_id = tf_outputs["vpc_id"]["value"]
 
     apprunner_client = boto3.client("apprunner")
 
@@ -109,6 +121,9 @@ def deploy_image_to_apprunner(
             image_identifier=ecr_image_identifier,
             build_role_arn=apprunner_build_iam_role_arn,
             service_instance_iam_role_arn=service_instance_iam_role_arn,
+            egress_vpc_connector_arn=apprunner_egress_vpc_connector_arn,
+            ingress_vpc_endpoint_id=apprunner_ingress_vpc_endpoint_id,
+            vpc_id=vpc_id,
             env_vars=env_vars,
             client=apprunner_client,
         )
@@ -121,10 +136,13 @@ def _create_service(
     image_identifier,
     build_role_arn,
     service_instance_iam_role_arn,
+    egress_vpc_connector_arn,
+    ingress_vpc_endpoint_id,
+    vpc_id,
     env_vars,
     client,
 ):
-    return client.create_service(
+    service_create_response = client.create_service(
         ServiceName=service_name,
         SourceConfiguration={
             "ImageRepository": {
@@ -140,7 +158,36 @@ def _create_service(
         },
         InstanceConfiguration={"InstanceRoleArn": service_instance_iam_role_arn},
         HealthCheckConfiguration={"Path": "/"},  # TODO make arg
+        NetworkConfiguration={
+            "EgressConfiguration": {
+                "EgressType": "VPC",
+                "VpcConnectorArn": egress_vpc_connector_arn,
+            },
+            "IngressConfiguration": {"IsPubliclyAccessible": False},
+        },
     )
+    service = service_create_response["Service"]
+
+    # We append a random string because a VPC Ingress Connection name must be unique across
+    # all active Connections in one AWS account in the whole region (i.e. regardless of which VPC
+    # they are in)
+    ingress_connection_name = "{service_name}-{random_bytes}".format(
+        service_name=service["ServiceName"], random_bytes=_get_random_hex(nbytes=3)
+    )
+
+    ingress_create_response = client.create_vpc_ingress_connection(
+        ServiceArn=service["ServiceArn"],
+        VpcIngressConnectionName=ingress_connection_name,
+        IngressVpcConfiguration={
+            "VpcId": vpc_id,
+            "VpcEndpointId": ingress_vpc_endpoint_id,
+        },
+    )
+
+    return {
+        "service_create_response": service_create_response,
+        "ingress_create_response": ingress_create_response,
+    }
 
 
 def _start_deployment(service, client):

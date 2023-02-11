@@ -1,3 +1,8 @@
+variable "aws_region" {
+  type        = string
+  description = "Region for resource deployment"
+}
+
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"

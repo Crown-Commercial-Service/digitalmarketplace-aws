@@ -1,3 +1,4 @@
+aws_region                    = "eu-west-1"
 environment_name              = "staging"
 project_name                  = "digitalmarketplace"
 vpc_cidr_block                = "10.13.0.0/16"
