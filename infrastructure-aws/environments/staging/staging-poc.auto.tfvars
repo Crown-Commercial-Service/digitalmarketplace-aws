@@ -1,2 +1,5 @@
-environment_name = "staging"
-project_name     = "digitalmarketplace"
+environment_name              = "staging"
+project_name                  = "digitalmarketplace"
+vpc_cidr_block                = "10.13.0.0/16"
+vpc_public_subnet_cidr_block  = "10.13.1.0/24"
+vpc_private_subnet_cidr_block = "10.13.129.0/24"
