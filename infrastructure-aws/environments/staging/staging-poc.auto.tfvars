@@ -1,5 +1,6 @@
 aws_region                    = "eu-west-1"
 environment_name              = "staging"
+jenkins_account_id            = "398263320410"
 project_name                  = "digitalmarketplace"
 vpc_cidr_block                = "10.13.0.0/16"
 vpc_public_subnet_cidr_block  = "10.13.1.0/24"
