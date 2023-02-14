@@ -79,6 +79,7 @@ deploy-app-aws-native: virtualenv ## Deploys the app to native AWS services
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
 	$(if ${STAGE},,$(error Must specify STAGE))
 	## N.B. No safety checks at this time!
+	terraform -chdir=infrastructure-aws/environments/${STAGE} init
 	terraform -chdir=infrastructure-aws/environments/${STAGE} apply --auto-approve
 	@${VIRTUALENV_ROOT}/bin/python scripts/deploy_image_to_apprunner.py \
 		digitalmarketplace \
