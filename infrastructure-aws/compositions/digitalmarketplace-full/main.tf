@@ -19,6 +19,16 @@ resource "aws_iam_policy" "apprunner_service_deployment_policy" {
   policy = data.aws_iam_policy_document.apprunner_service_deployment_policy.json
 }
 
+resource "aws_iam_role" "apprunner_deployment_jenkins_role" {
+  name                = "${var.project_name}-${var.environment_name}-apprunner-deployment-jenkins-role"
+  assume_role_policy  = data.aws_iam_policy_document.apprunner_deployment_jenkins_role_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "apprunner_deployment_jenkins_role_policy_attachment" {
+  policy_arn = aws_iam_policy.apprunner_service_deployment_policy.arn
+  role       = aws_iam_role.apprunner_deployment_jenkins_role.id
+}
+
 module "dmp_vpc" {
   source = "../../resource-groups/public-private-vpc"
 
