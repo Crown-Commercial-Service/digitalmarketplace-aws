@@ -14,6 +14,11 @@ resource "aws_iam_role" "apprunner_build" {
   })
 }
 
+resource "aws_iam_policy" "apprunner_service_deployment_policy" {
+  name   = "${var.project_name}-${var.environment_name}-apprunner-service-deployment-policy"
+  policy = data.aws_iam_policy_document.apprunner_service_deployment_policy.json
+}
+
 module "dmp_vpc" {
   source = "../../resource-groups/public-private-vpc"
 
