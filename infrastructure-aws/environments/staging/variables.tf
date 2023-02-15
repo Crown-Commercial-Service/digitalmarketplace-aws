@@ -13,6 +13,11 @@ variable "project_name" {
   description = "Namespace to prepend to resource names where hierarchy is required"
 }
 
+variable "services_desired_counts" {
+  type        = map(number)
+  description = "Desired number of instances for each service"
+}
+
 variable "vpc_cidr_block" {
   type        = string
   description = "CIDR block for VPC"

@@ -4,7 +4,7 @@ resource "aws_cloudwatch_log_group" "log_group" {
 }
 
 resource "aws_iam_policy" "write_log_group" {
-  name = "${var.project_name}-${var.log_group_name}-write"
+  name = "${var.project_name}-${var.log_group_name}-logs-write"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

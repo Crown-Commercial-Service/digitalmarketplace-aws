@@ -3,6 +3,11 @@ variable "aws_region" {
   description = "Region for resource deployment"
 }
 
+variable "aws_target_account" {
+  type = string
+  description = "ID of the account into which deployments are performed"
+}
+
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"
@@ -11,6 +16,11 @@ variable "environment_name" {
 variable "project_name" {
   type        = string
   description = "Namespace to prepend to resource names where hierarchy is required"
+}
+
+variable "services_desired_counts" {
+  type = map
+  description = "Desired number of instances for each service"
 }
 
 variable "vpc_cidr_block" {
