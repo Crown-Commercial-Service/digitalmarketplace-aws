@@ -4,7 +4,7 @@ variable "aws_region" {
 }
 
 variable "aws_target_account" {
-  type = string
+  type        = string
   description = "ID of the account into which deployments are performed"
 }
 
@@ -19,7 +19,7 @@ variable "project_name" {
 }
 
 variable "services_desired_counts" {
-  type = map
+  type        = map(any)
   description = "Desired number of instances for each service"
 }
 
