@@ -5,7 +5,7 @@ output "default_security_group_id" {
 
 output "private_subnet_ids" {
   description = "List of IDS of the private subnet(s)"
-  value       = [aws_subnet.private.id]
+  value       = [for s in aws_subnet.private : "${s.id}"]
 }
 
 output "vpc_id" {
