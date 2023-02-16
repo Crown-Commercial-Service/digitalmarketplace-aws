@@ -1,9 +1,20 @@
+locals {
+  container_name = var.service_name
+  container_port = 80 # TODO variable
+  redis_uri      = "${var.session_cache_nodes[0]["address"]}:${var.session_cache_nodes[0]["port"]}"
+}
+
 resource "aws_ecs_service" "service" {
   name                 = "${var.project_name}-${var.environment_name}-${var.service_name}"
   cluster              = var.ecs_cluster_arn
   desired_count        = var.desired_count
   force_new_deployment = false # Don't deploy on Terraform apply - wait for deployment script
   launch_type          = "FARGATE"
+  load_balancer {
+    container_name   = local.container_name
+    container_port   = tostring(local.container_port)
+    target_group_arn = aws_lb_target_group.target.arn
+  }
   network_configuration {
     assign_public_ip = false
     security_groups  = var.service_security_group_ids
@@ -12,23 +23,18 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.service.arn
 }
 
-locals {
-  redis_uri           = "${var.session_cache_nodes[0]["address"]}:${var.session_cache_nodes[0]["port"]}"
-  service_port_string = "80"
-}
-
 resource "aws_ecs_task_definition" "service" {
   family = "${var.project_name}-${var.environment_name}-${var.service_name}"
   container_definitions = jsonencode([
     {
-      name = "${var.service_name}"
+      name = local.container_name
       environment = [
         { "name" : "DM_APP_NAME", "value" : var.service_name },
         { "name" : "DM_ENVIRONMENT", "value" : var.environment_name },
         { "name" : "DM_LOG_PATH", "value" : "/dev/null" },
         { "name" : "DM_REDIS_SERVICE_NAME", "value" : "redis" },
         { "name" : "VCAP_SERVICES", "value" : "{\"redis\": [{\"name\": \"redis\", \"credentials\": {\"uri\": \"redis://${local.redis_uri}\"}}]}" },
-        { "name" : "PORT", "value" : local.service_port_string },
+        { "name" : "PORT", "value" : tostring(local.container_port) },
         { "name" : "PROXY_AUTH_CREDENTIALS", "value" : "poc:$apr1$ucZGAcrR$AZlxfQzm2vrYJT/HYwBWF/" },
         { "name" : "DM_DATA_API_URL", "value" : var.fake_api_url },
       ]
@@ -44,7 +50,7 @@ resource "aws_ecs_task_definition" "service" {
       }
       portMappings = [
         {
-          containerPort = 80 # TODO variable
+          containerPort = local.container_port
         }
       ]
     }

@@ -1,5 +1,5 @@
 module "buyer_frontend_service" {
-  source = "../../modules/ecs-service"
+  source = "../../modules/balanced-ecs-service"
 
   aws_region                 = var.aws_region
   aws_target_account         = var.aws_target_account
@@ -14,4 +14,5 @@ module "buyer_frontend_service" {
   service_security_group_ids = [module.dmp_vpc.default_security_group_id]
   service_subnet_ids         = module.dmp_vpc.private_subnet_ids
   session_cache_nodes        = aws_elasticache_cluster.frontend_sessions.cache_nodes
+  vpc_id                     = module.dmp_vpc.vpc_id
 }

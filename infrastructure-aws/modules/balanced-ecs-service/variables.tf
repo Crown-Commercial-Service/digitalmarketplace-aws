@@ -62,3 +62,8 @@ variable "session_cache_nodes" {
   type        = list(map(string))
   description = "Node endpoints for session cache"
 }
+
+variable "vpc_id" {
+  type        = string
+  description = "ID of the VPC containing the service"
+}
