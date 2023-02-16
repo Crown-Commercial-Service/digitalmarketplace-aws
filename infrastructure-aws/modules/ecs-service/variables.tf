@@ -34,7 +34,7 @@ variable "environment_name" {
 }
 
 variable "fake_api_url" {
-  type = string
+  type        = string
   description = "URL of stub API to assist startup of service (temporary)"
 }
 
