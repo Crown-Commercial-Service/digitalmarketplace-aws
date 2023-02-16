@@ -1,3 +1,8 @@
+variable "aws_region" {
+  type        = string
+  description = "Region for resource deployment"
+}
+
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"
@@ -13,8 +18,8 @@ variable "vpc_cidr_block" {
   description = "CIDR block for VPC"
 }
 
-variable "vpc_private_subnet_cidr_block" {
-  type        = string
+variable "vpc_private_subnets_cidr_blocks" {
+  type        = map(string)
   description = "CIDR block for private subnet"
 }
 

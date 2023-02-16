@@ -1,9 +1,12 @@
 resource "aws_subnet" "private" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.vpc_private_subnet_cidr_block
+  for_each = var.vpc_private_subnets_cidr_blocks
+
+  availability_zone = "${var.aws_region}${each.key}"
+  cidr_block        = each.value
+  vpc_id            = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "${var.project_name}-${var.environment_name}-private"
+    "Name" = "${var.project_name}-${var.environment_name}-private-${each.key}"
   }
 }
 
@@ -21,6 +24,8 @@ resource "aws_route_table" "private_subnets" {
 }
 
 resource "aws_route_table_association" "private" {
-  subnet_id      = aws_subnet.private.id
+  for_each = aws_subnet.private
+
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.private_subnets.id
 }
