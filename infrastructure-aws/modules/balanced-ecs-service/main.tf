@@ -13,7 +13,7 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     container_name   = local.container_name
     container_port   = tostring(local.container_port)
-    target_group_arn = aws_lb_target_group.target.arn
+    target_group_arn = aws_lb_target_group.http.arn
   }
   network_configuration {
     assign_public_ip = false

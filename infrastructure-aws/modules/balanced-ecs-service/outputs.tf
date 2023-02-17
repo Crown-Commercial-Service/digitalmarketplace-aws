@@ -1,3 +1,8 @@
+output "alb_arn" {
+  description = "The ARN of the Application Load Balancer in front of this service"
+  value       = aws_lb.alb.arn
+}
+
 output "ecr_repo_url" {
   description = "URL of the ECR repo for the image which provides this service"
   value       = module.ecr_repo.repo_url

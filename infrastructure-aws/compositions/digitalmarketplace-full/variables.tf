@@ -8,9 +8,19 @@ variable "aws_target_account" {
   description = "ID of the account into which deployments are performed"
 }
 
+variable "domain_name" {
+  type        = string
+  description = "Domain name to use in public-facing ingress cert and URL"
+}
+
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"
+}
+
+variable "hosted_zone_id" {
+  type        = string
+  description = "ID of the Route 53 Hosted Zone which will manage the DNS and cert validation for this environment"
 }
 
 variable "project_name" {

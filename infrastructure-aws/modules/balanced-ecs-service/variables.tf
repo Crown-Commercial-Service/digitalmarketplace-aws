@@ -63,6 +63,11 @@ variable "session_cache_nodes" {
   description = "Node endpoints for session cache"
 }
 
+variable "temp_cert_arn" {
+  type        = string
+  description = "ARN of cert for ingress domain"
+}
+
 variable "vpc_id" {
   type        = string
   description = "ID of the VPC containing the service"
