@@ -14,6 +14,12 @@ resource "aws_lb_target_group" "target" {
   protocol        = "HTTP"
   target_type     = "ip"
   vpc_id          = var.vpc_id
+
+  health_check {
+    matcher  = "200,401" # 401 is healthy
+    path     = "/"
+    protocol = "HTTP"
+  }
 }
 
 resource "aws_lb_listener" "http" {
