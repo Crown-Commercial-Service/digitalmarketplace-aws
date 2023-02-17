@@ -1,13 +1,18 @@
 resource "aws_subnet" "public" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.vpc_public_subnet_cidr_block
+  for_each = var.vpc_public_subnets_cidr_blocks
+
+  availability_zone = "${var.aws_region}${each.key}"
+  cidr_block        = each.value
+  vpc_id            = aws_vpc.vpc.id
 
   tags = {
-    "Name" : "${var.project_name}-${var.environment_name}-public"
+    "Name" : "${var.project_name}-${var.environment_name}-public-${each.key}"
   }
 }
 
 resource "aws_eip" "nat" {
+  for_each = aws_subnet.public
+
   vpc = true
 
   depends_on = [
@@ -16,11 +21,13 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "public" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public.id
+  for_each = aws_subnet.public
+
+  allocation_id = aws_eip.nat[each.key].id
+  subnet_id     = each.value.id
 
   tags = {
-    Name = "${var.project_name}-${var.environment_name} public NAT"
+    Name = "${var.project_name}-${var.environment_name} public NAT ${each.key}"
   }
 
   depends_on = [

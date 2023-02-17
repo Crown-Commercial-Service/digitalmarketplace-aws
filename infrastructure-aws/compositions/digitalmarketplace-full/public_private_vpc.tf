@@ -6,5 +6,5 @@ module "dmp_vpc" {
   project_name                    = var.project_name
   vpc_cidr_block                  = var.vpc_cidr_block
   vpc_private_subnets_cidr_blocks = var.vpc_private_subnets_cidr_blocks
-  vpc_public_subnet_cidr_block    = var.vpc_public_subnet_cidr_block
+  vpc_public_subnets_cidr_blocks  = var.vpc_public_subnets_cidr_blocks
 }

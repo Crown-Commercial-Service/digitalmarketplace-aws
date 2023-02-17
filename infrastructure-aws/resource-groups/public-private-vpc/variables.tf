@@ -23,7 +23,7 @@ variable "vpc_private_subnets_cidr_blocks" {
   description = "CIDR block for private subnet"
 }
 
-variable "vpc_public_subnet_cidr_block" {
-  type        = string
+variable "vpc_public_subnets_cidr_blocks" {
+  type        = map(string)
   description = "CIDR block for public subnet"
 }
