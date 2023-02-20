@@ -1,5 +1,7 @@
 aws_region       = "eu-west-1"
+domain_name      = "dmp.mcbhenwood.com" # Temporary
 environment_name = "staging"
+hosted_zone_id   = "Z02735461PYN3BV0H30PI"
 project_name     = "digitalmarketplace"
 services_desired_counts = {
   "buyer-frontend" : 2

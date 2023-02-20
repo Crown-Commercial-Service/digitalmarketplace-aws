@@ -4,6 +4,27 @@ locals {
   redis_uri      = "${var.session_cache_nodes[0]["address"]}:${var.session_cache_nodes[0]["port"]}"
 }
 
+resource "aws_security_group" "service" {
+  name        = "${var.environment_name}-${var.service_name}"
+  description = "ECS Service ${var.service_name}"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.environment_name}-${var.service_name}"
+  }
+}
+
+resource "aws_security_group_rule" "egress_all" {
+  security_group_id = aws_security_group.service.id
+  description       = "Allow all outbound traffic"
+
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 0
+  protocol    = "-1"
+  to_port     = 0
+  type        = "egress"
+}
+
 resource "aws_ecs_service" "service" {
   name                 = "${var.project_name}-${var.environment_name}-${var.service_name}"
   cluster              = var.ecs_cluster_arn
@@ -13,12 +34,15 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     container_name   = local.container_name
     container_port   = tostring(local.container_port)
-    target_group_arn = aws_lb_target_group.target.arn
+    target_group_arn = var.lb_target_group_arn
   }
   network_configuration {
     assign_public_ip = false
-    security_groups  = var.service_security_group_ids
-    subnets          = var.service_subnet_ids
+    security_groups = [
+      aws_security_group.service.id,
+      var.lb_target_group_security_group_id
+    ]
+    subnets = var.service_subnet_ids
   }
   task_definition = aws_ecs_task_definition.service.arn
 }
@@ -66,5 +90,3 @@ resource "aws_ecs_task_definition" "service" {
   }
   task_role_arn = aws_iam_role.task_role.arn
 }
-
-## ALB, also NB the service role needs permission to write to the LB. see e.g. https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html#API_UpdateService_RequestParameters

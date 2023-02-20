@@ -38,6 +38,16 @@ variable "fake_api_url" {
   description = "URL of stub API to assist startup of service (temporary)"
 }
 
+variable "lb_target_group_arn" {
+  type        = string
+  description = "ARN of the Load Balancer Target Group with which instances of this service should register"
+}
+
+variable "lb_target_group_security_group_id" {
+  type        = string
+  description = "ID of the security group set up to be adopted by Target Groups of the Load Balancer"
+}
+
 variable "project_name" {
   type        = string
   description = "Namespace to prepend to resource names where hierarchy is required"
@@ -46,11 +56,6 @@ variable "project_name" {
 variable "service_name" {
   type        = string
   description = "Name of the service, indicating its purpose"
-}
-
-variable "service_security_group_ids" {
-  type        = list(string)
-  description = "IDs of the security groups which are to be assigned to the running ECS tasks"
 }
 
 variable "service_subnet_ids" {
