@@ -8,6 +8,11 @@ variable "aws_target_account" {
   description = "ID of the account into which deployments are performed"
 }
 
+variable "container_environment_variables" {
+  type        = list(map(string))
+  description = "Environment variables to be made available to the container task"
+}
+
 variable "desired_count" {
   type        = number
   description = "Target number of instances of service to run (fixed)"
@@ -33,11 +38,6 @@ variable "environment_name" {
   description = "Name to indicate purpose of environment"
 }
 
-variable "fake_api_url" {
-  type        = string
-  description = "URL of stub API to assist startup of service (temporary)"
-}
-
 variable "lb_target_group_arn" {
   type        = string
   description = "ARN of the Load Balancer Target Group with which instances of this service should register"
@@ -56,11 +56,6 @@ variable "service_name" {
 variable "service_subnet_ids" {
   type        = list(string)
   description = "IDs of the subnets in which to run the ECS tasks"
-}
-
-variable "session_cache_nodes" {
-  type        = list(map(string))
-  description = "Node endpoints for session cache"
 }
 
 variable "target_group_security_group_id" {

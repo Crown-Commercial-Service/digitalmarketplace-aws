@@ -1,7 +1,6 @@
 locals {
   container_name = var.service_name
   container_port = 80 # TODO variable
-  redis_uri      = "${var.session_cache_nodes[0]["address"]}:${var.session_cache_nodes[0]["port"]}"
 }
 
 resource "aws_security_group" "service" {
@@ -47,44 +46,13 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.service.arn
 }
 
-/* Notes on the hardcoded env vars below.
-   During this POC we have an enforced rules that we cannot alter the source application code. The Concept under
-   Proof is that we can re-house unchanged code.
-
-   Setting DM_LOG_PATH to /dev/null is a hack for the POC. The rationale goes like this:
-     1. For reasons documented elsewhere it is necessary to run the frotnend services in this
-        POC in an "as-Live" mode (in our case we choose 'staging')
-     2. During existing operations, in "as-live" mode, DM_LOG_PATH is usually set to blank by
-        providing it as an empty environment variable (i.e. `DM_LOG_PATH=`)
-     3. Leaving DM_LOG_PATH as the default value '/var/log/digitalmarketplace/application.log' surfaces
-        what appears to be an undetected bug in the service: the directory /var/log/digitalmarketplace is
-        writable only by the root user whereas the Flask app which attempts to write this log runs as a
-        non-root user. Therefore the service fails to start up.
-
-    And so we are forced to pass in a DM_LOG_PATH value which has the following qualities:
-        - is non-blank
-        - doesn't name a file location which is out of permission
-        - doesn't write to an unrotated / non-housekepy location and fill up the container volume
-
-    Hence /dev/null.
-*/
-
 resource "aws_ecs_task_definition" "service" {
   family = "${var.project_name}-${var.environment_name}-${var.service_name}"
   container_definitions = jsonencode([
     {
-      name = local.container_name
-      environment = [
-        { "name" : "DM_APP_NAME", "value" : var.service_name },
-        { "name" : "DM_ENVIRONMENT", "value" : var.environment_name },
-        { "name" : "DM_LOG_PATH", "value" : "/dev/null" },
-        { "name" : "DM_REDIS_SERVICE_NAME", "value" : "redis" },
-        { "name" : "VCAP_SERVICES", "value" : "{\"redis\": [{\"name\": \"redis\", \"credentials\": {\"uri\": \"redis://${local.redis_uri}\"}}]}" },
-        { "name" : "PORT", "value" : tostring(local.container_port) },
-        # Temporary hack for the POC before we have a routing service in front of the "frontend" apps - TODO Not for prod!
-        { "name" : "PROXY_AUTH_CREDENTIALS", "value" : "poc:$apr1$ucZGAcrR$AZlxfQzm2vrYJT/HYwBWF/" },
-        { "name" : "DM_DATA_API_URL", "value" : var.fake_api_url },
-      ]
+      name        = local.container_name
+      environment = var.container_environment_variables
+
       image = "${module.ecr_repo.repo_url}"
       logConfiguration = {
         "logDriver" : "awslogs",

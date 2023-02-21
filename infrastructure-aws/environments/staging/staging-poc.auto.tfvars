@@ -4,6 +4,7 @@ environment_name = "staging"
 hosted_zone_id   = "Z02735461PYN3BV0H30PI"
 project_name     = "digitalmarketplace"
 services_desired_counts = {
+  "api" : 4,
   "buyer-frontend" : 2
 }
 vpc_cidr_block = "10.13.0.0/16"
