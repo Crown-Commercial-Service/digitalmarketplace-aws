@@ -14,7 +14,7 @@ resource "aws_security_group" "service" {
   }
 }
 
-resource "aws_security_group_rule" "egress_all" {
+resource "aws_security_group_rule" "service_egress_all" {
   security_group_id = aws_security_group.service.id
   description       = "Allow all outbound traffic"
 
@@ -29,7 +29,7 @@ resource "aws_ecs_service" "service" {
   name                 = "${var.project_name}-${var.environment_name}-${var.service_name}"
   cluster              = var.ecs_cluster_arn
   desired_count        = var.desired_count
-  force_new_deployment = false # Don't deploy on Terraform apply - wait for deployment script
+  force_new_deployment = false
   launch_type          = "FARGATE"
   load_balancer {
     container_name   = local.container_name
@@ -40,7 +40,7 @@ resource "aws_ecs_service" "service" {
     assign_public_ip = false
     security_groups = [
       aws_security_group.service.id,
-      var.lb_target_group_security_group_id
+      var.target_group_security_group_id
     ]
     subnets = var.service_subnet_ids
   }

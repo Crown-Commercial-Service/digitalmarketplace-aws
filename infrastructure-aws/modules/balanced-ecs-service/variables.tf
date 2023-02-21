@@ -43,11 +43,6 @@ variable "lb_target_group_arn" {
   description = "ARN of the Load Balancer Target Group with which instances of this service should register"
 }
 
-variable "lb_target_group_security_group_id" {
-  type        = string
-  description = "ID of the security group set up to be adopted by Target Groups of the Load Balancer"
-}
-
 variable "project_name" {
   type        = string
   description = "Namespace to prepend to resource names where hierarchy is required"
@@ -66,6 +61,11 @@ variable "service_subnet_ids" {
 variable "session_cache_nodes" {
   type        = list(map(string))
   description = "Node endpoints for session cache"
+}
+
+variable "target_group_security_group_id" {
+  type        = string
+  description = "Identifies the holder as a routable target for its upstream Load Balancer"
 }
 
 variable "vpc_id" {
