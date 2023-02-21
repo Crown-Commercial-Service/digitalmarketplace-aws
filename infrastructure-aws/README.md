@@ -2,6 +2,16 @@
 
 Proof of Concept: Deploying existing applications within an AWS native environment.
 
+## Pre-requisites
+
+This list does not include pre-requisites for Terraform state management (i.e. S3 state bucket and Dynamo lock table).
+
+### Route 53 Hosted Zone
+
+A Hosted Zone needs to exist in the AWS account. This HZ will provide the DNS records for the environment you create.
+
+The HZ needs to be reflected in the following Terraform vars: `domain_name`, `hosted_zone_id`. See the variables files for more information.
+
 ## Folder structure
 
 The folder contains sub-folders, each with a different purpose:
@@ -11,7 +21,6 @@ The folder contains sub-folders, each with a different purpose:
 * [modules](./modules/README.md) - Re-usable collections of resources which provide some singular function of business value)
 * [data-source-groups](./data-source-groups/README.md) - References to existing AWS resources whose properties are required during the application of Terraform
 * [resource-groups](./resource-groups/README.md) - Collections of resources grouped for convenience based on commonality of implementation requirements
-
 
 ## IAM resource naming
 
