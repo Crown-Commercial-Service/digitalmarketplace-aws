@@ -10,7 +10,7 @@ variable "aws_target_account" {
 
 variable "container_environment_variables" {
   type        = list(map(string))
-  description = "Environment variables to be made available to the container task"
+  description = "Environment variables to be made available to service container tasks"
 }
 
 variable "desired_count" {

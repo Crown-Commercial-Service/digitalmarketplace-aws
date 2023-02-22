@@ -1,6 +1,6 @@
 resource "aws_iam_role" "task_role" {
-  name        = "${var.project_name}-${var.environment_name}-${var.service_name}-ecs-task"
-  description = "Role to be assumed by the container tasks in the service during general operation"
+  name        = "${var.family_name}-ecs-task"
+  description = "Role to be assumed by the ${var.family_name} container tasks in the service during general operation"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -22,7 +22,7 @@ resource "aws_iam_role" "task_role" {
 }
 
 resource "aws_iam_policy" "pass_task_role" {
-  name = "${var.project_name}-${var.environment_name}-pass-${var.service_name}-task-role"
+  name = "${var.family_name}-pass-task-role"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

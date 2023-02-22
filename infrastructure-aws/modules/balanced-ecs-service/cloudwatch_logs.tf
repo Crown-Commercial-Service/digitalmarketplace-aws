@@ -5,7 +5,7 @@ module "application_log_group" {
 }
 
 resource "aws_iam_role_policy_attachment" "task_role__write_application_logs" {
-  role       = aws_iam_role.task_role.name
+  role       = module.service_task_definition.task_role_name
   policy_arn = module.application_log_group.write_log_group_policy_arn
 }
 
@@ -27,6 +27,6 @@ module "nginx_log_group" {
 }
 
 resource "aws_iam_role_policy_attachment" "task_role__write_nginx_logs" {
-  role       = aws_iam_role.task_role.name
+  role       = module.service_task_definition.task_role_name
   policy_arn = module.nginx_log_group.write_log_group_policy_arn
 }
