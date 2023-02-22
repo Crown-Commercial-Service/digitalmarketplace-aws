@@ -19,11 +19,6 @@ resource "aws_ecs_cluster_capacity_providers" "dmp_fargate" {
   }
 }
 
-moved {
-  from = module.buyer_frontend_service.aws_iam_role.execution_role
-  to   = aws_iam_role.execution_role
-}
-
 resource "aws_iam_role" "execution_role" {
   name        = "${var.project_name}-${var.environment_name}-ecs-execution"
   description = "Role assumed by the ECS service during provision and setup"
