@@ -1,0 +1,31 @@
+module "db_migration_task_definition" {
+  source = "../../resource-groups/ecs-fargate-task-definition"
+
+  aws_region         = var.aws_region
+  aws_target_account = var.aws_target_account
+  container_environment_variables = [
+    { "name" : "FLASK_APP", "value" : "application:application" }
+  ]
+  container_log_group_name = module.migration_log_group.log_group_name
+  container_name           = "db-migration"
+  ecr_repo_url             = module.api_service.ecr_repo_url # Migration uses the API codebase
+  ecs_execution_role_arn   = aws_iam_role.execution_role.arn
+  family_name              = "${var.project_name}-${var.environment_name}-db-migration"
+  override_command = [
+    "/app/venv/bin/flask", "db", "upgrade"
+  ]
+  secret_environment_variables = [
+    { "name" : "VCAP_SERVICES", "valueFrom" : aws_secretsmanager_secret.db_creds_vcap.arn }
+  ]
+}
+
+module "migration_log_group" {
+  source         = "../../resource-groups/cloudwatch-log-group"
+  log_group_name = "${var.environment_name}-db-migration"
+  project_name   = var.project_name
+}
+
+resource "aws_iam_role_policy_attachment" "execution_role__write_migration_logs" {
+  role       = aws_iam_role.execution_role.name
+  policy_arn = module.migration_log_group.write_log_group_policy_arn
+}

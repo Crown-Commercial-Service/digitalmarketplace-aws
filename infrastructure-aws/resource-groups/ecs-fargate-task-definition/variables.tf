@@ -17,6 +17,7 @@ variable "container_cpu" {
 variable "container_environment_variables" {
   type        = list(map(string))
   description = "Environment variables to be made available to each task container"
+  default     = []
 }
 
 variable "container_log_group_name" {
@@ -38,6 +39,7 @@ variable "container_memory" {
 variable "container_port" {
   type        = number
   description = "Port to which each task container expects to bind its listener"
+  default     = null
 }
 
 variable "ecr_repo_url" {
@@ -53,4 +55,16 @@ variable "ecs_execution_role_arn" {
 variable "family_name" {
   type        = string
   description = "The name to give to the task definition, across all revisions"
+}
+
+variable "override_command" {
+  type        = list(string)
+  description = "Startup command to override that which is specified in the original Dockerfile of the container"
+  default     = null
+}
+
+variable "secret_environment_variables" {
+  type        = list(map(string))
+  description = "Environment variables to be looked up as secrets and then made available to each task container"
+  default     = []
 }

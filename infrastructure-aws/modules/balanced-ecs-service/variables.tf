@@ -33,6 +33,11 @@ variable "ecs_execution_role_name" {
   description = "Name of the role which is assumed by the ECS execution processes"
 }
 
+variable "egress_all_security_group_id" {
+  type = string
+  description = "ID of security group allowing all egress"
+}
+
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"

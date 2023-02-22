@@ -30,7 +30,6 @@ variable "db_password" {
 variable "db_username" {
   type        = string
   description = "Username for master user"
-  default     = "postgres"
 }
 
 variable "environment_name" {

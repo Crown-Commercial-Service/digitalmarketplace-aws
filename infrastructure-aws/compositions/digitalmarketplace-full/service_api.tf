@@ -19,6 +19,7 @@ module "api_service" {
   ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn
   ecs_execution_role_arn          = aws_iam_role.execution_role.arn
   ecs_execution_role_name         = aws_iam_role.execution_role.name
+  egress_all_security_group_id    = aws_security_group.egress_all.id
   environment_name                = var.environment_name
   lb_target_group_arn             = aws_lb_target_group.api.arn
   project_name                    = var.project_name

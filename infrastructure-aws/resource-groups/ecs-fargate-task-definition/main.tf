@@ -3,9 +3,9 @@ resource "aws_ecs_task_definition" "task" {
   container_definitions = jsonencode([
     {
       name        = var.container_name
+      command     = var.override_command # If null, does not override Dockerfile original command
       environment = var.container_environment_variables
-
-      image = var.ecr_repo_url
+      image       = var.ecr_repo_url
       logConfiguration = {
         "logDriver" : "awslogs",
         "options" : {
@@ -15,11 +15,12 @@ resource "aws_ecs_task_definition" "task" {
           "awslogs-stream-prefix" : "execution"
         }
       }
-      portMappings = [
+      portMappings = var.container_port == null ? null : [
         {
           containerPort = var.container_port
         }
       ]
+      secrets = var.secret_environment_variables
     }
   ])
   cpu                      = var.container_cpu

@@ -2,27 +2,6 @@ locals {
   container_port = 80 # TODO variable
 }
 
-resource "aws_security_group" "service" {
-  name        = "${var.environment_name}-${var.service_name}"
-  description = "ECS Service ${var.service_name}"
-  vpc_id      = var.vpc_id
-
-  tags = {
-    Name = "${var.environment_name}-${var.service_name}"
-  }
-}
-
-resource "aws_security_group_rule" "service_egress_all" {
-  security_group_id = aws_security_group.service.id
-  description       = "Allow all outbound traffic"
-
-  cidr_blocks = ["0.0.0.0/0"]
-  from_port   = 0
-  protocol    = "-1"
-  to_port     = 0
-  type        = "egress"
-}
-
 resource "aws_ecs_service" "service" {
   name                 = "${var.project_name}-${var.environment_name}-${var.service_name}"
   cluster              = var.ecs_cluster_arn
@@ -37,7 +16,7 @@ resource "aws_ecs_service" "service" {
   network_configuration {
     assign_public_ip = false
     security_groups = [
-      aws_security_group.service.id,
+      var.egress_all_security_group_id,
       var.target_group_security_group_id
     ]
     subnets = var.service_subnet_ids
