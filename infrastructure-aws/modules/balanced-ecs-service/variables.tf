@@ -45,11 +45,6 @@ variable "ecs_execution_role_name" {
   description = "Name of the role which is assumed by the ECS execution processes"
 }
 
-variable "egress_all_security_group_id" {
-  type        = string
-  description = "ID of security group allowing all egress"
-}
-
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"
@@ -63,6 +58,11 @@ variable "lb_target_group_arn" {
 variable "project_name" {
   type        = string
   description = "Namespace to prepend to resource names where hierarchy is required"
+}
+
+variable "security_group_ids" {
+  type        = list(string)
+  description = "IDs of security groups to which the service tasks should be added"
 }
 
 variable "secret_environment_variables" {
@@ -79,11 +79,6 @@ variable "service_name" {
 variable "service_subnet_ids" {
   type        = list(string)
   description = "IDs of the subnets in which to run the ECS tasks"
-}
-
-variable "target_group_security_group_id" {
-  type        = string
-  description = "Identifies the holder as a routable target for its upstream Load Balancer"
 }
 
 variable "vpc_id" {

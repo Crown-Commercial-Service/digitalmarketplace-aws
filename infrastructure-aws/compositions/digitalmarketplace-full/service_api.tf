@@ -18,7 +18,6 @@ module "api_service" {
   ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn
   ecs_execution_role_arn          = aws_iam_role.ecs_execution_role.arn
   ecs_execution_role_name         = aws_iam_role.ecs_execution_role.name
-  egress_all_security_group_id    = aws_security_group.egress_all.id
   environment_name                = var.environment_name
   lb_target_group_arn             = aws_lb_target_group.api.arn
   project_name                    = var.project_name
@@ -26,10 +25,13 @@ module "api_service" {
     { "name" : "DM_API_AUTH_TOKENS", "valueFrom" : aws_secretsmanager_secret.data_api_token.arn },
     { "name" : "VCAP_SERVICES", "valueFrom" : aws_secretsmanager_secret.db_creds_vcap.arn }
   ]
-  service_name                   = local.service_name_api
-  service_subnet_ids             = module.dmp_vpc.private_subnet_ids
-  target_group_security_group_id = aws_security_group.api_lb_targets.id
-  vpc_id                         = module.dmp_vpc.vpc_id
+  security_group_ids = [
+    aws_security_group.api_lb_targets.id,
+    aws_security_group.egress_all.id
+  ]
+  service_name       = local.service_name_api
+  service_subnet_ids = module.dmp_vpc.private_subnet_ids
+  vpc_id             = module.dmp_vpc.vpc_id
 }
 
 resource "random_password" "data_api_token" {

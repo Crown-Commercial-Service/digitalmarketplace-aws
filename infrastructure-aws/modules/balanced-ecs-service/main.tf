@@ -15,11 +15,8 @@ resource "aws_ecs_service" "service" {
   }
   network_configuration {
     assign_public_ip = false
-    security_groups = [
-      var.egress_all_security_group_id,
-      var.target_group_security_group_id
-    ]
-    subnets = var.service_subnet_ids
+    security_groups  = var.security_group_ids
+    subnets          = var.service_subnet_ids
   }
   task_definition = module.service_task_definition.task_definition_arn
 }

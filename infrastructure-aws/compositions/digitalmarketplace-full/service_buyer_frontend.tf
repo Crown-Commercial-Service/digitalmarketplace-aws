@@ -45,17 +45,19 @@ module "buyer_frontend_service" {
   ecs_cluster_arn                         = aws_ecs_cluster.dmp.arn
   ecs_execution_role_arn                  = aws_iam_role.ecs_execution_role.arn
   ecs_execution_role_name                 = aws_iam_role.ecs_execution_role.name
-  egress_all_security_group_id            = aws_security_group.egress_all.id
   environment_name                        = var.environment_name
   lb_target_group_arn                     = aws_lb_target_group.buyer_frontend.arn
   project_name                            = var.project_name
   secret_environment_variables = [
     { "name" : "DM_DATA_API_AUTH_TOKEN", "valueFrom" : aws_secretsmanager_secret.data_api_token.arn }
   ]
-  service_name                   = local.service_name_buyer_frontend
-  service_subnet_ids             = module.dmp_vpc.private_subnet_ids
-  target_group_security_group_id = aws_security_group.frontend_lb_targets.id
-  vpc_id                         = module.dmp_vpc.vpc_id
+  security_group_ids = [
+    aws_security_group.egress_all.id,
+    aws_security_group.frontend_lb_targets.id
+  ]
+  service_name       = local.service_name_buyer_frontend
+  service_subnet_ids = module.dmp_vpc.private_subnet_ids
+  vpc_id             = module.dmp_vpc.vpc_id
 }
 
 resource "aws_lb_target_group" "buyer_frontend" {
