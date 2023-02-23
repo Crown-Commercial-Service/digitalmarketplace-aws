@@ -13,6 +13,13 @@ variable "container_environment_variables" {
   description = "Environment variables to be made available to service container tasks"
 }
 
+variable "container_healthcheck_proxy_credentials" {
+  type        = string
+  description = "Basic auth credentials to enable on-container curl-based healthchecks"
+  sensitive   = true
+  default     = null
+}
+
 variable "container_memory" {
   type        = number
   description = "Memory to allocate to each task container (where a value of 1024 == 1GB)"

@@ -15,7 +15,9 @@ data "aws_secretsmanager_secret_version" "proxy_credentials" {
 }
 
 locals {
-  proxy_credentials_htpasswd_string = jsondecode(
+  proxy_credentials_data = jsondecode(
     data.aws_secretsmanager_secret_version.proxy_credentials.secret_string
-  )["htpasswd_string"]
+  )
+  proxy_credentials_htpasswd_string = local.proxy_credentials_data["htpasswd_string"]
+  proxy_credentials                 = "${local.proxy_credentials_data["auth_user"]}:${local.proxy_credentials_data["auth_password"]}"
 }

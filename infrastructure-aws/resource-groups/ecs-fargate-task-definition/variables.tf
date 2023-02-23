@@ -20,6 +20,13 @@ variable "container_environment_variables" {
   default     = []
 }
 
+variable "container_healthcheck_proxy_credentials" {
+  type        = string
+  description = "Basic auth credentials to enable on-container curl-based healthchecks"
+  sensitive   = true
+  default     = null
+}
+
 variable "container_log_group_name" {
   type        = string
   description = "Name to give to the CloudWatch log group to which the task containers will write their standard (non-application) logs"
