@@ -14,6 +14,7 @@ module "api_service" {
   aws_region                      = var.aws_region
   aws_target_account              = var.aws_target_account
   container_environment_variables = local.api_env_vars
+  container_memory                = var.services_container_memories[local.service_name_api]
   desired_count                   = var.services_desired_counts[local.service_name_api]
   ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn
   ecs_execution_role_arn          = aws_iam_role.ecs_execution_role.arn

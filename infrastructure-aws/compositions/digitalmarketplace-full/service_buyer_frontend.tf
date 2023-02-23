@@ -38,6 +38,7 @@ module "buyer_frontend_service" {
 
   aws_region                      = var.aws_region
   aws_target_account              = var.aws_target_account
+  container_memory                = var.services_container_memories[local.service_name_buyer_frontend]
   desired_count                   = var.services_desired_counts[local.service_name_buyer_frontend]
   container_environment_variables = local.buyer_frontend_env_vars
   ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn

@@ -13,6 +13,11 @@ variable "container_environment_variables" {
   description = "Environment variables to be made available to service container tasks"
 }
 
+variable "container_memory" {
+  type        = number
+  description = "Memory to allocate to each task container (where a value of 1024 == 1GB)"
+}
+
 variable "desired_count" {
   type        = number
   description = "Target number of instances of service to run (fixed)"

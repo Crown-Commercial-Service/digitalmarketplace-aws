@@ -28,6 +28,11 @@ variable "project_name" {
   description = "Namespace to prepend to resource names where hierarchy is required"
 }
 
+variable "services_container_memories" {
+  type        = map(number)
+  description = "Memory to allocate to task containers for each service (where a value of 1024 == 1GB)"
+}
+
 variable "services_desired_counts" {
   type        = map(any)
   description = "Desired number of instances for each service"

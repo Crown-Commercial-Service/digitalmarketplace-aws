@@ -7,6 +7,7 @@ module "digitalmarketplace_full" {
   environment_name                = var.environment_name
   hosted_zone_id                  = var.hosted_zone_id
   project_name                    = var.project_name
+  services_container_memories     = var.services_container_memories
   services_desired_counts         = var.services_desired_counts
   vpc_cidr_block                  = var.vpc_cidr_block
   vpc_private_subnets_cidr_blocks = var.vpc_private_subnets_cidr_blocks

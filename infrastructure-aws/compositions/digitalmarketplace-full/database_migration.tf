@@ -7,6 +7,7 @@ module "db_migration_task_definition" {
     { "name" : "FLASK_APP", "value" : "application:application" }
   ]
   container_log_group_name = module.migration_log_group.log_group_name
+  container_memory         = var.services_container_memories[local.service_name_api] # Use the API memory settings
   container_name           = "db-migration"
   ecr_repo_url             = module.api_service.ecr_repo_url # Migration uses the API codebase
   ecs_execution_role_arn   = aws_iam_role.ecs_execution_role.arn
