@@ -22,7 +22,7 @@
 locals {
   buyer_frontend_env_vars = [
     { "name" : "DM_APP_NAME", "value" : local.service_name_buyer_frontend },
-    { "name" : "DM_DATA_API_URL", "value" : aws_lambda_function_url.fake_api.function_url }, # TODO - Now use the API LB dns_name
+    { "name" : "DM_DATA_API_URL", "value" : "http://${aws_lb.api.dns_name}" }, # TODO - Make this a fixed-name DNS A record
     { "name" : "DM_ENVIRONMENT", "value" : var.environment_name },
     { "name" : "DM_LOG_PATH", "value" : "/dev/null" },
     { "name" : "DM_REDIS_SERVICE_NAME", "value" : "redis" },
@@ -48,10 +48,13 @@ module "buyer_frontend_service" {
   environment_name                = var.environment_name
   lb_target_group_arn             = aws_lb_target_group.buyer_frontend.arn
   project_name                    = var.project_name
-  service_name                    = local.service_name_buyer_frontend
-  service_subnet_ids              = module.dmp_vpc.private_subnet_ids
-  target_group_security_group_id  = aws_security_group.frontend_lb_targets.id
-  vpc_id                          = module.dmp_vpc.vpc_id
+  secret_environment_variables = [
+    { "name" : "DM_DATA_API_AUTH_TOKEN", "valueFrom" : aws_secretsmanager_secret.data_api_token.arn }
+  ]
+  service_name                   = local.service_name_buyer_frontend
+  service_subnet_ids             = module.dmp_vpc.private_subnet_ids
+  target_group_security_group_id = aws_security_group.frontend_lb_targets.id
+  vpc_id                         = module.dmp_vpc.vpc_id
 }
 
 resource "aws_lb_target_group" "buyer_frontend" {

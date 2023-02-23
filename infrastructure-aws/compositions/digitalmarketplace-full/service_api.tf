@@ -1,6 +1,5 @@
 locals {
   api_env_vars = [
-    { "name" : "DM_API_AUTH_TOKENS", "value" : "tokentokentoken" }, # TODO create and manage
     { "name" : "DM_APP_NAME", "value" : local.service_name_api },
     { "name" : "DM_ENVIRONMENT", "value" : var.environment_name },
     { "name" : "DM_LOG_PATH", "value" : "/dev/null" },
@@ -24,10 +23,50 @@ module "api_service" {
   lb_target_group_arn             = aws_lb_target_group.api.arn
   project_name                    = var.project_name
   secret_environment_variables = [
+    { "name" : "DM_API_AUTH_TOKENS", "valueFrom" : aws_secretsmanager_secret.data_api_token.arn },
     { "name" : "VCAP_SERVICES", "valueFrom" : aws_secretsmanager_secret.db_creds_vcap.arn }
   ]
   service_name                   = local.service_name_api
   service_subnet_ids             = module.dmp_vpc.private_subnet_ids
   target_group_security_group_id = aws_security_group.api_lb_targets.id
   vpc_id                         = module.dmp_vpc.vpc_id
+}
+
+resource "random_password" "data_api_token" {
+  length  = 32
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "data_api_token" {
+  name        = "${var.project_name}-${var.environment_name}-data-api-token"
+  description = "Auto-generated token for the Data API"
+}
+
+resource "aws_secretsmanager_secret_version" "data_api_token" {
+  secret_id     = aws_secretsmanager_secret.data_api_token.id
+  secret_string = random_password.data_api_token.result
+}
+
+resource "aws_iam_policy" "read_data_api_token_secret" {
+  name = "${var.project_name}-api-token-read-secret"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = [
+          aws_secretsmanager_secret.data_api_token.arn
+        ]
+      }
+    ]
+  })
+}
+
+# Secrets read at startup - Execution role needs access (rather than task role)
+resource "aws_iam_role_policy_attachment" "execution_role__read_data_api_token_secret" {
+  role       = aws_iam_role.ecs_execution_role.name
+  policy_arn = aws_iam_policy.read_data_api_token_secret.arn
 }
