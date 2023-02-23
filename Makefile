@@ -152,6 +152,13 @@ deploy-db-migration: ## Deploys the db migration app
 	cf stop ${APPLICATION_NAME}-db-migration
 	cf run-task ${APPLICATION_NAME}-db-migration "cd /app && FLASK_APP=application:application venv/bin/flask db upgrade" --name ${APPLICATION_NAME}-db-migration
 
+.PHONY: deploy-db-migration-native-aws
+deploy-db-migration-native-aws: ## Runs single migration task
+	$(if ${STAGE},,$(error Must specify STAGE))
+	terraform -chdir=infrastructure-aws/environments/${STAGE} init
+	@${VIRTUALENV_ROOT}/bin/python scripts/run-migration-ecs-task.py \
+		<(terraform -chdir=infrastructure-aws/environments/${STAGE} output -json)
+
 .PHONY: check-db-migration-task
 check-db-migration-task: ## Get the status for the last db migration task
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))

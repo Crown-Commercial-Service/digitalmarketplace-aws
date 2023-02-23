@@ -1,3 +1,13 @@
+output "db_access_security_group_id" {
+  description = "ID of Security Group, membership of which grants routing access to the DB"
+  value       = module.dmp_db.db_access_security_group_id
+}
+
+output "db_migration_ecs_task_definition_arn" {
+  description = "ARN of the task definition which provides the DB migration task"
+  value       = module.db_migration_task_definition.task_definition_arn
+}
+
 output "ecr_repos_urls" {
   description = "URLs of the ECR repos for the images which provide these service"
   value = {
@@ -17,4 +27,14 @@ output "ecs_services_arns" {
     "api" : module.api_service.ecs_service_arn
     "buyer-frontend" : module.buyer_frontend_service.ecs_service_arn
   }
+}
+
+output "egress_all_security_group_id" {
+  description = "ID fo security group which allows all egress"
+  value       = aws_security_group.egress_all.id
+}
+
+output "private_subnet_ids" {
+  description = "List of IDs of each of the private subnets"
+  value       = module.dmp_vpc.private_subnet_ids
 }
