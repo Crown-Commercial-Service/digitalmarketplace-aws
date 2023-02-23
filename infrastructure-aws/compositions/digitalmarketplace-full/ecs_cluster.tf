@@ -19,7 +19,7 @@ resource "aws_ecs_cluster_capacity_providers" "dmp_fargate" {
   }
 }
 
-resource "aws_iam_role" "execution_role" {
+resource "aws_iam_role" "ecs_execution_role" {
   name        = "${var.project_name}-${var.environment_name}-ecs-execution"
   description = "Role assumed by the ECS service during provision and setup"
 
@@ -38,6 +38,6 @@ resource "aws_iam_role" "execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execute__pass_task_role" {
-  role       = aws_iam_role.execution_role.name
+  role       = aws_iam_role.ecs_execution_role.name
   policy_arn = module.buyer_frontend_service.pass_task_role_policy_arn
 }

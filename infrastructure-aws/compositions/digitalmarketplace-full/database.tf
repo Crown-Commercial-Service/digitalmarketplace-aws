@@ -62,6 +62,6 @@ resource "aws_iam_policy" "read_db_creds_vcap_secret" {
 
 # Secrets read at startup - Execution role needs access (rather than task role)
 resource "aws_iam_role_policy_attachment" "execution_role__read_vcap_secret" {
-  role       = aws_iam_role.execution_role.name
+  role       = aws_iam_role.ecs_execution_role.name
   policy_arn = aws_iam_policy.read_db_creds_vcap_secret.arn
 }
