@@ -12,6 +12,25 @@ A Hosted Zone needs to exist in the AWS account. This HZ will provide the DNS re
 
 The HZ needs to be reflected in the following Terraform vars: `domain_name`, `hosted_zone_id`. See the variables files for more information.
 
+### Nginx basic auth credentials
+
+The Nginx server baked into each frontend service requires a basic auth header to allow access to `/` and beyond. This is stored in Secrets Manager as a matter of best practice.
+
+We also need to faciliate on-container health checks which exercise the WSGI code and this requires that we provide an auth header with those `curl` requests and that this header match the credentials.
+
+For this reason there is also a requirement to provide a Secrets Manager secret before you apply the Terraform.
+
+The secret should be created as follows:
+
+Name: digitalmarketplace-ENVIRONMENT-proxy-credentials (e.g. "digitalmarketplace-staging-proxy-credentials")
+
+Content:
+```json
+{  "auth_user":"poc",
+   "auth_password":"some-password",   
+   "htpasswd_string":"poc:$apr1$hashhashhash/"}
+```
+
 ## Folder structure
 
 The folder contains sub-folders, each with a different purpose:

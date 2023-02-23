@@ -28,7 +28,7 @@ locals {
     { "name" : "DM_REDIS_SERVICE_NAME", "value" : "redis" },
     { "name" : "PORT", "value" : "80" },
     # Temporary hack for the POC before we have a routing service in front of the "frontend" apps - TODO Not for prod!
-    { "name" : "PROXY_AUTH_CREDENTIALS", "value" : "poc:$apr1$ucZGAcrR$AZlxfQzm2vrYJT/HYwBWF/" },
+    { "name" : "PROXY_AUTH_CREDENTIALS", "value" : local.proxy_credentials_htpasswd_string },
     { "name" : "VCAP_SERVICES", "value" : "{\"redis\": [{\"name\": \"redis\", \"credentials\": {\"uri\": \"redis://${local.redis_uri}\"}}]}" }
   ]
 }
