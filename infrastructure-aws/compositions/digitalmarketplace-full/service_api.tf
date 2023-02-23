@@ -27,7 +27,8 @@ module "api_service" {
   ]
   security_group_ids = [
     aws_security_group.api_lb_targets.id,
-    aws_security_group.egress_all.id
+    aws_security_group.egress_all.id,
+    module.dmp_db.db_access_security_group_id
   ]
   service_name       = local.service_name_api
   service_subnet_ids = module.dmp_vpc.private_subnet_ids
