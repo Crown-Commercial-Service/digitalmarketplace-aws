@@ -77,10 +77,12 @@ production: ## Set stage to production
 deploy-app-aws-native: virtualenv ## Deploys the app to native AWS services
     ## POC: Bare bones
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	$(if ${STAGE},,$(error Must specify STAGE))
+	terraform -chdir=infrastructure-aws/environments/${STAGE} init
 	## N.B. No safety checks at this time!
 	terraform -chdir=infrastructure-aws/environments/${STAGE} apply --auto-approve
 	## We will want to push the ECR image here to the repo specified in ecr_repos_urls
-	@${VIRTUALENV_ROOT}/bin/python scripts/force_ecs_deployment.py \
+	@${VIRTUALENV_ROOT}/bin/python scripts/force-ecs-deployment.py \
 		${APPLICATION_NAME} \
 		<(terraform -chdir=infrastructure-aws/environments/${STAGE} output -json)
 
