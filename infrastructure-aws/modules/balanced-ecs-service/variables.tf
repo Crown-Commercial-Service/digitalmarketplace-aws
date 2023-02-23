@@ -34,7 +34,7 @@ variable "ecs_execution_role_name" {
 }
 
 variable "egress_all_security_group_id" {
-  type = string
+  type        = string
   description = "ID of security group allowing all egress"
 }
 
@@ -51,6 +51,12 @@ variable "lb_target_group_arn" {
 variable "project_name" {
   type        = string
   description = "Namespace to prepend to resource names where hierarchy is required"
+}
+
+variable "secret_environment_variables" {
+  type        = list(map(string))
+  description = "Environment variables to be looked up as secrets and then made available to each task container"
+  default     = []
 }
 
 variable "service_name" {

@@ -36,4 +36,5 @@ module "service_task_definition" {
   ecr_repo_url                    = module.ecr_repo.repo_url
   ecs_execution_role_arn          = var.ecs_execution_role_arn
   family_name                     = "${var.project_name}-${var.environment_name}-${var.service_name}"
+  secret_environment_variables    = var.secret_environment_variables
 }
