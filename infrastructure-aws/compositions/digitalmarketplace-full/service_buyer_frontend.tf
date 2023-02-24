@@ -22,7 +22,7 @@
 locals {
   buyer_frontend_env_vars = [
     { "name" : "DM_APP_NAME", "value" : local.service_name_buyer_frontend },
-    { "name" : "DM_DATA_API_URL", "value" : "http://${aws_lb.api.dns_name}" }, # TODO - Make this a fixed-name DNS A record
+    { "name" : "DM_DATA_API_URL", "value" : "http://${aws_lb.api.dns_name}" },
     { "name" : "DM_ENVIRONMENT", "value" : var.environment_name },
     { "name" : "DM_LOG_PATH", "value" : "/dev/null" },
     { "name" : "DM_REDIS_SERVICE_NAME", "value" : "redis" },
