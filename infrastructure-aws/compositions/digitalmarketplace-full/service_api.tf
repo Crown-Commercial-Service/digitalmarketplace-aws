@@ -13,6 +13,7 @@ module "api_service" {
   aws_region                      = var.aws_region
   aws_target_account              = var.aws_target_account
   container_environment_variables = local.api_env_vars
+  container_healthcheck_command   = "curl -f -H \"Authorization: Bearer ${random_password.data_api_token.result}\" http://localhost/frameworks || exit 1"
   container_memory                = var.services_container_memories[local.service_name_api]
   desired_count                   = var.services_desired_counts[local.service_name_api]
   ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn

@@ -35,19 +35,18 @@ locals {
 module "buyer_frontend_service" {
   source = "../../modules/balanced-ecs-service"
 
-  aws_region                              = var.aws_region
-  aws_target_account                      = var.aws_target_account
-  container_healthcheck_path              = "/terms-and-conditions"
-  container_healthcheck_proxy_credentials = local.proxy_credentials
-  container_memory                        = var.services_container_memories[local.service_name_buyer_frontend]
-  desired_count                           = var.services_desired_counts[local.service_name_buyer_frontend]
-  container_environment_variables         = local.buyer_frontend_env_vars
-  ecs_cluster_arn                         = aws_ecs_cluster.dmp.arn
-  ecs_execution_role_arn                  = aws_iam_role.ecs_execution_role.arn
-  ecs_execution_role_name                 = aws_iam_role.ecs_execution_role.name
-  environment_name                        = var.environment_name
-  lb_target_group_arn                     = aws_lb_target_group.buyer_frontend.arn
-  project_name                            = var.project_name
+  aws_region                      = var.aws_region
+  aws_target_account              = var.aws_target_account
+  container_healthcheck_command   = "curl -f -u ${local.proxy_credentials} http://localhost/terms-and-conditions || exit 1"
+  container_memory                = var.services_container_memories[local.service_name_buyer_frontend]
+  desired_count                   = var.services_desired_counts[local.service_name_buyer_frontend]
+  container_environment_variables = local.buyer_frontend_env_vars
+  ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn
+  ecs_execution_role_arn          = aws_iam_role.ecs_execution_role.arn
+  ecs_execution_role_name         = aws_iam_role.ecs_execution_role.name
+  environment_name                = var.environment_name
+  lb_target_group_arn             = aws_lb_target_group.buyer_frontend.arn
+  project_name                    = var.project_name
   secret_environment_variables = [
     { "name" : "DM_DATA_API_AUTH_TOKEN", "valueFrom" : aws_secretsmanager_secret.data_api_token.arn },
     { "name" : "SECRET_KEY", "valueFrom" : aws_secretsmanager_secret.fe_secret_key.arn }

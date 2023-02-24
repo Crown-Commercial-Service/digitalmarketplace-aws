@@ -24,17 +24,16 @@ resource "aws_ecs_service" "service" {
 module "service_task_definition" {
   source = "../../resource-groups/ecs-fargate-task-definition"
 
-  aws_region                              = var.aws_region
-  aws_target_account                      = var.aws_target_account
-  container_environment_variables         = var.container_environment_variables
-  container_healthcheck_path              = var.container_healthcheck_path
-  container_healthcheck_proxy_credentials = var.container_healthcheck_proxy_credentials
-  container_log_group_name                = module.container_log_group.log_group_name
-  container_memory                        = var.container_memory
-  container_name                          = var.service_name
-  container_port                          = local.container_port
-  ecr_repo_url                            = module.ecr_repo.repo_url
-  ecs_execution_role_arn                  = var.ecs_execution_role_arn
-  family_name                             = "${var.project_name}-${var.environment_name}-${var.service_name}"
-  secret_environment_variables            = var.secret_environment_variables
+  aws_region                      = var.aws_region
+  aws_target_account              = var.aws_target_account
+  container_environment_variables = var.container_environment_variables
+  container_healthcheck_command   = var.container_healthcheck_command
+  container_log_group_name        = module.container_log_group.log_group_name
+  container_memory                = var.container_memory
+  container_name                  = var.service_name
+  container_port                  = local.container_port
+  ecr_repo_url                    = module.ecr_repo.repo_url
+  ecs_execution_role_arn          = var.ecs_execution_role_arn
+  family_name                     = "${var.project_name}-${var.environment_name}-${var.service_name}"
+  secret_environment_variables    = var.secret_environment_variables
 }

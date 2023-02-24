@@ -6,8 +6,8 @@ resource "aws_ecs_task_definition" "task" {
       command     = var.override_command # If null, does not override Dockerfile original command
       environment = var.container_environment_variables
       essential   = true
-      healthCheck = var.container_healthcheck_proxy_credentials == null ? null : {
-        command     = ["CMD-SHELL", "curl -f -u ${var.container_healthcheck_proxy_credentials} http://localhost${var.container_healthcheck_path} || exit 1"]
+      healthCheck = var.container_healthcheck_command == null ? null : {
+        command     = ["CMD-SHELL", var.container_healthcheck_command]
         startPeriod = 10
         timeout     = 10
       }
