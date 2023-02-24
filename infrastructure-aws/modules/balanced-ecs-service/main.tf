@@ -27,6 +27,7 @@ module "service_task_definition" {
   aws_region                              = var.aws_region
   aws_target_account                      = var.aws_target_account
   container_environment_variables         = var.container_environment_variables
+  container_healthcheck_path              = var.container_healthcheck_path
   container_healthcheck_proxy_credentials = var.container_healthcheck_proxy_credentials
   container_log_group_name                = module.container_log_group.log_group_name
   container_memory                        = var.container_memory

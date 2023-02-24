@@ -5,11 +5,13 @@ hosted_zone_id   = "Z09653222IAUZ39EAVI3Q"
 project_name     = "digitalmarketplace"
 services_container_memories = {
   "api" : 2048,
-  "buyer-frontend" : 1024
+  "buyer-frontend" : 1024,
+  "user-frontend" : 1024
 }
 services_desired_counts = {
   "api" : 4,
   "buyer-frontend" : 2
+  "user-frontend" : 2
 }
 vpc_cidr_block = "10.13.0.0/16"
 vpc_public_subnets_cidr_blocks = {

@@ -15,7 +15,21 @@ resource "aws_lb_listener" "frontend_https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.buyer_frontend.arn # Later iterations will contain an action for each original "route" target
+    target_group_arn = aws_lb_target_group.buyer_frontend.arn # The default (serves from unconsumed `/` root)
+  }
+}
+
+resource "aws_lb_listener_rule" "user_frontend" {
+  listener_arn = aws_lb_listener.frontend_https.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.user_frontend.arn
+  }
+  condition {
+    path_pattern {
+      values = ["/user/*"]
+    }
   }
 }
 

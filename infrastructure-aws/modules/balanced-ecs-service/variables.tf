@@ -13,6 +13,12 @@ variable "container_environment_variables" {
   description = "Environment variables to be made available to service container tasks"
 }
 
+variable "container_healthcheck_path" {
+  type        = string
+  description = "Path for which we would ordinarily expect a 200 response"
+  default     = null
+}
+
 variable "container_healthcheck_proxy_credentials" {
   type        = string
   description = "Basic auth credentials to enable on-container curl-based healthchecks"
