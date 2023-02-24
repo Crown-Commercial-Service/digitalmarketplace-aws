@@ -41,27 +41,3 @@ resource "aws_secretsmanager_secret_version" "db_creds_vcap" {
   secret_id     = aws_secretsmanager_secret.db_creds_vcap.id
   secret_string = local.vcap_json
 }
-
-resource "aws_iam_policy" "read_db_creds_vcap_secret" {
-  name = "${var.project_name}-db-creds-vcap-read-secret"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue"
-        ]
-        Resource = [
-          aws_secretsmanager_secret.db_creds_vcap.arn
-        ]
-      }
-    ]
-  })
-}
-
-# Secrets read at startup - Execution role needs access (rather than task role)
-resource "aws_iam_role_policy_attachment" "execution_role__read_vcap_secret" {
-  role       = aws_iam_role.ecs_execution_role.name
-  policy_arn = aws_iam_policy.read_db_creds_vcap_secret.arn
-}

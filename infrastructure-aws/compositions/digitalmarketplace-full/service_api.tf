@@ -49,27 +49,3 @@ resource "aws_secretsmanager_secret_version" "data_api_token" {
   secret_id     = aws_secretsmanager_secret.data_api_token.id
   secret_string = random_password.data_api_token.result
 }
-
-resource "aws_iam_policy" "read_data_api_token_secret" {
-  name = "${var.project_name}-api-token-read-secret"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue"
-        ]
-        Resource = [
-          aws_secretsmanager_secret.data_api_token.arn
-        ]
-      }
-    ]
-  })
-}
-
-# Secrets read at startup - Execution role needs access (rather than task role)
-resource "aws_iam_role_policy_attachment" "execution_role__read_data_api_token_secret" {
-  role       = aws_iam_role.ecs_execution_role.name
-  policy_arn = aws_iam_policy.read_data_api_token_secret.arn
-}
