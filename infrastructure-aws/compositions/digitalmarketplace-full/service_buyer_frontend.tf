@@ -49,7 +49,8 @@ module "buyer_frontend_service" {
   lb_target_group_arn                     = aws_lb_target_group.buyer_frontend.arn
   project_name                            = var.project_name
   secret_environment_variables = [
-    { "name" : "DM_DATA_API_AUTH_TOKEN", "valueFrom" : aws_secretsmanager_secret.data_api_token.arn }
+    { "name" : "DM_DATA_API_AUTH_TOKEN", "valueFrom" : aws_secretsmanager_secret.data_api_token.arn },
+    { "name" : "SECRET_KEY", "valueFrom" : aws_secretsmanager_secret.fe_secret_key.arn }
   ]
   security_group_ids = [
     aws_security_group.egress_all.id,
