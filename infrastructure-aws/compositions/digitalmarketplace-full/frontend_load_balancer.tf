@@ -56,7 +56,7 @@ resource "aws_security_group" "frontend_alb" {
 }
 
 resource "aws_security_group" "frontend_lb_targets" {
-  name        = "${var.environment_name}-frontend-services"
+  name        = "${var.environment_name}-frontend-lb-targets"
   description = "Identifies the holder as one of the frontend ALB targets"
   vpc_id      = module.dmp_vpc.vpc_id
 
