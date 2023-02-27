@@ -45,10 +45,15 @@ def run_migration_ecs_task(tf_outputs_json):
         },
         taskDefinition=db_migration_ecs_task_definition_arn,
     )
+    print("Migration requested.")
 
-    print("Requested. Response: {}".format(response))
+    task_arn = response["tasks"][0]["taskArn"]
 
-    # TODO WAIT!
+    print(f"Waiting for completion of task {task_arn}")
+    waiter = ecs_client.get_waiter("tasks_stopped")
+    waiter.wait(cluster=ecs_cluster_arn, tasks=[task_arn])
+
+    print("Done.")
 
 
 if __name__ == "__main__":

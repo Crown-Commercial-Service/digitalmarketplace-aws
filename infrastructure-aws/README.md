@@ -50,6 +50,8 @@ See [this doc](https://docs.aws.amazon.com/service-authorization/latest/referenc
 
 In the time between Terraform application and running this migration, the services will repeatedly fail to start, as stated above. Once migration has been run, the services will self-heal automatically.
 
+*Note:* The migration script waits until the ECS task is complete. This can take around a minute.
+
 ## Folder structure
 
 The folder contains sub-folders, each with a different purpose:
