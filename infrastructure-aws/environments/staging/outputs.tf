@@ -1,3 +1,8 @@
+output "add_users_upload_bucket_id" {
+  description = "Full name of the bucket to which new user creation files should be uploaded"
+  value       = module.digitalmarketplace_full.add_users_upload_bucket_id
+}
+
 output "db_access_security_group_id" {
   description = "ID of Security Group, membership of which grants routing access to the DB"
   value       = module.digitalmarketplace_full.db_access_security_group_id
