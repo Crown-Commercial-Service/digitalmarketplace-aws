@@ -23,6 +23,11 @@ variable "hosted_zone_id" {
   description = "ID of the Route 53 Hosted Zone which will manage the DNS and cert validation for this environment"
 }
 
+variable "lambda_bucket_id" {
+  type        = string
+  description = "Full name of bucket through which to provide Lambda deployments"
+}
+
 variable "project_name" {
   type        = string
   description = "Namespace to prepend to resource names where hierarchy is required"
