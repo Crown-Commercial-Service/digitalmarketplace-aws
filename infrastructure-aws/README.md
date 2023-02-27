@@ -31,6 +31,25 @@ Content:
    "htpasswd_string":"poc:$apr1$hashhashhash/"}
 ```
 
+### Database creation
+
+The RDS database instance is created by the Terraform however the schemata and fixtures will not be present. All services will fail startup repeatedly while this is the case.
+
+Initialise the database structure by running the migrations thus, after the Terraform has first been applied:
+
+```bash
+make deploy-db-migration-aws-native
+```
+
+Note that this assumes two things:
+
+1. The shell environment has AWS CLI access configured
+1. The configured user has IAM permissions to run ECS RunTask on the appropriate task definition (the ARN for this task definition is provided in the Terraform output as `db_migration_ecs_task_definition_arn`).
+
+See [this doc](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticcontainerservice.html#amazonelasticcontainerservice-actions-as-permissions) for more information on the RunTask API method and the IAM permissions required to invoke it.
+
+In the time between Terraform application and running this migration, the services will repeatedly fail to start, as stated above. Once migration has been run, the services will self-heal automatically.
+
 ## Folder structure
 
 The folder contains sub-folders, each with a different purpose:
