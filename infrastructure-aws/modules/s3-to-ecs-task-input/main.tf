@@ -5,8 +5,25 @@ resource "aws_sfn_state_machine" "run_task_using_file" {
   definition = <<EOF
 {
   "Comment": "Run an ECS task against a file uploaded to S3: ${var.process_name}",
-  "StartAt": "Delete S3 object",
+  "StartAt": "Copy S3 object to EFS",
   "States": {
+    "Copy S3 object to EFS": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${module.copy_s3_to_efs_lambda.function_arn}",
+        "Payload": {
+          "from_bucket.$": "$$.Execution.Input.detail.bucket.name",
+          "from_key.$": "$$.Execution.Input.detail.object.key",
+          "to_folder": "${local.fs_local_mount_path}"
+        }
+      },
+      "ResultSelector": {
+        "ecs_filename.$": "$.Payload.to_filename"
+      },
+      "ResultPath": "$",
+      "Next": "Delete S3 object"
+    },
     "Delete S3 object": {
       "Type": "Task",
       "Resource": "arn:aws:states:::aws-sdk:s3:deleteObject",
@@ -52,6 +69,11 @@ resource "aws_iam_role" "sfn_run_task_using_file" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "run_task_using_file__invoke_copy_lambda" {
+  role       = aws_iam_role.sfn_run_task_using_file.id
+  policy_arn = module.copy_s3_to_efs_lambda.invoke_lambda_iam_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "run_task_using_file__delete_upload_object" {

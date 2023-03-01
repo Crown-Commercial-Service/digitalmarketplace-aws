@@ -5,6 +5,7 @@ user.yml
 venv*
 /tmp
 .envrc
+lambdazips
 node_modules
 package-lock.json
 local.nix

@@ -18,4 +18,8 @@ module "digitalmarketplace_full" {
   vpc_cidr_block                  = var.vpc_cidr_block
   vpc_private_subnets_cidr_blocks = var.vpc_private_subnets_cidr_blocks
   vpc_public_subnets_cidr_blocks  = var.vpc_public_subnets_cidr_blocks
+
+  depends_on = [
+    data.archive_file.lambda_zip
+  ]
 }
