@@ -26,6 +26,11 @@ module "migration_log_group" {
   project_name   = var.project_name
 }
 
+resource "aws_iam_role_policy_attachment" "db_migration_task__write_migration_logs" {
+  role       = module.db_migration_task_definition.task_role_name
+  policy_arn = module.migration_log_group.write_log_group_policy_arn
+}
+
 resource "aws_iam_role_policy_attachment" "execution_role__write_migration_logs" {
   role       = aws_iam_role.ecs_execution_role.name
   policy_arn = module.migration_log_group.write_log_group_policy_arn
