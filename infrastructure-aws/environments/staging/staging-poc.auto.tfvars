@@ -1,5 +1,5 @@
 aws_region         = "eu-west-1"
-domain_name        = "dmp.mcbhenwood.com" # Temporary
+domain_name        = "dmp.techopsdev.com"
 environment_name   = "staging"
 hosted_zone_id     = "Z02735461PYN3BV0H30PI"
 jenkins_account_id = "398263320410"
