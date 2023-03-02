@@ -5,6 +5,7 @@ locals {
   # { function_base_name: source_folder_relative_path }
   lambdas = {
     "copy-s3-to-efs" : "../../modules/s3-to-ecs-task-input/lambdas/copy-s3-to-efs"
+    "delete-from-efs" : "../../modules/s3-to-ecs-task-input/lambdas/delete-from-efs"
   }
   lambdazips_folder = "../../lambdazips"
 }

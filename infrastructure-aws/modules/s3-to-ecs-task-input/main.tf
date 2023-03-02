@@ -22,6 +22,19 @@ resource "aws_sfn_state_machine" "run_task_using_file" {
         "ecs_filename.$": "$.Payload.to_filename"
       },
       "ResultPath": "$",
+      "Next": "Delete file from ECS"
+    },
+    "Delete file from ECS": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${module.delete_from_efs_lambda.function_arn}",
+        "Payload": {
+          "filename.$": "$.ecs_filename",
+          "from_folder": "${local.fs_local_mount_path}"
+        }
+      },
+      "ResultPath": null,
       "Next": "Delete S3 object"
     },
     "Delete S3 object": {
@@ -74,6 +87,11 @@ resource "aws_iam_role" "sfn_run_task_using_file" {
 resource "aws_iam_role_policy_attachment" "run_task_using_file__invoke_copy_lambda" {
   role       = aws_iam_role.sfn_run_task_using_file.id
   policy_arn = module.copy_s3_to_efs_lambda.invoke_lambda_iam_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "run_task_using_file__invoke_delete_lambda" {
+  role       = aws_iam_role.sfn_run_task_using_file.id
+  policy_arn = module.delete_from_efs_lambda.invoke_lambda_iam_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "run_task_using_file__delete_upload_object" {
