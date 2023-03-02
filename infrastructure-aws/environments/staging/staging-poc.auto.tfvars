@@ -4,6 +4,11 @@ environment_name   = "staging"
 hosted_zone_id     = "Z02735461PYN3BV0H30PI"
 jenkins_account_id = "398263320410"
 project_name       = "digitalmarketplace"
+services_container_memories = {
+  "api" : 2048,
+  "buyer-frontend" : 1024,
+  "user-frontend" : 1024
+}
 services_desired_counts = {
   "api" : 4,
   "buyer-frontend" : 2
