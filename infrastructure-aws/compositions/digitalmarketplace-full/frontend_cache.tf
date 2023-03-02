@@ -36,3 +36,18 @@ resource "aws_security_group_rule" "redis_from_services" {
   to_port                  = 6379
   type                     = "ingress"
 }
+
+resource "random_password" "fe_secret_key" {
+  length  = 32
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "fe_secret_key" {
+  name        = "${var.project_name}-${var.environment_name}-fe-secret-key"
+  description = "Secret key for shared usage by all frontend apps"
+}
+
+resource "aws_secretsmanager_secret_version" "fe_secret_key" {
+  secret_id     = aws_secretsmanager_secret.fe_secret_key.id
+  secret_string = random_password.fe_secret_key.result
+}

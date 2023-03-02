@@ -12,6 +12,7 @@ services_container_memories = {
 services_desired_counts = {
   "api" : 4,
   "buyer-frontend" : 2
+  "user-frontend" : 2
 }
 terraform_state_s3_bucket_name      = "digital-marketplace-tfstate-dmp-aws-migrate"
 terraform_state_dynamodb_table_name = "dmp-aws-migrate-state-locks"

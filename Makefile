@@ -77,10 +77,12 @@ production: ## Set stage to production
 deploy-app-aws-native: virtualenv ## Deploys the app to native AWS services
     ## POC: Bare bones
 	$(if ${APPLICATION_NAME},,$(error Must specify APPLICATION_NAME))
+	$(if ${STAGE},,$(error Must specify STAGE))
+	terraform -chdir=infrastructure-aws/environments/${STAGE} init
 	## N.B. No safety checks at this time!
 	terraform -chdir=infrastructure-aws/environments/${STAGE} apply --auto-approve
 	## We will want to push the ECR image here to the repo specified in ecr_repos_urls
-	@${VIRTUALENV_ROOT}/bin/python scripts/force_ecs_deployment.py \
+	@${VIRTUALENV_ROOT}/bin/python scripts/force-ecs-deployment.py \
 		${APPLICATION_NAME} \
 		<(terraform -chdir=infrastructure-aws/environments/${STAGE} output -json)
 
@@ -151,6 +153,13 @@ deploy-db-migration: ## Deploys the db migration app
 	cf push ${APPLICATION_NAME}-db-migration -f <(make -s -C ${CURDIR} generate-manifest APPLICATION_NAME=db-migration) -o digitalmarketplace/${APPLICATION_NAME}:${RELEASE_NAME} --no-route
 	cf stop ${APPLICATION_NAME}-db-migration
 	cf run-task ${APPLICATION_NAME}-db-migration "cd /app && FLASK_APP=application:application venv/bin/flask db upgrade" --name ${APPLICATION_NAME}-db-migration
+
+.PHONY: deploy-db-migration-native-aws
+deploy-db-migration-native-aws: ## Runs single migration task
+	$(if ${STAGE},,$(error Must specify STAGE))
+	terraform -chdir=infrastructure-aws/environments/${STAGE} init
+	@${VIRTUALENV_ROOT}/bin/python scripts/run-migration-ecs-task.py \
+		<(terraform -chdir=infrastructure-aws/environments/${STAGE} output -json)
 
 .PHONY: check-db-migration-task
 check-db-migration-task: ## Get the status for the last db migration task

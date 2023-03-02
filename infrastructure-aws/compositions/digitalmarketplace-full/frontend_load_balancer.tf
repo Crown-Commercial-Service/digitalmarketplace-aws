@@ -15,7 +15,21 @@ resource "aws_lb_listener" "frontend_https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.buyer_frontend.arn # Later iterations will contain an action for each original "route" target
+    target_group_arn = aws_lb_target_group.buyer_frontend.arn # The default (serves from unconsumed `/` root)
+  }
+}
+
+resource "aws_lb_listener_rule" "user_frontend" {
+  listener_arn = aws_lb_listener.frontend_https.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.user_frontend.arn
+  }
+  condition {
+    path_pattern {
+      values = ["/user/*"]
+    }
   }
 }
 
@@ -42,7 +56,7 @@ resource "aws_security_group" "frontend_alb" {
 }
 
 resource "aws_security_group" "frontend_lb_targets" {
-  name        = "${var.environment_name}-frontend-services"
+  name        = "${var.environment_name}-frontend-lb-targets"
   description = "Identifies the holder as one of the frontend ALB targets"
   vpc_id      = module.dmp_vpc.vpc_id
 

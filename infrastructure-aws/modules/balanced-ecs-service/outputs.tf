@@ -10,5 +10,5 @@ output "ecs_service_arn" {
 
 output "pass_task_role_policy_arn" {
   description = "ARN of policy permitting passage of the task role"
-  value       = aws_iam_policy.pass_task_role.arn
+  value       = module.service_task_definition.pass_task_role_policy_arn
 }
