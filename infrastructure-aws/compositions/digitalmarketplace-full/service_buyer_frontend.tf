@@ -52,6 +52,7 @@ module "buyer_frontend_service" {
     { "name" : "SECRET_KEY", "valueFrom" : aws_secretsmanager_secret.fe_secret_key.arn }
   ]
   security_group_ids = [
+    aws_security_group.api_clients.id,
     aws_security_group.egress_all.id,
     aws_security_group.frontend_lb_targets.id
   ]
