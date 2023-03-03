@@ -18,6 +18,11 @@ variable "hosted_zone_id" {
   description = "ID of the Route 53 Hosted Zone which will manage the DNS and cert validation for this environment"
 }
 
+variable "jenkins_account_id" {
+  type        = string
+  description = "The Account ID of the Jenkins instance from which ECS will perform deployments"
+}
+
 variable "project_name" {
   type        = string
   description = "Namespace to prepend to resource names where hierarchy is required"
@@ -31,6 +36,16 @@ variable "services_container_memories" {
 variable "services_desired_counts" {
   type        = map(number)
   description = "Desired number of instances for each service"
+}
+
+variable "terraform_state_s3_bucket_name" {
+  type        = string
+  description = "The name of the S3 bucket holding the Terraform State file"
+}
+
+variable "terraform_state_dynamodb_table_name" {
+  type        = string
+  description = "The name of the DynamoDB table holding the Lock files for the Terraform State"
 }
 
 variable "vpc_cidr_block" {
