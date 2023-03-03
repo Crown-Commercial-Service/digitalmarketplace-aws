@@ -18,7 +18,7 @@ output "ecr_repos_urls" {
   value = {
     "api" : module.api_service.ecr_repo_url,
     "buyer-frontend" : module.buyer_frontend_service.ecr_repo_url,
-    "user-front-end" : module.user_frontend_service.ecr_repo_url
+    "user-frontend" : module.user_frontend_service.ecr_repo_url
   }
 }
 
@@ -32,7 +32,7 @@ output "ecs_services_arns" {
   value = {
     "api" : module.api_service.ecs_service_arn,
     "buyer-frontend" : module.buyer_frontend_service.ecs_service_arn,
-    "user-front-end" : module.user_frontend_service.ecs_service_arn
+    "user-frontend" : module.user_frontend_service.ecs_service_arn
   }
 }
 
