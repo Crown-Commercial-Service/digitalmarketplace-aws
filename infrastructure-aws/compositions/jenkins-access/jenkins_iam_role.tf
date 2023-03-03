@@ -23,6 +23,11 @@ resource "aws_iam_role_policy_attachment" "jenkins_role_terraform_state_policy_a
   role       = aws_iam_role.ecs_deployment_jenkins_role.id
 }
 
+resource "aws_iam_role_policy_attachment" "jenkins_role_terraform_administrator" { # TODO refine
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+  role       = aws_iam_role.ecs_deployment_jenkins_role.id
+}
+
 data "aws_iam_policy_document" "ecs_service_deployment_policy" {
   statement {
     effect = "Allow"
