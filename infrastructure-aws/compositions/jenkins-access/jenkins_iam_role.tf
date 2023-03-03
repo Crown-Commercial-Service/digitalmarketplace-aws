@@ -1,6 +1,6 @@
 resource "aws_iam_role" "ecs_deployment_jenkins_role" {
-  name                = "${var.project_name}-${var.environment_name}-ecs-deployment-jenkins-role"
-  assume_role_policy  = data.aws_iam_policy_document.ecs_deployment_jenkins_role_policy.json
+  name               = "${var.project_name}-${var.environment_name}-ecs-deployment-jenkins-role"
+  assume_role_policy = data.aws_iam_policy_document.ecs_deployment_jenkins_role_policy.json
 }
 
 resource "aws_iam_policy" "ecs_service_deployment_policy" {
