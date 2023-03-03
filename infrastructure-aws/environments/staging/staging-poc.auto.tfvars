@@ -1,7 +1,7 @@
 aws_region         = "eu-west-1"
 domain_name        = "dmp.techopsdev.com"
 environment_name   = "staging"
-hosted_zone_id     = "Z02735461PYN3BV0H30PI"
+hosted_zone_id     = "Z09653222IAUZ39EAVI3Q"
 jenkins_account_id = "398263320410"
 project_name       = "digitalmarketplace"
 services_container_memories = {
