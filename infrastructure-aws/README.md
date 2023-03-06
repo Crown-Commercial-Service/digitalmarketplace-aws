@@ -44,13 +44,25 @@ make deploy-db-migration-aws-native
 Note that this assumes two things:
 
 1. The shell environment has AWS CLI access configured
-1. The configured user has IAM permissions to run ECS RunTask on the appropriate task definition (the ARN for this task definition is provided in the Terraform output as `db_migration_ecs_task_definition_arn`).
+1. The configured user has IAM permissions to run ECS RunTask on the appropriate task definition (the ARN for this task definition is provided in the Terraform output as `api_one_off_ecs_task_definition_arn`).
 
 See [this doc](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticcontainerservice.html#amazonelasticcontainerservice-actions-as-permissions) for more information on the RunTask API method and the IAM permissions required to invoke it.
 
 In the time between Terraform application and running this migration, the services will repeatedly fail to start, as stated above. Once migration has been run, the services will self-heal automatically.
 
 *Note:* The migration script waits until the ECS task is complete. This can take around a minute.
+
+## Utilities
+
+### Add Users
+
+Users may be added to the DMP system by uploading a JSON file of user credential objects to S3. The format of the file should be as described [in this code comment](https://github.com/Crown-Commercial-Service/digitalmarketplace-api/blob/main/scripts/add_users.py#L7).
+
+The bucket to which the file should be uploaded is the one which is created within [the module dmp_add_users_upload_bucket](./compositions/digitalmarketplace-full/add_users.tf). The name will vary from installation to installation.
+
+The empirical name of the bucket can be found in the Terraform output as `add_users_upload_bucket_id".
+
+Details of the technical solution can be found in [this README](./compositions/digitalmarketplace-full/README.md#automated-addition-of-users).
 
 ## Folder structure
 
