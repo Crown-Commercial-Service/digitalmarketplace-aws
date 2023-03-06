@@ -24,7 +24,6 @@ module "user_frontend_service" {
   container_environment_variables = local.user_frontend_env_vars
   ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn
   ecs_execution_role_arn          = aws_iam_role.ecs_execution_role.arn
-  ecs_execution_role_name         = aws_iam_role.ecs_execution_role.name
   environment_name                = var.environment_name
   lb_target_group_arn             = aws_lb_target_group.user_frontend.arn
   project_name                    = var.project_name

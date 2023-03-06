@@ -3,4 +3,4 @@
 Provide:
 
 * a private ECR repository
-* an IAM policy enabling image retrieval
+* JSON describing an IAM policy enabling image retrieval

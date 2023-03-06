@@ -1,6 +1,6 @@
-output "read_repo_iam_policy_arn" {
-  description = "The ARN of the policy granting read access to this ECR repo"
-  value       = aws_iam_policy.read_repo.arn
+output "read_repo_policy_document_json" {
+  description = "JSON describing an IAM policy which allows read access to this ECR repo"
+  value       = data.aws_iam_policy_document.read_repo.json
 }
 
 output "repo_url" {

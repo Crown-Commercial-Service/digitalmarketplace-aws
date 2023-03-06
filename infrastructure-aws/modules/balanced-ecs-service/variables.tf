@@ -40,11 +40,6 @@ variable "ecs_execution_role_arn" {
   description = "ARN of the role which is assumed by the ECS execution processes"
 }
 
-variable "ecs_execution_role_name" {
-  type        = string
-  description = "Name of the role which is assumed by the ECS execution processes"
-}
-
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"

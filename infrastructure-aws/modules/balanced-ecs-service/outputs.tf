@@ -13,6 +13,11 @@ output "pass_task_role_policy_document_json" {
   value       = module.service_task_definition.pass_task_role_policy_document_json
 }
 
+output "read_ecr_repo_policy_document_json" {
+  description = "JSON describing an IAM policy which allows read access to the ECR repo for this ECS service"
+  value       = module.ecr_repo.read_repo_policy_document_json
+}
+
 output "write_container_logs_policy_document_json" {
   description = "JSON describing an IAM policy which allows the container logs to be written to"
   value       = module.container_log_group.write_log_group_policy_document_json
