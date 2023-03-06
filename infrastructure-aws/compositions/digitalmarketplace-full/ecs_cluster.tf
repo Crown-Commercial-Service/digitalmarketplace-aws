@@ -58,7 +58,14 @@ resource "aws_iam_policy" "pass_ecs_execution_role" {
 
 data "aws_iam_policy_document" "ecs_execution_pass_task_permissions" {
   source_policy_documents = [
-    module.buyer_frontend_service.pass_task_role_policy_document_json
+    # core services
+    module.api_service.pass_task_role_policy_document_json,
+    module.buyer_frontend_service.pass_task_role_policy_document_json,
+    module.user_frontend_service.pass_task_role_policy_document_json,
+
+    # one-off tasks
+    module.db_migration_task_definition.pass_task_role_policy_document_json,
+    module.dmp_add_users.pass_task_role_policy_document_json
   ]
 }
 
