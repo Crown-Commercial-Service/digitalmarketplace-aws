@@ -8,9 +8,9 @@ output "ecs_service_arn" {
   value       = aws_ecs_service.service.id
 }
 
-output "pass_task_role_policy_arn" {
-  description = "ARN of policy permitting passage of the task role"
-  value       = module.service_task_definition.pass_task_role_policy_arn
+output "pass_task_role_policy_document_json" {
+  description = "JSON describing an IAM policy which allows passage of the task role"
+  value       = module.service_task_definition.pass_task_role_policy_document_json
 }
 
 output "write_container_logs_policy_document_json" {

@@ -21,23 +21,21 @@ resource "aws_iam_role" "task_role" {
   })
 }
 
-resource "aws_iam_policy" "pass_task_role" {
-  name = "${var.family_name}-pass-task-role"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "iam:GetRole",
-          "iam:PassRole"
-        ],
-        Effect = "Allow",
-        Resource = [
-          aws_iam_role.task_role.arn
-        ]
-      }
+
+data "aws_iam_policy_document" "pass_task_role" {
+  version = "2012-10-17"
+
+  statement {
+    sid = "Pass${replace(var.family_name, "-", "")}TaskRole"
+    actions = [
+      "iam:GetRole",
+      "iam:PassRole"
     ]
-  })
+    effect = "Allow"
+    resources = [
+      aws_iam_role.task_role.arn
+    ]
+  }
   depends_on = [
     aws_iam_role.task_role
   ]

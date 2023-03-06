@@ -56,10 +56,20 @@ resource "aws_iam_policy" "pass_ecs_execution_role" {
   })
 }
 
+data "aws_iam_policy_document" "ecs_execution_pass_task_permissions" {
+  source_policy_documents = [
+    module.buyer_frontend_service.pass_task_role_policy_document_json
+  ]
+}
 
-resource "aws_iam_role_policy_attachment" "ecs_execute__pass_task_role" {
+resource "aws_iam_policy" "ecs_execution_pass_task_permissions" {
+  name   = "${var.project_name}-${var.environment_name}-ecs-execution-pass-task-permissions"
+  policy = data.aws_iam_policy_document.ecs_execution_pass_task_permissions.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_execute__ecs_execution_pass_task_permissions" {
   role       = aws_iam_role.ecs_execution_role.name
-  policy_arn = module.buyer_frontend_service.pass_task_role_policy_arn
+  policy_arn = aws_iam_policy.ecs_execution_pass_task_permissions.arn
 }
 
 data "aws_iam_policy_document" "ecs_execution_log_permissions" {
