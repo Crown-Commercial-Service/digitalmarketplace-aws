@@ -37,6 +37,26 @@ resource "aws_iam_role" "ecs_execution_role" {
   })
 }
 
+resource "aws_iam_policy" "pass_ecs_execution_role" {
+  name = "${var.project_name}-${var.environment_name}-pass-ecs-execution-role"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "iam:GetRole",
+          "iam:PassRole"
+        ],
+        Effect = "Allow",
+        Resource = [
+          aws_iam_role.ecs_execution_role.arn
+        ]
+      }
+    ]
+  })
+}
+
+
 resource "aws_iam_role_policy_attachment" "ecs_execute__pass_task_role" {
   role       = aws_iam_role.ecs_execution_role.name
   policy_arn = module.buyer_frontend_service.pass_task_role_policy_arn

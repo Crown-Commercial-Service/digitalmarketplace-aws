@@ -1,3 +1,7 @@
+locals {
+  efs_mount_config_as_set = var.efs_mount_config == null ? [] : [var.efs_mount_config]
+}
+
 resource "aws_ecs_task_definition" "task" {
   family = var.family_name
   container_definitions = jsonencode([
@@ -22,6 +26,15 @@ resource "aws_ecs_task_definition" "task" {
           "awslogs-stream-prefix" : "execution"
         }
       }
+
+      mountPoints = var.efs_mount_config == null ? null : [
+        {
+          "containerPath" : var.efs_mount_config["mount_point"],
+          "readOnly" : true,
+          "sourceVolume" : var.efs_mount_config["volume_name"]
+        }
+      ]
+
       portMappings = var.container_port == null ? null : [
         {
           containerPort = var.container_port
@@ -40,4 +53,24 @@ resource "aws_ecs_task_definition" "task" {
     operating_system_family = "LINUX"
   }
   task_role_arn = aws_iam_role.task_role.arn
+
+  dynamic "volume" {
+    for_each = local.efs_mount_config_as_set # Zero or one elements only
+    iterator = efs_config
+
+    content {
+      efs_volume_configuration {
+        authorization_config {
+          access_point_id = efs_config.value["access_point_id"]
+          iam             = "DISABLED"
+        }
+        file_system_id     = efs_config.value["file_system_id"]
+        transit_encryption = "ENABLED"
+      }
+
+      name = efs_config.value["volume_name"]
+    }
+  }
 }
+
+

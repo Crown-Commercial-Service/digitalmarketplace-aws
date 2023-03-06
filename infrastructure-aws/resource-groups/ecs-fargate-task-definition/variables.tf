@@ -59,6 +59,12 @@ variable "ecs_execution_role_arn" {
   description = "ARN of the role which is assumed by the ECS execution processes"
 }
 
+variable "efs_mount_config" {
+  type        = map(string)
+  description = "Map of config values for mounting an EFS volume from the container"
+  default     = null
+}
+
 variable "family_name" {
   type        = string
   description = "The name to give to the task definition, across all revisions"
