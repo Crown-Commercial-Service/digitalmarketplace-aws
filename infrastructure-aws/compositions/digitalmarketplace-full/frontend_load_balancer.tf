@@ -19,6 +19,23 @@ resource "aws_lb_listener" "frontend_https" {
   }
 }
 
+resource "aws_lb_listener_rule" "admin_frontend" {
+  listener_arn = aws_lb_listener.frontend_https.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.admin_frontend.arn
+  }
+  condition {
+    path_pattern {
+      values = [
+        "/admin",
+        "/admin/*"
+      ]
+    }
+  }
+}
+
 resource "aws_lb_listener_rule" "user_frontend" {
   listener_arn = aws_lb_listener.frontend_https.arn
 

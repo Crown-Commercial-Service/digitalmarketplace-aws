@@ -59,6 +59,7 @@ resource "aws_iam_policy" "pass_ecs_execution_role" {
 data "aws_iam_policy_document" "ecs_execution_ecr_repo_permissions" {
   override_policy_documents = [ # override because we expect repeat Sids for some statements
     module.api_service.read_ecr_repo_policy_document_json,
+    module.admin_frontend_service.read_ecr_repo_policy_document_json,
     module.buyer_frontend_service.read_ecr_repo_policy_document_json,
     module.user_frontend_service.read_ecr_repo_policy_document_json,
   ]
@@ -78,6 +79,7 @@ data "aws_iam_policy_document" "ecs_execution_pass_task_permissions" {
   source_policy_documents = [
     # core services
     module.api_service.pass_task_role_policy_document_json,
+    module.admin_frontend_service.pass_task_role_policy_document_json,
     module.buyer_frontend_service.pass_task_role_policy_document_json,
     module.user_frontend_service.pass_task_role_policy_document_json,
 
@@ -101,6 +103,7 @@ data "aws_iam_policy_document" "ecs_execution_log_permissions" {
   override_policy_documents = [ # override because we expect repeat Sids for some statements
     # core services
     module.api_service.write_container_logs_policy_document_json,
+    module.admin_frontend_service.write_container_logs_policy_document_json,
     module.buyer_frontend_service.write_container_logs_policy_document_json,
     module.user_frontend_service.write_container_logs_policy_document_json,
 

@@ -6,11 +6,13 @@ jenkins_account_id = "398263320410"
 project_name       = "digitalmarketplace"
 services_container_memories = {
   "api" : 2048,
+  "admin-frontend" : 1024,
   "buyer-frontend" : 1024,
   "user-frontend" : 1024
 }
 services_desired_counts = {
   "api" : 4,
+  "admin-frontend" : 1
   "buyer-frontend" : 2
   "user-frontend" : 2
 }
