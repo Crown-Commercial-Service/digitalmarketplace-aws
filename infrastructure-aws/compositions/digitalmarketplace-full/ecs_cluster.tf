@@ -61,3 +61,26 @@ resource "aws_iam_role_policy_attachment" "ecs_execute__pass_task_role" {
   role       = aws_iam_role.ecs_execution_role.name
   policy_arn = module.buyer_frontend_service.pass_task_role_policy_arn
 }
+
+data "aws_iam_policy_document" "ecs_execution_log_permissions" {
+  override_policy_documents = [ # override because we expect repeat Sids for some statements
+    # core services
+    module.api_service.write_container_logs_policy_document_json,
+    module.buyer_frontend_service.write_container_logs_policy_document_json,
+    module.user_frontend_service.write_container_logs_policy_document_json,
+
+    # one-off tasks
+    module.dmp_add_users.write_task_logs_policy_document_json,
+    module.migration_log_group.write_log_group_policy_document_json
+  ]
+}
+
+resource "aws_iam_policy" "ecs_execution_log_permissions" {
+  name   = "${var.project_name}-${var.environment_name}-ecs-execution-log-permissions"
+  policy = data.aws_iam_policy_document.ecs_execution_log_permissions.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_execute__ecs_execution_log_permissions" {
+  role       = aws_iam_role.ecs_execution_role.name
+  policy_arn = aws_iam_policy.ecs_execution_log_permissions.arn
+}

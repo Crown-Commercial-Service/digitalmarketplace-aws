@@ -44,11 +44,6 @@ variable "ecs_execution_role_arn" {
   description = "ARN of the role which is assumed by the ECS execution processes"
 }
 
-variable "ecs_execution_role_name" {
-  type        = string
-  description = "Name of the role which is assumed by the ECS execution processes"
-}
-
 variable "egress_all_security_group_id" {
   type        = string
   description = "ID of the securty group which allows all egress"

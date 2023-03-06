@@ -1,6 +1,6 @@
 # Cloudwatch Log Group
 
-Provides: 
+Provides:
 
 * a Cloudwatch Log Group with sensible retention policy
-* an IAM policy permitting servies to write log streams to the group
+* an IAM policy document permitting servies to write log streams to the group

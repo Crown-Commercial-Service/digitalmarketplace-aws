@@ -25,12 +25,12 @@ module "task_log_group" {
   project_name   = var.project_name
 }
 
-resource "aws_iam_role_policy_attachment" "container_task__write_logs" {
-  role       = module.task_definition.task_role_name
-  policy_arn = module.task_log_group.write_log_group_policy_arn
+resource "aws_iam_policy" "write_logs" {
+  name   = "${var.project_name}-${var.environment_name}-${var.process_name}-logs-write"
+  policy = module.task_log_group.write_log_group_policy_document_json
 }
 
-resource "aws_iam_role_policy_attachment" "execution_role__write_add_users_logs" {
-  role       = var.ecs_execution_role_name
-  policy_arn = module.task_log_group.write_log_group_policy_arn
+resource "aws_iam_role_policy_attachment" "task_role__write_logs" {
+  role       = module.task_definition.task_role_name
+  policy_arn = aws_iam_policy.write_logs.arn
 }

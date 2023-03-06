@@ -3,40 +3,42 @@ resource "aws_cloudwatch_log_group" "log_group" {
   retention_in_days = var.log_retention_days
 }
 
-resource "aws_iam_policy" "write_log_group" {
-  name = "${var.project_name}-${var.log_group_name}-logs-write"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:DescribeLogGroups"
-        ]
-        Resource = [
-          "*"
-        ]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:DescribeLogStreams"
-        ]
-        Resource = [
-          "${aws_cloudwatch_log_group.log_group.arn}:*"
-        ]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:PutLogEvents"
-        ]
-        Resource = [
-          "${aws_cloudwatch_log_group.log_group.arn}:log-stream:*"
-        ]
-      }
+data "aws_iam_policy_document" "write_log_group" {
+  version = "2012-10-17"
+
+  statement {
+    sid = "DescribeAllLogGroups" # Deliberately named so that identical statements overwrite each other
+
+    actions = [
+      "logs:DescribeLogGroups"
     ]
-  })
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid = "Write${replace(var.log_group_name, "-", "")}LogGroup"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogStreams"
+    ]
+    effect = "Allow"
+    resources = [
+      "${aws_cloudwatch_log_group.log_group.arn}:*"
+    ]
+  }
+
+  statement {
+    sid = "Write${replace(var.log_group_name, "-", "")}LogStream"
+    actions = [
+      "logs:PutLogEvents"
+    ]
+    effect = "Allow"
+    resources = [
+      "${aws_cloudwatch_log_group.log_group.arn}:log-stream:*"
+    ]
+  }
 }
