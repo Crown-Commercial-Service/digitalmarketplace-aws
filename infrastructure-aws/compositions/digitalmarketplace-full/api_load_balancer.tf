@@ -3,7 +3,7 @@ resource "aws_lb" "api" {
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.api_lb.id]
-  subnets            = module.dmp_vpc.public_subnet_ids
+  subnets            = module.dmp_vpc.private_subnet_ids
 }
 
 resource "aws_lb_target_group" "api" {
