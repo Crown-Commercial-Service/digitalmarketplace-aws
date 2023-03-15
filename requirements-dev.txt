@@ -117,7 +117,7 @@ xmltodict==0.13.0
     # via
     #   -r requirements.txt
     #   yq
-yq==3.1.0
+yq==3.1.1
     # via -r requirements.txt
 
 # The following packages are considered to be unsafe in a requirements file:
