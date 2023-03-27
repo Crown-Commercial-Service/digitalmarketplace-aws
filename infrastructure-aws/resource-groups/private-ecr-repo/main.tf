@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "repo" {
-  name = "${var.project_name}/${var.service_name}"
+  name         = "${var.project_name}/${var.service_name}"
+  force_delete = var.is_ephemeral
 }
 
 data "aws_iam_policy_document" "read_repo" {

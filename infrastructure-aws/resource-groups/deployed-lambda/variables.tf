@@ -20,6 +20,12 @@ variable "handler" {
   default     = "index.handler"
 }
 
+variable "is_ephemeral" {
+  type        = bool
+  description = "If set to true, indicates that this module is expected to be destroyed as a matter of course (so will set `force_destroy` on aws resources where appropriate)"
+  default     = false
+}
+
 variable "lambda_bucket_id" {
   type        = string
   description = "The name of the bucket via which to deploy"

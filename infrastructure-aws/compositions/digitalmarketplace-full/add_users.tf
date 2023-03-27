@@ -33,6 +33,7 @@ module "dmp_add_users" {
   ecs_execution_role_arn             = aws_iam_role.ecs_execution_role.arn
   egress_all_security_group_id       = aws_security_group.egress_all.id # TODO pass all SGs in one list to avoid prescsriptive naming
   environment_name                   = var.environment_name
+  is_ephemeral                       = var.environment_is_ephemeral
   lambda_bucket_id                   = var.lambda_bucket_id
   pass_ecs_execution_role_policy_arn = aws_iam_policy.pass_ecs_execution_role.arn
   secret_environment_variables = [

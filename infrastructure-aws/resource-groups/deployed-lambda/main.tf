@@ -6,9 +6,10 @@ locals {
 }
 
 resource "aws_s3_object" "deploy_object" {
-  bucket = var.lambda_bucket_id
-  key    = local.zipfile_name
-  source = "${local.lambdazips_folder}/${local.zipfile_name}"
+  bucket        = var.lambda_bucket_id
+  force_destroy = var.is_ephemeral
+  key           = local.zipfile_name
+  source        = "${local.lambdazips_folder}/${local.zipfile_name}"
 
   etag = filemd5("${local.lambdazips_folder}/${local.zipfile_name}")
 }

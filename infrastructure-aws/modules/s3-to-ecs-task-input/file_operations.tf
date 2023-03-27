@@ -2,6 +2,7 @@ module "copy_s3_to_efs_lambda" {
   source             = "../../resource-groups/deployed-lambda"
   environment_name   = var.environment_name
   function_base_name = "copy-s3-to-efs"
+  is_ephemeral       = var.is_ephemeral
   lambda_bucket_id   = var.lambda_bucket_id
   handler            = "lambda_function.lambda_handler"
   security_group_ids = [
@@ -29,6 +30,7 @@ module "delete_from_efs_lambda" {
   source             = "../../resource-groups/deployed-lambda"
   environment_name   = var.environment_name
   function_base_name = "delete-from-efs"
+  is_ephemeral       = var.is_ephemeral
   lambda_bucket_id   = var.lambda_bucket_id
   handler            = "lambda_function.lambda_handler"
   security_group_ids = [

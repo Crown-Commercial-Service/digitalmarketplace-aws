@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = var.bucket_name
+  bucket        = var.bucket_name
+  force_destroy = var.is_ephemeral
 }
 
 resource "aws_iam_policy" "get_object" {

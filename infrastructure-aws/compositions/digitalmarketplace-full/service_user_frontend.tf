@@ -25,6 +25,7 @@ module "user_frontend_service" {
   ecs_cluster_arn                 = aws_ecs_cluster.dmp.arn
   ecs_execution_role_arn          = aws_iam_role.ecs_execution_role.arn
   environment_name                = var.environment_name
+  is_ephemeral                    = var.environment_is_ephemeral
   lb_target_group_arn             = aws_lb_target_group.user_frontend.arn
   project_name                    = var.project_name
   secret_environment_variables = [

@@ -54,6 +54,12 @@ variable "environment_name" {
   description = "Name to indicate purpose of environment"
 }
 
+variable "is_ephemeral" {
+  type        = bool
+  description = "If set to true, indicates that this module is expected to be destroyed as a matter of course (so will set `force_destroy` on aws resources where appropriate)"
+  default     = false
+}
+
 variable "lambda_bucket_id" {
   type        = string
   description = "Full name of bucket through which to provide Lambda deployments"

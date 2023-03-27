@@ -13,6 +13,12 @@ variable "domain_name" {
   description = "Domain name to use in public-facing ingress cert and URL"
 }
 
+variable "environment_is_ephemeral" {
+  type        = bool
+  description = "If set to true, indicates that this environment is expected to be destroyed as a matter of course (so will set `force_destroy` on aws resources where appropriate)"
+  default     = false
+}
+
 variable "environment_name" {
   type        = string
   description = "Name to indicate purpose of environment"

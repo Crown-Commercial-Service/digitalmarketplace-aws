@@ -1,6 +1,7 @@
 module "lambda_deployment_bucket" {
-  source      = "../../resource-groups/private-s3-bucket"
-  bucket_name = "${var.project_name}-${var.environment_name}-lambda-deployment"
+  source       = "../../resource-groups/private-s3-bucket"
+  bucket_name  = "${var.project_name}-${var.environment_name}-lambda-deployment"
+  is_ephemeral = var.environment_is_ephemeral
 }
 
 module "digitalmarketplace_full" {
@@ -9,6 +10,7 @@ module "digitalmarketplace_full" {
   aws_region                      = var.aws_region
   aws_target_account              = data.aws_caller_identity.current.account_id
   domain_name                     = var.domain_name
+  environment_is_ephemeral        = var.environment_is_ephemeral
   environment_name                = var.environment_name
   hosted_zone_id                  = var.hosted_zone_id
   lambda_bucket_id                = module.lambda_deployment_bucket.bucket_id
