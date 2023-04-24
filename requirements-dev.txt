@@ -104,7 +104,7 @@ six==1.16.0
     #   -r requirements.txt
     #   python-dateutil
     #   requests-mock
-toml==0.10.2
+tomlkit==0.11.7
     # via
     #   -r requirements.txt
     #   yq
@@ -117,7 +117,7 @@ xmltodict==0.13.0
     # via
     #   -r requirements.txt
     #   yq
-yq==3.1.1
+yq==3.2.2
     # via -r requirements.txt
 
 # The following packages are considered to be unsafe in a requirements file:
