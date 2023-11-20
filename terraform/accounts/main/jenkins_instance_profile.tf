@@ -261,8 +261,8 @@ resource "aws_iam_role_policy" "jenkins_assume_cloudtrail_validate_logs" {
 }
 
 resource "aws_iam_policy" "dmp_1_0_jenkins_cicd_infrastructure_role_policy" {
-  name    = "dmp_1_0_jenkins_cicd_infrastructure_role_policy"
-  policy  = data.aws_iam_policy_document.dmp_1_0_jenkins_cicd_infrastructure_role_policy.json
+  name   = "dmp_1_0_jenkins_cicd_infrastructure_role_policy"
+  policy = data.aws_iam_policy_document.dmp_1_0_jenkins_cicd_infrastructure_role_policy.json
 }
 
 data "aws_iam_policy_document" "dmp_1_0_jenkins_cicd_infrastructure_role_policy" {
