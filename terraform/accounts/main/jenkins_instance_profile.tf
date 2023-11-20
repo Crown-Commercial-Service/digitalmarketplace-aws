@@ -260,3 +260,20 @@ resource "aws_iam_role_policy" "jenkins_assume_cloudtrail_validate_logs" {
   policy = data.aws_iam_policy_document.jenkins_assume_cloudtrail_validate_logs.json
 }
 
+resource "aws_iam_policy" "dmp_1_0_jenkins_cicd_infrastructure_role_policy" {
+  name   = "dmp_1_0_jenkins_cicd_infrastructure_role_policy"
+  policy = data.aws_iam_policy_document.dmp_1_0_jenkins_cicd_infrastructure_role_policy.json
+}
+
+data "aws_iam_policy_document" "dmp_1_0_jenkins_cicd_infrastructure_role_policy" {
+  statement {
+    sid     = "Statement1"
+    actions = ["sts:AssumeRole"]
+
+    resources = [
+      "arn:aws:iam::${var.aws_sandbox_account_id}:role/cicd_infrastructure",
+      "arn:aws:iam::${var.aws_dev_account_id}:role/cicd_infrastructure",
+      "arn:aws:iam::${var.aws_staging_account_id}:role/cicd_infrastructure"
+    ]
+  }
+}
