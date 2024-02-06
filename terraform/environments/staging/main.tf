@@ -10,7 +10,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket  = "digitalmarketplace-terraform-state-production"
+    bucket  = "digitalmarketplace-terraform-state-staging"
     key     = "environments/staging/terraform.tfstate"
     region  = "eu-west-1"
     encrypt = "true"
@@ -49,8 +49,8 @@ module "log_streaming" {
   source = "../../modules/log-streaming"
 
   name                  = "staging-log-stream-lambda"
-  elasticsearch_url     = var.logs_elasticsearch_url
-  elasticsearch_api_key = var.logs_elasticsearch_api_key
+  elasticsearch_url     = local.logs_elasticsearch_url
+  elasticsearch_api_key = local.logs_elasticsearch_api_key
 
   nginx_log_groups = concat(
     module.staging_router.json_log_groups,
@@ -59,22 +59,22 @@ module "log_streaming" {
   application_log_groups = module.application_logs.application_log_groups
 }
 
-module "log_metrics" {
-  source                               = "../../modules/logging/log-metric-filters"
-  environment                          = "staging"
-  app_names                            = module.application_logs.app_names
-  router_log_group_name                = element(module.staging_router.json_log_groups, 0)
-  antivirus_sns_failure_log_group_name = module.antivirus-sns.failure_log_group_name
-  antivirus_sns_success_log_group_name = module.antivirus-sns.success_log_group_name
-  antivirus_sns_topic_num_retries      = module.antivirus-sns.topic_num_retries
-}
+# module "log_metrics" {
+#   source                               = "../../modules/logging/log-metric-filters"
+#   environment                          = "staging"
+#   app_names                            = module.application_logs.app_names
+#   router_log_group_name                = element(module.staging_router.json_log_groups, 0)
+#   antivirus_sns_failure_log_group_name = module.antivirus-sns.failure_log_group_name
+#   antivirus_sns_success_log_group_name = module.antivirus-sns.success_log_group_name
+#   antivirus_sns_topic_num_retries      = module.antivirus-sns.topic_num_retries
+# }
 
 module "antivirus-sns" {
   source                   = "../../modules/antivirus-sns"
   environment              = "staging"
-  account_id               = var.aws_prod_account_id
-  antivirus_api_host       = var.antivirus_api_host
-  antivirus_api_basic_auth = var.antivirus_api_basic_auth
+  account_id               = local.aws_prod_account_id
+  antivirus_api_host       = local.antivirus_api_host
+  antivirus_api_basic_auth = local.antivirus_api_basic_auth
   retention_in_days        = "180"
   log_stream_lambda_arn    = module.log_streaming.log_stream_lambda_arn
 
@@ -85,4 +85,3 @@ module "antivirus-sns" {
     aws_s3_bucket.submissions_bucket.arn,
   ]
 }
-

@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-logs-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-logs-staging/*",
     ]
 
     condition {
@@ -31,13 +31,13 @@ data "aws_iam_policy_document" "server_access_logs_bucket_policy_document" {
 }
 
 resource "aws_s3_bucket" "server_access_logs_bucket" {
-  bucket = "digitalmarketplace-logs-staging-staging"
-  acl    = "log-delivery-write"
+  bucket = "digitalmarketplace-logs-staging"
+  # acl    = "log-delivery-write"
   policy = data.aws_iam_policy_document.server_access_logs_bucket_policy_document.json
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
+    # mfa_delete = true
   }
 
   server_side_encryption_configuration {
@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "agreements_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-agreements-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-agreements-staging/*",
     ]
 
     condition {
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "agreements_bucket_policy_document" {
     effect = "Allow"
 
     principals {
-      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      identifiers = ["arn:aws:iam::${local.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
       type        = "AWS"
     }
 
@@ -94,23 +94,23 @@ data "aws_iam_policy_document" "agreements_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-agreements-staging-staging",
+      "arn:aws:s3:::digitalmarketplace-agreements-staging",
     ]
   }
 }
 
 resource "aws_s3_bucket" "agreements_bucket" {
-  bucket = "digitalmarketplace-agreements-staging-staging"
+  bucket = "digitalmarketplace-agreements-staging"
   acl    = "private"
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
+    # mfa_delete = true
   }
 
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
-    target_prefix = "digitalmarketplace-agreements-staging-staging/"
+    target_prefix = "digitalmarketplace-agreements-staging/"
   }
 
   policy = data.aws_iam_policy_document.agreements_bucket_policy_document.json
@@ -140,7 +140,7 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-reports-staging/*",
     ]
 
     condition {
@@ -158,7 +158,7 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
 
     principals {
       identifiers = [
-        "arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ",
+        "arn:aws:iam::${local.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ",
       ]
 
       type = "AWS"
@@ -173,24 +173,24 @@ data "aws_iam_policy_document" "reports_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-reports-staging-staging/*",
-      "arn:aws:s3:::digitalmarketplace-reports-staging-staging",
+      "arn:aws:s3:::digitalmarketplace-reports-staging/*",
+      "arn:aws:s3:::digitalmarketplace-reports-staging",
     ]
   }
 }
 
 resource "aws_s3_bucket" "reports_bucket" {
-  bucket = "digitalmarketplace-reports-staging-staging"
+  bucket = "digitalmarketplace-reports-staging"
   acl    = "private"
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
+    # mfa_delete = true
   }
 
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
-    target_prefix = "digitalmarketplace-reports-staging-staging/"
+    target_prefix = "digitalmarketplace-reports-staging/"
   }
 
   policy = data.aws_iam_policy_document.reports_bucket_policy_document.json
@@ -220,7 +220,7 @@ data "aws_iam_policy_document" "communications_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-communications-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-communications-staging/*",
     ]
 
     condition {
@@ -237,7 +237,7 @@ data "aws_iam_policy_document" "communications_bucket_policy_document" {
     effect = "Allow"
 
     principals {
-      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      identifiers = ["arn:aws:iam::${local.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
       type        = "AWS"
     }
 
@@ -246,23 +246,23 @@ data "aws_iam_policy_document" "communications_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-communications-staging-staging",
+      "arn:aws:s3:::digitalmarketplace-communications-staging",
     ]
   }
 }
 
 resource "aws_s3_bucket" "communications_bucket" {
-  bucket = "digitalmarketplace-communications-staging-staging"
+  bucket = "digitalmarketplace-communications-staging"
   acl    = "private"
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
+    # mfa_delete = true
   }
 
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
-    target_prefix = "digitalmarketplace-communications-staging-staging/"
+    target_prefix = "digitalmarketplace-communications-staging/"
   }
 
   policy = data.aws_iam_policy_document.communications_bucket_policy_document.json
@@ -292,7 +292,7 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-documents-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-documents-staging/*",
     ]
 
     condition {
@@ -309,7 +309,7 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
     effect = "Allow"
 
     principals {
-      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      identifiers = ["arn:aws:iam::${local.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
       type        = "AWS"
     }
 
@@ -323,24 +323,24 @@ data "aws_iam_policy_document" "documents_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-documents-staging-staging/*",
-      "arn:aws:s3:::digitalmarketplace-documents-staging-staging",
+      "arn:aws:s3:::digitalmarketplace-documents-staging/*",
+      "arn:aws:s3:::digitalmarketplace-documents-staging",
     ]
   }
 }
 
 resource "aws_s3_bucket" "documents_bucket" {
-  bucket = "digitalmarketplace-documents-staging-staging"
+  bucket = "digitalmarketplace-documents-staging"
   acl    = "private"
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
+    # mfa_delete = true
   }
 
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
-    target_prefix = "digitalmarketplace-documents-staging-staging/"
+    target_prefix = "digitalmarketplace-documents-staging/"
   }
 
   policy = data.aws_iam_policy_document.documents_bucket_policy_document.json
@@ -373,7 +373,7 @@ data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-g7-draft-documents-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-g7-draft-documents-staging/*",
     ]
 
     condition {
@@ -388,18 +388,18 @@ data "aws_iam_policy_document" "g7-draft-documents_bucket_policy_document" {
 }
 
 resource "aws_s3_bucket" "g7-draft-documents_bucket" {
-  bucket = "digitalmarketplace-g7-draft-documents-staging-staging"
+  bucket = "digitalmarketplace-g7-draft-documents-staging"
   acl    = "private"
   policy = data.aws_iam_policy_document.g7-draft-documents_bucket_policy_document.json
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
+    # mfa_delete = true
   }
 
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
-    target_prefix = "digitalmarketplace-g7-draft-documents-staging-staging/"
+    target_prefix = "digitalmarketplace-g7-draft-documents-staging/"
   }
 
   server_side_encryption_configuration {
@@ -427,7 +427,7 @@ data "aws_iam_policy_document" "submissions_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-submissions-staging-staging/*",
+      "arn:aws:s3:::digitalmarketplace-submissions-staging/*",
     ]
 
     condition {
@@ -444,7 +444,7 @@ data "aws_iam_policy_document" "submissions_bucket_policy_document" {
     effect = "Allow"
 
     principals {
-      identifiers = ["arn:aws:iam::${var.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
+      identifiers = ["arn:aws:iam::${local.aws_main_account_id}:role/jenkins-ci-IAMRole-1FIPDG9DE2CWJ"]
       type        = "AWS"
     }
 
@@ -453,23 +453,23 @@ data "aws_iam_policy_document" "submissions_bucket_policy_document" {
     ]
 
     resources = [
-      "arn:aws:s3:::digitalmarketplace-submissions-staging-staging",
+      "arn:aws:s3:::digitalmarketplace-submissions-staging",
     ]
   }
 }
 
 resource "aws_s3_bucket" "submissions_bucket" {
-  bucket = "digitalmarketplace-submissions-staging-staging"
+  bucket = "digitalmarketplace-submissions-staging"
   acl    = "private"
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
+    # mfa_delete = true
   }
 
   logging {
     target_bucket = aws_s3_bucket.server_access_logs_bucket.id
-    target_prefix = "digitalmarketplace-submissions-staging-staging/"
+    target_prefix = "digitalmarketplace-submissions-staging/"
   }
 
   policy = data.aws_iam_policy_document.submissions_bucket_policy_document.json
@@ -482,4 +482,3 @@ resource "aws_s3_bucket" "submissions_bucket" {
     }
   }
 }
-
