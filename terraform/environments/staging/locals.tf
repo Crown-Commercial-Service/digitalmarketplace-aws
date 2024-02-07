@@ -43,8 +43,8 @@ locals {
   logs_elasticsearch_url     = data.aws_ssm_parameter.logs_elasticsearch_url.value
   logs_elasticsearch_api_key = data.aws_ssm_parameter.logs_elasticsearch_api_key.value
   resource_name_prefixes = {
-    normal        = "XDN:EUW2:SBX",
-    hyphens       = "XDN-EUW2-SBX",
-    hyphens_lower = "xdn-euw2-sbx",
+    normal        = "DMP10:EUW1:STG",
+    hyphens       = "DMP10-EUW1-STG",
+    hyphens_lower = "dmp10-euw1-stg",
   }
 }
