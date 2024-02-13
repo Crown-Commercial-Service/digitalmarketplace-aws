@@ -1,6 +1,6 @@
 ---
 domain: "digitalmarketplace.service.gov.uk"
-maintenance_mode: live
+maintenance_mode: maintenance
 instances: 5
 
 router:
