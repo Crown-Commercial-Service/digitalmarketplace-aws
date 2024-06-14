@@ -1,0 +1,4 @@
+[submodule "terraform/core"]
+	path = terraform/core
+	url = https://github.com/Crown-Commercial-Service/ccs-migration-alpha-tools.git
+	branch = main
