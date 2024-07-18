@@ -48,7 +48,7 @@ idna==3.4
     # via
     #   -r requirements.txt
     #   requests
-jinja2==3.1.2
+jinja2==3.1.4
     # via -r requirements.txt
 jmespath==1.0.1
     # via
@@ -108,7 +108,7 @@ toml==0.10.2
     # via
     #   -r requirements.txt
     #   yq
-urllib3==1.26.12
+urllib3==1.26.19
     # via
     #   -r requirements.txt
     #   botocore
@@ -122,3 +122,4 @@ yq==3.1.1
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
