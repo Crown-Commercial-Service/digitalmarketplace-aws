@@ -10,7 +10,7 @@ awscli==1.27.91
     # via -r requirements.in
 bcrypt==4.0.1
     # via -r requirements.in
-boto3==1.26.8
+boto3==1.26.91
     # via -r requirements.in
 botocore==1.29.91
     # via
