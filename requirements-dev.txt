@@ -113,7 +113,7 @@ urllib3==1.26.12
     #   -r requirements.txt
     #   botocore
     #   requests
-xmltodict==0.13.0
+xmltodict==0.15.0
     # via
     #   -r requirements.txt
     #   yq
