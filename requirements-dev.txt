@@ -65,7 +65,7 @@ mock==1.0.1
     # via -r requirements-dev.in
 py==1.11.0
     # via pytest
-pyasn1==0.4.8
+pyasn1==0.6.3
     # via
     #   -r requirements.txt
     #   rsa
